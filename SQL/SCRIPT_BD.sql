@@ -50,6 +50,19 @@ CREATE TABLE if not exists cliente
   id serial NOT NULL,
   nome character varying(100) NOT NULL,
   cpfcnpj character varying(18) NOT NULL,
+  telefone character varying(15),
+  celular character varying(15),
+  email character varying(100),
+  observacao character varying(512),
   codigoexterno character varying(100),
   CONSTRAINT pk_cliente PRIMARY KEY (id)
+);
+
+CREATE TABLE if not exists produto
+(
+  id serial NOT NULL,
+  descricao character varying(100) NOT NULL,
+  finalidade integer NOT NULL,
+  codigoexterno character varying(100),
+  CONSTRAINT pk_produto PRIMARY KEY (id)
 );

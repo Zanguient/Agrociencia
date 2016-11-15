@@ -25,7 +25,9 @@ uses
   uBeanObservacao in 'Beans\uBeanObservacao.pas',
   uCadastroObservacoes in 'uCadastroObservacoes.pas' {frmCadastroObservacoes},
   uBeanCliente in 'Beans\uBeanCliente.pas',
-  uCadastroCliente in 'uCadastroCliente.pas' {frmCadastroCliente};
+  uCadastroCliente in 'uCadastroCliente.pas' {frmCadastroCliente},
+  uCadastroProdutos in 'uCadastroProdutos.pas' {frmCadastroProdutos},
+  uBeanProdutos in 'Beans\uBeanProdutos.pas';
 
 {$R *.res}
 

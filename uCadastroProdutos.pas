@@ -1,4 +1,4 @@
-unit uCadastroCliente;
+unit uCadastroProdutos;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   JvToolEdit, JvBaseEdits;
 
 type
-  TfrmCadastroCliente = class(TForm)
+  TfrmCadastroProdutos = class(TForm)
     pnVisualizacao: TPanel;
     gdPesquisa: TDBGrid;
     pnBotoesVisualizacao: TPanel;
@@ -23,7 +23,7 @@ type
     ds_Pesquisa: TDataSource;
     cds_Pesquisa: TClientDataSet;
     cds_PesquisaID: TIntegerField;
-    cds_PesquisaNOME: TStringField;
+    cds_PesquisaDESCRICAO: TStringField;
     gpBotoes: TGridPanel;
     Panel8: TPanel;
     Panel9: TPanel;
@@ -36,7 +36,7 @@ type
     GridPanel1: TGridPanel;
     pnUsuarioEsquerda: TPanel;
     Label2: TLabel;
-    edNome: TEdit;
+    edDescricao: TEdit;
     pnUsuarioDireita: TPanel;
     btExportar: TSpeedButton;
     GridPanel2: TGridPanel;
@@ -47,21 +47,9 @@ type
     edCodigoExterno: TEdit;
     Label3: TLabel;
     cds_PesquisaCODIGOEXTERNO: TStringField;
-    edCPFCNPJ: TEdit;
     Label1: TLabel;
-    cds_PesquisaCPFCNPJ: TStringField;
-    edTelefone: TEdit;
-    Label4: TLabel;
-    edCelular: TEdit;
-    Label5: TLabel;
-    edEmail: TEdit;
-    Label6: TLabel;
-    cds_PesquisaTELEFONE: TStringField;
-    cds_PesquisaCELULAR: TStringField;
-    cds_PesquisaEMAIL: TStringField;
-    edObservacao: TEdit;
-    Label7: TLabel;
-    cds_PesquisaOBSERVACAO: TStringField;
+    cbFinalidadeProduto: TComboBox;
+    cds_PesquisaFINALIDADE: TIntegerField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -85,7 +73,7 @@ type
   end;
 
 var
-  frmCadastroCliente: TfrmCadastroCliente;
+  frmCadastroProdutos: TfrmCadastroProdutos;
 
 implementation
 
@@ -93,30 +81,28 @@ uses
   uDomains,
   uConstantes,
   uFWConnection,
-  uBeanCliente,
+  uBeanProdutos,
   uMensagem,
   uFuncoes;
 
 {$R *.dfm}
 
-procedure TfrmCadastroCliente.AtualizarEdits(Limpar: Boolean);
+procedure TfrmCadastroProdutos.AtualizarEdits(Limpar: Boolean);
 begin
   if Limpar then begin
-    edNome.Clear;
-    edCPFCNPJ.Clear;
-    edObservacao.Clear;
+    edDescricao.Clear;
+    cbFinalidadeProduto.ItemIndex := 0;
     edCodigoExterno.Clear;
     btGravar.Tag  := 0;
   end else begin
-    edNome.Text           := cds_PesquisaNOME.Value;
-    edCPFCNPJ.Text        := cds_PesquisaCPFCNPJ.Value;
-    edCodigoExterno.Text  := cds_PesquisaCODIGOEXTERNO.Value;
-    edObservacao.Text     := cds_PesquisaOBSERVACAO.Value;
-    btGravar.Tag          := cds_PesquisaID.Value;
+    edDescricao.Text              := cds_PesquisaDESCRICAO.Value;
+    cbFinalidadeProduto.ItemIndex := cds_PesquisaFINALIDADE.Value;
+    edCodigoExterno.Text          := cds_PesquisaCODIGOEXTERNO.Value;
+    btGravar.Tag                  := cds_PesquisaID.Value;
   end;
 end;
 
-procedure TfrmCadastroCliente.btAlterarClick(Sender: TObject);
+procedure TfrmCadastroProdutos.btAlterarClick(Sender: TObject);
 begin
   if not cds_Pesquisa.IsEmpty then begin
     AtualizarEdits(False);
@@ -124,30 +110,30 @@ begin
   end;
 end;
 
-procedure TfrmCadastroCliente.btCancelarClick(Sender: TObject);
+procedure TfrmCadastroProdutos.btCancelarClick(Sender: TObject);
 begin
   Cancelar;
 end;
 
-procedure TfrmCadastroCliente.btExcluirClick(Sender: TObject);
+procedure TfrmCadastroProdutos.btExcluirClick(Sender: TObject);
 Var
   FWC : TFWConnection;
-  C   : TCLIENTE;
+  P   : TPRODUTO;
 begin
   if not cds_Pesquisa.IsEmpty then begin
 
-    DisplayMsg(MSG_CONF, 'Excluir o Cliente Selecionado?');
+    DisplayMsg(MSG_CONF, 'Excluir o Produto Selecionado?');
 
     if ResultMsgModal = mrYes then begin
 
       try
 
         FWC := TFWConnection.Create;
-        C   := TCLIENTE.Create(FWC);
+        P   := TPRODUTO.Create(FWC);
         try
 
-          C.ID.Value := cds_PesquisaID.Value;
-          C.Delete;
+          P.ID.Value := cds_PesquisaID.Value;
+          P.Delete;
 
           FWC.Commit;
 
@@ -156,18 +142,18 @@ begin
         except
           on E : Exception do begin
             FWC.Rollback;
-            DisplayMsg(MSG_ERR, 'Erro ao Excluir o Cliente, Verifique!', '', E.Message);
+            DisplayMsg(MSG_ERR, 'Erro ao Excluir o Produto, Verifique!', '', E.Message);
           end;
         end;
       finally
-        FreeAndNil(C);
+        FreeAndNil(P);
         FreeAndNil(FWC);
       end;
     end;
   end;
 end;
 
-procedure TfrmCadastroCliente.btExportarClick(Sender: TObject);
+procedure TfrmCadastroProdutos.btExportarClick(Sender: TObject);
 begin
   if btExportar.Tag = 0 then begin
     btExportar.Tag := 1;
@@ -179,58 +165,47 @@ begin
   end;
 end;
 
-procedure TfrmCadastroCliente.btFecharClick(Sender: TObject);
+procedure TfrmCadastroProdutos.btFecharClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TfrmCadastroCliente.btGravarClick(Sender: TObject);
+procedure TfrmCadastroProdutos.btGravarClick(Sender: TObject);
 Var
   FWC : TFWConnection;
-  C   : TCLIENTE;
+  P   : TPRODUTO;
 begin
 
   FWC := TFWConnection.Create;
-  C   := TCLIENTE.Create(FWC);
+  P   := TPRODUTO.Create(FWC);
 
   try
     try
 
-      if Length(Trim(edNome.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'Nome não informado, Verifique!');
-        if edNome.CanFocus then
-          edNome.SetFocus;
+      if Length(Trim(edDescricao.Text)) = 0 then begin
+        DisplayMsg(MSG_WAR, 'Descrição não informada, Verifique!');
+        if edDescricao.CanFocus then
+          edDescricao.SetFocus;
         Exit;
       end;
 
-      if Length(Trim(edCPFCNPJ.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'CPF/CNPJ não informado, Verifique!');
-        if edCPFCNPJ.CanFocus then
-          edCPFCNPJ.SetFocus;
+      if cbFinalidadeProduto.ItemIndex = 0 then begin
+        DisplayMsg(MSG_WAR, 'Finalidade Inválida, Verifique!');
+        if cbFinalidadeProduto.CanFocus then
+          cbFinalidadeProduto.SetFocus;
         Exit;
-      end else begin
-        if not ValidaCPFCNPJ(edCPFCNPJ.Text) then begin
-          DisplayMsg(MSG_WAR, 'CPF/CNPJ Inválido, Verifique!');
-          if edCPFCNPJ.CanFocus then
-            edCPFCNPJ.SetFocus;
-          Exit;
-        end;
       end;
 
-      C.NOME.Value            := edNome.Text;
-      C.CPFCNPJ.Value         := SoNumeros(edCPFCNPJ.Text);
-      C.TELEFONE.Value        := edTelefone.Text;
-      C.CELULAR.Value         := edCelular.Text;
-      C.EMAIL.Value           := edCelular.Text;
-      C.OBSERVACAO.Value      := edObservacao.Text;
-      C.CODIGOEXTERNO.Value   := edCodigoExterno.Text;
+      P.DESCRICAO.Value      := edDescricao.Text;
+      P.FINALIDADE.Value     := cbFinalidadeProduto.ItemIndex;
+      P.CODIGOEXTERNO.Value  := edCodigoExterno.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
-        C.ID.Value          := (Sender as TSpeedButton).Tag;
-        C.Update;
+        P.ID.Value          := (Sender as TSpeedButton).Tag;
+        P.Update;
       end else begin
-        C.ID.isNull := True;
-        C.Insert;
+        P.ID.isNull := True;
+        P.Insert;
       end;
 
       FWC.Commit;
@@ -242,39 +217,40 @@ begin
     Except
       on E : Exception do begin
         FWC.Rollback;
-        DisplayMsg(MSG_ERR, 'Erro ao Gravar o Cliente!', '', E.Message);
+        DisplayMsg(MSG_ERR, 'Erro ao Gravar o Produto!', '', E.Message);
       end;
     end;
   finally
-    FreeAndNil(C);
+    FreeAndNil(P);
     FreeAndNil(FWC);
   end;
 end;
 
-procedure TfrmCadastroCliente.btNovoClick(Sender: TObject);
+procedure TfrmCadastroProdutos.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
 end;
 
-procedure TfrmCadastroCliente.Cancelar;
+procedure TfrmCadastroProdutos.Cancelar;
 begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
   InvertePaineis;
 end;
 
-procedure TfrmCadastroCliente.CarregaDados;
+procedure TfrmCadastroProdutos.CarregaDados;
 Var
   FWC : TFWConnection;
-  C   : TCLIENTE;
+  P   : TPRODUTO;
   I,
   Codigo  : Integer;
+  F : TFinalidadeProduto;
 begin
 
   try
     FWC := TFWConnection.Create;
-    C   := TCLIENTE.Create(FWC);
+    P   := TPRODUTO.Create(FWC);
     cds_Pesquisa.DisableControls;
     try
 
@@ -282,24 +258,26 @@ begin
 
       cds_Pesquisa.EmptyDataSet;
 
-      C.SelectList('ID > 0', 'ID');
-      if C.Count > 0 then begin
-        for I := 0 to C.Count -1 do begin
+      P.SelectList('ID > 0', 'ID');
+      if P.Count > 0 then begin
+        for I := 0 to P.Count -1 do begin
           cds_Pesquisa.Append;
-          cds_PesquisaID.Value            := TCLIENTE(C.Itens[I]).ID.Value;
-          cds_PesquisaNOME.Value          := TCLIENTE(C.Itens[I]).NOME.Value;
-          cds_PesquisaCPFCNPJ.Value       := TCLIENTE(C.Itens[I]).CPFCNPJ.Value;
-          cds_PesquisaTELEFONE.Value      := TCLIENTE(C.Itens[I]).TELEFONE.Value;
-          cds_PesquisaCELULAR.Value       := TCLIENTE(C.Itens[I]).CELULAR.Value;
-          cds_PesquisaEMAIL.Value         := TCLIENTE(C.Itens[I]).EMAIL.Value;
-          cds_PesquisaOBSERVACAO.Value    := TCLIENTE(C.Itens[I]).OBSERVACAO.Value;
-          cds_PesquisaCODIGOEXTERNO.Value := TCLIENTE(C.Itens[I]).CODIGOEXTERNO.Value;
+          cds_PesquisaID.Value             := TPRODUTO(P.Itens[I]).ID.Value;
+          cds_PesquisaDESCRICAO.Value      := TPRODUTO(P.Itens[I]).DESCRICAO.Value;
+          cds_PesquisaFINALIDADE.Value     := TPRODUTO(P.Itens[I]).FINALIDADE.Value;
+          cds_PesquisaCODIGOEXTERNO.Value  := TPRODUTO(P.Itens[I]).CODIGOEXTERNO.Value;
           cds_Pesquisa.Post;
         end;
       end;
 
       if Codigo > 0 then
         cds_Pesquisa.Locate('ID', Codigo, []);
+
+      cbFinalidadeProduto.Items.Clear;
+      for F := Low(TFinalidadeProduto) to High(TFinalidadeProduto) do
+        cbFinalidadeProduto.Items.Add(GetEnumName(TypeInfo(TFinalidadeProduto), Integer(F)));
+
+      cbFinalidadeProduto.ItemIndex := 0;
 
     except
       on E : Exception do begin
@@ -309,12 +287,12 @@ begin
 
   finally
     cds_Pesquisa.EnableControls;
-    FreeAndNil(C);
+    FreeAndNil(P);
     FreeAndNil(FWC);
   end;
 end;
 
-procedure TfrmCadastroCliente.csPesquisaFilterRecord(DataSet: TDataSet;
+procedure TfrmCadastroProdutos.csPesquisaFilterRecord(DataSet: TDataSet;
   var Accept: Boolean);
 Var
   I : Integer;
@@ -330,18 +308,18 @@ begin
   end;
 end;
 
-procedure TfrmCadastroCliente.Filtrar;
+procedure TfrmCadastroProdutos.Filtrar;
 begin
   cds_Pesquisa.Filtered := False;
   cds_Pesquisa.Filtered := Length(edPesquisa.Text) > 0;
 end;
 
-procedure TfrmCadastroCliente.FormCreate(Sender: TObject);
+procedure TfrmCadastroProdutos.FormCreate(Sender: TObject);
 begin
   AjustaForm(Self);
 end;
 
-procedure TfrmCadastroCliente.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TfrmCadastroProdutos.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if pnVisualizacao.Visible then begin
@@ -378,27 +356,27 @@ begin
   end;
 end;
 
-procedure TfrmCadastroCliente.FormShow(Sender: TObject);
+procedure TfrmCadastroProdutos.FormShow(Sender: TObject);
 begin
   cds_Pesquisa.CreateDataSet;
   CarregaDados;
   AutoSizeDBGrid(gdPesquisa);
 end;
 
-procedure TfrmCadastroCliente.gdPesquisaTitleClick(Column: TColumn);
+procedure TfrmCadastroProdutos.gdPesquisaTitleClick(Column: TColumn);
 begin
   OrdenarGrid(Column);
 end;
 
-procedure TfrmCadastroCliente.InvertePaineis;
+procedure TfrmCadastroProdutos.InvertePaineis;
 begin
   pnVisualizacao.Visible        := not pnVisualizacao.Visible;
   pnBotoesVisualizacao.Visible  := pnVisualizacao.Visible;
   pnEdicao.Visible              := not pnEdicao.Visible;
   pnBotoesEdicao.Visible        := pnEdicao.Visible;
   if pnEdicao.Visible then begin
-    if edNome.CanFocus then
-      edNome.SetFocus;
+    if edDescricao.CanFocus then
+      edDescricao.SetFocus;
   end;
 end;
 

@@ -38,6 +38,7 @@ uses
   function AjustaTamnhoCNPJ(CNPJ : String) : String;
   function ExcluirCaracteresdeNumeric(Valor : Variant) : String;
   function RetornaCodigo_CF(CF : String) : Integer;
+  function ValidaCPFCNPJ(Texto : String) : Boolean;
 
 implementation
 
@@ -592,6 +593,83 @@ begin
     end;
   end;
 
+end;
+
+function ValidaCPFCNPJ(Texto : String) : Boolean;
+Var
+  SomenteNumeros : string;
+  N1,N2,N3,N4,N5,N6,N7,N8,N9,N10,N11,N12 : Integer;
+  D1,D2 : Integer;
+  Digitado,Calculado : string;
+begin
+  Result := False;
+
+  SomenteNumeros := SoNumeros(Texto);
+
+  case Length(SomenteNumeros) of
+    11 : begin //CPF
+
+      N1 := StrToInt(SomenteNumeros[1]);
+      N2 := StrToInt(SomenteNumeros[2]);
+      N3 := StrToInt(SomenteNumeros[3]);
+      N4 := StrToInt(SomenteNumeros[4]);
+      N5 := StrToInt(SomenteNumeros[5]);
+      N6 := StrToInt(SomenteNumeros[6]);
+      N7 := StrToInt(SomenteNumeros[7]);
+      N8 := StrToInt(SomenteNumeros[8]);
+      N9 := StrToInt(SomenteNumeros[9]);
+
+      D1 := N9*2+N8*3+N7*4+N6*5+N5*6+N4*7+N3*8+N2*9+N1*10;
+
+      D1 := 11 - (D1 mod 11);
+
+      if D1 >= 10 then
+        D1 := 0;
+
+      D2 := D1*2+N9*3+N8*4+N7*5+N6*6+N5*7+N4*8+N3*9+N2*10+N1*11;
+      D2 := 11 - (D2 mod 11);
+
+      if D2 >= 10 then
+        D2 := 0;
+
+      Calculado := IntToStr(D1) + IntToStr(D2);
+      Digitado  := SomenteNumeros[10] + SomenteNumeros[11];
+
+      Result    := Calculado = Digitado;
+
+    end;
+    14 : begin //CNPJ
+      N1  := StrToInt(SomenteNumeros[1]);
+      N2  := StrToInt(SomenteNumeros[2]);
+      N3  := StrToInt(SomenteNumeros[3]);
+      N4  := StrToInt(SomenteNumeros[4]);
+      N5  := StrToInt(SomenteNumeros[5]);
+      N6  := StrToInt(SomenteNumeros[6]);
+      N7  := StrToInt(SomenteNumeros[7]);
+      N8  := StrToInt(SomenteNumeros[8]);
+      N9  := StrToInt(SomenteNumeros[9]);
+      N10 := StrToInt(SomenteNumeros[10]);
+      N11 := StrToInt(SomenteNumeros[11]);
+      N12 := StrToInt(SomenteNumeros[12]);
+
+      D1	:= N12*2+N11*3+N10*4+N9*5+N8*6+N7*7+N6*8+N5*9+N4*2+N3*3+N2*4+N1*5;
+      D1	:= 11 - (D1 mod 11);
+
+      if D1 >= 10 then
+        D1 := 0;
+
+      D2 := D2*2+N12*3+N11*4+N10*5+N9*6+N8*7+N7*8+N6*9+N5*2+N4*3+N3*4+N2*5+N1*6;
+      D2 := 11 - (D2 mod 11);
+
+      if D2 >= 10 then
+        D2 := 0;
+
+      Calculado := IntToStr(D1) + IntToStr(D2);
+      Digitado  := SomenteNumeros[13] + SomenteNumeros[14];
+      Result    := Calculado = Digitado;
+
+    end;
+  end;
 end;
 
 end.

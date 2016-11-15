@@ -4,6 +4,7 @@ interface
 
 type
   TTipoPrecificacao = (eNenhum, eMargem, ePrecoEspecial);
+  TFinalidadeProduto = (eTodos, eProdutoFinal, eMateriaPrima);
 
 type
   TDADOSLOGIN = record

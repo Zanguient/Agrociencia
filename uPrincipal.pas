@@ -24,6 +24,7 @@ type
     Recipientes1: TMenuItem;
     Observaes1: TMenuItem;
     Cliente1: TMenuItem;
+    Produtos1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -35,6 +36,7 @@ type
     procedure Recipientes1Click(Sender: TObject);
     procedure Observaes1Click(Sender: TObject);
     procedure Cliente1Click(Sender: TObject);
+    procedure Produtos1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -63,7 +65,8 @@ uses
   uCadastroRecipientes,
   uBeanObservacao,
   uCadastroObservacoes,
-  uCadastroCliente;
+  uCadastroCliente,
+  uCadastroProdutos;
 
 {$R *.dfm}
 
@@ -161,6 +164,17 @@ begin
     frmCadastroObservacoes.ShowModal;
   finally
     FreeAndNil(frmCadastroObservacoes);
+  end;
+end;
+
+procedure TfrmPrincipal.Produtos1Click(Sender: TObject);
+begin
+  try
+    if frmCadastroProdutos = nil then
+      frmCadastroProdutos     := TfrmCadastroProdutos.Create(Self);
+    frmCadastroProdutos.ShowModal;
+  finally
+    FreeAndNil(frmCadastroProdutos);
   end;
 end;
 
