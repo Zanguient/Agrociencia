@@ -27,7 +27,10 @@ uses
   uBeanCliente in 'Beans\uBeanCliente.pas',
   uCadastroCliente in 'uCadastroCliente.pas' {frmCadastroCliente},
   uCadastroProdutos in 'uCadastroProdutos.pas' {frmCadastroProdutos},
-  uBeanProdutos in 'Beans\uBeanProdutos.pas';
+  uBeanProdutos in 'Beans\uBeanProdutos.pas',
+  uBeanControleEstoque in 'Beans\uBeanControleEstoque.pas',
+  uBeanControleEstoqueProduto in 'Beans\uBeanControleEstoqueProduto.pas',
+  uMovimentacaoEstoque in 'uMovimentacaoEstoque.pas' {frmMovimentacaoEstoque};
 
 {$R *.res}
 

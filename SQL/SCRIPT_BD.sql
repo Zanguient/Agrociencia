@@ -66,3 +66,27 @@ CREATE TABLE if not exists produto
   codigoexterno character varying(100),
   CONSTRAINT pk_produto PRIMARY KEY (id)
 );
+
+CREATE TABLE if not exists controleestoque (
+  id serial NOT NULL,
+  data_hora timestamp NOT NULL,
+  usuario_id integer NOT NULL,
+  observacao character varying(512),
+  CONSTRAINT pk_controleestoque PRIMARY KEY (id),
+  CONSTRAINT fk_controleestoque_usuario1 foreign key (usuario_id) 
+	REFERENCES usuario (id) on delete restrict on update cascade
+);
+
+CREATE TABLE if not exists controleestoqueproduto (
+  id serial NOT NULL,
+  controleestoque_id integer NOT NULL,
+  produto_id integer NOT NULL,
+  quantidade numeric(18,2) NOT NULL,
+  CONSTRAINT pk_controleestoqueproduto PRIMARY KEY (id),
+  CONSTRAINT fk_controleestoqueproduto_ce1 FOREIGN KEY (controleestoque_id)
+      REFERENCES controleestoque (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_controleestoqueproduto_produto1 FOREIGN KEY (produto_id)
+      REFERENCES produto (id) MATCH SIMPLE
+      on delete restrict on update cascade
+);

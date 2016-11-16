@@ -135,6 +135,12 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Beans\uBeanProdutos.pas"/>
+        <DCCReference Include="Beans\uBeanControleEstoque.pas"/>
+        <DCCReference Include="Beans\uBeanControleEstoqueProduto.pas"/>
+        <DCCReference Include="uMovimentacaoEstoque.pas">
+            <Form>frmMovimentacaoEstoque</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
