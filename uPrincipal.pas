@@ -26,6 +26,7 @@ type
     Cliente1: TMenuItem;
     Produtos1: TMenuItem;
     Estoque1: TMenuItem;
+    ComposiodeMeiosdeCultura1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -39,6 +40,7 @@ type
     procedure Cliente1Click(Sender: TObject);
     procedure Produtos1Click(Sender: TObject);
     procedure Estoque1Click(Sender: TObject);
+    procedure ComposiodeMeiosdeCultura1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -69,7 +71,8 @@ uses
   uCadastroObservacoes,
   uCadastroCliente,
   uCadastroProdutos,
-  uMovimentacaoEstoque;
+  uMovimentacaoEstoque,
+  uComposicaoMeioCultura;
 
 {$R *.dfm}
 
@@ -148,6 +151,17 @@ begin
     frmCadastroCliente.ShowModal;
   finally
     FreeAndNil(frmCadastroCliente);
+  end;
+end;
+
+procedure TfrmPrincipal.ComposiodeMeiosdeCultura1Click(Sender: TObject);
+begin
+  if not Assigned(frmComposicaoMeioCultura) then
+    frmComposicaoMeioCultura := TfrmComposicaoMeioCultura.Create(nil);
+  try
+    frmComposicaoMeioCultura.ShowModal;
+  finally
+    FreeAndNil(frmComposicaoMeioCultura);
   end;
 end;
 

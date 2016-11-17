@@ -32,9 +32,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
     ParentBackground = False
     ParentFont = False
     TabOrder = 0
-    ExplicitLeft = -119
-    ExplicitTop = 4
-    ExplicitWidth = 853
   end
   object gbMeioCultura: TGroupBox
     AlignWithMargins = True
@@ -264,7 +261,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       ExplicitTop = 20
     end
     object Label5: TLabel
-      Left = 485
+      Left = 492
       Top = 20
       Width = 60
       Height = 13
@@ -355,14 +352,14 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       RightButton.ImageIndex = 0
       RightButton.Visible = True
       TabOrder = 0
-      OnChange = edtMeioCulturaChange
-      OnKeyDown = edtMeioCulturaKeyDown
-      OnRightButtonClick = edtMeioCulturaRightButtonClick
+      OnChange = edtMateriaPrimaChange
+      OnKeyDown = edtMateriaPrimaKeyDown
+      OnRightButtonClick = edtMateriaPrimaRightButtonClick
     end
     object edtNomeMateriaPrima: TEdit
       Left = 114
       Top = 37
-      Width = 367
+      Width = 375
       Height = 27
       Anchors = [akLeft, akTop, akRight]
       Enabled = False
@@ -375,7 +372,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       TabOrder = 1
     end
     object edt_Quantidade: TJvValidateEdit
-      Left = 485
+      Left = 492
       Top = 37
       Width = 121
       Height = 27
@@ -411,9 +408,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
     TabOrder = 3
     TabStop = True
     Visible = False
-    ExplicitLeft = -119
-    ExplicitTop = 365
-    ExplicitWidth = 853
     object GridPanel2: TGridPanel
       AlignWithMargins = True
       Left = 4
@@ -448,7 +442,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           SizeStyle = ssAuto
         end>
       TabOrder = 0
-      ExplicitWidth = 845
       object Panel4: TPanel
         Left = 360
         Top = 0
@@ -457,8 +450,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitLeft = 422
-        ExplicitWidth = 423
         object btCancelar: TSpeedButton
           AlignWithMargins = True
           Left = 3
@@ -872,7 +863,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitWidth = 422
         object btGravar: TSpeedButton
           AlignWithMargins = True
           Left = 257

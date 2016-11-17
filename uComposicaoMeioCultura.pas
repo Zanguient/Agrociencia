@@ -47,6 +47,10 @@ type
     procedure btNovoClick(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
     procedure btBuscaComponentesClick(Sender: TObject);
+    procedure edtMateriaPrimaRightButtonClick(Sender: TObject);
+    procedure edtMateriaPrimaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edtMateriaPrimaChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -65,7 +69,8 @@ uses
   uBeanProdutos,
   uDMUtil,
   uBeanProdutoComposicao,
-  uSeleciona;
+  uSeleciona,
+  uFuncoes;
 {$R *.dfm}
 
 { TfrmComposicaoMeioCultura }
@@ -85,11 +90,31 @@ procedure TfrmComposicaoMeioCultura.btNovoClick(Sender: TObject);
 begin
   if not cds_Componentes.Locate(cds_ComponentesIDPRODUTO.FieldName, edtMateriaPrima.Text, []) then begin
     cds_Componentes.Append;
-    cds_ComponentesIDPRODUTO.Value := edtMateriaPrima.Text;
+    cds_ComponentesIDPRODUTO.Value := StrToInt(edtMateriaPrima.Text);
     cds_ComponentesNOMEPRODUTO.Value:= edtNomeMateriaPrima.Text;
     cds_ComponentesQUANTIDADE.Value := edt_Quantidade.Value;
     cds_Componentes.Post;
   end;
+end;
+
+procedure TfrmComposicaoMeioCultura.edtMateriaPrimaChange(Sender: TObject);
+begin
+  edtMateriaPrima.Tag := 0;
+  edtNomeMateriaPrima.Clear;
+end;
+
+procedure TfrmComposicaoMeioCultura.edtMateriaPrimaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  case Key of
+    VK_RETURN : SelecionaMateriaPrima;
+  end;
+end;
+
+procedure TfrmComposicaoMeioCultura.edtMateriaPrimaRightButtonClick(
+  Sender: TObject);
+begin
+  SelecionaMateriaPrima;
 end;
 
 procedure TfrmComposicaoMeioCultura.edtMeioCulturaChange(Sender: TObject);
@@ -119,10 +144,11 @@ var
   I: Integer;
 begin
   FWC := TFWConnection.Create;
-  SQL := TFDQuery.Create;
+  SQL := TFDQuery.Create(nil);
   try
     SQL.Close;
     SQL.SQL.Clear;
+    SQL.Connection := FWC.FDConnection;
     SQL.SQL.Add('SELECT p.id, p.descricao, pc.quantidade FROM produto p INNER JOIN produtocomposicao pc ON p.id = pc.id_componente WHERE pc.id_produto = :PRODUTO');
     SQL.ParamByName('PRODUTO').AsInteger := StrToInt(edtMeioCultura.Text);
     SQL.Prepare;
@@ -152,14 +178,14 @@ var
 begin
   FWC    := TFWConnection.Create;
   P      := TPRODUTO.Create(FWC);
-  edtMeioCultura.Clear;
+  edtMateriaPrima.Clear;
   try
-    Filtro := 'finalidade = 1';
-    edtMeioCultura.Tag := DMUtil.Selecionar(P, edtMeioCultura.Text, Filtro);
-    if edtMeioCultura.Tag > 0 then begin
-      P.SelectList('id = ' + IntToStr(edtMeioCultura.Tag));
+    Filtro := 'finalidade = 2';
+    edtMateriaPrima.Tag := DMUtil.Selecionar(P, edtMateriaPrima.Text, Filtro);
+    if edtMateriaPrima.Tag > 0 then begin
+      P.SelectList('id = ' + IntToStr(edtMateriaPrima.Tag));
       if P.Count > 0 then
-        edtNomeMeioCultura.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+        edtNomeMateriaPrima.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
     end;
   finally
     FreeAndNil(P);
