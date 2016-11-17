@@ -33,13 +33,19 @@ implementation
 procedure TPRODUTO.InitInstance;
 begin
   inherited;
-  ID.isPK             := True;
+  ID.isPK                 := True;
 
-  DESCRICAO.isNotNull := True;
-  FINALIDADE.isNotNull:= True;
+  DESCRICAO.isNotNull     := True;
+  FINALIDADE.isNotNull    := True;
 
-  DESCRICAO.Size      := 100;
-  CODIGOEXTERNO.Size  := 100;
+  DESCRICAO.Size          := 100;
+  CODIGOEXTERNO.Size      := 100;
+
+  DESCRICAO.isSearchField := True;
+
+  ID.displayLabel         := 'Código';
+  DESCRICAO.displayLabel  := 'Descrição';
+
 end;
 
 procedure TPRODUTO.SetCODIGOEXTERNO(const Value: TFieldString);

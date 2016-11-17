@@ -69,7 +69,7 @@ CREATE TABLE if not exists produto
 
 CREATE TABLE if not exists controleestoque (
   id serial NOT NULL,
-  data_hora timestamp NOT NULL,
+  datahora timestamp NOT NULL,
   usuario_id integer NOT NULL,
   observacao character varying(512),
   CONSTRAINT pk_controleestoque PRIMARY KEY (id),

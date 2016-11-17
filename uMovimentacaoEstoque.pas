@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Datasnap.DBClient,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
-  JvToolEdit, JvBaseEdits;
+  JvToolEdit, JvBaseEdits, Vcl.ImgList, FireDAC.Comp.Client;
 
 type
   TfrmMovimentacaoEstoque = class(TForm)
@@ -23,7 +23,6 @@ type
     ds_Pesquisa: TDataSource;
     cds_Pesquisa: TClientDataSet;
     cds_PesquisaID: TIntegerField;
-    cds_PesquisaDESCRICAO: TStringField;
     gpBotoes: TGridPanel;
     Panel8: TPanel;
     Panel9: TPanel;
@@ -33,20 +32,30 @@ type
     btNovo: TSpeedButton;
     Panel1: TPanel;
     Panel3: TPanel;
-    GridPanel1: TGridPanel;
-    pnUsuarioEsquerda: TPanel;
-    Label2: TLabel;
-    edDescricao: TEdit;
-    pnUsuarioDireita: TPanel;
     btExportar: TSpeedButton;
     GridPanel2: TGridPanel;
     Panel4: TPanel;
     btCancelar: TSpeedButton;
     Panel5: TPanel;
     btGravar: TSpeedButton;
-    edCodigoExterno: TEdit;
-    Label3: TLabel;
-    cds_PesquisaCODIGOEXTERNO: TStringField;
+    pnControleEstoque: TPanel;
+    edObservacao: TEdit;
+    Label2: TLabel;
+    gdProdutos: TDBGrid;
+    ImageList1: TImageList;
+    edCodigoProduto: TButtonedEdit;
+    edQuantidade: TJvCalcEdit;
+    ds_Produtos: TDataSource;
+    cds_Produtos: TClientDataSet;
+    cds_ProdutosID: TIntegerField;
+    cds_ProdutosDESCRICAO: TStringField;
+    cds_ProdutosQUANTIDADE: TCurrencyField;
+    cds_PesquisaDATAHORA: TDateTimeField;
+    cds_PesquisaUSUARIO: TStringField;
+    cds_PesquisaOBSERVACAO: TStringField;
+    edDescricaoProduto: TEdit;
+    btAdicionar: TBitBtn;
+    btRemover: TBitBtn;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -59,6 +68,12 @@ type
     procedure btExcluirClick(Sender: TObject);
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
+    procedure edCodigoProdutoRightButtonClick(Sender: TObject);
+    procedure edCodigoProdutoChange(Sender: TObject);
+    procedure edCodigoProdutoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btAdicionarClick(Sender: TObject);
+    procedure btRemoverClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -78,22 +93,56 @@ uses
   uDomains,
   uConstantes,
   uFWConnection,
-  uBeanRecipientes,
+  uBeanProdutos,
   uMensagem,
-  uFuncoes;
+  uFuncoes,
+  uDMUtil, uBeanControleEstoque;
 
 {$R *.dfm}
 
 procedure TfrmMovimentacaoEstoque.AtualizarEdits(Limpar: Boolean);
 begin
   if Limpar then begin
-    edDescricao.Clear;
-    edCodigoExterno.Clear;
+    edObservacao.Clear;
+    cds_Produtos.EmptyDataSet;
     btGravar.Tag  := 0;
   end else begin
-    edDescricao.Text      := cds_PesquisaDESCRICAO.Value;
-    edCodigoExterno.Text  := cds_PesquisaCODIGOEXTERNO.Value;
+    edObservacao.Text      := cds_PesquisaOBSERVACAO.Value;
     btGravar.Tag          := cds_PesquisaID.Value;
+  end;
+end;
+
+procedure TfrmMovimentacaoEstoque.btAdicionarClick(Sender: TObject);
+begin
+  if btAdicionar.Tag = 0 then begin
+    btAdicionar.Tag := 1;
+    try
+
+      if Length(Trim(edDescricaoProduto.Text)) > 0 then begin
+        if edQuantidade.Value > 0.00 then begin
+          cds_Produtos.Insert;
+          cds_ProdutosID.Value          := StrToIntDef(edCodigoProduto.Text, 0);
+          cds_ProdutosDESCRICAO.Value   := edDescricaoProduto.Text;
+          cds_ProdutosQUANTIDADE.Value  := edQuantidade.Value;
+          cds_Produtos.Post;
+
+          edCodigoProduto.Clear;
+          edDescricaoProduto.Clear;
+          edQuantidade.Clear;
+
+          if edCodigoProduto.CanFocus then
+            edCodigoProduto.SetFocus;
+
+        end else begin
+          DisplayMsg(MSG_WAR, 'Quantidade Inválida, Verifique!');
+          if edQuantidade.CanFocus then
+            edQuantidade.SetFocus;
+          Exit;
+        end;
+      end;
+    finally
+      btAdicionar.Tag := 0;
+    end;
   end;
 end;
 
@@ -113,7 +162,7 @@ end;
 procedure TfrmMovimentacaoEstoque.btExcluirClick(Sender: TObject);
 Var
   FWC : TFWConnection;
-  R   : TRECIPIENTES;
+  P   : TPRODUTO;
 begin
   if not cds_Pesquisa.IsEmpty then begin
 
@@ -124,11 +173,11 @@ begin
       try
 
         FWC := TFWConnection.Create;
-        R   := TRECIPIENTES.Create(FWC);
+        P   := TPRODUTO.Create(FWC);
         try
 
-          R.ID.Value := cds_PesquisaID.Value;
-          R.Delete;
+          P.ID.Value := cds_PesquisaID.Value;
+          P.Delete;
 
           FWC.Commit;
 
@@ -141,7 +190,7 @@ begin
           end;
         end;
       finally
-        FreeAndNil(R);
+        FreeAndNil(P);
         FreeAndNil(FWC);
       end;
     end;
@@ -167,32 +216,38 @@ end;
 
 procedure TfrmMovimentacaoEstoque.btGravarClick(Sender: TObject);
 Var
-  FWC : TFWConnection;
-  R   : TRECIPIENTES;
+  FWC   : TFWConnection;
+  CE    : TCONTROLEESTOQUE;
 begin
 
-  FWC := TFWConnection.Create;
-  R   := TRECIPIENTES.Create(FWC);
+  FWC   := TFWConnection.Create;
+  CE    := TCONTROLEESTOQUE.Create(FWC);
 
   try
     try
 
-      if Length(Trim(edDescricao.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'Descrição não informada, Verifique!');
-        if edDescricao.CanFocus then
-          edDescricao.SetFocus;
+      if Length(Trim(edObservacao.Text)) = 0 then begin
+        DisplayMsg(MSG_WAR, 'Observação não informada, Verifique!');
+        if edObservacao.CanFocus then
+          edObservacao.SetFocus;
         Exit;
       end;
 
-      R.DESCRICAO.Value      := edDescricao.Text;
-      R.CODIGOEXTERNO.Value  := edCodigoExterno.Text;
+      if cds_Produtos.IsEmpty then begin
+        DisplayMsg(MSG_WAR, 'Não há Produtos Adicionados na Movimentação, Verifique!');
+        if edCodigoProduto.CanFocus then
+          edCodigoProduto.SetFocus;
+        Exit;
+      end;
+
+      CE.OBSERVACAO.Value   := edObservacao.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
-        R.ID.Value          := (Sender as TSpeedButton).Tag;
-        R.Update;
+        CE.ID.Value          := (Sender as TSpeedButton).Tag;
+        CE.Update;
       end else begin
-        R.ID.isNull := True;
-        R.Insert;
+        CE.ID.isNull := True;
+        CE.Insert;
       end;
 
       FWC.Commit;
@@ -208,7 +263,7 @@ begin
       end;
     end;
   finally
-    FreeAndNil(R);
+    FreeAndNil(CE);
     FreeAndNil(FWC);
   end;
 end;
@@ -217,6 +272,27 @@ procedure TfrmMovimentacaoEstoque.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
+end;
+
+procedure TfrmMovimentacaoEstoque.btRemoverClick(Sender: TObject);
+begin
+  if btRemover.Tag = 0 then begin
+    btRemover.Tag := 1;
+    try
+      if not cds_Produtos.IsEmpty then begin
+        edCodigoProduto.Text    := cds_ProdutosID.AsString;
+        edDescricaoProduto.Text := cds_ProdutosDESCRICAO.AsString;
+        edQuantidade.Value      := cds_ProdutosQUANTIDADE.Value;
+
+        cds_Produtos.Delete;
+
+        if edCodigoProduto.CanFocus then
+          edCodigoProduto.SetFocus;
+      end;
+    finally
+      btRemover.Tag := 0;
+    end;
+  end;
 end;
 
 procedure TfrmMovimentacaoEstoque.Cancelar;
@@ -228,30 +304,48 @@ end;
 
 procedure TfrmMovimentacaoEstoque.CarregaDados;
 Var
-  FWC : TFWConnection;
-  R   : TRECIPIENTES;
-  I,
+  FWC     : TFWConnection;
+  SQL     : TFDQuery;
   Codigo  : Integer;
 begin
 
+  FWC := TFWConnection.Create;
+  SQL := TFDQuery.Create(nil);
+
+  cds_Pesquisa.DisableControls;
+
   try
-    FWC := TFWConnection.Create;
-    R   := TRECIPIENTES.Create(FWC);
-    cds_Pesquisa.DisableControls;
     try
 
       Codigo := cds_PesquisaID.Value;
 
       cds_Pesquisa.EmptyDataSet;
 
-      R.SelectList('ID > 0', 'ID');
-      if R.Count > 0 then begin
-        for I := 0 to R.Count -1 do begin
+      SQL.Close;
+      SQL.SQL.Clear;
+      SQL.SQL.Add('SELECT');
+      SQL.SQL.Add('	CE.ID,');
+      SQL.SQL.Add('	CE.DATAHORA,');
+      SQL.SQL.Add('	U.NOME AS USUARIO,');
+      SQL.SQL.Add('	CE.OBSERVACAO');
+      SQL.SQL.Add('FROM CONTROLEESTOQUE CE');
+      SQL.SQL.Add('INNER JOIN USUARIO U ON (U.ID = CE.USUARIO_ID)');
+      SQL.SQL.Add('WHERE 1 = 1');
+      SQL.Connection    := FWC.FDConnection;
+      SQL.Prepare;
+      SQL.Open();
+      SQL.FetchAll;
+
+      if not SQL.IsEmpty then begin
+        SQL.First;
+        while not SQL.Eof do begin
           cds_Pesquisa.Append;
-          cds_PesquisaID.Value             := TRECIPIENTES(R.Itens[I]).ID.Value;
-          cds_PesquisaDESCRICAO.Value      := TRECIPIENTES(R.Itens[I]).DESCRICAO.Value;
-          cds_PesquisaCODIGOEXTERNO.Value  := TRECIPIENTES(R.Itens[I]).CODIGOEXTERNO.Value;
+          cds_PesquisaID.Value        := SQL.FieldByName('ID').AsInteger;
+          cds_PesquisaDATAHORA.Value  := SQL.FieldByName('DATAHORA').AsDateTime;
+          cds_PesquisaUSUARIO.Value   := SQL.FieldByName('USUARIO').AsString;
+          cds_PesquisaOBSERVACAO.Value:= SQL.FieldByName('OBSERVACAO').AsString;
           cds_Pesquisa.Post;
+          SQL.Next;
         end;
       end;
 
@@ -266,7 +360,7 @@ begin
 
   finally
     cds_Pesquisa.EnableControls;
-    FreeAndNil(R);
+    FreeAndNil(SQL);
     FreeAndNil(FWC);
   end;
 end;
@@ -284,6 +378,39 @@ begin
         Break;
       end;
     end;
+  end;
+end;
+
+procedure TfrmMovimentacaoEstoque.edCodigoProdutoChange(Sender: TObject);
+begin
+  edDescricaoProduto.Clear;
+end;
+
+procedure TfrmMovimentacaoEstoque.edCodigoProdutoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoProdutoRightButtonClick(nil);
+end;
+
+procedure TfrmMovimentacaoEstoque.edCodigoProdutoRightButtonClick(Sender: TObject);
+var
+  P   : TPRODUTO;
+  FWC : TFWConnection;
+begin
+  FWC := TFWConnection.Create;
+  P   := TPRODUTO.Create(FWC);
+
+  edDescricaoProduto.Text := '';
+
+  try
+    edCodigoProduto.Text  := IntToStr(DMUtil.Selecionar(P, edCodigoProduto.Text));
+    P.SelectList('id = ' + edCodigoProduto.Text);
+    if P.Count = 1 then
+      edDescricaoProduto.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+  finally
+    FreeAndNil(P);
+    FreeAndNil(FWC);
   end;
 end;
 
@@ -331,6 +458,9 @@ begin
   end else begin
     case Key of
       VK_ESCAPE : Cancelar;
+      VK_RETURN : begin
+        SelectNext(ActiveControl as TWinControl, True, True);
+      end;
     end;
   end;
 end;
@@ -338,6 +468,7 @@ end;
 procedure TfrmMovimentacaoEstoque.FormShow(Sender: TObject);
 begin
   cds_Pesquisa.CreateDataSet;
+  cds_Produtos.CreateDataSet;
   CarregaDados;
   AutoSizeDBGrid(gdPesquisa);
 end;
@@ -354,8 +485,9 @@ begin
   pnEdicao.Visible              := not pnEdicao.Visible;
   pnBotoesEdicao.Visible        := pnEdicao.Visible;
   if pnEdicao.Visible then begin
-    if edDescricao.CanFocus then
-      edDescricao.SetFocus;
+    if edObservacao.CanFocus then
+      edObservacao.SetFocus;
+    AutoSizeDBGrid(gdProdutos);
   end;
 end;
 

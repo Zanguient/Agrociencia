@@ -62,6 +62,10 @@ object frmPrincipal: TfrmPrincipal
     end
     object Movimentao1: TMenuItem
       Caption = 'Movimenta'#231#227'o'
+      object Estoque1: TMenuItem
+        Caption = 'Estoque'
+        OnClick = Estoque1Click
+      end
     end
     object Relatrios1: TMenuItem
       Caption = 'Relat'#243'rios'

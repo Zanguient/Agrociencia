@@ -25,6 +25,7 @@ type
     Observaes1: TMenuItem;
     Cliente1: TMenuItem;
     Produtos1: TMenuItem;
+    Estoque1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -37,6 +38,7 @@ type
     procedure Observaes1Click(Sender: TObject);
     procedure Cliente1Click(Sender: TObject);
     procedure Produtos1Click(Sender: TObject);
+    procedure Estoque1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -66,7 +68,8 @@ uses
   uBeanObservacao,
   uCadastroObservacoes,
   uCadastroCliente,
-  uCadastroProdutos;
+  uCadastroProdutos,
+  uMovimentacaoEstoque;
 
 {$R *.dfm}
 
@@ -76,6 +79,17 @@ begin
   if USUARIO.CODIGO > 0 then begin
     DefinePermissaoMenu(MainMenu1);
     miSair.Visible          := True;
+  end;
+end;
+
+procedure TfrmPrincipal.Estoque1Click(Sender: TObject);
+begin
+  try
+    if frmMovimentacaoEstoque = nil then
+      frmMovimentacaoEstoque := TfrmMovimentacaoEstoque.Create(Self);
+    frmMovimentacaoEstoque.ShowModal;
+  finally
+    FreeAndNil(frmMovimentacaoEstoque);
   end;
 end;
 
