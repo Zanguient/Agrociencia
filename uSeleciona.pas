@@ -34,6 +34,7 @@ type
     { Public declarations }
     FTabelaPai : TFWPersistence;
     Retorno    : TEdit;
+    Filtro     : string;
     procedure SelecionaDados(CriaCampos : Boolean);
     procedure Filter;
     procedure Seleciona;
@@ -168,10 +169,13 @@ begin
     QRConsulta.SQL.Text := Copy(QRConsulta.SQL.Text, 1, Length(QRConsulta.SQL.Text) - 4);
     QRConsulta.SQL.Add(' FROM '+Copy(FTabelaPai.ClassName, 2, Length(FTabelaPai.ClassName)));
 
+    QRConsulta.SQL.Add('WHERE 1 = 1');
     for I := 0 to Pred(Count) do begin
       if List[I]^.Name = 'STATUS' then
-        QRConsulta.SQL.Add('WHERE STATUS = TRUE');
+        QRConsulta.SQL.Add('AND STATUS = TRUE');
     end;
+    if Filtro <> EmptyStr then
+      QRConsulta.SQL.Add('AND ' + Filtro);
 
     QRConsulta.Connection := FDC.FDConnection;
     QRConsulta.Prepare;
