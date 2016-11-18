@@ -71,11 +71,15 @@ CREATE TABLE if not exists controleestoque (
   id serial NOT NULL,
   datahora timestamp NOT NULL,
   usuario_id integer NOT NULL,
+  tipomovimentacao integer NOT NULL,
+  cancelado boolean NOT NULL,
   observacao character varying(512),
   CONSTRAINT pk_controleestoque PRIMARY KEY (id),
   CONSTRAINT fk_controleestoque_usuario1 foreign key (usuario_id) 
 	REFERENCES usuario (id) on delete restrict on update cascade
 );
+
+COMMENT ON COLUMN controleestoque.tipomovimentacao IS '0 - Entrada 1 - Saída';
 
 CREATE TABLE if not exists controleestoqueproduto (
   id serial NOT NULL,
@@ -89,4 +93,15 @@ CREATE TABLE if not exists controleestoqueproduto (
   CONSTRAINT fk_controleestoqueproduto_produto1 FOREIGN KEY (produto_id)
       REFERENCES produto (id) MATCH SIMPLE
       on delete restrict on update cascade
+);
+
+CREATE TABLE if not exists controleestoquecancelamento (
+  id serial NOT NULL,
+  controleestoque_id integer NOT NULL,
+  datahora timestamp NOT NULL,
+  usuario_id integer NOT NULL,
+  observacao character varying(512),
+  CONSTRAINT pk_cep PRIMARY KEY (id),
+  CONSTRAINT fk_cep_usuario1 foreign key (usuario_id) 
+	REFERENCES usuario (id) on delete restrict on update cascade
 );

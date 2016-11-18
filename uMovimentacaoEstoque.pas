@@ -15,8 +15,6 @@ type
     gdPesquisa: TDBGrid;
     pnBotoesVisualizacao: TPanel;
     pnPequisa: TPanel;
-    btPesquisar: TSpeedButton;
-    edPesquisa: TEdit;
     Panel2: TPanel;
     pnEdicao: TPanel;
     pnBotoesEdicao: TPanel;
@@ -26,9 +24,8 @@ type
     gpBotoes: TGridPanel;
     Panel8: TPanel;
     Panel9: TPanel;
-    btExcluir: TSpeedButton;
     btFechar: TSpeedButton;
-    btAlterar: TSpeedButton;
+    btCancelarControle: TSpeedButton;
     btNovo: TSpeedButton;
     Panel1: TPanel;
     Panel3: TPanel;
@@ -56,6 +53,18 @@ type
     edDescricaoProduto: TEdit;
     btAdicionar: TBitBtn;
     btRemover: TBitBtn;
+    cds_PesquisaCANCELADO: TBooleanField;
+    Panel6: TPanel;
+    btPesquisar: TSpeedButton;
+    edPesquisa: TEdit;
+    Panel7: TPanel;
+    pnFiltroData: TPanel;
+    edDataF: TJvDateEdit;
+    edDataI: TJvDateEdit;
+    Label1: TLabel;
+    rgStatus: TRadioGroup;
+    btRefresh: TSpeedButton;
+    rgTipoMovimentacao: TRadioGroup;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -63,9 +72,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure btGravarClick(Sender: TObject);
     procedure btCancelarClick(Sender: TObject);
-    procedure btAlterarClick(Sender: TObject);
     procedure btNovoClick(Sender: TObject);
-    procedure btExcluirClick(Sender: TObject);
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
     procedure edCodigoProdutoRightButtonClick(Sender: TObject);
@@ -74,6 +81,10 @@ type
       Shift: TShiftState);
     procedure btAdicionarClick(Sender: TObject);
     procedure btRemoverClick(Sender: TObject);
+    procedure gdPesquisaDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure btCancelarControleClick(Sender: TObject);
+    procedure btRefreshClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -96,7 +107,9 @@ uses
   uBeanProdutos,
   uMensagem,
   uFuncoes,
-  uDMUtil, uBeanControleEstoque;
+  uDMUtil,
+  uBeanControleEstoque,
+  uBeanControleEstoqueProduto, uBeanControleEstoqueCancelamento;
 
 {$R *.dfm}
 
@@ -105,10 +118,8 @@ begin
   if Limpar then begin
     edObservacao.Clear;
     cds_Produtos.EmptyDataSet;
-    btGravar.Tag  := 0;
   end else begin
     edObservacao.Text      := cds_PesquisaOBSERVACAO.Value;
-    btGravar.Tag          := cds_PesquisaID.Value;
   end;
 end;
 
@@ -146,53 +157,91 @@ begin
   end;
 end;
 
-procedure TfrmMovimentacaoEstoque.btAlterarClick(Sender: TObject);
-begin
-  if not cds_Pesquisa.IsEmpty then begin
-    AtualizarEdits(False);
-    InvertePaineis;
-  end;
-end;
-
 procedure TfrmMovimentacaoEstoque.btCancelarClick(Sender: TObject);
 begin
   Cancelar;
 end;
 
-procedure TfrmMovimentacaoEstoque.btExcluirClick(Sender: TObject);
+procedure TfrmMovimentacaoEstoque.btCancelarControleClick(Sender: TObject);
 Var
-  FWC : TFWConnection;
-  P   : TPRODUTO;
+  FWC     : TFWConnection;
+  CE      : TCONTROLEESTOQUE;
+  CEC     : TCONTROLEESTOQUECANCELAMENTO;
+  Motivo  : string;
+  ID      : Integer;
 begin
-  if not cds_Pesquisa.IsEmpty then begin
+  if btCancelar.Tag = 0 then begin
+    btCancelar.Tag := 1;
 
-    DisplayMsg(MSG_CONF, 'Excluir o Recipiente Selecionado?');
+    if USUARIO.CODIGO = 0 then begin
+      DisplayMsg(MSG_WAR, 'Usuário inválido para Cancelamento, Verifique!');
+      Exit;
+    end;
 
-    if ResultMsgModal = mrYes then begin
+    try
+      if not cds_Pesquisa.IsEmpty then begin
 
-      try
+        if not cds_PesquisaCANCELADO.Value then begin
 
-        FWC := TFWConnection.Create;
-        P   := TPRODUTO.Create(FWC);
-        try
+          FWC   := TFWConnection.Create;
+          CE    := TCONTROLEESTOQUE.Create(FWC);
+          CEC   := TCONTROLEESTOQUECANCELAMENTO.Create(FWC);
+          try
+            try
+              CE.SelectList('ID = ' + cds_PesquisaID.AsString);
+              if CE.Count > 0 then begin
+                if not TCONTROLEESTOQUE(CE.Itens[0]).CANCELADO.Value then begin
 
-          P.ID.Value := cds_PesquisaID.Value;
-          P.Delete;
+                  repeat
+                    Motivo := EmptyStr;
+                    DisplayMsg(MSG_INPUT_TEXT, 'Informe o motivo do Cancelamento!' + sLineBreak + 'Motivo Obrigatório.');
+                    if ResultMsgModal = mrOk then begin
+                      if Length(Trim(ResultMsgInputText)) > 0  then
+                        Motivo := ResultMsgInputText;
+                    end else
+                      Exit;
+                  until Motivo <> EmptyStr;
 
-          FWC.Commit;
+                  ID := cds_PesquisaID.Value;
 
-          cds_Pesquisa.Delete;
+                  CE.ID.Value         := TCONTROLEESTOQUE(CE.Itens[0]).ID.Value;
+                  CE.CANCELADO.Value  := True;
+                  CE.Update;
 
-        except
-          on E : Exception do begin
-            FWC.Rollback;
-            DisplayMsg(MSG_ERR, 'Erro ao Excluir o Recipiente, Verifique!', '', E.Message);
+                  CEC.ID.isNull                 := True;
+                  CEC.CONTROLEESTOQUE_ID.Value  := CE.ID.Value;
+                  CEC.DATAHORA.Value            := Now;
+                  CEC.USUARIO_ID.Value          := USUARIO.CODIGO;
+                  CEC.OBSERVACAO.Value          := Motivo;
+                  CEC.Insert;
+
+                  FWC.Commit;
+
+                  CarregaDados;
+
+                  cds_Pesquisa.Locate('ID', ID, []);//Voltar ao Resgistro atual
+
+                end else begin
+                  DisplayMsg(MSG_WAR, 'Movimentação de Estoque já Cancelada!');
+                  Exit;
+                end;
+
+              end;
+            except
+              on E : Exception do begin
+                FWC.Rollback;
+                DisplayMsg(MSG_ERR, 'Erro ao Cancelar a Movimentação de Estoque!', '', E.Message);
+              end;
+            end;
+          finally
+            FreeAndNil(CEC);
+            FreeAndNil(CE);
+            FreeAndNil(FWC);
           end;
         end;
-      finally
-        FreeAndNil(P);
-        FreeAndNil(FWC);
       end;
+    finally
+      btCancelar.Tag  := 0;
     end;
   end;
 end;
@@ -218,53 +267,77 @@ procedure TfrmMovimentacaoEstoque.btGravarClick(Sender: TObject);
 Var
   FWC   : TFWConnection;
   CE    : TCONTROLEESTOQUE;
+  CEP   : TCONTROLEESTOQUEPRODUTO;
 begin
 
-  FWC   := TFWConnection.Create;
-  CE    := TCONTROLEESTOQUE.Create(FWC);
+  if btGravar.Tag = 0 then begin
+    btGravar.Tag := 1;
 
-  try
+    FWC   := TFWConnection.Create;
+    CE    := TCONTROLEESTOQUE.Create(FWC);
+    CEP   := TCONTROLEESTOQUEPRODUTO.Create(FWC);
+
+    cds_Produtos.DisableControls;
+
     try
+      try
 
-      if Length(Trim(edObservacao.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'Observação não informada, Verifique!');
-        if edObservacao.CanFocus then
-          edObservacao.SetFocus;
-        Exit;
-      end;
+        if Length(Trim(edObservacao.Text)) = 0 then begin
+          DisplayMsg(MSG_WAR, 'Observação não informada, Verifique!');
+          if edObservacao.CanFocus then
+            edObservacao.SetFocus;
+          Exit;
+        end;
 
-      if cds_Produtos.IsEmpty then begin
-        DisplayMsg(MSG_WAR, 'Não há Produtos Adicionados na Movimentação, Verifique!');
-        if edCodigoProduto.CanFocus then
-          edCodigoProduto.SetFocus;
-        Exit;
-      end;
+        if cds_Produtos.IsEmpty then begin
+          DisplayMsg(MSG_WAR, 'Não há Produtos Adicionados na Movimentação, Verifique!');
+          if edCodigoProduto.CanFocus then
+            edCodigoProduto.SetFocus;
+          Exit;
+        end;
 
-      CE.OBSERVACAO.Value   := edObservacao.Text;
-
-      if (Sender as TSpeedButton).Tag > 0 then begin
-        CE.ID.Value          := (Sender as TSpeedButton).Tag;
-        CE.Update;
-      end else begin
-        CE.ID.isNull := True;
+        CE.ID.isNull              := True;
+        CE.DATAHORA.Value         := Now;
+        CE.USUARIO_ID.Value       := USUARIO.CODIGO;
+        CE.TIPOMOVIMENTACAO.Value := rgTipoMovimentacao.ItemIndex;
+        CE.CANCELADO.Value        := False;
+        CE.OBSERVACAO.Value       := edObservacao.Text;
         CE.Insert;
+
+        cds_Produtos.First;
+        while not cds_Produtos.Eof do begin
+          CEP.ID.isNull                 := True;
+          CEP.CONTROLEESTOQUE_ID.Value  := CE.ID.Value;
+          CEP.PRODUTO_ID.Value          := cds_ProdutosID.Value;
+          case rgTipoMovimentacao.ItemIndex of
+            0 : CEP.QUANTIDADE.Value    := Abs(cds_ProdutosQUANTIDADE.Value);//Entrada
+            1 : CEP.QUANTIDADE.Value    := -Abs(cds_ProdutosQUANTIDADE.Value);//Saída
+          end;
+          CEP.Insert;
+          cds_Produtos.Next;
+        end;
+
+        FWC.Commit;
+
+        InvertePaineis;
+
+        CarregaDados;
+
+        DisplayMsg(MSG_OK, 'Movimentação Registrada com Sucesso!');
+
+      Except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_ERR, 'Erro ao Gravar a Movimentação de Estoque!', '', E.Message);
+        end;
       end;
-
-      FWC.Commit;
-
-      InvertePaineis;
-
-      CarregaDados;
-
-    Except
-      on E : Exception do begin
-        FWC.Rollback;
-        DisplayMsg(MSG_ERR, 'Erro ao Gravar o Recipiente!', '', E.Message);
-      end;
+    finally
+      cds_Produtos.EnableControls;
+      FreeAndNil(CEP);
+      FreeAndNil(CE);
+      FreeAndNil(FWC);
+      btGravar.Tag  := 0;
     end;
-  finally
-    FreeAndNil(CE);
-    FreeAndNil(FWC);
   end;
 end;
 
@@ -272,6 +345,18 @@ procedure TfrmMovimentacaoEstoque.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
+end;
+
+procedure TfrmMovimentacaoEstoque.btRefreshClick(Sender: TObject);
+begin
+  if btRefresh.Tag = 0 then begin
+    btRefresh.Tag := 1;
+    try
+      CarregaDados;
+    finally
+      btRefresh.Tag := 0;
+    end;
+  end;
 end;
 
 procedure TfrmMovimentacaoEstoque.btRemoverClick(Sender: TObject);
@@ -299,6 +384,7 @@ procedure TfrmMovimentacaoEstoque.Cancelar;
 begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
+  cds_Produtos.EmptyDataSet;
   InvertePaineis;
 end;
 
@@ -327,10 +413,27 @@ begin
       SQL.SQL.Add('	CE.ID,');
       SQL.SQL.Add('	CE.DATAHORA,');
       SQL.SQL.Add('	U.NOME AS USUARIO,');
+      SQL.SQL.Add('	CE.CANCELADO,');
       SQL.SQL.Add('	CE.OBSERVACAO');
       SQL.SQL.Add('FROM CONTROLEESTOQUE CE');
       SQL.SQL.Add('INNER JOIN USUARIO U ON (U.ID = CE.USUARIO_ID)');
       SQL.SQL.Add('WHERE 1 = 1');
+      SQL.SQL.Add('AND CAST(CE.DATAHORA AS DATE) BETWEEN :DATAI AND :DATAF');
+
+      case rgStatus.ItemIndex of
+        0 : SQL.SQL.Add('AND CE.CANCELADO = True');
+        1 : SQL.SQL.Add('AND CE.CANCELADO = False');
+      end;
+
+      SQL.ParamByName('DATAI').DataType := ftDate;
+      SQL.ParamByName('DATAF').DataType := ftDate;
+      SQL.ParamByName('DATAI').Value    := edDataI.Date;
+      SQL.ParamByName('DATAF').Value    := edDataF.Date;
+
+      SQL.Connection                    := FWC.FDConnection;
+      SQL.Prepare;
+
+      SQL.SQL.Add('ORDER BY CE.ID ASC');
       SQL.Connection    := FWC.FDConnection;
       SQL.Prepare;
       SQL.Open();
@@ -343,6 +446,7 @@ begin
           cds_PesquisaID.Value        := SQL.FieldByName('ID').AsInteger;
           cds_PesquisaDATAHORA.Value  := SQL.FieldByName('DATAHORA').AsDateTime;
           cds_PesquisaUSUARIO.Value   := SQL.FieldByName('USUARIO').AsString;
+          cds_PesquisaCANCELADO.Value := SQL.FieldByName('CANCELADO').AsBoolean;
           cds_PesquisaOBSERVACAO.Value:= SQL.FieldByName('OBSERVACAO').AsString;
           cds_Pesquisa.Post;
           SQL.Next;
@@ -469,8 +573,22 @@ procedure TfrmMovimentacaoEstoque.FormShow(Sender: TObject);
 begin
   cds_Pesquisa.CreateDataSet;
   cds_Produtos.CreateDataSet;
+  rgStatus.ItemIndex := 2;
+  edDataI.Date  := Date;
+  edDataF.Date  := Date;
   CarregaDados;
   AutoSizeDBGrid(gdPesquisa);
+end;
+
+procedure TfrmMovimentacaoEstoque.gdPesquisaDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  if cds_PesquisaCANCELADO.Value then
+    gdPesquisa.Canvas.Font.Color  := clRed
+  else
+    gdPesquisa.Canvas.Font.Color  := clBlack;
+
+  gdPesquisa.DefaultDrawColumnCell( Rect, DataCol, Column, State);
 end;
 
 procedure TfrmMovimentacaoEstoque.gdPesquisaTitleClick(Column: TColumn);
