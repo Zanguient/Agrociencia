@@ -59,6 +59,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Produto'
         OnClick = Produtos1Click
       end
+      object ComposiodeMeiosdeCultura1: TMenuItem
+        Caption = 'Composi'#231#227'o de Meios de Cultura'
+        OnClick = ComposiodeMeiosdeCultura1Click
+      end
     end
     object Movimentao1: TMenuItem
       Caption = 'Movimenta'#231#227'o'

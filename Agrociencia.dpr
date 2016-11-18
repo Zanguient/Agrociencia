@@ -31,7 +31,9 @@ uses
   uBeanControleEstoque in 'Beans\uBeanControleEstoque.pas',
   uBeanControleEstoqueProduto in 'Beans\uBeanControleEstoqueProduto.pas',
   uMovimentacaoEstoque in 'uMovimentacaoEstoque.pas' {frmMovimentacaoEstoque},
-  uBeanControleEstoqueCancelamento in 'Beans\uBeanControleEstoqueCancelamento.pas';
+  uBeanControleEstoqueCancelamento in 'Beans\uBeanControleEstoqueCancelamento.pas',
+  uComposicaoMeioCultura in 'uComposicaoMeioCultura.pas' {frmComposicaoMeioCultura},
+  uBeanProdutoComposicao in 'Beans\uBeanProdutoComposicao.pas';
 
 {$R *.res}
 

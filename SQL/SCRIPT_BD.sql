@@ -105,3 +105,17 @@ CREATE TABLE if not exists controleestoquecancelamento (
   CONSTRAINT fk_cep_usuario1 foreign key (usuario_id) 
 	REFERENCES usuario (id) on delete restrict on update cascade
 );
+
+CREATE TABLE produtocomposicao
+(
+   id serial, 
+   id_produto bigint, 
+   id_componente bigint, 
+   quantidade numeric(18,3), 
+   CONSTRAINT pk_produtocomposicao PRIMARY KEY (id), 
+   CONSTRAINT fk_pc_produto FOREIGN KEY (id_produto) REFERENCES produto (id) ON UPDATE CASCADE ON DELETE CASCADE, 
+   CONSTRAINT fk_pc_materiaprima FOREIGN KEY (id_componente) REFERENCES produto (id) ON UPDATE CASCADE ON DELETE CASCADE
+) 
+WITH (
+  OIDS = FALSE
+);
