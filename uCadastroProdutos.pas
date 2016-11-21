@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Datasnap.DBClient,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
-  JvToolEdit, JvBaseEdits;
+  JvToolEdit, JvBaseEdits, Vcl.ImgList;
 
 type
   TfrmCadastroProdutos = class(TForm)
@@ -50,6 +50,11 @@ type
     Label1: TLabel;
     cbFinalidadeProduto: TComboBox;
     cds_PesquisaFINALIDADE: TIntegerField;
+    lbUnidadeMedida: TLabel;
+    edUnidadeMedida: TButtonedEdit;
+    Label5: TLabel;
+    ImageList: TImageList;
+    cds_PesquisaUNIDADEMEDIDA: TIntegerField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -62,6 +67,10 @@ type
     procedure btExcluirClick(Sender: TObject);
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
+    procedure edUnidadeMedidaChange(Sender: TObject);
+    procedure edUnidadeMedidaRightButtonClick(Sender: TObject);
+    procedure edUnidadeMedidaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -70,6 +79,7 @@ type
     procedure Cancelar;
     procedure Filtrar;
     procedure AtualizarEdits(Limpar : Boolean);
+    procedure CarregaDescricoes;
   end;
 
 var
@@ -83,7 +93,9 @@ uses
   uFWConnection,
   uBeanProdutos,
   uMensagem,
-  uFuncoes;
+  uFuncoes,
+  uBeanUnidadeMedida,
+  uDMUtil;
 
 {$R *.dfm}
 
@@ -92,13 +104,17 @@ begin
   if Limpar then begin
     edDescricao.Clear;
     cbFinalidadeProduto.ItemIndex := 0;
+    edUnidadeMedida.Clear;
+    lbUnidadeMedida.Caption := EmptyStr;
     edCodigoExterno.Clear;
     btGravar.Tag  := 0;
   end else begin
     edDescricao.Text              := cds_PesquisaDESCRICAO.Value;
     cbFinalidadeProduto.ItemIndex := cds_PesquisaFINALIDADE.Value;
+    edUnidadeMedida.Text          := cds_PesquisaUNIDADEMEDIDA.AsString;
     edCodigoExterno.Text          := cds_PesquisaCODIGOEXTERNO.Value;
     btGravar.Tag                  := cds_PesquisaID.Value;
+    CarregaDescricoes;
   end;
 end;
 
@@ -196,9 +212,17 @@ begin
         Exit;
       end;
 
-      P.DESCRICAO.Value      := edDescricao.Text;
-      P.FINALIDADE.Value     := cbFinalidadeProduto.ItemIndex;
-      P.CODIGOEXTERNO.Value  := edCodigoExterno.Text;
+      if lbUnidadeMedida.Caption = EmptyStr then begin
+        DisplayMsg(MSG_WAR, 'Unidade de Medida Inválida, Verifique!');
+        if edUnidadeMedida.CanFocus then
+          edUnidadeMedida.SetFocus;
+        Exit;
+      end;
+
+      P.DESCRICAO.Value        := edDescricao.Text;
+      P.FINALIDADE.Value       := cbFinalidadeProduto.ItemIndex;
+      p.UNIDADEMEDIDA_ID.Value := StrToIntDef(edUnidadeMedida.Text, 0);
+      P.CODIGOEXTERNO.Value    := edCodigoExterno.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         P.ID.Value          := (Sender as TSpeedButton).Tag;
@@ -262,10 +286,11 @@ begin
       if P.Count > 0 then begin
         for I := 0 to P.Count -1 do begin
           cds_Pesquisa.Append;
-          cds_PesquisaID.Value             := TPRODUTO(P.Itens[I]).ID.Value;
-          cds_PesquisaDESCRICAO.Value      := TPRODUTO(P.Itens[I]).DESCRICAO.Value;
-          cds_PesquisaFINALIDADE.Value     := TPRODUTO(P.Itens[I]).FINALIDADE.Value;
-          cds_PesquisaCODIGOEXTERNO.Value  := TPRODUTO(P.Itens[I]).CODIGOEXTERNO.Value;
+          cds_PesquisaID.Value              := TPRODUTO(P.Itens[I]).ID.Value;
+          cds_PesquisaDESCRICAO.Value       := TPRODUTO(P.Itens[I]).DESCRICAO.Value;
+          cds_PesquisaFINALIDADE.Value      := TPRODUTO(P.Itens[I]).FINALIDADE.Value;
+          cds_PesquisaUNIDADEMEDIDA.Value   := TPRODUTO(P.Itens[I]).UNIDADEMEDIDA_ID.Value;
+          cds_PesquisaCODIGOEXTERNO.Value   := TPRODUTO(P.Itens[I]).CODIGOEXTERNO.Value;
           cds_Pesquisa.Post;
         end;
       end;
@@ -292,6 +317,31 @@ begin
   end;
 end;
 
+procedure TfrmCadastroProdutos.CarregaDescricoes;
+var
+  UM  : TUNIDADEMEDIDA;
+  FWC : TFWConnection;
+begin
+
+  //Carrega Descrição Unidade de Medida
+  if edUnidadeMedida.Text <> EmptyStr then begin
+    if edUnidadeMedida.Text = SoNumeros(edUnidadeMedida.Text) then begin
+      FWC := TFWConnection.Create;
+      UM  := TUNIDADEMEDIDA.Create(FWC);
+
+      try
+        UM.SelectList('id = ' + edUnidadeMedida.Text);
+        if UM.Count = 1 then
+          lbUnidadeMedida.Caption := TUNIDADEMEDIDA(UM.Itens[0]).DESCRICAO.asString;
+      finally
+        FreeAndNil(UM);
+        FreeAndNil(FWC);
+      end;
+    end;
+  end;
+
+end;
+
 procedure TfrmCadastroProdutos.csPesquisaFilterRecord(DataSet: TDataSet;
   var Accept: Boolean);
 Var
@@ -305,6 +355,37 @@ begin
         Break;
       end;
     end;
+  end;
+end;
+
+procedure TfrmCadastroProdutos.edUnidadeMedidaChange(Sender: TObject);
+begin
+  lbUnidadeMedida.Caption := EmptyStr;
+end;
+
+procedure TfrmCadastroProdutos.edUnidadeMedidaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edUnidadeMedidaRightButtonClick(nil);
+end;
+
+procedure TfrmCadastroProdutos.edUnidadeMedidaRightButtonClick(Sender: TObject);
+var
+  UM  : TUNIDADEMEDIDA;
+  FWC : TFWConnection;
+begin
+  FWC := TFWConnection.Create;
+  UM  := TUNIDADEMEDIDA.Create(FWC);
+
+  try
+    edUnidadeMedida.Text := IntToStr(DMUtil.Selecionar(UM, edUnidadeMedida.Text));
+    UM.SelectList('id = ' + edUnidadeMedida.Text);
+    if UM.Count = 1 then
+      lbUnidadeMedida.Caption := TUNIDADEMEDIDA(UM.Itens[0]).DESCRICAO.asString;
+  finally
+    FreeAndNil(UM);
+    FreeAndNil(FWC);
   end;
 end;
 

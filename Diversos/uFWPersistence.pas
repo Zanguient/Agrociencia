@@ -297,53 +297,57 @@ begin
   SQL := TStringList.Create;
   sFields := TStringList.Create;
   try
+    try
 
-    Count := GetPropList(Self.ClassInfo, tkProperties, @List, False);
+      Count := GetPropList(Self.ClassInfo, tkProperties, @List, False);
 
-    sFields.Clear;
-    SQL.Clear;
+      sFields.Clear;
+      SQL.Clear;
 
-    for I := 0 to (Count - 1) do begin
-      if not (TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).isPK) then begin
-        if (I = Count - 1) then
-          sFields.Add(List[I]^.Name)
-        else
-          sFields.Add(List[I]^.Name + ', ');
+      for I := 0 to (Count - 1) do begin
+        if not (TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).isPK) then begin
+          if (I = Count - 1) then
+            sFields.Add(List[I]^.Name)
+          else
+            sFields.Add(List[I]^.Name + ', ');
+        end;
       end;
-    end;
 
-    SQL.Add('INSERT INTO ' + Copy(Self.ClassName, 2, Length(Self.ClassName)) + '(');
-    SQL.Add(sFields.Text);
-    SQL.Add(') VALUES (');
+      SQL.Add('INSERT INTO ' + Copy(Self.ClassName, 2, Length(Self.ClassName)) + '(');
+      SQL.Add(sFields.Text);
+      SQL.Add(') VALUES (');
 
-    sFields.Clear;
+      sFields.Clear;
 
-    for I := 0 to (Count - 1) do begin
-      if not (TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).isPK) then begin
-        if (I = Count - 1) then
-          sFields.Add(':' + List[I]^.Name)
-        else
-          sFields.Add(':' + List[I]^.Name + ', ');
+      for I := 0 to (Count - 1) do begin
+        if not (TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).isPK) then begin
+          if (I = Count - 1) then
+            sFields.Add(':' + List[I]^.Name)
+          else
+            sFields.Add(':' + List[I]^.Name + ', ');
+        end;
       end;
+
+      SQL.Add(sFields.Text);
+      SQL.Add(') RETURNING ');
+
+      // Retorna as chaves primárias do referido item inserido
+      for I := 0 to (Count - 1) do // retorna número da NF
+        if (TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).isPK) then
+          SQL.Add(List[I]^.Name + ',');
+      SQL.Text := Copy(SQL.Text, 1, Length(SQL.Text) - 3); // Remove vírgula
+
+      // Executa a SQL
+      SQLScript(SQL.Text);
+
+      // Retorna as chaves primárias do referido item inserido
+      for I := 0 to (Count - 1) do // retorna número da NF
+        if (TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).isPK) then
+          TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).asVariant := SQLDS.FieldByName(List[I]^.Name).asVariant;
+    except
+      on E : Exception do
+        raise EAbort.Create('Erro ao Inserir Dados ' + sLineBreak + E.Message);
     end;
-
-    SQL.Add(sFields.Text);
-    SQL.Add(') RETURNING ');
-
-    // Retorna as chaves primárias do referido item inserido
-    for I := 0 to (Count - 1) do // retorna número da NF
-      if (TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).isPK) then
-        SQL.Add(List[I]^.Name + ',');
-    SQL.Text := Copy(SQL.Text, 1, Length(SQL.Text) - 3); // Remove vírgula
-
-    // Executa a SQL
-    SQLScript(SQL.Text);
-
-    // Retorna as chaves primárias do referido item inserido
-    for I := 0 to (Count - 1) do // retorna número da NF
-      if (TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).isPK) then
-        TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).asVariant := SQLDS.FieldByName(List[I]^.Name).asVariant;
-
   finally
     FreeAndNil(SQL);
     FreeAndNil(sFields);
@@ -359,24 +363,28 @@ begin
   SQL := TStringList.Create;
   sFields := TStringList.Create;
   try
-    Count := GetPropList(Self.ClassInfo, tkProperties, @List, False);
+    try
+      Count := GetPropList(Self.ClassInfo, tkProperties, @List, False);
 
-    sFields.Clear;
-    SQL.Clear;
+      sFields.Clear;
+      SQL.Clear;
 
-    for I := 0 to (Count - 1) do
-      if not TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).isNull then
-        sFields.Add(List[I]^.Name + ' = :' + List[I]^.Name + ',');
+      for I := 0 to (Count - 1) do
+        if not TFieldTypeDomain(GetObjectProp(Self, List[I]^.Name)).isNull then
+          sFields.Add(List[I]^.Name + ' = :' + List[I]^.Name + ',');
 
-    sFields.Text := Copy(sFields.Text, 1, Length(sFields.Text) - 3);
-    // Remove vírgula
+      sFields.Text := Copy(sFields.Text, 1, Length(sFields.Text) - 3);
+      // Remove vírgula
 
-    SQL.Add('UPDATE ' + Copy(Self.ClassName, 2, Length(Self.ClassName)) + ' SET');
-    SQL.Add(sFields.Text);
-    SQL.Add(MontaWhere);
+      SQL.Add('UPDATE ' + Copy(Self.ClassName, 2, Length(Self.ClassName)) + ' SET');
+      SQL.Add(sFields.Text);
+      SQL.Add(MontaWhere);
 
-    SQLScript(SQL.Text);
-
+      SQLScript(SQL.Text);
+    except
+      on E : Exception do
+        raise EAbort.Create('Erro ao Atualizar Dados ' + sLineBreak + E.Message);
+    end;
   finally
     FreeAndNil(SQL);
     FreeAndNil(sFields);
@@ -389,12 +397,17 @@ var
 begin
   SQL := TStringList.Create;
   try
-    SQL.Clear;
-    SQL.Add('DELETE');
-    SQL.Add('FROM ' + Copy(Self.ClassName, 2, Length(Self.ClassName)));
-    SQL.Add(MontaWhere);
+    try
+      SQL.Clear;
+      SQL.Add('DELETE');
+      SQL.Add('FROM ' + Copy(Self.ClassName, 2, Length(Self.ClassName)));
+      SQL.Add(MontaWhere);
 
-    SQLScript(SQL.Text);
+      SQLScript(SQL.Text);
+    except
+      on E : Exception do
+        raise EAbort.Create('Erro ao Excluir Dados ' + E.Message);
+    end;
   finally
     FreeAndNil(SQL);
   end;

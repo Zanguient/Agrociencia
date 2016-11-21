@@ -63,8 +63,11 @@ CREATE TABLE if not exists produto
   id serial NOT NULL,
   descricao character varying(100) NOT NULL,
   finalidade integer NOT NULL,
+  unidademedida_id integer NOT NULL,
   codigoexterno character varying(100),
-  CONSTRAINT pk_produto PRIMARY KEY (id)
+  CONSTRAINT pk_produto PRIMARY KEY (id),
+  CONSTRAINT fk_produto_unidademedida foreign key (unidademedida_id) 
+	REFERENCES unidademedida (id) on delete restrict on update cascade
 );
 
 CREATE TABLE if not exists controleestoque (

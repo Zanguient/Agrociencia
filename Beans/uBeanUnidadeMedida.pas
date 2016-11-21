@@ -42,6 +42,13 @@ begin
   DESCRICAO.Size      := 100;
   SIMBOLO.Size        := 5;
   CODIGOEXTERNO.Size  := 100;
+
+  DESCRICAO.isSearchField := True;
+  SIMBOLO.isSearchField   := True;
+
+  ID.displayLabel         := 'Código';
+  DESCRICAO.displayLabel  := 'Descrição';
+  SIMBOLO.displayLabel    := 'Símbolo';
 end;
 
 procedure TUNIDADEMEDIDA.SetCODIGOEXTERNO(const Value: TFieldString);

@@ -116,7 +116,8 @@ end;
 procedure TFWConnection.Rollback;
 begin
   try
-    FDTransaction.Rollback;
+    if FDTransaction.Active then
+      FDTransaction.Rollback;
   except
     on E: Exception do
       raise EAbort.Create(E.message);

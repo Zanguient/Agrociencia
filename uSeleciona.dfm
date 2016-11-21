@@ -600,7 +600,7 @@ object frmSeleciona: TfrmSeleciona
         Width = 108
         Height = 40
         Align = alRight
-        Caption = 'Buscar'
+        Caption = 'F5 - Buscar'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11

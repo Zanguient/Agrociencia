@@ -123,6 +123,9 @@ begin
           csSeleciona.Next;
       end;
     end;
+    VK_F5 : begin
+      btBuscarClick(nil);
+    end;
   end;
 
 end;
