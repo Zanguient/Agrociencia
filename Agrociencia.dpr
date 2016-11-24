@@ -33,7 +33,9 @@ uses
   uMovimentacaoEstoque in 'uMovimentacaoEstoque.pas' {frmMovimentacaoEstoque},
   uBeanControleEstoqueCancelamento in 'Beans\uBeanControleEstoqueCancelamento.pas',
   uComposicaoMeioCultura in 'uComposicaoMeioCultura.pas' {frmComposicaoMeioCultura},
-  uBeanProdutoComposicao in 'Beans\uBeanProdutoComposicao.pas';
+  uBeanProdutoComposicao in 'Beans\uBeanProdutoComposicao.pas',
+  uBeanOrdemProducaoMP in 'Beans\uBeanOrdemProducaoMP.pas',
+  uOrdemProducaoMeioCultura in 'uOrdemProducaoMeioCultura.pas' {frmOrdemProducaoMeioCultura};
 
 {$R *.res}
 

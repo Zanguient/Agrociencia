@@ -147,6 +147,11 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Beans\uBeanProdutoComposicao.pas"/>
+        <DCCReference Include="Beans\uBeanOrdemProducaoMP.pas"/>
+        <DCCReference Include="uOrdemProducaoMeioCultura.pas">
+            <Form>frmOrdemProducaoMeioCultura</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
