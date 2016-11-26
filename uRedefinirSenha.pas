@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
 
 type
-  TFrmRedefinirSenha = class(TForm)
+  TfrmRedefinirSenha = class(TForm)
     pnFields: TPanel;
     pnBotoes: TPanel;
     pnAjusteBotoes2: TPanel;
@@ -29,7 +29,7 @@ type
   end;
 
 var
-  FrmRedefinirSenha: TFrmRedefinirSenha;
+  frmRedefinirSenha: TfrmRedefinirSenha;
 
 implementation
 
@@ -42,12 +42,12 @@ uses
 
 {$R *.dfm}
 
-procedure TFrmRedefinirSenha.btCancelarClick(Sender: TObject);
+procedure TfrmRedefinirSenha.btCancelarClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TFrmRedefinirSenha.btGravarClick(Sender: TObject);
+procedure TfrmRedefinirSenha.btGravarClick(Sender: TObject);
 Var
   FWC : TFWConnection;
   USU : TUSUARIO;
@@ -109,7 +109,7 @@ begin
   end;
 end;
 
-procedure TFrmRedefinirSenha.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TfrmRedefinirSenha.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case Key of

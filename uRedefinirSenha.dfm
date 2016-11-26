@@ -1,4 +1,4 @@
-object FrmRedefinirSenha: TFrmRedefinirSenha
+object frmRedefinirSenha: TfrmRedefinirSenha
   Left = 0
   Top = 0
   Caption = 'Redefinir Senha de Usu'#225'rio'

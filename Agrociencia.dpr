@@ -16,7 +16,7 @@ uses
   uMensagem in 'Diversos\uMensagem.pas' {frmMensagem},
   uBeanUsuario in 'Beans\uBeanUsuario.pas',
   uBeanUsuario_Permissao in 'Beans\uBeanUsuario_Permissao.pas',
-  uRedefinirSenha in 'uRedefinirSenha.pas' {FrmRedefinirSenha},
+  uRedefinirSenha in 'uRedefinirSenha.pas' {frmRedefinirSenha},
   uLogin in 'uLogin.pas' {frmLogin},
   uCadastroUnidadeMedida in 'uCadastroUnidadeMedida.pas' {frmCadastroUnidadeMedida},
   uBeanUnidadeMedida in 'Beans\uBeanUnidadeMedida.pas',
@@ -35,7 +35,11 @@ uses
   uComposicaoMeioCultura in 'uComposicaoMeioCultura.pas' {frmComposicaoMeioCultura},
   uBeanProdutoComposicao in 'Beans\uBeanProdutoComposicao.pas',
   uBeanOrdemProducaoMP in 'Beans\uBeanOrdemProducaoMP.pas',
-  uOrdemProducaoMeioCultura in 'uOrdemProducaoMeioCultura.pas' {frmOrdemProducaoMeioCultura};
+  uOrdemProducaoMeioCultura in 'uOrdemProducaoMeioCultura.pas' {frmOrdemProducaoMeioCultura},
+  uBeanEsterilizacao in 'Beans\uBeanEsterilizacao.pas',
+  uCadastroEsterilizacao in 'uCadastroEsterilizacao.pas' {frmCadastroEsterilizacao},
+  uOrdemProducao in 'uOrdemProducao.pas' {frmOrdemProducao},
+  uBeanOrdemProducaoFinal in 'Beans\uBeanOrdemProducaoFinal.pas';
 
 {$R *.res}
 

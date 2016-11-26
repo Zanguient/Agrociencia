@@ -28,6 +28,8 @@ type
     Estoque1: TMenuItem;
     ComposiodeMeiosdeCultura1: TMenuItem;
     OrdemdeProduodeMeiodeCultura1: TMenuItem;
+    Esterilizacao1: TMenuItem;
+    OrdemdeProduo1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -43,6 +45,8 @@ type
     procedure Estoque1Click(Sender: TObject);
     procedure ComposiodeMeiosdeCultura1Click(Sender: TObject);
     procedure OrdemdeProduodeMeiodeCultura1Click(Sender: TObject);
+    procedure Esterilizacao1Click(Sender: TObject);
+    procedure OrdemdeProduo1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -75,7 +79,8 @@ uses
   uCadastroProdutos,
   uMovimentacaoEstoque,
   uOrdemProducaoMeioCultura,
-  uComposicaoMeioCultura;
+  uComposicaoMeioCultura,
+  uCadastroEsterilizacao, uOrdemProducao;
 
 {$R *.dfm}
 
@@ -85,6 +90,17 @@ begin
   if USUARIO.CODIGO > 0 then begin
     DefinePermissaoMenu(MainMenu1);
     miSair.Visible          := True;
+  end;
+end;
+
+procedure TfrmPrincipal.Esterilizacao1Click(Sender: TObject);
+begin
+  try
+    if frmCadastroEsterilizacao = nil then
+      frmCadastroEsterilizacao := TfrmCadastroEsterilizacao.Create(Self);
+    frmCadastroEsterilizacao.ShowModal;
+  finally
+    FreeAndNil(frmCadastroEsterilizacao);
   end;
 end;
 
@@ -195,6 +211,17 @@ begin
     frmCadastroObservacoes.ShowModal;
   finally
     FreeAndNil(frmCadastroObservacoes);
+  end;
+end;
+
+procedure TfrmPrincipal.OrdemdeProduo1Click(Sender: TObject);
+begin
+  if not Assigned(frmOrdemProducao) then
+    frmOrdemProducao := TfrmOrdemProducao.Create(nil);
+  try
+    frmOrdemProducao.ShowModal;
+  finally
+    FreeAndNil(frmOrdemProducao);
   end;
 end;
 

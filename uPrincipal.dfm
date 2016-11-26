@@ -63,6 +63,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Composi'#231#227'o de Meios de Cultura'
         OnClick = ComposiodeMeiosdeCultura1Click
       end
+      object Esterilizacao1: TMenuItem
+        Caption = 'Esteriliza'#231#227'o'
+        OnClick = Esterilizacao1Click
+      end
     end
     object Movimentao1: TMenuItem
       Caption = 'Movimenta'#231#227'o'
@@ -71,8 +75,12 @@ object frmPrincipal: TfrmPrincipal
         OnClick = Estoque1Click
       end
       object OrdemdeProduodeMeiodeCultura1: TMenuItem
-        Caption = 'Ordem de Produ'#231#227'o de Meio de Cultura'
+        Caption = 'Ordem de Produ'#231#227'o (Meio de Cultura)'
         OnClick = OrdemdeProduodeMeiodeCultura1Click
+      end
+      object OrdemdeProduo1: TMenuItem
+        Caption = 'Ordem de Produ'#231#227'o (Final)'
+        OnClick = OrdemdeProduo1Click
       end
     end
     object Relatrios1: TMenuItem
