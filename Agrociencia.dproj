@@ -147,7 +147,6 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Beans\uBeanProdutoComposicao.pas"/>
-        <DCCReference Include="Beans\uBeanOrdemProducaoMP.pas"/>
         <DCCReference Include="uOrdemProducaoMeioCultura.pas">
             <Form>frmOrdemProducaoMeioCultura</Form>
             <FormType>dfm</FormType>
@@ -162,6 +161,8 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Beans\uBeanOrdemProducaoFinal.pas"/>
+        <DCCReference Include="Beans\uBeanOrdemProducaoMC_Itens.pas"/>
+        <DCCReference Include="Beans\uBeanOrdemProducaoMC.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -281,7 +282,7 @@
                 </DeployClass>
                 <DeployClass Name="ProjectOSXEntitlements">
                     <Platform Name="OSX32">
-                        <RemoteDir>../</RemoteDir>
+                        <RemoteDir>Contents</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -367,7 +368,6 @@
                 </DeployClass>
                 <DeployClass Name="ProjectiOSEntitlements">
                     <Platform Name="iOSDevice">
-                        <RemoteDir>../</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>

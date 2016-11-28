@@ -168,3 +168,51 @@ CONSTRAINT fk_ordemproducaofinal_r FOREIGN KEY (responsavel_id)
       REFERENCES usuario (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT      
 );
+
+CREATE TABLE ordemproducaomc
+(
+  id integer NOT NULL DEFAULT nextval('ordemproducaomp_id_seq'::regclass),
+  id_usuario bigint,
+  id_recipiente bigint,
+  id_usuarioexecutar bigint,
+  datahora time without time zone,
+  datainicio time without time zone,
+  datafim time without time zone,
+  quantrecipientes integer,
+  esterilizacao boolean,
+  id_produto bigint,
+  phinicial numeric(18,2),
+  phfinal numeric(18,2),
+  phrecomendado numeric(18,2),
+  mlrecipiente double precision,
+  encerrado boolean,
+  quantproduto double precision,
+  CONSTRAINT pk_ordemproducaomp PRIMARY KEY (id),
+  CONSTRAINT fk_opmc_produto FOREIGN KEY (id_produto)
+      REFERENCES produto (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_opmc_recipiente FOREIGN KEY (id_recipiente)
+      REFERENCES produto (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_opmc_usuario FOREIGN KEY (id_usuario)
+      REFERENCES usuario (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_opmc_usuarioexecutar FOREIGN KEY (id_usuarioexecutar)
+      REFERENCES usuario (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE ordemproducaomc_itens
+(
+  id serial NOT NULL,
+  id_ordemproducaomc bigint,
+  id_produto bigint,
+  quantidade double precision,
+  CONSTRAINT pk_ordemproducaomc_itens PRIMARY KEY (id),
+  CONSTRAINT fk_opmci_ordemproducaomc FOREIGN KEY (id_ordemproducaomc)
+      REFERENCES ordemproducaomc (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_opmci_produto FOREIGN KEY (id_produto)
+      REFERENCES produto (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT
+);

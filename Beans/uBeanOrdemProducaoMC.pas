@@ -1,4 +1,4 @@
-unit uBeanOrdemProducaoMP;
+unit uBeanOrdemProducaoMC;
 
 interface
 uses
@@ -6,7 +6,7 @@ uses
   uDomains;
 
 type
-  TORDEMPRODUCAOMP = class(TFWPersistence)
+  TORDEMPRODUCAOMC = class(TFWPersistence)
   private
     FESTERILIZACAO: TFieldBoolean;
     FQUANTRECIPIENTES: TFieldInteger;
@@ -21,6 +21,9 @@ type
     FPHFINAL: TFieldFloat;
     FPHINICIAL: TFieldFloat;
     FID_USUARIO: TFieldInteger;
+    FENCERRADO: TFieldBoolean;
+    FQUANTPRODUTO: TFieldFloat;
+    FMLRECIPIENTE: TFieldFloat;
     procedure SetDATAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAINICIO(const Value: TFieldDateTime);
@@ -34,6 +37,9 @@ type
     procedure SetPHINICIAL(const Value: TFieldFloat);
     procedure SetPHRECOMENDADO(const Value: TFieldFloat);
     procedure SetQUANTRECIPIENTES(const Value: TFieldInteger);
+    procedure SetENCERRADO(const Value: TFieldBoolean);
+    procedure SetQUANTPRODUTO(const Value: TFieldFloat);
+    procedure SetMLRECIPIENTE(const Value: TFieldFloat);
   protected
     procedure InitInstance; override;
   published
@@ -50,78 +56,96 @@ type
     property PHINICIAL : TFieldFloat read FPHINICIAL write SetPHINICIAL;
     property PHFINAL : TFieldFloat read FPHFINAL write SetPHFINAL;
     property PHRECOMENDADO : TFieldFloat read FPHRECOMENDADO write SetPHRECOMENDADO;
+    property ENCERRADO : TFieldBoolean read FENCERRADO write SetENCERRADO;
+    property QUANTPRODUTO : TFieldFloat read FQUANTPRODUTO write SetQUANTPRODUTO;
+    property MLRECIPIENTE : TFieldFloat read FMLRECIPIENTE write SetMLRECIPIENTE;
   end;
 implementation
 
-{ TORDEMPRODUCAOMP }
+{ TORDEMPRODUCAOMC }
 
-procedure TORDEMPRODUCAOMP.InitInstance;
+procedure TORDEMPRODUCAOMC.InitInstance;
 begin
   inherited;
   ID.isPK := True;
 end;
 
-procedure TORDEMPRODUCAOMP.SetDATAFIM(const Value: TFieldDateTime);
+procedure TORDEMPRODUCAOMC.SetDATAFIM(const Value: TFieldDateTime);
 begin
   FDATAFIM := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetDATAHORA(const Value: TFieldDateTime);
+procedure TORDEMPRODUCAOMC.SetDATAHORA(const Value: TFieldDateTime);
 begin
   FDATAHORA := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetDATAINICIO(const Value: TFieldDateTime);
+procedure TORDEMPRODUCAOMC.SetDATAINICIO(const Value: TFieldDateTime);
 begin
   FDATAINICIO := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetESTERILIZACAO(const Value: TFieldBoolean);
+procedure TORDEMPRODUCAOMC.SetENCERRADO(const Value: TFieldBoolean);
+begin
+  FENCERRADO := Value;
+end;
+
+procedure TORDEMPRODUCAOMC.SetESTERILIZACAO(const Value: TFieldBoolean);
 begin
   FESTERILIZACAO := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetID(const Value: TFieldInteger);
+procedure TORDEMPRODUCAOMC.SetID(const Value: TFieldInteger);
 begin
   FID := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetID_PRODUTO(const Value: TFieldInteger);
+procedure TORDEMPRODUCAOMC.SetID_PRODUTO(const Value: TFieldInteger);
 begin
   FID_PRODUTO := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetID_RECIPIENTE(const Value: TFieldInteger);
+procedure TORDEMPRODUCAOMC.SetID_RECIPIENTE(const Value: TFieldInteger);
 begin
   FID_RECIPIENTE := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetID_USUARIO(const Value: TFieldInteger);
+procedure TORDEMPRODUCAOMC.SetID_USUARIO(const Value: TFieldInteger);
 begin
   FID_USUARIO := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetID_USUARIOEXECUTAR(const Value: TFieldInteger);
+procedure TORDEMPRODUCAOMC.SetID_USUARIOEXECUTAR(const Value: TFieldInteger);
 begin
   FID_USUARIOEXECUTAR := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetPHFINAL(const Value: TFieldFloat);
+procedure TORDEMPRODUCAOMC.SetMLRECIPIENTE(const Value: TFieldFloat);
+begin
+  FMLRECIPIENTE := Value;
+end;
+
+procedure TORDEMPRODUCAOMC.SetPHFINAL(const Value: TFieldFloat);
 begin
   FPHFINAL := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetPHINICIAL(const Value: TFieldFloat);
+procedure TORDEMPRODUCAOMC.SetPHINICIAL(const Value: TFieldFloat);
 begin
   FPHINICIAL := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetPHRECOMENDADO(const Value: TFieldFloat);
+procedure TORDEMPRODUCAOMC.SetPHRECOMENDADO(const Value: TFieldFloat);
 begin
   FPHRECOMENDADO := Value;
 end;
 
-procedure TORDEMPRODUCAOMP.SetQUANTRECIPIENTES(const Value: TFieldInteger);
+procedure TORDEMPRODUCAOMC.SetQUANTPRODUTO(const Value: TFieldFloat);
+begin
+  FQUANTPRODUTO := Value;
+end;
+
+procedure TORDEMPRODUCAOMC.SetQUANTRECIPIENTES(const Value: TFieldInteger);
 begin
   FQUANTRECIPIENTES := Value;
 end;

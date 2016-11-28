@@ -41,6 +41,8 @@ begin
   NOME.Size                       := 100;
   EMAIL.Size                      := 100;
   SENHA.Size                      := 100;
+
+  NOME.isSearchField              := True;
 end;
 
 

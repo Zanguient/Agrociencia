@@ -34,12 +34,13 @@ uses
   uBeanControleEstoqueCancelamento in 'Beans\uBeanControleEstoqueCancelamento.pas',
   uComposicaoMeioCultura in 'uComposicaoMeioCultura.pas' {frmComposicaoMeioCultura},
   uBeanProdutoComposicao in 'Beans\uBeanProdutoComposicao.pas',
-  uBeanOrdemProducaoMP in 'Beans\uBeanOrdemProducaoMP.pas',
   uOrdemProducaoMeioCultura in 'uOrdemProducaoMeioCultura.pas' {frmOrdemProducaoMeioCultura},
   uBeanEsterilizacao in 'Beans\uBeanEsterilizacao.pas',
   uCadastroEsterilizacao in 'uCadastroEsterilizacao.pas' {frmCadastroEsterilizacao},
   uOrdemProducao in 'uOrdemProducao.pas' {frmOrdemProducao},
-  uBeanOrdemProducaoFinal in 'Beans\uBeanOrdemProducaoFinal.pas';
+  uBeanOrdemProducaoFinal in 'Beans\uBeanOrdemProducaoFinal.pas',
+  uBeanOrdemProducaoMC_Itens in 'Beans\uBeanOrdemProducaoMC_Itens.pas',
+  uBeanOrdemProducaoMC in 'Beans\uBeanOrdemProducaoMC.pas';
 
 {$R *.res}
 

@@ -6,13 +6,14 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Grids,
   Vcl.DBGrids, Vcl.Buttons, JvExStdCtrls, JvEdit, JvValidateEdit, Vcl.Mask,
-  JvExMask, JvToolEdit;
+  JvExMask, JvToolEdit, Data.DB, Datasnap.DBClient, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client;
 
 type
   TfrmOrdemProducaoMeioCultura = class(TForm)
-    Panel1: TPanel;
-    GroupBox1: TGroupBox;
-    gbMeioCultura: TGroupBox;
+    pnDados: TPanel;
     GroupBox2: TGroupBox;
     GroupBox3: TGroupBox;
     Label3: TLabel;
@@ -28,40 +29,103 @@ type
     Panel4: TPanel;
     Panel5: TPanel;
     dg_Componentes: TDBGrid;
-    ButtonedEdit1: TButtonedEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    Edit1: TEdit;
-    JvValidateEdit1: TJvValidateEdit;
-    Label6: TLabel;
-    ButtonedEdit2: TButtonedEdit;
-    Label7: TLabel;
-    Edit2: TEdit;
-    Label8: TLabel;
-    JvValidateEdit2: TJvValidateEdit;
-    Label9: TLabel;
-    ButtonedEdit3: TButtonedEdit;
+    edt_CodigoFuncionario: TButtonedEdit;
     Label10: TLabel;
-    Edit3: TEdit;
+    edt_DescricaoFuncionario: TEdit;
     Label11: TLabel;
-    JvValidateEdit3: TJvValidateEdit;
+    edt_PHInicial: TJvValidateEdit;
     Label12: TLabel;
     Label13: TLabel;
-    JvValidateEdit4: TJvValidateEdit;
+    edt_PHFinal: TJvValidateEdit;
     Label14: TLabel;
-    JvValidateEdit5: TJvValidateEdit;
-    JvDateEdit1: TJvDateEdit;
-    JvDateEdit2: TJvDateEdit;
+    edt_PHRec: TJvValidateEdit;
+    edt_DataInicio: TJvDateEdit;
+    edt_DataFinal: TJvDateEdit;
     Label15: TLabel;
     Label16: TLabel;
     btGravar: TBitBtn;
-    BitBtn1: TBitBtn;
+    btn_Cancelar: TBitBtn;
+    Panel2: TPanel;
+    GridPanel1: TGridPanel;
+    gbMeioCultura: TGroupBox;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    edt_CodigoMeioCultura: TButtonedEdit;
+    edt_DescricaoMeioCultura: TEdit;
+    edt_QuantidadeMeioCultura: TJvValidateEdit;
+    GroupBox1: TGroupBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label6: TLabel;
+    edt_CodigoRecipientes: TButtonedEdit;
+    edt_NomeRecipiente: TEdit;
+    edt_QuantidadeRecipiente: TJvValidateEdit;
+    cds_MateriaPrima: TClientDataSet;
+    Panel3: TPanel;
+    pnPesquisa: TPanel;
+    pnPequisa: TPanel;
+    btPesquisar: TSpeedButton;
+    edPesquisa: TEdit;
+    cds_Pesquisa: TClientDataSet;
+    cds_PesquisaID: TIntegerField;
+    ds_Pesquisa: TDataSource;
+    gdPesquisa: TDBGrid;
+    pnBotoesVisualizacao: TPanel;
+    gpBotoes: TGridPanel;
+    Panel8: TPanel;
+    btAlterar: TSpeedButton;
+    SpeedButton1: TSpeedButton;
+    Panel9: TPanel;
+    SpeedButton2: TSpeedButton;
+    btFechar: TSpeedButton;
+    btExportar: TSpeedButton;
+    btEncerrar: TSpeedButton;
+    cds_PesquisaDATAINICIO: TDateField;
+    cds_PesquisaDATAFINAL: TDateField;
+    cds_PesquisaID_MEIOCULTURA: TIntegerField;
+    cds_PesquisaMEIOCULTURA: TStringField;
+    ds_MateriaPrima: TDataSource;
+    cds_MateriaPrimaIDPRODUTO: TIntegerField;
+    cds_MateriaPrimaNOMEPRODUTO: TStringField;
+    cds_MateriaPrimaQUANTIDADE: TFloatField;
+    cds_MateriaPrimaID: TIntegerField;
+    edt_MLPorRecipiente: TJvValidateEdit;
+    Label17: TLabel;
+    btBuscar: TBitBtn;
     procedure FormShow(Sender: TObject);
-    procedure BitBtn1Click(Sender: TObject);
+    procedure btn_CancelarClick(Sender: TObject);
+    procedure cds_PesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
+    procedure btPesquisarClick(Sender: TObject);
+    procedure btAlterarClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure btGravarClick(Sender: TObject);
+    procedure edt_CodigoFuncionarioRightButtonClick(Sender: TObject);
+    procedure edt_CodigoFuncionarioChange(Sender: TObject);
+    procedure edt_CodigoMeioCulturaRightButtonClick(Sender: TObject);
+    procedure edt_CodigoMeioCulturaChange(Sender: TObject);
+    procedure edt_CodigoRecipientesChange(Sender: TObject);
+    procedure edt_CodigoRecipientesRightButtonClick(Sender: TObject);
+    procedure btFecharClick(Sender: TObject);
+    procedure btNovoClick(Sender: TObject);
+    procedure btExcluirClick(Sender: TObject);
+    procedure edtMateriaPrimaRightButtonClick(Sender: TObject);
+    procedure edtMateriaPrimaChange(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
+    procedure Filtrar;
+    procedure BuscarDados;
+    procedure InvertePaineis;
+    procedure LimpaEdits;
+    procedure CarregaDadosOrdemProducao(Codigo : Integer);
+    procedure GravarDados;
+
+    procedure SelecionaUsuario;
+    procedure SelecionaMeioCultura;
+    procedure SelecionaRecipiente;
+    procedure SelecionaMateriaPrima;
   end;
 
 var
@@ -70,23 +134,468 @@ var
 implementation
 uses
   uFWConnection,
+  uConstantes,
   uBeanProdutos,
   uDMUtil,
   uBeanProdutoComposicao,
   uSeleciona,
   uFuncoes,
   uMensagem,
-  uBeanOrdemProducaoMP;
+  uBeanUsuario,
+  uBeanOrdemProducaoMC,
+  uBeanOrdemProducaoMC_Itens;
 {$R *.dfm}
 
-procedure TfrmOrdemProducaoMeioCultura.BitBtn1Click(Sender: TObject);
+procedure TfrmOrdemProducaoMeioCultura.btExcluirClick(Sender: TObject);
+begin
+  if not cds_MateriaPrima.IsEmpty then
+    cds_MateriaPrima.Delete;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.btFecharClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.btGravarClick(Sender: TObject);
+begin
+  if btGravar.Tag = 0 then begin
+    btGravar.Tag  := 1;
+    try
+      GravarDados;
+    finally
+      btGravar.Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.btNovoClick(Sender: TObject);
+begin
+  if not cds_MateriaPrima.Locate(cds_MateriaPrimaIDPRODUTO.FieldName, edtMateriaPrima.Text, []) then begin
+    cds_MateriaPrima.Append;
+    cds_MateriaPrimaIDPRODUTO.Value  := StrToInt(edtMateriaPrima.Text);
+    cds_MateriaPrimaNOMEPRODUTO.Value:= edtNomeMateriaPrima.Text;
+    cds_MateriaPrimaQUANTIDADE.Value := edt_Quantidade.Value;
+    cds_MateriaPrima.Post;
+
+    edtMateriaPrima.Clear;
+    edt_Quantidade.Clear;
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.btn_CancelarClick(Sender: TObject);
+begin
+  LimpaEdits;
+  InvertePaineis;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.btAlterarClick(Sender: TObject);
+begin
+  if not cds_Pesquisa.IsEmpty then begin
+    CarregaDadosOrdemProducao(cds_PesquisaID.Value);
+    InvertePaineis;
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.btPesquisarClick(Sender: TObject);
+begin
+  Filtrar;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.BuscarDados;
+var
+  SQL : TFDQuery;
+  FW : TFWConnection;
+begin
+  SQL := TFDQuery.Create(nil);
+  FW  := TFWConnection.Create;
+  cds_Pesquisa.EmptyDataSet;
+  cds_Pesquisa.DisableControls;
+  try
+    SQL.Close;
+    SQL.SQL.Clear;
+    SQL.SQL.Add('SELECT MC.ID, MC.DATAINICIO, MC.DATAFIM, P.ID, P.DESCRICAO FROM ORDEMPRODUCAOMC MC');
+    SQL.SQL.Add('INNER JOIN PRODUTO P ON MC.ID_PRODUTO = P.ID');
+    SQL.SQL.Add('WHERE NOT MC.ENCERRADO');
+    SQL.Connection := FW.FDConnection;
+    SQL.Prepare;
+    SQL.Open();
+
+    if not SQL.IsEmpty then begin
+      SQL.First;
+      while not SQL.Eof do begin
+        cds_Pesquisa.Append;
+        cds_PesquisaID.Value             := SQL.Fields[0].Value;
+        cds_PesquisaDATAINICIO.Value     := SQL.Fields[1].Value;
+        cds_PesquisaDATAFINAL.Value      := SQL.Fields[2].Value;
+        cds_PesquisaID_MEIOCULTURA.Value := SQL.Fields[3].Value;
+        cds_PesquisaMEIOCULTURA.Value    := SQL.Fields[4].Value;
+        cds_Pesquisa.Post;
+
+        SQL.Next;
+      end;
+    end;
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(FW);
+    cds_Pesquisa.EnableControls;
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.CarregaDadosOrdemProducao(
+  Codigo: Integer);
+var
+  FW : TFWConnection;
+  MC : TORDEMPRODUCAOMC;
+  MI : TORDEMPRODUCAOMC_ITENS;
+  PR : TPRODUTO;
+  FU : TUSUARIO;
+  I: Integer;
+begin
+  FW := TFWConnection.Create;
+  MC := TORDEMPRODUCAOMC.Create(FW);
+  MI := TORDEMPRODUCAOMC_ITENS.Create(FW);
+  FU := TUSUARIO.Create(FW);
+  PR := TPRODUTO.Create(FW);
+  try
+    MC.SelectList('ID = ' + IntToStr(Codigo));
+    if MC.Count > 0 then begin
+      pnDados.Tag                      := TORDEMPRODUCAOMC(MC.Itens[0]).ID.Value;
+      edt_CodigoFuncionario.Text       := TORDEMPRODUCAOMC(MC.Itens[0]).ID_USUARIOEXECUTAR.asString;
+      FU.SelectList('ID_USUARIOEXECUTAR = ' + edt_CodigoFuncionario.Text);
+      if FU.Count > 0 then
+        edt_DescricaoFuncionario.Text  := TUSUARIO(FU.Itens[0]).NOME.asString;
+      edt_PHInicial.Value              := TORDEMPRODUCAOMC(MC.Itens[0]).PHINICIAL.Value;
+      edt_PHFinal.Value                := TORDEMPRODUCAOMC(MC.Itens[0]).PHFINAL.Value;
+      edt_PHRec.Value                  := TORDEMPRODUCAOMC(MC.Itens[0]).PHRECOMENDADO.Value;
+      edt_DataInicio.Date              := TORDEMPRODUCAOMC(MC.Itens[0]).DATAINICIO.Value;
+      edt_DataFinal.Date               := TORDEMPRODUCAOMC(MC.Itens[0]).DATAFIM.Value;
+      edt_CodigoMeioCultura.Text       := TORDEMPRODUCAOMC(MC.Itens[0]).ID_PRODUTO.asString;
+      PR.SelectList('ID = ' + edt_CodigoMeioCultura.Text);
+      if PR.Count > 0 then
+        edt_DescricaoMeioCultura.Text  := TUSUARIO(FU.Itens[0]).NOME.asString;
+      edt_QuantidadeMeioCultura.Value  := TORDEMPRODUCAOMC(MC.Itens[0]).QUANTPRODUTO.Value;
+      edt_CodigoRecipientes.Text       := TORDEMPRODUCAOMC(MC.Itens[0]).ID_RECIPIENTE.asString;
+      edt_MLPorRecipiente.Value        := TORDEMPRODUCAOMC(MC.Itens[0]).MLRECIPIENTE.Value;
+      PR.SelectList('ID = ' + edt_CodigoRecipientes.Text);
+      if PR.Count > 0 then
+        edt_NomeRecipiente.Text        := TUSUARIO(FU.Itens[0]).NOME.asString;
+      edt_QuantidadeRecipiente.Value   := TORDEMPRODUCAOMC(MC.Itens[0]).QUANTRECIPIENTES.Value;
+
+      cds_MateriaPrima.EmptyDataSet;
+      MI.SelectList('ID_ORDEMPRODUCAOMC = ' + IntToStr(Codigo));
+      if MI.Count > 0 then begin
+        for I := 0 to Pred(MI.Count) do begin
+          cds_MateriaPrima.Append;
+          cds_MateriaPrimaID.Value             := TORDEMPRODUCAOMC_ITENS(MI.Itens[I]).ID.Value;
+          cds_MateriaPrimaIDPRODUTO.Value      := TORDEMPRODUCAOMC_ITENS(MI.Itens[I]).ID_PRODUTO.Value;
+          PR.SelectList('ID = ' + cds_MateriaPrimaIDPRODUTO.AsString);
+          if PR.Count > 0 then
+            cds_MateriaPrimaNOMEPRODUTO.Value  := TPRODUTO(PR.Itens[0]).DESCRICAO.asString;
+          cds_MateriaPrimaQUANTIDADE.Value     := TORDEMPRODUCAOMC_ITENS(MI.Itens[I]).QUANTIDADE.Value;
+          cds_MateriaPrima.Post;
+        end;
+      end;
+    end;
+  finally
+    FreeAndNil(MI);
+    FreeAndNil(MC);
+    FreeAndNil(PR);
+    FreeAndNil(FU);
+    FreeAndNil(FW);
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.cds_PesquisaFilterRecord(
+  DataSet: TDataSet; var Accept: Boolean);
+Var
+  I : Integer;
+begin
+  Accept := False;
+  for I := 0 to DataSet.Fields.Count - 1 do begin
+    if not DataSet.Fields[I].IsNull then begin
+      if Pos(AnsiLowerCase(edPesquisa.Text),AnsiLowerCase(DataSet.Fields[I].AsVariant)) > 0 then begin
+        Accept := True;
+        Break;
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edtMateriaPrimaChange(Sender: TObject);
+begin
+  edtNomeMateriaPrima.Clear;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edtMateriaPrimaRightButtonClick(
+  Sender: TObject);
+begin
+  SelecionaMateriaPrima;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoFuncionarioChange(
+  Sender: TObject);
+begin
+  edt_DescricaoFuncionario.Clear;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoFuncionarioRightButtonClick(
+  Sender: TObject);
+begin
+  SelecionaUsuario;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoMeioCulturaChange(
+  Sender: TObject);
+begin
+  edt_DescricaoMeioCultura.Clear;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoMeioCulturaRightButtonClick(
+  Sender: TObject);
+begin
+  SelecionaMeioCultura;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoRecipientesChange(
+  Sender: TObject);
+begin
+  edt_NomeRecipiente.Clear;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoRecipientesRightButtonClick(
+  Sender: TObject);
+begin
+  SelecionaRecipiente;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.Filtrar;
+begin
+  cds_Pesquisa.Filtered := False;
+  cds_Pesquisa.Filtered := edPesquisa.Text <> EmptyStr;
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.FormShow(Sender: TObject);
 begin
   AjustaForm(frmOrdemProducaoMeioCultura);
+
+  cds_Pesquisa.CreateDataSet;
+  cds_Pesquisa.Open;
+
+  cds_MateriaPrima.CreateDataSet;
+  cds_MateriaPrima.Open;
+
+  BuscarDados;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.GravarDados;
+var
+  FW : TFWConnection;
+  MC : TORDEMPRODUCAOMC;
+  MI : TORDEMPRODUCAOMC_ITENS;
+begin
+  FW := TFWConnection.Create;
+  MC := TORDEMPRODUCAOMC.Create(FW);
+  MI := TORDEMPRODUCAOMC_ITENS.Create(FW);
+  try
+    DisplayMsg(MSG_WAIT, 'Gravando dados...', 'Aguarde...');
+    FW.StartTransaction;
+    try
+
+      MC.ID_RECIPIENTE.Value      := StrToInt(edt_CodigoRecipientes.Text);
+      MC.QUANTRECIPIENTES.Value   := edt_QuantidadeRecipiente.Value;
+      MC.MLRECIPIENTE.Value       := edt_MLPorRecipiente.Value;
+      MC.ID_USUARIOEXECUTAR.Value := StrToInt(edt_CodigoFuncionario.Text);
+      MC.ID_USUARIO.Value         := USUARIO.CODIGO;
+      MC.ID_PRODUTO.Value         := StrToInt(edt_CodigoMeioCultura.Text);
+      MC.QUANTPRODUTO.Value       := edt_QuantidadeMeioCultura.Value;
+      MC.PHINICIAL.Value          := edt_PHInicial.Value;
+      MC.PHFINAL.Value            := edt_PHFinal.Value;
+      MC.PHRECOMENDADO.Value      := edt_PHRec.Value;
+      MC.DATAINICIO.Value         := edt_DataInicio.Date;
+      MC.DATAFIM.Value            := edt_DataFinal.Date;
+      MC.DATAHORA.Value           := Now;
+      MC.ENCERRADO.Value          := False;
+      if pnDados.Tag > 0 then begin
+        MC.ID.Value               := pnDados.Tag;
+        MC.Update;
+      end else begin
+        MC.Insert;
+      end;
+
+      cds_MateriaPrima.First;
+      while not cds_MateriaPrima.Eof do begin
+        if not cds_MateriaPrimaID.IsNull then begin
+          MI.SelectList('ID = ' + cds_MateriaPrimaID.AsString);
+          if MI.Count > 0 then begin
+            MI.ID.Value         := cds_MateriaPrimaID.Value;
+            MI.ID_PRODUTO.Value := cds_MateriaPrimaIDPRODUTO.Value;
+            MI.QUANTIDADE.Value := cds_MateriaPrimaQUANTIDADE.Value;
+            MI.Update;
+          end else begin
+            MI.ID.Value         := cds_MateriaPrimaID.Value;
+            MI.Delete;
+          end;
+        end else begin
+          MI.ID.Value                       := cds_MateriaPrimaID.Value;
+          MI.ID_ORDEMPRODUCAOMC.Value       := MC.ID.Value;
+          MI.ID_PRODUTO.Value               := cds_MateriaPrimaIDPRODUTO.Value;
+          MI.QUANTIDADE.Value               := cds_MateriaPrimaQUANTIDADE.Value;
+          MI.Insert;
+        end;
+        cds_MateriaPrima.Next;
+      end;
+      FW.Commit;
+      DisplayMsgFinaliza;
+      LimpaEdits;
+      InvertePaineis;
+      BuscarDados;
+    except
+      on E : Exception do begin
+        FW.Rollback;
+        DisplayMsg(MSG_WAR, 'Erro ao Gravar Dados!', '', e.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(MI);
+    FreeAndNil(MC);
+    FreeAndNil(FW);
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.InvertePaineis;
+begin
+  pnPesquisa.Visible               := not pnPesquisa.Visible;
+  pnBotoesVisualizacao.Visible  := pnDados.Visible;
+  pnDados.Visible              := not pnDados.Visible;
+  pnBotoesEdicao.Visible        := pnDados.Visible;
+  if pnDados.Visible then begin
+//    if edDescricao.CanFocus then
+//      edDescricao.SetFocus;
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.LimpaEdits;
+begin
+  pnDados.Tag := 0;
+  edt_CodigoFuncionario.Clear;
+  edt_DescricaoFuncionario.Clear;
+  edt_PHInicial.Clear;
+  edt_PHFinal.Clear;
+  edt_PHRec.Clear;
+  edt_DataInicio.Clear;
+  edt_DataFinal.Clear;
+  edt_CodigoMeioCultura.Clear;
+  edt_DescricaoMeioCultura.Clear;
+  edt_QuantidadeMeioCultura.Clear;
+  edt_CodigoRecipientes.Clear;
+  edt_NomeRecipiente.Clear;
+  edt_QuantidadeRecipiente.Clear;
+  edtMateriaPrima.Clear;
+  edtNomeMateriaPrima.Clear;
+  edt_Quantidade.Clear;
+
+  cds_MateriaPrima.EmptyDataSet;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.SelecionaMateriaPrima;
+var
+  FWC : TFWConnection;
+  P   : TPRODUTO;
+  Filtro : string;
+begin
+  FWC    := TFWConnection.Create;
+  P      := TPRODUTO.Create(FWC);
+  try
+    Filtro := 'finalidade = 2';
+    edtMateriaPrima.Tag := DMUtil.Selecionar(P, edtMateriaPrima.Text, Filtro);
+    if edtMateriaPrima.Tag > 0 then begin
+      P.SelectList('id = ' + IntToStr(edtMateriaPrima.Tag));
+      if P.Count > 0 then begin
+        edtMateriaPrima.Text     := TPRODUTO(P.Itens[0]).ID.asString;
+        edtNomeMateriaPrima.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+        if edt_Quantidade.CanFocus then edt_Quantidade.SetFocus;
+      end;
+    end;
+  finally
+    FreeAndNil(P);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.SelecionaMeioCultura;
+var
+  FWC : TFWConnection;
+  P   : TPRODUTO;
+  Filtro : string;
+begin
+  FWC    := TFWConnection.Create;
+  P      := TPRODUTO.Create(FWC);
+  try
+    Filtro := 'finalidade = 3';
+    edt_CodigoMeioCultura.Tag := DMUtil.Selecionar(P, edt_CodigoMeioCultura.Text, Filtro);
+    if edt_CodigoMeioCultura.Tag > 0 then begin
+      P.SelectList('id = ' + IntToStr(edt_CodigoMeioCultura.Tag));
+      if P.Count > 0 then begin
+        edt_CodigoMeioCultura.Text     := TPRODUTO(P.Itens[0]).ID.asString;
+        edt_DescricaoMeioCultura.Text  := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+      end;
+    end;
+  finally
+    FreeAndNil(P);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.SelecionaRecipiente;
+var
+  FWC : TFWConnection;
+  P   : TPRODUTO;
+  Filtro : string;
+begin
+  FWC    := TFWConnection.Create;
+  P      := TPRODUTO.Create(FWC);
+  try
+    Filtro := 'finalidade = 4';
+    edt_CodigoRecipientes.Tag := DMUtil.Selecionar(P, edt_CodigoRecipientes.Text, Filtro);
+    if edt_CodigoRecipientes.Tag > 0 then begin
+      P.SelectList('id = ' + IntToStr(edt_CodigoRecipientes.Tag));
+      if P.Count > 0 then begin
+        edt_CodigoRecipientes.Text     := TPRODUTO(P.Itens[0]).ID.asString;
+        edt_NomeRecipiente.Text        := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+      end;
+    end;
+  finally
+    FreeAndNil(P);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.SelecionaUsuario;
+var
+  FWC : TFWConnection;
+  U   : TUSUARIO;
+begin
+  FWC    := TFWConnection.Create;
+  U      := TUSUARIO.Create(FWC);
+  try
+    edt_CodigoFuncionario.Tag := DMUtil.Selecionar(U, edt_CodigoFuncionario.Text);
+    if edt_CodigoFuncionario.Tag > 0 then begin
+      U.SelectList('id = ' + IntToStr(edt_CodigoFuncionario.Tag));
+      if U.Count > 0 then begin
+        edt_CodigoFuncionario.Text     := TUSUARIO(U.Itens[0]).ID.asString;
+        edt_DescricaoFuncionario.Text  := TUSUARIO(U.Itens[0]).NOME.asString;
+      end;
+    end;
+  finally
+    FreeAndNil(U);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.SpeedButton1Click(Sender: TObject);
+begin
+  InvertePaineis;
 end;
 
 end.
