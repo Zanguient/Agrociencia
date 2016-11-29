@@ -500,6 +500,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+            OnClick = SpeedButton2Click
             ExplicitLeft = 12
             ExplicitTop = 8
             ExplicitHeight = 42
@@ -715,19 +716,19 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
       object Label10: TLabel
         Left = 9
         Top = 13
-        Width = 37
+        Width = 53
         Height = 13
-        Caption = 'C'#243'digo:'
+        Caption = 'C'#243'd. Func:'
       end
       object Label11: TLabel
-        Left = 114
+        Left = 69
         Top = 13
-        Width = 59
+        Width = 89
         Height = 13
-        Caption = 'Funcion'#225'rio:'
+        Caption = 'Nome Funcion'#225'rio:'
       end
       object Label12: TLabel
-        Left = 421
+        Left = 481
         Top = 13
         Width = 47
         Height = 13
@@ -735,7 +736,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Caption = 'PH Inicial:'
       end
       object Label13: TLabel
-        Left = 500
+        Left = 542
         Top = 13
         Width = 42
         Height = 13
@@ -743,7 +744,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Caption = 'PH Final:'
       end
       object Label14: TLabel
-        Left = 579
+        Left = 603
         Top = 13
         Width = 42
         Height = 13
@@ -751,7 +752,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Caption = 'PH Rec.:'
       end
       object Label15: TLabel
-        Left = 664
+        Left = 667
         Top = 13
         Width = 55
         Height = 13
@@ -766,11 +767,25 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Anchors = [akTop, akRight]
         Caption = 'Data Final:'
       end
+      object Label18: TLabel
+        Left = 253
+        Top = 13
+        Width = 45
+        Height = 13
+        Caption = 'C'#243'd. Est:'
+      end
+      object Label19: TLabel
+        Left = 313
+        Top = 13
+        Width = 93
+        Height = 13
+        Caption = 'Nome Esteriliza'#231#227'o:'
+      end
       object edt_CodigoFuncionario: TButtonedEdit
         AlignWithMargins = True
         Left = 9
         Top = 29
-        Width = 99
+        Width = 57
         Height = 27
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -786,11 +801,10 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         OnRightButtonClick = edt_CodigoFuncionarioRightButtonClick
       end
       object edt_DescricaoFuncionario: TEdit
-        Left = 114
+        Left = 69
         Top = 29
-        Width = 304
+        Width = 181
         Height = 27
-        Anchors = [akLeft, akTop, akRight]
         Enabled = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -801,45 +815,9 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         TabOrder = 1
       end
       object edt_PHInicial: TJvValidateEdit
-        Left = 421
+        Left = 481
         Top = 29
-        Width = 76
-        Height = 27
-        Anchors = [akTop, akRight]
-        CriticalPoints.MaxValueIncluded = False
-        CriticalPoints.MinValueIncluded = False
-        DisplayFormat = dfFloat
-        DecimalPlaces = 3
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 2
-      end
-      object edt_PHFinal: TJvValidateEdit
-        Left = 500
-        Top = 29
-        Width = 76
-        Height = 27
-        Anchors = [akTop, akRight]
-        CriticalPoints.MaxValueIncluded = False
-        CriticalPoints.MinValueIncluded = False
-        DisplayFormat = dfFloat
-        DecimalPlaces = 3
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 3
-      end
-      object edt_PHRec: TJvValidateEdit
-        Left = 579
-        Top = 29
-        Width = 82
+        Width = 58
         Height = 27
         Anchors = [akTop, akRight]
         CriticalPoints.MaxValueIncluded = False
@@ -854,8 +832,44 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         ParentFont = False
         TabOrder = 4
       end
+      object edt_PHFinal: TJvValidateEdit
+        Left = 542
+        Top = 29
+        Width = 58
+        Height = 27
+        Anchors = [akTop, akRight]
+        CriticalPoints.MaxValueIncluded = False
+        CriticalPoints.MinValueIncluded = False
+        DisplayFormat = dfFloat
+        DecimalPlaces = 3
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 5
+      end
+      object edt_PHRec: TJvValidateEdit
+        Left = 603
+        Top = 29
+        Width = 61
+        Height = 27
+        Anchors = [akTop, akRight]
+        CriticalPoints.MaxValueIncluded = False
+        CriticalPoints.MinValueIncluded = False
+        DisplayFormat = dfFloat
+        DecimalPlaces = 3
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 6
+      end
       object edt_DataInicio: TJvDateEdit
-        Left = 664
+        Left = 667
         Top = 29
         Width = 97
         Height = 27
@@ -867,7 +881,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Anchors = [akTop, akRight]
         ParentFont = False
         ShowNullDate = False
-        TabOrder = 5
+        TabOrder = 7
       end
       object edt_DataFinal: TJvDateEdit
         Left = 767
@@ -882,7 +896,41 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Anchors = [akTop, akRight]
         ParentFont = False
         ShowNullDate = False
-        TabOrder = 6
+        TabOrder = 8
+      end
+      object edt_CodigoEsterilizacao: TButtonedEdit
+        AlignWithMargins = True
+        Left = 253
+        Top = 29
+        Width = 57
+        Height = 27
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Images = DMUtil.ImageList1
+        ParentFont = False
+        RightButton.ImageIndex = 0
+        RightButton.Visible = True
+        TabOrder = 2
+        OnChange = edt_CodigoEsterilizacaoChange
+        OnRightButtonClick = edt_CodigoEsterilizacaoRightButtonClick
+      end
+      object edt_NomeEsterilizacao: TEdit
+        Left = 313
+        Top = 29
+        Width = 164
+        Height = 27
+        Anchors = [akLeft, akTop, akRight]
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 3
       end
     end
     object GroupBox3: TGroupBox
@@ -1079,7 +1127,6 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 3
         OnClick = btNovoClick
-        ExplicitLeft = 758
       end
       object btExcluir: TBitBtn
         AlignWithMargins = True
@@ -1147,7 +1194,6 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 4
         OnClick = btExcluirClick
-        ExplicitLeft = 814
       end
       object btBuscar: TBitBtn
         AlignWithMargins = True
@@ -1214,8 +1260,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           C293949385868587888785868590908FB3B3B3FBFBFBFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 5
-        ExplicitLeft = 854
-        ExplicitTop = 23
+        OnClick = btBuscarClick
       end
     end
     object pnBotoesEdicao: TPanel
@@ -1853,6 +1898,23 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
       TitleFont.Height = -19
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
+      Columns = <
+        item
+          Expanded = False
+          FieldName = 'IDPRODUTO'
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'NOMEPRODUTO'
+          Width = 400
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'QUANTIDADE'
+          Visible = True
+        end>
     end
     object Panel2: TPanel
       Left = 0
@@ -2002,9 +2064,9 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           object Label2: TLabel
             Left = 60
             Top = 13
-            Width = 31
+            Width = 50
             Height = 13
-            Caption = 'Nome:'
+            Caption = 'Descri'#231#227'o:'
           end
           object Label6: TLabel
             Left = 363

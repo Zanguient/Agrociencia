@@ -344,6 +344,54 @@ type
     property Value          : TDateTime read getValue         write setValue;
   end;
 
+
+  //////////////////////////////
+  //      DATE
+  //////////////////////////////
+  TFieldDate = class(TFieldTypeDomain)
+  private
+    FisPK           : Boolean;
+    FisNotNull      : Boolean;
+    FisSearchField  : Boolean;
+    FDisplayLabel   : String;
+    FDisplayWidth   : Integer;
+    FValue          : TDateTime;
+    FisNull         : Boolean;
+
+  protected
+    function getIsPK: Boolean; override;
+    function getIsNotNull: Boolean; override;
+    function getIsSearchField: Boolean; override;
+    function getIsNull: Boolean; override;
+    function getDisplayLabel: String; override;
+    function getDisplayWidth : Integer; override;
+    function getAsSQL: String; override;
+    function getAsVariant: Variant; override;
+    function getAsString: String; override;
+    function getValue: TDate;
+
+    procedure setIsPK(const Value: Boolean); override;
+    procedure setIsNotNull(const Value: Boolean); override;
+    procedure setIsSearchField(const Value: Boolean); override;
+    procedure setIsNull(const Value: Boolean); override;
+    procedure setDisplayLabel(const Value: String); override;
+    procedure setDisplayWidth(const Value: Integer); override;
+    procedure setAsVariant(const Value: Variant); override;
+    procedure setValue(const Value: TDate);
+
+  public
+    property isPK           : Boolean   read getIsPK          write setIsPK;
+    property isNotNull      : Boolean   read getIsNotNull     write setIsNotNull;
+    property isSearchField  : Boolean   read getIsSearchField write setIsSearchField;
+    property isNull         : Boolean   read getIsNull        write setIsNull;
+    property displayLabel   : String    read getDisplayLabel  write setDisplayLabel;
+    property displayWidth   : Integer   read getDisplayWidth  write setDisplayWidth;
+    property asSQL          : String    read getAsSQL;
+    property asVariant      : Variant   read getAsVariant     write setAsVariant;
+    property asString       : String    read getAsString;
+    property Value          : TDate     read getValue         write setValue;
+  end;
+
   //////////////////////////////
   //        BLOB
   //////////////////////////////
@@ -1097,6 +1145,103 @@ end;
 procedure TImportDadosExcel.SetexcelTitulo(const Value: string);
 begin
   FexcelTitulo := Value;
+end;
+
+{ TFieldDate }
+
+function TFieldDate.getAsSQL: String;
+begin
+  Result := QuotedStr(StringReplace(DateTimeToStr(Self.FValue), '/', '.', [rfReplaceAll]));
+end;
+
+function TFieldDate.getAsString: String;
+begin
+  Result := DateTimeToStr(Self.FValue);
+end;
+
+function TFieldDate.getAsVariant: Variant;
+begin
+  Result := Variant(Self.FValue);
+end;
+
+function TFieldDate.getDisplayLabel: String;
+begin
+  Result := Self.FDisplayLabel;
+end;
+
+function TFieldDate.getDisplayWidth: Integer;
+begin
+  Result := Self.FDisplayWidth;
+end;
+
+function TFieldDate.getIsNotNull: Boolean;
+begin
+  Result := Self.FisNotNull;
+end;
+
+function TFieldDate.getIsNull: Boolean;
+begin
+  Result := Self.FisNull;
+end;
+
+function TFieldDate.getIsPK: Boolean;
+begin
+  Result := Self.FisPK;
+end;
+
+function TFieldDate.getIsSearchField: Boolean;
+begin
+  Result := Self.FisSearchField;
+end;
+
+function TFieldDate.getValue: TDate;
+begin
+  Result := Self.FValue;
+end;
+
+procedure TFieldDate.setAsVariant(const Value: Variant);
+begin
+  if not VarIsNull(Value) then begin
+    Self.FValue := TDate(Value);
+    Self.setIsNull(False);
+  end;
+end;
+
+procedure TFieldDate.setDisplayLabel(const Value: String);
+begin
+  Self.FDisplayLabel  := Value;
+end;
+
+procedure TFieldDate.setDisplayWidth(const Value: Integer);
+begin
+  Self.FDisplayWidth  := Value;
+end;
+
+procedure TFieldDate.setIsNotNull(const Value: Boolean);
+begin
+  Self.FisNotNull := Value;
+end;
+
+procedure TFieldDate.setIsNull(const Value: Boolean);
+begin
+  Self.FisNull  := Value;
+end;
+
+procedure TFieldDate.setIsPK(const Value: Boolean);
+begin
+  Self.FisPK       := Value;
+  Self.FisNotNull  := Value;
+end;
+
+procedure TFieldDate.setIsSearchField(const Value: Boolean);
+begin
+  Self.FisSearchField := Value;
+end;
+
+procedure TFieldDate.setValue(const Value: TDate);
+begin
+  Self.FValue := Value;
+  Self.setIsNull(False);
 end;
 
 end.

@@ -93,6 +93,10 @@ type
     edt_MLPorRecipiente: TJvValidateEdit;
     Label17: TLabel;
     btBuscar: TBitBtn;
+    Label18: TLabel;
+    edt_CodigoEsterilizacao: TButtonedEdit;
+    Label19: TLabel;
+    edt_NomeEsterilizacao: TEdit;
     procedure FormShow(Sender: TObject);
     procedure btn_CancelarClick(Sender: TObject);
     procedure cds_PesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
@@ -111,21 +115,28 @@ type
     procedure btExcluirClick(Sender: TObject);
     procedure edtMateriaPrimaRightButtonClick(Sender: TObject);
     procedure edtMateriaPrimaChange(Sender: TObject);
+    procedure btBuscarClick(Sender: TObject);
+    procedure edt_CodigoEsterilizacaoChange(Sender: TObject);
+    procedure edt_CodigoEsterilizacaoRightButtonClick(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
     procedure Filtrar;
     procedure BuscarDados;
+    procedure BuscaMateriaPrima;
     procedure InvertePaineis;
     procedure LimpaEdits;
     procedure CarregaDadosOrdemProducao(Codigo : Integer);
     procedure GravarDados;
+    procedure DeletarOrdemProducao;
 
     procedure SelecionaUsuario;
     procedure SelecionaMeioCultura;
     procedure SelecionaRecipiente;
     procedure SelecionaMateriaPrima;
+    procedure SelecionaEsterilizacao;
   end;
 
 var
@@ -143,8 +154,14 @@ uses
   uMensagem,
   uBeanUsuario,
   uBeanOrdemProducaoMC,
-  uBeanOrdemProducaoMC_Itens;
+  uBeanOrdemProducaoMC_Itens,
+  uBeanEsterilizacao;
 {$R *.dfm}
+
+procedure TfrmOrdemProducaoMeioCultura.btBuscarClick(Sender: TObject);
+begin
+  BuscaMateriaPrima;
+end;
 
 procedure TfrmOrdemProducaoMeioCultura.btExcluirClick(Sender: TObject);
 begin
@@ -202,6 +219,51 @@ begin
   Filtrar;
 end;
 
+procedure TfrmOrdemProducaoMeioCultura.BuscaMateriaPrima;
+var
+  FW  : TFWConnection;
+  PC  : TPRODUTOCOMPOSICAO;
+  C   : TPRODUTO;
+  I: Integer;
+begin
+  if edt_DescricaoMeioCultura.Text = EmptyStr then begin
+    DisplayMsg(MSG_INF, 'Informe o Meio de Cultura!');
+    if edt_CodigoMeioCultura.CanFocus then edt_CodigoMeioCultura.SetFocus;
+    Exit;
+  end;
+  if edt_QuantidadeMeioCultura.Value <= 0 then begin
+    DisplayMsg(MSG_INF, 'Informe a Quantidade!');
+    if edt_QuantidadeMeioCultura.CanFocus then edt_QuantidadeMeioCultura.SetFocus;
+    Exit;
+  end;
+
+  FW := TFWConnection.Create;
+  PC := TPRODUTOCOMPOSICAO.Create(FW);
+  C  := TPRODUTO.Create(FW);
+  try
+    PC.SelectList('ID_PRODUTO = ' + edt_CodigoMeioCultura.Text);
+    if PC.Count > 0 then begin
+      for I := 0 to Pred(PC.Count) do begin
+        if cds_MateriaPrima.Locate(cds_MateriaPrimaIDPRODUTO.FieldName, TPRODUTOCOMPOSICAO(PC.Itens[I]).ID_COMPONENTE.Value, []) then
+          cds_MateriaPrima.Edit
+        else begin
+          cds_MateriaPrima.Append;
+          cds_MateriaPrimaIDPRODUTO.Value := TPRODUTOCOMPOSICAO(PC.Itens[I]).ID_COMPONENTE.Value;
+        end;
+        C.SelectList('ID = ' + cds_MateriaPrimaIDPRODUTO.AsString);
+        if C.Count > 0 then
+          cds_MateriaPrimaNOMEPRODUTO.Value := TPRODUTO(C.Itens[0]).DESCRICAO.Value;
+        cds_MateriaPrimaQUANTIDADE.Value    := TPRODUTOCOMPOSICAO(PC.Itens[I]).QUANTIDADE.Value * edt_QuantidadeMeioCultura.Value;
+        cds_MateriaPrima.Post;
+      end;
+    end;
+  finally
+    FreeAndNil(PC);
+    FreeAndNil(C);
+    FreeAndNil(FW);
+  end;
+end;
+
 procedure TfrmOrdemProducaoMeioCultura.BuscarDados;
 var
   SQL : TFDQuery;
@@ -250,19 +312,21 @@ var
   MI : TORDEMPRODUCAOMC_ITENS;
   PR : TPRODUTO;
   FU : TUSUARIO;
-  I: Integer;
+  E  : TESTERILIZACAO;
+  I  : Integer;
 begin
   FW := TFWConnection.Create;
   MC := TORDEMPRODUCAOMC.Create(FW);
   MI := TORDEMPRODUCAOMC_ITENS.Create(FW);
   FU := TUSUARIO.Create(FW);
   PR := TPRODUTO.Create(FW);
+  E  := TESTERILIZACAO.Create(FW);
   try
     MC.SelectList('ID = ' + IntToStr(Codigo));
     if MC.Count > 0 then begin
       pnDados.Tag                      := TORDEMPRODUCAOMC(MC.Itens[0]).ID.Value;
       edt_CodigoFuncionario.Text       := TORDEMPRODUCAOMC(MC.Itens[0]).ID_USUARIOEXECUTAR.asString;
-      FU.SelectList('ID_USUARIOEXECUTAR = ' + edt_CodigoFuncionario.Text);
+      FU.SelectList('ID = ' + edt_CodigoFuncionario.Text);
       if FU.Count > 0 then
         edt_DescricaoFuncionario.Text  := TUSUARIO(FU.Itens[0]).NOME.asString;
       edt_PHInicial.Value              := TORDEMPRODUCAOMC(MC.Itens[0]).PHINICIAL.Value;
@@ -273,14 +337,18 @@ begin
       edt_CodigoMeioCultura.Text       := TORDEMPRODUCAOMC(MC.Itens[0]).ID_PRODUTO.asString;
       PR.SelectList('ID = ' + edt_CodigoMeioCultura.Text);
       if PR.Count > 0 then
-        edt_DescricaoMeioCultura.Text  := TUSUARIO(FU.Itens[0]).NOME.asString;
+        edt_DescricaoMeioCultura.Text  := TPRODUTO(PR.Itens[0]).DESCRICAO.asString;
       edt_QuantidadeMeioCultura.Value  := TORDEMPRODUCAOMC(MC.Itens[0]).QUANTPRODUTO.Value;
       edt_CodigoRecipientes.Text       := TORDEMPRODUCAOMC(MC.Itens[0]).ID_RECIPIENTE.asString;
       edt_MLPorRecipiente.Value        := TORDEMPRODUCAOMC(MC.Itens[0]).MLRECIPIENTE.Value;
       PR.SelectList('ID = ' + edt_CodigoRecipientes.Text);
       if PR.Count > 0 then
-        edt_NomeRecipiente.Text        := TUSUARIO(FU.Itens[0]).NOME.asString;
+        edt_NomeRecipiente.Text        := TPRODUTO(PR.Itens[0]).DESCRICAO.asString;
       edt_QuantidadeRecipiente.Value   := TORDEMPRODUCAOMC(MC.Itens[0]).QUANTRECIPIENTES.Value;
+      edt_CodigoEsterilizacao.Text     := TORDEMPRODUCAOMC(MC.Itens[0]).ID_ESTERILIZACAO.asString;
+      E.SelectList('ID = ' + edt_CodigoEsterilizacao.Text);
+      if E.Count > 0 then
+        edt_NomeEsterilizacao.Text     := TESTERILIZACAO(E.Itens[0]).DESCRICAO.asString;
 
       cds_MateriaPrima.EmptyDataSet;
       MI.SelectList('ID_ORDEMPRODUCAOMC = ' + IntToStr(Codigo));
@@ -322,6 +390,40 @@ begin
   end;
 end;
 
+procedure TfrmOrdemProducaoMeioCultura.DeletarOrdemProducao;
+var
+  FW : TFWConnection;
+  MC : TORDEMPRODUCAOMC;
+begin
+  if cds_Pesquisa.IsEmpty then begin
+    DisplayMsg(MSG_INF, 'Não existem dados para excluir!');
+    Exit;
+  end;
+
+  FW := TFWConnection.Create;
+  MC := TORDEMPRODUCAOMC.Create(FW);
+  DisplayMsg(MSG_WAIT, 'Excluindo ordem de produção de meio de cultura!');
+  try
+    FW.StartTransaction;
+    try
+      MC.ID.Value := cds_PesquisaID.Value;
+      MC.Delete;
+
+      FW.Commit;
+      DisplayMsgFinaliza;
+      BuscarDados;
+    except
+      on E : Exception do begin
+        FW.Rollback;
+        DisplayMsg(MSG_WAR, 'Erro ao excluir Ordem de Produção!', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(MC);
+    FreeAndNil(FW);
+  end;
+end;
+
 procedure TfrmOrdemProducaoMeioCultura.edtMateriaPrimaChange(Sender: TObject);
 begin
   edtNomeMateriaPrima.Clear;
@@ -331,6 +433,18 @@ procedure TfrmOrdemProducaoMeioCultura.edtMateriaPrimaRightButtonClick(
   Sender: TObject);
 begin
   SelecionaMateriaPrima;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoEsterilizacaoChange(
+  Sender: TObject);
+begin
+  edt_NomeEsterilizacao.Clear;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoEsterilizacaoRightButtonClick(
+  Sender: TObject);
+begin
+  SelecionaEsterilizacao;
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.edt_CodigoFuncionarioChange(
@@ -416,6 +530,7 @@ begin
       MC.DATAFIM.Value            := edt_DataFinal.Date;
       MC.DATAHORA.Value           := Now;
       MC.ENCERRADO.Value          := False;
+      MC.ID_ESTERILIZACAO.Value   := StrToInt(edt_CodigoEsterilizacao.Text);
       if pnDados.Tag > 0 then begin
         MC.ID.Value               := pnDados.Tag;
         MC.Update;
@@ -496,6 +611,29 @@ begin
   edt_Quantidade.Clear;
 
   cds_MateriaPrima.EmptyDataSet;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.SelecionaEsterilizacao;
+var
+  FWC : TFWConnection;
+  E   : TESTERILIZACAO;
+  Filtro : string;
+begin
+  FWC    := TFWConnection.Create;
+  E      := TESTERILIZACAO.Create(FWC);
+  try
+    edt_CodigoEsterilizacao.Tag := DMUtil.Selecionar(E, edt_CodigoEsterilizacao.Text, Filtro);
+    if edt_CodigoEsterilizacao.Tag > 0 then begin
+      E.SelectList('id = ' + IntToStr(edt_CodigoEsterilizacao.Tag));
+      if E.Count > 0 then begin
+        edt_CodigoEsterilizacao.Text     := TESTERILIZACAO(E.Itens[0]).ID.asString;
+        edt_NomeEsterilizacao.Text       := TESTERILIZACAO(E.Itens[0]).METODO.asString;
+      end;
+    end;
+  finally
+    FreeAndNil(E);
+    FreeAndNil(FWC);
+  end;
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.SelecionaMateriaPrima;
@@ -596,6 +734,11 @@ end;
 procedure TfrmOrdemProducaoMeioCultura.SpeedButton1Click(Sender: TObject);
 begin
   InvertePaineis;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.SpeedButton2Click(Sender: TObject);
+begin
+  DeletarOrdemProducao;
 end;
 
 end.

@@ -176,8 +176,6 @@ CREATE TABLE ordemproducaomc
   id_recipiente bigint,
   id_usuarioexecutar bigint,
   datahora time without time zone,
-  datainicio time without time zone,
-  datafim time without time zone,
   quantrecipientes integer,
   esterilizacao boolean,
   id_produto bigint,
@@ -187,7 +185,13 @@ CREATE TABLE ordemproducaomc
   mlrecipiente double precision,
   encerrado boolean,
   quantproduto double precision,
+  id_esterilizacao bigint,
+  datainicio date,
+  datafim date,
   CONSTRAINT pk_ordemproducaomp PRIMARY KEY (id),
+  CONSTRAINT fk_opmc_esterilizacao FOREIGN KEY (id_esterilizacao)
+      REFERENCES esterilizacao (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
   CONSTRAINT fk_opmc_produto FOREIGN KEY (id_produto)
       REFERENCES produto (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT,
