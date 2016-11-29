@@ -11,7 +11,9 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -38,6 +40,9 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
       ParentBackground = False
       ParentFont = False
       TabOrder = 0
+      DesignSize = (
+        873
+        40)
       object btPesquisar: TSpeedButton
         AlignWithMargins = True
         Left = 770
@@ -110,9 +115,9 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         AlignWithMargins = True
         Left = 3
         Top = 3
-        Width = 761
+        Width = 615
         Height = 34
-        Align = alClient
+        Anchors = [akLeft, akTop, akRight]
         AutoSize = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -123,6 +128,22 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
+      end
+      object cbStatus: TComboBox
+        AlignWithMargins = True
+        Left = 622
+        Top = 7
+        Width = 145
+        Height = 27
+        Style = csDropDownList
+        Anchors = [akTop, akRight]
+        ItemIndex = 0
+        TabOrder = 1
+        Text = 'Abertos'
+        OnChange = cbStatusChange
+        Items.Strings = (
+          'Abertos'
+          'Encerrados')
       end
     end
     object gdPesquisa: TDBGrid
@@ -423,6 +444,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
               F5E0C2F7E8D7FAF2EAFDFAF7FFFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+            OnClick = btEncerrarClick
             ExplicitLeft = 11
             ExplicitTop = 6
           end
@@ -2040,6 +2062,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
             Font.Style = []
             ParentFont = False
             TabOrder = 2
+            OnChange = edt_MLPorRecipienteChange
           end
         end
         object GroupBox1: TGroupBox
@@ -2134,7 +2157,8 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            TabOrder = 2
+            TabOrder = 3
+            OnChange = edt_MLPorRecipienteChange
           end
           object edt_MLPorRecipiente: TJvValidateEdit
             Left = 296
@@ -2152,7 +2176,8 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            TabOrder = 3
+            TabOrder = 2
+            OnChange = edt_MLPorRecipienteChange
           end
         end
       end

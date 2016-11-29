@@ -97,6 +97,7 @@ type
     edt_CodigoEsterilizacao: TButtonedEdit;
     Label19: TLabel;
     edt_NomeEsterilizacao: TEdit;
+    cbStatus: TComboBox;
     procedure FormShow(Sender: TObject);
     procedure btn_CancelarClick(Sender: TObject);
     procedure cds_PesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
@@ -119,6 +120,10 @@ type
     procedure edt_CodigoEsterilizacaoChange(Sender: TObject);
     procedure edt_CodigoEsterilizacaoRightButtonClick(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
+    procedure edt_MLPorRecipienteChange(Sender: TObject);
+    procedure btEncerrarClick(Sender: TObject);
+    procedure cbStatusChange(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -131,6 +136,7 @@ type
     procedure CarregaDadosOrdemProducao(Codigo : Integer);
     procedure GravarDados;
     procedure DeletarOrdemProducao;
+    procedure EncerrarOrdem;
 
     procedure SelecionaUsuario;
     procedure SelecionaMeioCultura;
@@ -155,12 +161,24 @@ uses
   uBeanUsuario,
   uBeanOrdemProducaoMC,
   uBeanOrdemProducaoMC_Itens,
-  uBeanEsterilizacao;
+  uBeanEsterilizacao, uBeanControleEstoque, uBeanControleEstoqueProduto;
 {$R *.dfm}
 
 procedure TfrmOrdemProducaoMeioCultura.btBuscarClick(Sender: TObject);
 begin
   BuscaMateriaPrima;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.btEncerrarClick(Sender: TObject);
+begin
+  if btEncerrar.Tag = 0 then begin
+    btEncerrar.Tag := 1;
+    try
+      EncerrarOrdem;
+    finally
+      btEncerrar.Tag := 0;
+    end;
+  end;
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.btExcluirClick(Sender: TObject);
@@ -278,7 +296,11 @@ begin
     SQL.SQL.Clear;
     SQL.SQL.Add('SELECT MC.ID, MC.DATAINICIO, MC.DATAFIM, P.ID, P.DESCRICAO FROM ORDEMPRODUCAOMC MC');
     SQL.SQL.Add('INNER JOIN PRODUTO P ON MC.ID_PRODUTO = P.ID');
-    SQL.SQL.Add('WHERE NOT MC.ENCERRADO');
+    SQL.SQL.Add('WHERE 1 = 1');
+    if cbStatus.ItemIndex = 0 then
+      SQL.SQL.Add('AND NOT MC.ENCERRADO')
+    else
+      SQL.SQL.Add('AND MC.ENCERRADO');
     SQL.Connection := FW.FDConnection;
     SQL.Prepare;
     SQL.Open();
@@ -372,6 +394,11 @@ begin
     FreeAndNil(FU);
     FreeAndNil(FW);
   end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.cbStatusChange(Sender: TObject);
+begin
+  BuscarDados;
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.cds_PesquisaFilterRecord(
@@ -483,10 +510,148 @@ begin
   SelecionaRecipiente;
 end;
 
+procedure TfrmOrdemProducaoMeioCultura.edt_MLPorRecipienteChange(
+  Sender: TObject);
+begin
+  if Panel2.Tag = 0 then begin
+    Panel2.Tag := 1;
+    try
+      if Sender = edt_MLPorRecipiente then begin
+        if (edt_MLPorRecipiente.Value > 0) and (edt_QuantidadeMeioCultura.Value > 0) then
+          edt_QuantidadeRecipiente.Value := edt_QuantidadeMeioCultura.Value / edt_MLPorRecipiente.Value;
+      end
+      else if Sender = edt_QuantidadeRecipiente then begin
+        if (edt_QuantidadeRecipiente.Value > 0) and (edt_QuantidadeMeioCultura.Value > 0) then
+          edt_MLPorRecipiente.Value := edt_QuantidadeMeioCultura.Value / edt_QuantidadeRecipiente.Value;
+      end
+      else if Sender = edt_QuantidadeMeioCultura then begin
+        if (edt_MLPorRecipiente.Value > 0) and (edt_QuantidadeMeioCultura.Value > 0) then
+          edt_QuantidadeRecipiente.Value := edt_QuantidadeMeioCultura.Value / edt_MLPorRecipiente.Value;
+      end;
+    finally
+      Panel2.Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.EncerrarOrdem;
+Var
+  FWC   : TFWConnection;
+  CE    : TCONTROLEESTOQUE;
+  CEP   : TCONTROLEESTOQUEPRODUTO;
+  OPMC  : TORDEMPRODUCAOMC;
+  OPMCI : TORDEMPRODUCAOMC_ITENS;
+  I: Integer;
+begin
+  if cds_Pesquisa.IsEmpty then begin
+    DisplayMsg(MSG_INF, 'Selecione uma Ordem de Produção de Meio de Cultura!');
+    Exit;
+  end;
+
+  FWC     := TFWConnection.Create;
+  CE      := TCONTROLEESTOQUE.Create(FWC);
+  CEP     := TCONTROLEESTOQUEPRODUTO.Create(FWC);
+  OPMC    := TORDEMPRODUCAOMC.Create(FWC);
+  OPMCI   := TORDEMPRODUCAOMC_ITENS.Create(FWC);
+  try
+    DisplayMsg(MSG_WAIT, 'Encerrando Ordem de Produção de Meio de Cultura...');
+
+    FWC.StartTransaction;
+    try
+      OPMC.SelectList('ID = ' + QuotedStr(cds_PesquisaID.AsString));
+      if OPMC.Count > 0 then begin
+        CE.ID.isNull                := True;
+        CE.DATAHORA.Value           := Now;
+        CE.USUARIO_ID.Value         := USUARIO.CODIGO;
+        CE.TIPOMOVIMENTACAO.Value   := 1;
+        CE.CANCELADO.Value          := False;
+        CE.OBSERVACAO.Value         := 'Encerramento da Ordem de Produção de Meio de Cultura: ' + TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.asString;
+        CE.Insert;
+
+        CEP.ID.isNull               := True;
+        CEP.CONTROLEESTOQUE_ID.Value:= CE.ID.Value;
+        CEP.PRODUTO_ID.Value        := TORDEMPRODUCAOMC(OPMC.Itens[0]).ID_PRODUTO.Value;
+        CEP.QUANTIDADE.Value        := TORDEMPRODUCAOMC(OPMC.Itens[0]).QUANTPRODUTO.Value;
+        CEP.Insert;
+
+        OPMCI.SelectList('ID_ORDEMPRODUCAOMC = ' + QuotedStr(cds_PesquisaID.AsString));
+        if OPMCI.Count > 0 then begin
+          for I := 0 to Pred(OPMCI.Count) do begin
+            CEP.ID.isNull               := True;
+            CEP.CONTROLEESTOQUE_ID.Value:= CE.ID.Value;
+            CEP.PRODUTO_ID.Value        := TORDEMPRODUCAOMC_ITENS(OPMCI.Itens[I]).ID_PRODUTO.Value;
+            CEP.QUANTIDADE.Value        := TORDEMPRODUCAOMC_ITENS(OPMCI.Itens[I]).QUANTIDADE.Value * -1;
+            CEP.Insert;
+          end;
+        end;
+      end;
+
+      OPMC.ID.Value                     := TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.Value;
+      OPMC.ENCERRADO.Value              := True;
+      OPMC.Update;
+
+      FWC.Commit;
+      DisplayMsgFinaliza;
+      BuscarDados;
+    except
+      on E : Exception do begin
+        FWC.Rollback;
+        DisplayMsg(MSG_WAR, 'Erro ao Encerrar Ordem de Produção de Meios de Cultura!');
+      end;
+    end;
+  finally
+    FreeAndNil(CE);
+    FreeAndNil(CEP);
+    FreeAndNil(OPMC);
+    FreeAndNil(OPMCI);
+    FreeAndNil(FWC);
+  end;
+end;
+
 procedure TfrmOrdemProducaoMeioCultura.Filtrar;
 begin
   cds_Pesquisa.Filtered := False;
   cds_Pesquisa.Filtered := edPesquisa.Text <> EmptyStr;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.FormKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if pnPesquisa.Visible then begin
+    case Key of
+      VK_ESCAPE : Close;
+      VK_RETURN : begin
+        if edPesquisa.Focused then begin
+          Filtrar;
+        end else begin
+          if edPesquisa.CanFocus then begin
+            edPesquisa.SetFocus;
+            edPesquisa.SelectAll;
+          end;
+        end;
+      end;
+      VK_F5 : BuscarDados;
+      VK_UP : begin
+        if not cds_Pesquisa.IsEmpty then begin
+          if cds_Pesquisa.RecNo > 1 then
+            cds_Pesquisa.Prior;
+        end;
+      end;
+      VK_DOWN : begin
+        if not cds_Pesquisa.IsEmpty then begin
+          if cds_Pesquisa.RecNo < cds_Pesquisa.RecordCount then
+            cds_Pesquisa.Next;
+        end;
+      end;
+    end;
+  end else begin
+    case Key of
+      VK_ESCAPE : begin
+        LimpaEdits;
+        InvertePaineis;
+      end;
+    end;
+  end;
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.FormShow(Sender: TObject);
