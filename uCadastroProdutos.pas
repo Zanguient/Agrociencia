@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Datasnap.DBClient,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
-  JvToolEdit, JvBaseEdits, Vcl.ImgList;
+  JvToolEdit, JvBaseEdits, Vcl.ImgList, FireDAC.Comp.Client;
 
 type
   TfrmCadastroProdutos = class(TForm)
@@ -55,6 +55,7 @@ type
     Label5: TLabel;
     ImageList: TImageList;
     cds_PesquisaUNIDADEMEDIDA: TIntegerField;
+    cds_PesquisaESTOQUE: TCurrencyField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -266,7 +267,7 @@ end;
 procedure TfrmCadastroProdutos.CarregaDados;
 Var
   FWC : TFWConnection;
-  P   : TPRODUTO;
+  SQL : TFDQuery;
   I,
   Codigo  : Integer;
   F : TFinalidadeProduto;
@@ -274,7 +275,7 @@ begin
 
   try
     FWC := TFWConnection.Create;
-    P   := TPRODUTO.Create(FWC);
+    SQL := TFDQuery.Create(nil);
     cds_Pesquisa.DisableControls;
     try
 
@@ -282,16 +283,38 @@ begin
 
       cds_Pesquisa.EmptyDataSet;
 
-      P.SelectList('ID > 0', 'ID');
-      if P.Count > 0 then begin
-        for I := 0 to P.Count -1 do begin
+      SQL.Close;
+      SQL.SQL.Clear;
+      SQL.SQL.Add('SELECT');
+      SQL.SQL.Add('        P.ID,');
+      SQL.SQL.Add('        P.DESCRICAO,');
+      SQL.SQL.Add('        P.FINALIDADE,');
+      SQL.SQL.Add('        P.UNIDADEMEDIDA_ID,');
+      SQL.SQL.Add('        P.CODIGOEXTERNO,');
+      SQL.SQL.Add('        (COALESCE((SELECT SUM(COALESCE(CEP.QUANTIDADE, 0.00))');
+      SQL.SQL.Add('	  FROM CONTROLEESTOQUE CE INNER JOIN CONTROLEESTOQUEPRODUTO CEP ON (CEP.CONTROLEESTOQUE_ID = CE.ID)');
+      SQL.SQL.Add('	  WHERE CE.CANCELADO = FALSE AND CEP.PRODUTO_ID = P.ID),0.00)) AS ESTOQUE');
+      SQL.SQL.Add('FROM PRODUTO P');
+      SQL.SQL.Add('WHERE 1 = 1');
+      SQL.SQL.Add('AND P.ID > 0');
+      SQL.SQL.Add('ORDER BY P.ID ASC');
+      SQL.Connection  := FWC.FDConnection;
+      SQL.Prepare;
+      SQL.Open;
+      SQL.FetchAll;
+
+      if not SQL.IsEmpty then begin
+        SQL.First;
+        while not SQL.Eof do begin
           cds_Pesquisa.Append;
-          cds_PesquisaID.Value              := TPRODUTO(P.Itens[I]).ID.Value;
-          cds_PesquisaDESCRICAO.Value       := TPRODUTO(P.Itens[I]).DESCRICAO.Value;
-          cds_PesquisaFINALIDADE.Value      := TPRODUTO(P.Itens[I]).FINALIDADE.Value;
-          cds_PesquisaUNIDADEMEDIDA.Value   := TPRODUTO(P.Itens[I]).UNIDADEMEDIDA_ID.Value;
-          cds_PesquisaCODIGOEXTERNO.Value   := TPRODUTO(P.Itens[I]).CODIGOEXTERNO.Value;
+          cds_PesquisaID.Value              := SQL.FieldByName('ID').AsInteger;
+          cds_PesquisaDESCRICAO.Value       := SQL.FieldByName('DESCRICAO').AsString;
+          cds_PesquisaFINALIDADE.Value      := SQL.FieldByName('FINALIDADE').AsInteger;
+          cds_PesquisaUNIDADEMEDIDA.Value   := SQL.FieldByName('UNIDADEMEDIDA_ID').AsInteger;
+          cds_PesquisaCODIGOEXTERNO.Value   := SQL.FieldByName('CODIGOEXTERNO').AsString;
+          cds_PesquisaESTOQUE.Value         := SQL.FieldByName('ESTOQUE').AsCurrency;
           cds_Pesquisa.Post;
+          SQL.Next;
         end;
       end;
 
@@ -312,7 +335,7 @@ begin
 
   finally
     cds_Pesquisa.EnableControls;
-    FreeAndNil(P);
+    FreeAndNil(SQL);
     FreeAndNil(FWC);
   end;
 end;
