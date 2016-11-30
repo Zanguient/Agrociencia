@@ -153,6 +153,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
       Width = 867
       Height = 350
       Align = alClient
+      BorderStyle = bsNone
       DataSource = ds_Pesquisa
       DrawingStyle = gdsGradient
       Font.Charset = DEFAULT_CHARSET
@@ -1301,7 +1302,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
       Font.Style = []
       ParentBackground = False
       ParentFont = False
-      TabOrder = 4
+      TabOrder = 3
       TabStop = True
       object GridPanel2: TGridPanel
         AlignWithMargins = True
@@ -1353,6 +1354,11 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
             Height = 48
             Align = alLeft
             Caption = '&Cancelar'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            Font.Style = []
             Glyph.Data = {
               36300000424D3630000000000000360000002800000080000000200000000100
               18000000000000300000120B0000120B00000000000000000000FFFFFFFFFFFF
@@ -1741,6 +1747,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
             NumGlyphs = 4
+            ParentFont = False
             TabOrder = 0
             OnClick = btn_CancelarClick
           end
@@ -1761,6 +1768,11 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
             Height = 48
             Align = alRight
             Caption = '&Gravar'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Tahoma'
+            Font.Style = []
             Glyph.Data = {
               36100000424D3610000000000000360000002800000020000000200000000100
               20000000000000100000C40E0000C40E00000000000000000000B29496FF662C
@@ -1892,51 +1904,12 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
               6DFF969393FF969393FF969393FF969393FF969393FF969393FF969393FF9693
               93FF969393FF969393FF969393FF969393FF969393FF7E7879FF8C5F61FF8C5F
               61FF8C5F61FF8C5F61FFE4DADAFFFFFFFFFFFFFFFFFFFFFFFFFF}
+            ParentFont = False
             TabOrder = 0
             OnClick = btGravarClick
           end
         end
       end
-    end
-    object dg_Componentes: TDBGrid
-      AlignWithMargins = True
-      Left = 3
-      Top = 228
-      Width = 869
-      Height = 167
-      Align = alClient
-      DataSource = ds_MateriaPrima
-      DrawingStyle = gdsGradient
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
-      ParentFont = False
-      TabOrder = 3
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -19
-      TitleFont.Name = 'Tahoma'
-      TitleFont.Style = []
-      Columns = <
-        item
-          Expanded = False
-          FieldName = 'IDPRODUTO'
-          Visible = True
-        end
-        item
-          Expanded = False
-          FieldName = 'NOMEPRODUTO'
-          Width = 400
-          Visible = True
-        end
-        item
-          Expanded = False
-          FieldName = 'QUANTIDADE'
-          Visible = True
-        end>
     end
     object Panel2: TPanel
       Left = 0
@@ -2181,6 +2154,47 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           end
         end
       end
+    end
+    object dg_MateriaPrima: TDBGrid
+      AlignWithMargins = True
+      Left = 3
+      Top = 228
+      Width = 869
+      Height = 167
+      Align = alClient
+      BorderStyle = bsNone
+      DataSource = ds_MateriaPrima
+      DrawingStyle = gdsGradient
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      ParentFont = False
+      TabOrder = 4
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -16
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+      Columns = <
+        item
+          Expanded = False
+          FieldName = 'IDPRODUTO'
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'NOMEPRODUTO'
+          Width = 600
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'QUANTIDADE'
+          Visible = True
+        end>
     end
   end
   object Panel3: TPanel

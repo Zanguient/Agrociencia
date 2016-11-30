@@ -28,7 +28,6 @@ type
     GridPanel2: TGridPanel;
     Panel4: TPanel;
     Panel5: TPanel;
-    dg_Componentes: TDBGrid;
     edt_CodigoFuncionario: TButtonedEdit;
     Label10: TLabel;
     edt_DescricaoFuncionario: TEdit;
@@ -98,6 +97,7 @@ type
     Label19: TLabel;
     edt_NomeEsterilizacao: TEdit;
     cbStatus: TComboBox;
+    dg_MateriaPrima: TDBGrid;
     procedure FormShow(Sender: TObject);
     procedure btn_CancelarClick(Sender: TObject);
     procedure cds_PesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
@@ -657,6 +657,8 @@ end;
 procedure TfrmOrdemProducaoMeioCultura.FormShow(Sender: TObject);
 begin
   AjustaForm(frmOrdemProducaoMeioCultura);
+  AutoSizeDBGrid(dg_MateriaPrima);
+  AutoSizeDBGrid(gdPesquisa);
 
   cds_Pesquisa.CreateDataSet;
   cds_Pesquisa.Open;
@@ -746,13 +748,11 @@ end;
 procedure TfrmOrdemProducaoMeioCultura.InvertePaineis;
 begin
   pnPesquisa.Visible               := not pnPesquisa.Visible;
-  pnBotoesVisualizacao.Visible  := pnDados.Visible;
-  pnDados.Visible              := not pnDados.Visible;
-  pnBotoesEdicao.Visible        := pnDados.Visible;
-  if pnDados.Visible then begin
-//    if edDescricao.CanFocus then
-//      edDescricao.SetFocus;
-  end;
+  pnBotoesVisualizacao.Visible     := pnDados.Visible;
+  pnDados.Visible                  := not pnDados.Visible;
+  pnBotoesEdicao.Visible           := pnDados.Visible;
+  AutoSizeDBGrid(dg_MateriaPrima);
+  AutoSizeDBGrid(gdPesquisa);
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.LimpaEdits;
