@@ -392,6 +392,7 @@ begin
     FreeAndNil(MC);
     FreeAndNil(PR);
     FreeAndNil(FU);
+    FreeAndNil(E);
     FreeAndNil(FW);
   end;
 end;
