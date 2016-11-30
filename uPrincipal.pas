@@ -21,7 +21,6 @@ type
     BackupdoBancodeDados1: TMenuItem;
     Movimentao1: TMenuItem;
     UnidadedeMedida1: TMenuItem;
-    Recipientes1: TMenuItem;
     Observaes1: TMenuItem;
     Cliente1: TMenuItem;
     Produtos1: TMenuItem;
@@ -38,7 +37,6 @@ type
     procedure ConfigGerais1Click(Sender: TObject);
     procedure BackupdoBancodeDados1Click(Sender: TObject);
     procedure UnidadedeMedida1Click(Sender: TObject);
-    procedure Recipientes1Click(Sender: TObject);
     procedure Observaes1Click(Sender: TObject);
     procedure Cliente1Click(Sender: TObject);
     procedure Produtos1Click(Sender: TObject);
@@ -72,7 +70,6 @@ uses
   uConfiguracoesSistema,
   uRelatorios,
   uCadastroUnidadeMedida,
-  uCadastroRecipientes,
   uBeanObservacao,
   uCadastroObservacoes,
   uCadastroCliente,
@@ -80,7 +77,8 @@ uses
   uMovimentacaoEstoque,
   uOrdemProducaoMeioCultura,
   uComposicaoMeioCultura,
-  uCadastroEsterilizacao, uOrdemProducao;
+  uCadastroEsterilizacao,
+  uOrdemProducao;
 
 {$R *.dfm}
 
@@ -244,17 +242,6 @@ begin
     frmCadastroProdutos.ShowModal;
   finally
     FreeAndNil(frmCadastroProdutos);
-  end;
-end;
-
-procedure TfrmPrincipal.Recipientes1Click(Sender: TObject);
-begin
-  try
-    if frmCadastroRecipientes = nil then
-      frmCadastroRecipientes     := TfrmCadastroRecipientes.Create(Self);
-    frmCadastroRecipientes.ShowModal;
-  finally
-    FreeAndNil(frmCadastroRecipientes);
   end;
 end;
 

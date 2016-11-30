@@ -1421,15 +1421,39 @@ object frmOrdemProducao: TfrmOrdemProducao
       DisplayLabel = 'C'#243'digo'
       FieldName = 'ID'
     end
-    object cds_PesquisaDESCRICAO: TStringField
-      DisplayLabel = 'Descri'#231#227'o'
-      DisplayWidth = 50
-      FieldName = 'DESCRICAO'
-      Size = 100
+    object cds_PesquisaDATAHORA: TDateTimeField
+      FieldName = 'DATAHORA'
     end
-    object cds_PesquisaCODIGOEXTERNO: TStringField
-      FieldName = 'CODIGOEXTERNO'
-      Size = 100
+    object cds_PesquisaDATAHORAINICIO: TDateTimeField
+      FieldName = 'DATAHORAINICIO'
+    end
+    object cds_PesquisaDATAHORAFIM: TDateTimeField
+      FieldName = 'DATAHORAFIM'
+    end
+    object cds_PesquisaQUANTIDADE: TIntegerField
+      FieldName = 'QUANTIDADE'
+    end
+    object cds_PesquisaOBSERVACAO: TStringField
+      FieldName = 'OBSERVACAO'
+      Size = 512
+    end
+    object cds_PesquisaINTERVALOCRESCIMENTO: TIntegerField
+      FieldName = 'INTERVALOCRESCIMENTO'
+    end
+    object cds_PesquisaMEIOCULTURA_ID: TIntegerField
+      FieldName = 'MEIOCULTURA_ID'
+    end
+    object cds_PesquisaPRODUTO_ID: TIntegerField
+      FieldName = 'PRODUTO_ID'
+    end
+    object cds_PesquisaCLIENTE_ID: TIntegerField
+      FieldName = 'CLIENTE_ID'
+    end
+    object cds_PesquisaRESPONSAVEL_ID: TIntegerField
+      FieldName = 'RESPONSAVEL_ID'
+    end
+    object cds_PesquisaUSUARIO_ID: TIntegerField
+      FieldName = 'USUARIO_ID'
     end
   end
 end

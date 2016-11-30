@@ -43,10 +43,6 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Unidade de Medida'
         OnClick = UnidadedeMedida1Click
       end
-      object Recipientes1: TMenuItem
-        Caption = 'Recipiente'
-        OnClick = Recipientes1Click
-      end
       object Observaes1: TMenuItem
         Caption = 'Observa'#231#245'es'
         OnClick = Observaes1Click

@@ -23,7 +23,6 @@ type
     ds_Pesquisa: TDataSource;
     cds_Pesquisa: TClientDataSet;
     cds_PesquisaID: TIntegerField;
-    cds_PesquisaDESCRICAO: TStringField;
     gpBotoes: TGridPanel;
     Panel8: TPanel;
     Panel9: TPanel;
@@ -46,7 +45,17 @@ type
     btGravar: TSpeedButton;
     edCodigoExterno: TEdit;
     Label3: TLabel;
-    cds_PesquisaCODIGOEXTERNO: TStringField;
+    cds_PesquisaDATAHORA: TDateTimeField;
+    cds_PesquisaDATAHORAINICIO: TDateTimeField;
+    cds_PesquisaDATAHORAFIM: TDateTimeField;
+    cds_PesquisaQUANTIDADE: TIntegerField;
+    cds_PesquisaOBSERVACAO: TStringField;
+    cds_PesquisaINTERVALOCRESCIMENTO: TIntegerField;
+    cds_PesquisaMEIOCULTURA_ID: TIntegerField;
+    cds_PesquisaPRODUTO_ID: TIntegerField;
+    cds_PesquisaCLIENTE_ID: TIntegerField;
+    cds_PesquisaRESPONSAVEL_ID: TIntegerField;
+    cds_PesquisaUSUARIO_ID: TIntegerField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -91,8 +100,8 @@ begin
     edCodigoExterno.Clear;
     btGravar.Tag  := 0;
   end else begin
-    edDescricao.Text      := cds_PesquisaDESCRICAO.Value;
-    edCodigoExterno.Text  := cds_PesquisaCODIGOEXTERNO.Value;
+    //edDescricao.Text      := cds_PesquisaDESCRICAO.Value;
+    //edCodigoExterno.Text  := cds_PesquisaCODIGOEXTERNO.Value;
     btGravar.Tag          := cds_PesquisaID.Value;
   end;
 end;
@@ -249,8 +258,8 @@ begin
         for I := 0 to R.Count -1 do begin
           cds_Pesquisa.Append;
           cds_PesquisaID.Value             := TRECIPIENTES(R.Itens[I]).ID.Value;
-          cds_PesquisaDESCRICAO.Value      := TRECIPIENTES(R.Itens[I]).DESCRICAO.Value;
-          cds_PesquisaCODIGOEXTERNO.Value  := TRECIPIENTES(R.Itens[I]).CODIGOEXTERNO.Value;
+          //cds_PesquisaDESCRICAO.Value      := TRECIPIENTES(R.Itens[I]).DESCRICAO.Value;
+          //cds_PesquisaCODIGOEXTERNO.Value  := TRECIPIENTES(R.Itens[I]).CODIGOEXTERNO.Value;
           cds_Pesquisa.Post;
         end;
       end;

@@ -160,7 +160,12 @@ begin
 
     edtMateriaPrima.Clear;
     edt_Quantidade.Clear;
-  end;
+
+  end else
+    DisplayMsg(MSG_WAR, 'Produto ' + edtMateriaPrima.Text + ' - ' + edtNomeMateriaPrima.Text + ' já Adicionado, Verifique!');
+
+  if edtMateriaPrima.CanFocus then
+    edtMateriaPrima.SetFocus;
 end;
 
 procedure TfrmComposicaoMeioCultura.btPesquisarClick(Sender: TObject);
@@ -311,6 +316,9 @@ begin
   end else begin
     case Key of
       VK_ESCAPE : Cancelar;
+      VK_RETURN : begin
+        SelectNext(ActiveControl as TWinControl, True, True);
+      end;
     end;
   end;
 end;
@@ -404,7 +412,6 @@ begin
 //      DisplayMsg(MSG_INF, 'Informe um meio de cultura para continuar!');
 //      Exit;
 //    end;
-    DisplayMsg(MSG_WAIT, 'Consultando componentes no banco de dados!');
     try
       SQL.Close;
       SQL.SQL.Clear;
@@ -425,7 +432,6 @@ begin
 
         SQL.Next;
       end;
-      DisplayMsgFinaliza;
     except
       on E : Exception do begin
         DisplayMsg(MSG_WAR, 'Erro ao executar consulta!', '', E.Message);
@@ -454,7 +460,8 @@ begin
       if P.Count > 0 then begin
         edtMateriaPrima.Text     := TPRODUTO(P.Itens[0]).ID.asString;
         edtNomeMateriaPrima.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
-        if edt_Quantidade.CanFocus then edt_Quantidade.SetFocus;
+        if edt_Quantidade.CanFocus then
+          edt_Quantidade.SetFocus;
       end;
     end;
   finally
