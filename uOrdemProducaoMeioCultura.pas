@@ -28,20 +28,8 @@ type
     GridPanel2: TGridPanel;
     Panel4: TPanel;
     Panel5: TPanel;
-    edt_CodigoFuncionario: TButtonedEdit;
-    Label10: TLabel;
-    edt_DescricaoFuncionario: TEdit;
-    Label11: TLabel;
-    edt_PHInicial: TJvValidateEdit;
-    Label12: TLabel;
-    Label13: TLabel;
-    edt_PHFinal: TJvValidateEdit;
-    Label14: TLabel;
-    edt_PHRec: TJvValidateEdit;
     edt_DataInicio: TJvDateEdit;
-    edt_DataFinal: TJvDateEdit;
     Label15: TLabel;
-    Label16: TLabel;
     btGravar: TBitBtn;
     btn_Cancelar: TBitBtn;
     Panel2: TPanel;
@@ -105,8 +93,6 @@ type
     procedure btAlterarClick(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure btGravarClick(Sender: TObject);
-    procedure edt_CodigoFuncionarioRightButtonClick(Sender: TObject);
-    procedure edt_CodigoFuncionarioChange(Sender: TObject);
     procedure edt_CodigoMeioCulturaRightButtonClick(Sender: TObject);
     procedure edt_CodigoMeioCulturaChange(Sender: TObject);
     procedure edt_CodigoRecipientesChange(Sender: TObject);
@@ -138,7 +124,6 @@ type
     procedure DeletarOrdemProducao;
     procedure EncerrarOrdem;
 
-    procedure SelecionaUsuario;
     procedure SelecionaMeioCultura;
     procedure SelecionaRecipiente;
     procedure SelecionaMateriaPrima;
@@ -347,15 +332,6 @@ begin
     MC.SelectList('ID = ' + IntToStr(Codigo));
     if MC.Count > 0 then begin
       pnDados.Tag                      := TORDEMPRODUCAOMC(MC.Itens[0]).ID.Value;
-      edt_CodigoFuncionario.Text       := TORDEMPRODUCAOMC(MC.Itens[0]).ID_USUARIOEXECUTAR.asString;
-      FU.SelectList('ID = ' + edt_CodigoFuncionario.Text);
-      if FU.Count > 0 then
-        edt_DescricaoFuncionario.Text  := TUSUARIO(FU.Itens[0]).NOME.asString;
-      edt_PHInicial.Value              := TORDEMPRODUCAOMC(MC.Itens[0]).PHINICIAL.Value;
-      edt_PHFinal.Value                := TORDEMPRODUCAOMC(MC.Itens[0]).PHFINAL.Value;
-      edt_PHRec.Value                  := TORDEMPRODUCAOMC(MC.Itens[0]).PHRECOMENDADO.Value;
-      edt_DataInicio.Date              := TORDEMPRODUCAOMC(MC.Itens[0]).DATAINICIO.Value;
-      edt_DataFinal.Date               := TORDEMPRODUCAOMC(MC.Itens[0]).DATAFIM.Value;
       edt_CodigoMeioCultura.Text       := TORDEMPRODUCAOMC(MC.Itens[0]).ID_PRODUTO.asString;
       PR.SelectList('ID = ' + edt_CodigoMeioCultura.Text);
       if PR.Count > 0 then
@@ -473,18 +449,6 @@ procedure TfrmOrdemProducaoMeioCultura.edt_CodigoEsterilizacaoRightButtonClick(
   Sender: TObject);
 begin
   SelecionaEsterilizacao;
-end;
-
-procedure TfrmOrdemProducaoMeioCultura.edt_CodigoFuncionarioChange(
-  Sender: TObject);
-begin
-  edt_DescricaoFuncionario.Clear;
-end;
-
-procedure TfrmOrdemProducaoMeioCultura.edt_CodigoFuncionarioRightButtonClick(
-  Sender: TObject);
-begin
-  SelecionaUsuario;
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.edt_CodigoMeioCulturaChange(
@@ -687,15 +651,15 @@ begin
       MC.ID_RECIPIENTE.Value      := StrToInt(edt_CodigoRecipientes.Text);
       MC.QUANTRECIPIENTES.Value   := edt_QuantidadeRecipiente.Value;
       MC.MLRECIPIENTE.Value       := edt_MLPorRecipiente.Value;
-      MC.ID_USUARIOEXECUTAR.Value := StrToInt(edt_CodigoFuncionario.Text);
+//      MC.ID_USUARIOEXECUTAR.Value := StrToInt(edt_CodigoFuncionario.Text);
       MC.ID_USUARIO.Value         := USUARIO.CODIGO;
       MC.ID_PRODUTO.Value         := StrToInt(edt_CodigoMeioCultura.Text);
       MC.QUANTPRODUTO.Value       := edt_QuantidadeMeioCultura.Value;
-      MC.PHINICIAL.Value          := edt_PHInicial.Value;
-      MC.PHFINAL.Value            := edt_PHFinal.Value;
-      MC.PHRECOMENDADO.Value      := edt_PHRec.Value;
+//      MC.PHINICIAL.Value          := edt_PHInicial.Value;
+//      MC.PHFINAL.Value            := edt_PHFinal.Value;
+//      MC.PHRECOMENDADO.Value      := edt_PHRec.Value;
       MC.DATAINICIO.Value         := edt_DataInicio.Date;
-      MC.DATAFIM.Value            := edt_DataFinal.Date;
+//      MC.DATAFIM.Value            := edt_DataFinal.Date;
       MC.DATAHORA.Value           := Now;
       MC.ENCERRADO.Value          := False;
       MC.ID_ESTERILIZACAO.Value   := StrToInt(edt_CodigoEsterilizacao.Text);
@@ -759,13 +723,13 @@ end;
 procedure TfrmOrdemProducaoMeioCultura.LimpaEdits;
 begin
   pnDados.Tag := 0;
-  edt_CodigoFuncionario.Clear;
-  edt_DescricaoFuncionario.Clear;
-  edt_PHInicial.Clear;
-  edt_PHFinal.Clear;
-  edt_PHRec.Clear;
+//  edt_CodigoFuncionario.Clear;
+//  edt_DescricaoFuncionario.Clear;
+//  edt_PHInicial.Clear;
+//  edt_PHFinal.Clear;
+//  edt_PHRec.Clear;
   edt_DataInicio.Clear;
-  edt_DataFinal.Clear;
+//  edt_DataFinal.Clear;
   edt_CodigoMeioCultura.Clear;
   edt_DescricaoMeioCultura.Clear;
   edt_QuantidadeMeioCultura.Clear;
@@ -871,28 +835,6 @@ begin
     end;
   finally
     FreeAndNil(P);
-    FreeAndNil(FWC);
-  end;
-end;
-
-procedure TfrmOrdemProducaoMeioCultura.SelecionaUsuario;
-var
-  FWC : TFWConnection;
-  U   : TUSUARIO;
-begin
-  FWC    := TFWConnection.Create;
-  U      := TUSUARIO.Create(FWC);
-  try
-    edt_CodigoFuncionario.Tag := DMUtil.Selecionar(U, edt_CodigoFuncionario.Text);
-    if edt_CodigoFuncionario.Tag > 0 then begin
-      U.SelectList('id = ' + IntToStr(edt_CodigoFuncionario.Tag));
-      if U.Count > 0 then begin
-        edt_CodigoFuncionario.Text     := TUSUARIO(U.Itens[0]).ID.asString;
-        edt_DescricaoFuncionario.Text  := TUSUARIO(U.Itens[0]).NOME.asString;
-      end;
-    end;
-  finally
-    FreeAndNil(U);
     FreeAndNil(FWC);
   end;
 end;

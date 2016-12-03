@@ -729,85 +729,54 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
       Left = 3
       Top = 3
       Width = 869
-      Height = 64
+      Height = 59
       Align = alTop
       Caption = '  Dados Principais  '
       TabOrder = 0
       DesignSize = (
         869
-        64)
-      object Label10: TLabel
-        Left = 9
-        Top = 13
-        Width = 53
-        Height = 13
-        Caption = 'C'#243'd. Func:'
-      end
-      object Label11: TLabel
-        Left = 69
-        Top = 13
-        Width = 89
-        Height = 13
-        Caption = 'Nome Funcion'#225'rio:'
-      end
-      object Label12: TLabel
-        Left = 481
-        Top = 13
-        Width = 47
-        Height = 13
-        Anchors = [akTop, akRight]
-        Caption = 'PH Inicial:'
-      end
-      object Label13: TLabel
-        Left = 542
-        Top = 13
-        Width = 42
-        Height = 13
-        Anchors = [akTop, akRight]
-        Caption = 'PH Final:'
-      end
-      object Label14: TLabel
-        Left = 603
-        Top = 13
-        Width = 42
-        Height = 13
-        Anchors = [akTop, akRight]
-        Caption = 'PH Rec.:'
-      end
+        59)
       object Label15: TLabel
-        Left = 667
+        Left = 757
         Top = 13
         Width = 55
         Height = 13
         Anchors = [akTop, akRight]
         Caption = 'Data Inicio:'
       end
-      object Label16: TLabel
-        Left = 767
-        Top = 13
-        Width = 52
-        Height = 13
-        Anchors = [akTop, akRight]
-        Caption = 'Data Final:'
-      end
       object Label18: TLabel
-        Left = 253
+        Left = 8
         Top = 13
         Width = 45
         Height = 13
         Caption = 'C'#243'd. Est:'
       end
       object Label19: TLabel
-        Left = 313
+        Left = 69
         Top = 13
         Width = 93
         Height = 13
         Caption = 'Nome Esteriliza'#231#227'o:'
       end
-      object edt_CodigoFuncionario: TButtonedEdit
+      object edt_DataInicio: TJvDateEdit
+        Left = 757
+        Top = 26
+        Width = 109
+        Height = 27
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Anchors = [akTop, akRight]
+        ParentFont = False
+        ShowNullDate = False
+        TabOrder = 2
+      end
+      object edt_CodigoEsterilizacao: TButtonedEdit
         AlignWithMargins = True
-        Left = 9
-        Top = 29
+        Left = 8
+        Top = 26
         Width = 57
         Height = 27
         Font.Charset = DEFAULT_CHARSET
@@ -820,130 +789,13 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         RightButton.ImageIndex = 0
         RightButton.Visible = True
         TabOrder = 0
-        OnChange = edt_CodigoFuncionarioChange
-        OnRightButtonClick = edt_CodigoFuncionarioRightButtonClick
-      end
-      object edt_DescricaoFuncionario: TEdit
-        Left = 69
-        Top = 29
-        Width = 181
-        Height = 27
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 1
-      end
-      object edt_PHInicial: TJvValidateEdit
-        Left = 481
-        Top = 29
-        Width = 58
-        Height = 27
-        Anchors = [akTop, akRight]
-        CriticalPoints.MaxValueIncluded = False
-        CriticalPoints.MinValueIncluded = False
-        DisplayFormat = dfFloat
-        DecimalPlaces = 3
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 4
-      end
-      object edt_PHFinal: TJvValidateEdit
-        Left = 542
-        Top = 29
-        Width = 58
-        Height = 27
-        Anchors = [akTop, akRight]
-        CriticalPoints.MaxValueIncluded = False
-        CriticalPoints.MinValueIncluded = False
-        DisplayFormat = dfFloat
-        DecimalPlaces = 3
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 5
-      end
-      object edt_PHRec: TJvValidateEdit
-        Left = 603
-        Top = 29
-        Width = 61
-        Height = 27
-        Anchors = [akTop, akRight]
-        CriticalPoints.MaxValueIncluded = False
-        CriticalPoints.MinValueIncluded = False
-        DisplayFormat = dfFloat
-        DecimalPlaces = 3
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 6
-      end
-      object edt_DataInicio: TJvDateEdit
-        Left = 667
-        Top = 29
-        Width = 97
-        Height = 27
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Anchors = [akTop, akRight]
-        ParentFont = False
-        ShowNullDate = False
-        TabOrder = 7
-      end
-      object edt_DataFinal: TJvDateEdit
-        Left = 767
-        Top = 29
-        Width = 97
-        Height = 27
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Anchors = [akTop, akRight]
-        ParentFont = False
-        ShowNullDate = False
-        TabOrder = 8
-      end
-      object edt_CodigoEsterilizacao: TButtonedEdit
-        AlignWithMargins = True
-        Left = 253
-        Top = 29
-        Width = 57
-        Height = 27
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        Images = DMUtil.ImageList1
-        ParentFont = False
-        RightButton.ImageIndex = 0
-        RightButton.Visible = True
-        TabOrder = 2
         OnChange = edt_CodigoEsterilizacaoChange
         OnRightButtonClick = edt_CodigoEsterilizacaoRightButtonClick
       end
       object edt_NomeEsterilizacao: TEdit
-        Left = 313
-        Top = 29
-        Width = 164
+        Left = 69
+        Top = 26
+        Width = 682
         Height = 27
         Anchors = [akLeft, akTop, akRight]
         Enabled = False
@@ -953,38 +805,38 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
-        TabOrder = 3
+        TabOrder = 1
       end
     end
     object GroupBox3: TGroupBox
       AlignWithMargins = True
       Left = 3
-      Top = 152
+      Top = 124
       Width = 869
-      Height = 70
+      Height = 60
       Align = alTop
       Caption = '  Selecione a Mat'#233'ria-Prima  '
       TabOrder = 2
       DesignSize = (
         869
-        70)
+        60)
       object Label3: TLabel
         Left = 114
-        Top = 20
+        Top = 13
         Width = 31
         Height = 13
         Caption = 'Nome:'
       end
       object Label4: TLabel
         Left = 9
-        Top = 20
+        Top = 13
         Width = 37
         Height = 13
         Caption = 'C'#243'digo:'
       end
       object Label5: TLabel
         Left = 579
-        Top = 20
+        Top = 13
         Width = 60
         Height = 13
         Anchors = [akTop, akRight]
@@ -993,7 +845,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
       object edtMateriaPrima: TButtonedEdit
         AlignWithMargins = True
         Left = 9
-        Top = 37
+        Top = 27
         Width = 99
         Height = 27
         Font.Charset = DEFAULT_CHARSET
@@ -1011,7 +863,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
       end
       object edtNomeMateriaPrima: TEdit
         Left = 114
-        Top = 37
+        Top = 27
         Width = 462
         Height = 27
         Anchors = [akLeft, akTop, akRight]
@@ -1026,7 +878,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
       end
       object edt_Quantidade: TJvValidateEdit
         Left = 579
-        Top = 37
+        Top = 27
         Width = 121
         Height = 27
         Anchors = [akTop, akRight]
@@ -1047,7 +899,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Left = 702
         Top = 18
         Width = 50
-        Height = 47
+        Height = 37
         Align = alRight
         Glyph.Data = {
           360C0000424D360C000000000000360000002800000020000000200000000100
@@ -1150,13 +1002,14 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 3
         OnClick = btNovoClick
+        ExplicitHeight = 47
       end
       object btExcluir: TBitBtn
         AlignWithMargins = True
         Left = 758
         Top = 18
         Width = 50
-        Height = 47
+        Height = 37
         Align = alRight
         Glyph.Data = {
           F6060000424DF606000000000000360000002800000018000000180000000100
@@ -1217,13 +1070,14 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 4
         OnClick = btExcluirClick
+        ExplicitHeight = 47
       end
       object btBuscar: TBitBtn
         AlignWithMargins = True
         Left = 814
         Top = 18
         Width = 50
-        Height = 47
+        Height = 37
         Align = alRight
         Glyph.Data = {
           F6060000424DF606000000000000360000002800000018000000180000000100
@@ -1284,6 +1138,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 5
         OnClick = btBuscarClick
+        ExplicitHeight = 47
       end
     end
     object pnBotoesEdicao: TPanel
@@ -1913,9 +1768,9 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
     end
     object Panel2: TPanel
       Left = 0
-      Top = 70
+      Top = 65
       Width = 875
-      Height = 79
+      Height = 56
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 1
@@ -1923,7 +1778,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Left = 0
         Top = 0
         Width = 875
-        Height = 79
+        Height = 56
         Align = alClient
         BevelOuter = bvNone
         ColumnCollection = <
@@ -1949,6 +1804,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
             Value = 100.000000000000000000
           end>
         TabOrder = 0
+        ExplicitHeight = 79
         object gbMeioCultura: TGroupBox
           AlignWithMargins = True
           Left = 3
@@ -1987,7 +1843,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           object edt_CodigoMeioCultura: TButtonedEdit
             AlignWithMargins = True
             Left = 9
-            Top = 28
+            Top = 25
             Width = 56
             Height = 27
             Font.Charset = DEFAULT_CHARSET
@@ -2005,7 +1861,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           end
           object edt_DescricaoMeioCultura: TEdit
             Left = 69
-            Top = 28
+            Top = 25
             Width = 269
             Height = 27
             Anchors = [akLeft, akTop, akRight]
@@ -2020,7 +1876,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           end
           object edt_QuantidadeMeioCultura: TJvValidateEdit
             Left = 343
-            Top = 28
+            Top = 25
             Width = 84
             Height = 27
             Anchors = [akTop, akRight]
@@ -2052,30 +1908,29 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
             71)
           object Label1: TLabel
             Left = 8
-            Top = 13
+            Top = 12
             Width = 37
             Height = 13
             Caption = 'C'#243'digo:'
           end
           object Label2: TLabel
             Left = 60
-            Top = 13
+            Top = 12
             Width = 50
             Height = 13
             Caption = 'Descri'#231#227'o:'
           end
           object Label6: TLabel
             Left = 363
-            Top = 13
+            Top = 12
             Width = 60
             Height = 13
             Anchors = [akTop, akRight]
             Caption = 'Quantidade:'
-            ExplicitLeft = 362
           end
           object Label17: TLabel
             Left = 296
-            Top = 13
+            Top = 12
             Width = 46
             Height = 13
             Anchors = [akTop, akRight]
@@ -2084,7 +1939,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           object edt_CodigoRecipientes: TButtonedEdit
             AlignWithMargins = True
             Left = 8
-            Top = 30
+            Top = 25
             Width = 49
             Height = 27
             Font.Charset = DEFAULT_CHARSET
@@ -2102,7 +1957,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           end
           object edt_NomeRecipiente: TEdit
             Left = 60
-            Top = 30
+            Top = 25
             Width = 233
             Height = 27
             Anchors = [akLeft, akTop, akRight]
@@ -2117,7 +1972,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           end
           object edt_QuantidadeRecipiente: TJvValidateEdit
             Left = 363
-            Top = 30
+            Top = 25
             Width = 64
             Height = 27
             Anchors = [akTop, akRight]
@@ -2135,7 +1990,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           end
           object edt_MLPorRecipiente: TJvValidateEdit
             Left = 296
-            Top = 30
+            Top = 25
             Width = 64
             Height = 27
             Anchors = [akTop, akRight]
@@ -2158,9 +2013,9 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
     object dg_MateriaPrima: TDBGrid
       AlignWithMargins = True
       Left = 3
-      Top = 228
+      Top = 190
       Width = 869
-      Height = 167
+      Height = 205
       Align = alClient
       BorderStyle = bsNone
       DataSource = ds_MateriaPrima

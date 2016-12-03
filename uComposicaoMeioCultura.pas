@@ -55,6 +55,30 @@ type
     Panel9: TPanel;
     btFechar: TSpeedButton;
     btExportar: TSpeedButton;
+    gbCabecalho: TGroupBox;
+    edt_NomeEstagio: TEdit;
+    Label1: TLabel;
+    edt_CodigoEstagio: TButtonedEdit;
+    Label2: TLabel;
+    edt_PHRec: TJvValidateEdit;
+    Label14: TLabel;
+    GroupBox2: TGroupBox;
+    Label6: TLabel;
+    Label7: TLabel;
+    edt_CodigoEspecie: TButtonedEdit;
+    edt_NomeEspecie: TEdit;
+    btnNovaEspecie: TBitBtn;
+    btnRetiraEspecie: TBitBtn;
+    dg_Especies: TDBGrid;
+    cds_Especies: TClientDataSet;
+    ds_Especies: TDataSource;
+    cds_EspeciesID: TIntegerField;
+    cds_EspeciesID_ESPECIE: TIntegerField;
+    cds_EspeciesESPECIE: TStringField;
+    Label8: TLabel;
+    edt_CodigoMeioCutura: TEdit;
+    Label9: TLabel;
+    edt_Observacao: TMemo;
     procedure edtMeioCulturaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure btNovoClick(Sender: TObject);
@@ -73,17 +97,29 @@ type
     procedure btAlterarClick(Sender: TObject);
     procedure btExportarClick(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
+    procedure edt_CodigoEstagioRightButtonClick(Sender: TObject);
+    procedure edt_CodigoEstagioChange(Sender: TObject);
+    procedure edt_CodigoEstagioKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edt_CodigoEspecieChange(Sender: TObject);
+    procedure edt_CodigoEspecieRightButtonClick(Sender: TObject);
+    procedure edt_CodigoEspecieKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure btnNovaEspecieClick(Sender: TObject);
+    procedure btnRetiraEspecieClick(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
+    procedure SelecionaEstagio;
+    procedure SelecionaEspecie;
     procedure SelecionaMateriaPrima;
     procedure SelecionaComponentes;
     procedure GravarComponentes;
     procedure CarregaDados;
     procedure Filtrar;
     procedure InvertePaineis;
-    procedure Cancelar;
+    procedure LimpaEdits;
   end;
 
 var
@@ -93,6 +129,9 @@ implementation
 uses
   uFWConnection,
   uBeanProdutos,
+  uBeanEstagio,
+  uBeanMeioCultura,
+  uBeanMeioCulturaEspecie,
   uDMUtil,
   uBeanProdutoComposicao,
   uSeleciona,
@@ -111,7 +150,7 @@ end;
 
 procedure TfrmComposicaoMeioCultura.btCancelarClick(Sender: TObject);
 begin
-  Cancelar;
+  LimpaEdits;
 end;
 
 procedure TfrmComposicaoMeioCultura.btExcluirClick(Sender: TObject);
@@ -149,6 +188,21 @@ begin
   end;
 end;
 
+procedure TfrmComposicaoMeioCultura.btnNovaEspecieClick(Sender: TObject);
+begin
+  if edt_NomeEspecie.Text = EmptyStr then begin
+    DisplayMsg(MSG_INF, 'Informe um produto final para continuar!');
+    Exit;
+  end;
+  cds_Especies.Append;
+  cds_EspeciesID_ESPECIE.AsString := edt_CodigoEspecie.Text;
+  cds_EspeciesESPECIE.Value       := edt_NomeEspecie.Text;
+  cds_Especies.Post;
+
+  edt_CodigoEspecie.Clear;
+  edt_NomeEspecie.Clear;
+end;
+
 procedure TfrmComposicaoMeioCultura.btNovoClick(Sender: TObject);
 begin
   if not cds_Componentes.Locate(cds_ComponentesIDPRODUTO.FieldName, edtMateriaPrima.Text, []) then begin
@@ -168,15 +222,26 @@ begin
     edtMateriaPrima.SetFocus;
 end;
 
+procedure TfrmComposicaoMeioCultura.btnRetiraEspecieClick(Sender: TObject);
+begin
+  if not cds_Especies.IsEmpty then
+    cds_Especies.Delete
+  else
+    DisplayMsg(MSG_INF, 'Não existem dados para alterar!');
+end;
+
 procedure TfrmComposicaoMeioCultura.btPesquisarClick(Sender: TObject);
 begin
   Filtrar;
 end;
 
-procedure TfrmComposicaoMeioCultura.Cancelar;
+procedure TfrmComposicaoMeioCultura.LimpaEdits;
 begin
+  cds_Especies.EmptyDataSet;
   cds_Componentes.EmptyDataSet;
   pnCadastro.Tag := 0;
+  edt_CodigoEstagio.Clear;
+  edt_PHRec.Value  := 0;
   InvertePaineis;
 end;
 
@@ -270,6 +335,41 @@ begin
 //  end;
 end;
 
+procedure TfrmComposicaoMeioCultura.edt_CodigoEspecieChange(Sender: TObject);
+begin
+  edt_NomeEspecie.Clear;
+end;
+
+procedure TfrmComposicaoMeioCultura.edt_CodigoEspecieKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then SelecionaEspecie;
+
+end;
+
+procedure TfrmComposicaoMeioCultura.edt_CodigoEspecieRightButtonClick(
+  Sender: TObject);
+begin
+  SelecionaEspecie;
+end;
+
+procedure TfrmComposicaoMeioCultura.edt_CodigoEstagioChange(Sender: TObject);
+begin
+  edt_NomeEstagio.Clear;
+end;
+
+procedure TfrmComposicaoMeioCultura.edt_CodigoEstagioKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then SelecionaEstagio;
+end;
+
+procedure TfrmComposicaoMeioCultura.edt_CodigoEstagioRightButtonClick(
+  Sender: TObject);
+begin
+  SelecionaEstagio;
+end;
+
 procedure TfrmComposicaoMeioCultura.Filtrar;
 begin
   cds_Pesquisa.Filtered := False;
@@ -279,6 +379,12 @@ end;
 procedure TfrmComposicaoMeioCultura.FormCreate(Sender: TObject);
 begin
   AjustaForm(Self);
+  cds_Pesquisa.CreateDataSet;
+  cds_Pesquisa.Open;
+
+  cds_Especies.CreateDataSet;
+  cds_Especies.Open;
+
   cds_Componentes.CreateDataSet;
   cds_Componentes.Open;
 end;
@@ -315,7 +421,7 @@ begin
     end;
   end else begin
     case Key of
-      VK_ESCAPE : Cancelar;
+      VK_ESCAPE : LimpaEdits;
       VK_RETURN : begin
         SelectNext(ActiveControl as TWinControl, True, True);
       end;
@@ -329,8 +435,7 @@ begin
   pnCadastro.Visible := not pnPesquisa.Visible;
   AutoSizeDBGrid(dg_Componentes);
   AutoSizeDBGrid(gdPesquisa);
-  cds_Pesquisa.CreateDataSet;
-  cds_Pesquisa.Open;
+  AutoSizeDBGrid(dg_Especies);
 
   CarregaDados;
 end;
@@ -339,14 +444,56 @@ procedure TfrmComposicaoMeioCultura.GravarComponentes;
 var
   FWC : TFWConnection;
   PC  : TPRODUTOCOMPOSICAO;
+  M   : TMEIOCULTURA;
+  ME  : TMEIOCULTURAESPECIE;
   I: Integer;
 begin
   FWC := TFWConnection.Create;
   PC  := TPRODUTOCOMPOSICAO.Create(FWC);
+  M   := TMEIOCULTURA.Create(FWC);
+  ME  := TMEIOCULTURAESPECIE.Create(FWC);
   try
     DisplayMsg(MSG_WAIT, 'Gravando dados no banco de dados...');
     FWC.StartTransaction;
     try
+      M.ID_ESTAGIO.Value      := StrToInt(edt_CodigoEstagio.Text);
+      M.PHRECOMENDADO.Value   := edt_PHRec.Value;
+      M.CODIGO.Value          := edt_CodigoMeioCutura.Text;
+      M.OBSERVACAO.Value      := edt_Observacao.Text;
+      M.SelectList('ID_PRODUTO = ' + QuotedStr(IntToStr(pnCadastro.Tag)));
+      if M.Count > 0 then begin
+        M.ID.Value := TMEIOCULTURA(M.Itens[0]).ID.Value;
+        M.Update;
+      end else begin
+        M.ID.isNull  := True;
+        M.ID_PRODUTO.Value := pnCadastro.Tag;
+        M.Insert;
+      end;
+
+      ME.SelectList('ID_MEIOCULTURA = ' + M.ID.asSQL);
+      if ME.Count > 0 then begin
+        for I := 0 to Pred(ME.Count) do begin
+          if not cds_Especies.Locate(cds_EspeciesID.FieldName, TMEIOCULTURAESPECIE(ME.Itens[0]).ID.Value, []) then begin
+            ME.ID.Value := TMEIOCULTURAESPECIE(ME.Itens[0]).ID.Value;
+            ME.Delete;
+          end;
+        end;
+      end;
+
+      cds_Especies.First;
+      while not cds_Especies.Eof do begin
+        ME.ID_MEIOCULTURA.Value := M.ID.Value;
+        ME.ID_ESPECIE.Value     := cds_EspeciesID_ESPECIE.Value;
+        if cds_EspeciesID.IsNull then begin
+          ME.ID.isNull := True;
+          ME.Insert;
+        end else begin
+          ME.ID.Value  := cds_EspeciesID.Value;
+          ME.Update;
+        end;
+        cds_Especies.Next;
+      end;
+
       PC.SelectList('id_produto = ' + IntToStr(pnCadastro.Tag));
       for I := 0 to Pred(PC.Count) do begin
         if not cds_Componentes.Locate(cds_ComponentesID.FieldName, TPRODUTOCOMPOSICAO(PC.Itens[I]).ID.Value, []) then begin
@@ -370,10 +517,8 @@ begin
         cds_Componentes.Next;
       end;
       FWC.Commit;
-
-      cds_Componentes.EmptyDataSet;
       DisplayMsgFinaliza;
-      InvertePaineis;
+      LimpaEdits;
     except
       on E : Exception do begin
         FWC.Rollback;
@@ -382,6 +527,8 @@ begin
     end;
   finally
     FreeAndNil(PC);
+    FreeAndNil(ME);
+    FreeAndNil(M);
     FreeAndNil(FWC);
   end;
 end;
@@ -402,10 +549,18 @@ procedure TfrmComposicaoMeioCultura.SelecionaComponentes;
 var
   FWC : TFWConnection;
   SQL : TFDQuery;
+  E   : TESTAGIO;
+  M   : TMEIOCULTURA;
+  ME  : TMEIOCULTURAESPECIE;
+  P   : TPRODUTO;
   I: Integer;
 begin
   FWC := TFWConnection.Create;
   SQL := TFDQuery.Create(nil);
+  E   := TESTAGIO.Create(FWC);
+  M   := TMEIOCULTURA.Create(FWC);
+  P   := TPRODUTO.Create(FWC);
+  ME  := TMEIOCULTURAESPECIE.Create(FWC);
   try
     cds_Componentes.EmptyDataSet;
 //    if edtMeioCultura.Text = EmptyStr then begin
@@ -413,6 +568,31 @@ begin
 //      Exit;
 //    end;
     try
+
+      M.SelectList('ID_PRODUTO = ' + QuotedStr(IntToStr(pnCadastro.Tag)));
+      if M.Count > 0 then begin
+        edt_CodigoEstagio.Text := TMEIOCULTURA(M.Itens[0]).ID_ESTAGIO.asString;
+        E.SelectList('ID = ' + TMEIOCULTURA(M.Itens[0]).ID_ESTAGIO.asSQL);
+        if E.Count > 0 then
+          edt_NomeEstagio.Text := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
+
+        edt_PHRec.Value        := TMEIOCULTURA(M.Itens[0]).PHRECOMENDADO.Value;
+        edt_Observacao.Text    := TMEIOCULTURA(M.Itens[0]).OBSERVACAO.asString;
+
+        ME.SelectList('ID_MEIOCULTURA = ' + TMEIOCULTURA(M.Itens[0]).ID.asSQL);
+        if ME.Count > 0 then begin
+          for I := 0 to Pred(ME.Count) do begin
+            cds_Especies.Append;
+            cds_EspeciesID.Value              := TMEIOCULTURAESPECIE(ME.Itens[I]).ID.Value;
+            cds_EspeciesID_ESPECIE.Value      := TMEIOCULTURAESPECIE(ME.Itens[I]).ID_ESPECIE.Value;
+            P.SelectList('ID = ' + TMEIOCULTURAESPECIE(ME.Itens[I]).ID_ESPECIE.asSQL);
+            if P.Count > 0 then
+              cds_EspeciesESPECIE.Value       := TPRODUTO(P.Itens[0]).DESCRICAO.Value;
+            cds_Especies.Post;
+          end;
+        end;
+      end;
+
       SQL.Close;
       SQL.SQL.Clear;
       SQL.Connection := FWC.FDConnection;
@@ -439,7 +619,59 @@ begin
     end;
   finally
     FreeAndNil(SQL);
+    FreeAndNil(ME);
+    FreeAndNil(P);
+    FreeAndNil(M);
+    FreeAndNil(E);
     FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmComposicaoMeioCultura.SelecionaEspecie;
+var
+  FWC : TFWConnection;
+  P   : TPRODUTO;
+  Filtro : string;
+begin
+  FWC    := TFWConnection.Create;
+  P      := TPRODUTO.Create(FWC);
+  edt_NomeEspecie.Clear;
+  try
+    Filtro := 'finalidade = 1';
+    edt_CodigoEspecie.Tag := DMUtil.Selecionar(P, edt_CodigoEspecie.Text, Filtro);
+    if edt_CodigoEspecie.Tag > 0 then begin
+      P.SelectList('id = ' + IntToStr(edt_CodigoEspecie.Tag));
+      if P.Count > 0 then begin
+        edt_CodigoEspecie.Text     := TPRODUTO(P.Itens[0]).ID.asString;
+        edt_NomeEspecie.Text       := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+      end;
+    end;
+  finally
+    FreeAndNil(P);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmComposicaoMeioCultura.SelecionaEstagio;
+var
+  FW : TFWConnection;
+  E : TESTAGIO;
+begin
+  FW := TFWConnection.Create;
+  E  := TESTAGIO.Create(FW);
+  edt_NomeEstagio.Clear;
+  try
+    edt_CodigoEstagio.Tag := DMUtil.Selecionar(E, edt_CodigoEstagio.Text);
+    if edt_CodigoEstagio.Tag > 0 then begin
+      E.SelectList('id = ' + IntToStr(edt_CodigoEstagio.Tag));
+      if E.Count > 0 then begin
+        edt_CodigoEstagio.Text     := TESTAGIO(E.Itens[0]).ID.asString;
+        edt_NomeEstagio.Text       := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
+      end;
+    end;
+  finally
+    FreeAndNil(E);
+    FreeAndNil(FW);
   end;
 end;
 
