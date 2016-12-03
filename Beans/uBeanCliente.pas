@@ -17,6 +17,7 @@ type
     FTELEFONE: TFieldString;
     FCELULAR: TFieldString;
     FOBSERVACAO: TFieldString;
+    FCADPROIE: TFieldString;
     procedure SetCODIGOEXTERNO(const Value: TFieldString);
     procedure SetCPFCNPJ(const Value: TFieldString);
     procedure SetID(const Value: TFieldInteger);
@@ -25,6 +26,7 @@ type
     procedure SetEMAIL(const Value: TFieldString);
     procedure SetTELEFONE(const Value: TFieldString);
     procedure SetOBSERVACAO(const Value: TFieldString);
+    procedure SetCADPROIE(const Value: TFieldString);
   protected
     procedure InitInstance; override;
   published
@@ -36,6 +38,7 @@ type
     property EMAIL          : TFieldString read FEMAIL write SetEMAIL;
     property OBSERVACAO     : TFieldString read FOBSERVACAO write SetOBSERVACAO;
     property CODIGOEXTERNO  : TFieldString read FCODIGOEXTERNO write SetCODIGOEXTERNO;
+    property CADPROIE       : TFieldString read FCADPROIE write SetCADPROIE;
   end;
 
 implementation
@@ -57,7 +60,13 @@ begin
   EMAIL.Size          := 100;
   OBSERVACAO.Size     := 512;
   CODIGOEXTERNO.Size  := 100;
+  CADPROIE.Size       := 30;
 
+end;
+
+procedure TCLIENTE.SetCADPROIE(const Value: TFieldString);
+begin
+  FCADPROIE := Value;
 end;
 
 procedure TCLIENTE.SetCELULAR(const Value: TFieldString);

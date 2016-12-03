@@ -28,14 +28,6 @@ CREATE TABLE if not exists unidademedida
   CONSTRAINT pk_unidademedida PRIMARY KEY (id)
 );
 
-CREATE TABLE if not exists recipientes
-(
-  id serial NOT NULL,
-  descricao character varying(100) NOT NULL,
-  codigoexterno character varying(100),
-  CONSTRAINT pk_recipientes PRIMARY KEY (id)
-);
-
 CREATE TABLE if not exists observacao
 (
   id serial NOT NULL,
@@ -55,7 +47,11 @@ CREATE TABLE if not exists cliente
   email character varying(100),
   observacao character varying(512),
   codigoexterno character varying(100),
+  cadproie character varying(30),
   CONSTRAINT pk_cliente PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
 );
 
 CREATE TABLE if not exists produto
@@ -131,6 +127,57 @@ CREATE TABLE if not exists esterilizacao
   CONSTRAINT pk_esterilizacao PRIMARY KEY (id)
 );
 
+CREATE TABLE if not exists estagio
+(
+  id serial NOT NULL,
+  descricao character varying(100) NOT NULL,
+  observacao character varying(500),
+  CONSTRAINT pk_estagio PRIMARY KEY (id)
+);
+
+CREATE TABLE if not exists meiocultura (
+id serial NOT NULL,
+id_produto bigint,
+id_estagio bigint,
+codigo character varying(5),
+phrecomendado numeric(18,3),
+observacao character varying(512),
+CONSTRAINT pk_meiocultura PRIMARY KEY (id),
+CONSTRAINT fk_meiocultura_estagio FOREIGN KEY (id_estagio)
+    REFERENCES estagio (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE if not exists meioculturaespecie (
+id serial NOT NULL,
+id_meiocultura bigint,
+id_especie bigint,
+CONSTRAINT pk_meioculturaespecie PRIMARY KEY (id),
+CONSTRAINT fk_meioculturaespecie_meiocultura FOREIGN KEY (id_meiocultura)
+    REFERENCES meiocultura (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE CASCADE,
+CONSTRAINT fk_meioculturaespecie_especie FOREIGN KEY (id_especie)
+    REFERENCES produto (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE if not exists meioculturaestoque (
+id serial NOT NULL,
+id_meiocultura bigint,
+id_recipiente bigint,
+id_ordemproducaomc bigint,
+CONSTRAINT pk_meioculturaestoque PRIMARY KEY (id),
+CONSTRAINT fk_meioculturaestoque_meiocultura FOREIGN KEY (id_meiocultura)
+    REFERENCES meiocultura (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE CASCADE,
+CONSTRAINT fk_meioculturaestoque_recipiente FOREIGN KEY (id_recipiente)
+    REFERENCES produto (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+CONSTRAINT fk_meioculturaestoque_opmc FOREIGN KEY (id_ordemproducaomc)
+    REFERENCES ordemproducaomc (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+);
+
 CREATE TABLE ordemproducaomc
 (
   id serial NOT NULL,
@@ -141,15 +188,16 @@ CREATE TABLE ordemproducaomc
   quantrecipientes integer,
   esterilizacao boolean,
   id_produto bigint,
-  phinicial numeric(18,2),
-  phfinal numeric(18,2),
-  phrecomendado numeric(18,2),
+  phinicial numeric(18,3),
+  phfinal numeric(18,3),
   mlrecipiente double precision,
   encerrado boolean,
   quantproduto double precision,
   id_esterilizacao bigint,
   datainicio date,
-  datafim date,
+  datafim time without time zone,
+  observacao character varying(500),
+  observacaoencerramento character varying(500),
   CONSTRAINT pk_ordemproducaomc PRIMARY KEY (id),
   CONSTRAINT fk_opmc_esterilizacao FOREIGN KEY (id_esterilizacao)
       REFERENCES esterilizacao (id) MATCH SIMPLE
