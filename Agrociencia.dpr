@@ -40,7 +40,8 @@ uses
   uOrdemProducao in 'uOrdemProducao.pas' {frmOrdemProducao},
   uBeanOrdemProducaoFinal in 'Beans\uBeanOrdemProducaoFinal.pas',
   uBeanOrdemProducaoMC_Itens in 'Beans\uBeanOrdemProducaoMC_Itens.pas',
-  uBeanOrdemProducaoMC in 'Beans\uBeanOrdemProducaoMC.pas';
+  uBeanOrdemProducaoMC in 'Beans\uBeanOrdemProducaoMC.pas',
+  uBeanOPFinal in 'Beans\uBeanOPFinal.pas';
 
 {$R *.res}
 
