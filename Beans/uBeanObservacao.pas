@@ -33,14 +33,20 @@ implementation
 procedure TOBSERVACAO.InitInstance;
 begin
   inherited;
-  ID.isPK             := True;
+  ID.isPK                 := True;
 
-  DESCRICAO.isNotNull := True;
-  OBSERVACAO.isNotNull:= True;
+  DESCRICAO.isNotNull     := True;
+  OBSERVACAO.isNotNull    := True;
 
-  DESCRICAO.Size      := 100;
-  OBSERVACAO.Size     := 512;
-  CODIGOEXTERNO.Size  := 100;
+  DESCRICAO.Size          := 100;
+  OBSERVACAO.Size         := 512;
+  CODIGOEXTERNO.Size      := 100;
+
+  DESCRICAO.isSearchField := True;
+
+  ID.displayLabel         := 'Código';
+  DESCRICAO.displayLabel  := 'Descrição';
+
 end;
 
 procedure TOBSERVACAO.SetCODIGOEXTERNO(const Value: TFieldString);

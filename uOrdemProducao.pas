@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Datasnap.DBClient,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
-  JvToolEdit, JvBaseEdits;
+  JvToolEdit, JvBaseEdits, FireDAC.Comp.Client;
 
 type
   TfrmOrdemProducao = class(TForm)
@@ -35,7 +35,7 @@ type
     GridPanel1: TGridPanel;
     pnUsuarioEsquerda: TPanel;
     Label2: TLabel;
-    edDescricao: TEdit;
+    edQuantidade: TEdit;
     pnUsuarioDireita: TPanel;
     btExportar: TSpeedButton;
     GridPanel2: TGridPanel;
@@ -43,19 +43,22 @@ type
     btCancelar: TSpeedButton;
     Panel5: TPanel;
     btGravar: TSpeedButton;
-    edCodigoExterno: TEdit;
-    Label3: TLabel;
     cds_PesquisaDATAHORA: TDateTimeField;
-    cds_PesquisaDATAHORAINICIO: TDateTimeField;
-    cds_PesquisaDATAHORAFIM: TDateTimeField;
     cds_PesquisaQUANTIDADE: TIntegerField;
-    cds_PesquisaOBSERVACAO: TStringField;
-    cds_PesquisaINTERVALOCRESCIMENTO: TIntegerField;
-    cds_PesquisaMEIOCULTURA_ID: TIntegerField;
-    cds_PesquisaPRODUTO_ID: TIntegerField;
-    cds_PesquisaCLIENTE_ID: TIntegerField;
-    cds_PesquisaRESPONSAVEL_ID: TIntegerField;
-    cds_PesquisaUSUARIO_ID: TIntegerField;
+    cds_PesquisaPRODUTO: TStringField;
+    cds_PesquisaCLIENTE: TStringField;
+    edIntervaloCrescimento: TEdit;
+    Label1: TLabel;
+    gbProduto: TGroupBox;
+    edCodigoProduto: TButtonedEdit;
+    edNomeProduto: TEdit;
+    gbCliente: TGroupBox;
+    edCodigoCliente: TButtonedEdit;
+    edNomeCliente: TEdit;
+    Label3: TLabel;
+    pnObservacao: TPanel;
+    edObservacao: TEdit;
+    btObservacao: TBitBtn;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -68,7 +71,9 @@ type
     procedure btExcluirClick(Sender: TObject);
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
+    procedure btObservacaoClick(Sender: TObject);
   private
+    procedure SelecionarObservacao;
     { Private declarations }
   public
     procedure CarregaDados;
@@ -87,22 +92,76 @@ uses
   uDomains,
   uConstantes,
   uFWConnection,
-  uBeanRecipientes,
+  uBeanOPFinal,
   uMensagem,
-  uFuncoes;
+  uFuncoes, uBeanObservacao, uDMUtil;
 
 {$R *.dfm}
 
 procedure TfrmOrdemProducao.AtualizarEdits(Limpar: Boolean);
+Var
+  FWC : TFWConnection;
+  SQL : TFDQuery;
 begin
   if Limpar then begin
-    edDescricao.Clear;
-    edCodigoExterno.Clear;
+    edQuantidade.Clear;
+    edIntervaloCrescimento.Clear;
+    edCodigoCliente.Clear;
+    edNomeCliente.Clear;
+    edCodigoProduto.Clear;
+    edNomeProduto.Clear;
     btGravar.Tag  := 0;
   end else begin
-    //edDescricao.Text      := cds_PesquisaDESCRICAO.Value;
-    //edCodigoExterno.Text  := cds_PesquisaCODIGOEXTERNO.Value;
-    btGravar.Tag          := cds_PesquisaID.Value;
+
+    btGravar.Tag  := cds_PesquisaID.Value;
+
+    FWC := TFWConnection.Create;
+    SQL := TFDQuery.Create(nil);
+
+    try
+      try
+        SQL.Close;
+        SQL.SQL.Clear;
+        SQL.SQL.Add('SELECT');
+        SQL.SQL.Add('	OPF.ID AS CODIGO,');
+        SQL.SQL.Add('	OPF.QUANTIDADE,');
+        SQL.SQL.Add('	OPF.INTERVALOCRESCIMENTO,');
+        SQL.SQL.Add('	OPF.CLIENTE_ID,');
+        SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
+        SQL.SQL.Add('	OPF.PRODUTO_ID,');
+        SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
+        SQL.SQL.Add('	OPF.OBSERVACAO');
+        SQL.SQL.Add('FROM OPFINAL OPF');
+        SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+        SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+        SQL.SQL.Add('WHERE 1 = 1');
+        SQL.SQL.Add('AND APF.ID = :OPID');
+        SQL.Connection  := FWC.FDConnection;
+        SQL.ParamByName('OPID').DataType  := ftInteger;
+        SQL.Prepare;
+        SQL.ParamByName('OPID').AsInteger := btGravar.Tag;
+        SQL.Open;
+
+        if not SQL.IsEmpty then begin
+          if SQL.FieldByName('CODIGO').AsInteger = btGravar.Tag then begin
+            edQuantidade.Text           := SQL.FieldByName('QUANTIDADE').AsString;
+            edIntervaloCrescimento.Text := SQL.FieldByName('INTERVALOCRESCIMENTO').AsString;
+            edCodigoCliente.Text        := SQL.FieldByName('CLIENTE_ID').AsString;
+            edNomeCliente.Text          := SQL.FieldByName('NOMECLIENTE').AsString;
+            edCodigoProduto.Text        := SQL.FieldByName('PRODUTO_ID').AsString;
+            edNomeProduto.Text          := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
+            edObservacao.Text           := SQL.FieldByName('OBSERVACAO').AsString;
+          end;
+        end;
+      except
+        on E : Exception do begin
+          DisplayMsg(MSG_ERR, 'Erro ao Carregar os dados para Alteração.', '', E.Message);
+        end;
+      end;
+    finally
+      FreeAndNil(SQL);
+      FreeAndNil(FWC);
+    end;
   end;
 end;
 
@@ -122,22 +181,22 @@ end;
 procedure TfrmOrdemProducao.btExcluirClick(Sender: TObject);
 Var
   FWC : TFWConnection;
-  R   : TRECIPIENTES;
+  OPF : TOPFINAL;
 begin
   if not cds_Pesquisa.IsEmpty then begin
 
-    DisplayMsg(MSG_CONF, 'Excluir o Recipiente Selecionado?');
+    DisplayMsg(MSG_CONF, 'Excluir a Ordem de Produção Selecionada?');
 
     if ResultMsgModal = mrYes then begin
 
       try
 
         FWC := TFWConnection.Create;
-        R   := TRECIPIENTES.Create(FWC);
+        OPF := TOPFINAL.Create(FWC);
         try
 
-          R.ID.Value := cds_PesquisaID.Value;
-          R.Delete;
+          OPF.ID.Value := cds_PesquisaID.Value;
+          OPF.Delete;
 
           FWC.Commit;
 
@@ -146,11 +205,11 @@ begin
         except
           on E : Exception do begin
             FWC.Rollback;
-            DisplayMsg(MSG_ERR, 'Erro ao Excluir o Recipiente, Verifique!', '', E.Message);
+            DisplayMsg(MSG_ERR, 'Erro ao Excluir a Ordem de Produção, Verifique!', '', E.Message);
           end;
         end;
       finally
-        FreeAndNil(R);
+        FreeAndNil(OPF);
         FreeAndNil(FWC);
       end;
     end;
@@ -177,31 +236,43 @@ end;
 procedure TfrmOrdemProducao.btGravarClick(Sender: TObject);
 Var
   FWC : TFWConnection;
-  R   : TRECIPIENTES;
+  OPF : TOPFINAL;
 begin
 
   FWC := TFWConnection.Create;
-  R   := TRECIPIENTES.Create(FWC);
+  OPF := TOPFINAL.Create(FWC);
 
   try
     try
 
-      if Length(Trim(edDescricao.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'Descrição não informada, Verifique!');
-        if edDescricao.CanFocus then
-          edDescricao.SetFocus;
+      if Length(Trim(edNomeCliente.Text)) = 0 then begin
+        DisplayMsg(MSG_WAR, 'Cliente não informado, Verifique!');
+        if edCodigoCliente.CanFocus then
+          edCodigoCliente.SetFocus;
         Exit;
       end;
 
-      R.DESCRICAO.Value      := edDescricao.Text;
-      R.CODIGOEXTERNO.Value  := edCodigoExterno.Text;
+      if Length(Trim(edNomeProduto.Text)) = 0 then begin
+        DisplayMsg(MSG_WAR, 'Produto não informado, Verifique!');
+        if edCodigoProduto.CanFocus then
+          edCodigoProduto.SetFocus;
+        Exit;
+      end;
+
+      OPF.DATAHORA.Value              := Now;
+      OPF.QUANTIDADE.Value            := StrToIntDef(edQuantidade.Text,0);
+      OPF.INTERVALOCRESCIMENTO.Value  := StrToIntDef(edIntervaloCrescimento.Text,0);
+      OPF.CLIENTE_ID.Value            := StrToIntDef(edCodigoCliente.Text,0);
+      OPF.PRODUTO_ID.Value            := StrToIntDef(edCodigoProduto.Text,0);
+      OPF.USUARIO_ID.Value            := USUARIO.CODIGO;
+      OPF.OBSERVACAO.Value            := edObservacao.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
-        R.ID.Value          := (Sender as TSpeedButton).Tag;
-        R.Update;
+        OPF.ID.Value          := (Sender as TSpeedButton).Tag;
+        OPF.Update;
       end else begin
-        R.ID.isNull := True;
-        R.Insert;
+        OPF.ID.isNull := True;
+        OPF.Insert;
       end;
 
       FWC.Commit;
@@ -213,11 +284,11 @@ begin
     Except
       on E : Exception do begin
         FWC.Rollback;
-        DisplayMsg(MSG_ERR, 'Erro ao Gravar o Recipiente!', '', E.Message);
+        DisplayMsg(MSG_ERR, 'Erro ao Gravar a Ordem de Produção!', '', E.Message);
       end;
     end;
   finally
-    FreeAndNil(R);
+    FreeAndNil(OPF);
     FreeAndNil(FWC);
   end;
 end;
@@ -226,6 +297,18 @@ procedure TfrmOrdemProducao.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
+end;
+
+procedure TfrmOrdemProducao.btObservacaoClick(Sender: TObject);
+begin
+  if btObservacao.Tag = 0 then begin
+    btObservacao.Tag := 1;
+    try
+      SelecionarObservacao;
+    finally
+      btObservacao.Tag := 0;
+    end;
+  end;
 end;
 
 procedure TfrmOrdemProducao.Cancelar;
@@ -238,14 +321,14 @@ end;
 procedure TfrmOrdemProducao.CarregaDados;
 Var
   FWC : TFWConnection;
-  R   : TRECIPIENTES;
+  SQL : TFDQuery;
   I,
   Codigo  : Integer;
 begin
 
   try
     FWC := TFWConnection.Create;
-    R   := TRECIPIENTES.Create(FWC);
+    SQL := TFDQuery.Create(nil);
     cds_Pesquisa.DisableControls;
     try
 
@@ -253,14 +336,35 @@ begin
 
       cds_Pesquisa.EmptyDataSet;
 
-      R.SelectList('ID > 0', 'ID');
-      if R.Count > 0 then begin
-        for I := 0 to R.Count -1 do begin
+      SQL.Close;
+      SQL.SQL.Clear;
+      SQL.SQL.Add('SELECT');
+      SQL.SQL.Add('	OPF.ID AS CODIGO,');
+      SQL.SQL.Add('	OPF.DATAHORA,');
+      SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
+      SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
+      SQL.SQL.Add('	OPF.QUANTIDADE');
+      SQL.SQL.Add('FROM OPFINAL OPF');
+      SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+      SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      SQL.SQL.Add('WHERE 1 = 1');
+      SQL.SQL.Add('ORDER BY OPF.ID ASC');
+      SQL.Connection  := FWC.FDConnection;
+      SQL.Prepare;
+      SQL.Open;
+      SQL.FetchAll;
+
+      if not SQL.IsEmpty then begin
+        SQL.First;
+        while not SQL.Eof do begin
           cds_Pesquisa.Append;
-          cds_PesquisaID.Value             := TRECIPIENTES(R.Itens[I]).ID.Value;
-          //cds_PesquisaDESCRICAO.Value      := TRECIPIENTES(R.Itens[I]).DESCRICAO.Value;
-          //cds_PesquisaCODIGOEXTERNO.Value  := TRECIPIENTES(R.Itens[I]).CODIGOEXTERNO.Value;
+          cds_PesquisaID.Value          := SQL.FieldByName('ID').AsInteger;
+          cds_PesquisaDATAHORA.Value    := SQL.FieldByName('DATAHORA').AsDateTime;
+          cds_PesquisaCLIENTE.Value     := SQL.FieldByName('NOMECLIENTE').AsString;
+          cds_PesquisaPRODUTO.Value     := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
+          cds_PesquisaQUANTIDADE.Value  := SQL.FieldByName('QUANTIDADE').AsInteger;
           cds_Pesquisa.Post;
+          SQL.Next;
         end;
       end;
 
@@ -275,7 +379,7 @@ begin
 
   finally
     cds_Pesquisa.EnableControls;
-    FreeAndNil(R);
+    FreeAndNil(SQL);
     FreeAndNil(FWC);
   end;
 end;
@@ -363,9 +467,45 @@ begin
   pnEdicao.Visible              := not pnEdicao.Visible;
   pnBotoesEdicao.Visible        := pnEdicao.Visible;
   if pnEdicao.Visible then begin
-    if edDescricao.CanFocus then
-      edDescricao.SetFocus;
+    if edQuantidade.CanFocus then
+      edQuantidade.SetFocus;
   end;
+end;
+
+procedure TfrmOrdemProducao.SelecionarObservacao;
+var
+  FWC     : TFWConnection;
+  OBS     : TOBSERVACAO;
+  CodOBS  : Integer;
+begin
+
+  FWC     := TFWConnection.Create;
+  OBS     := TOBSERVACAO.Create(FWC);
+  try
+    try
+
+      CodOBS := DMUtil.Selecionar(OBS);
+      if CodOBS > 0 then begin
+        OBS.SelectList('id = ' + IntToStr(CodOBS));
+        if OBS.Count = 1 then begin
+          if Pos(TOBSERVACAO(OBS.Itens[0]).OBSERVACAO.Value, edObservacao.Text) = 0 then begin
+            if Length(Trim(edObservacao.Text)) = 0 then
+              edObservacao.Text := TOBSERVACAO(OBS.Itens[0]).OBSERVACAO.Value
+            else
+              edObservacao.Text := edObservacao.Text + ' ' + TOBSERVACAO(OBS.Itens[0]).OBSERVACAO.Value
+          end;
+        end;
+      end;
+    except
+      on E : Exception do begin
+        DisplayMsg(MSG_ERR, 'Erro ao Selecionar a Observação', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(OBS);
+    FreeAndNil(FWC);
+  end;
+
 end;
 
 end.

@@ -231,34 +231,24 @@ CREATE TABLE ordemproducaomc_itens
       ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
-CREATE TABLE if not exists ordemproducaofinal
+CREATE TABLE if not exists opfinal
 (
   id serial NOT NULL,
   datahora timestamp NOT NULL,
-  datahorainicio timestamp,
-  datahorafim timestamp,  
   quantidade integer NOT NULL,
-  observacao character varying(512),
   intervalocrescimento integer NOT NULL,
-  meiodecultura_id integer NOT NULL,
   produto_id integer NOT NULL,
   cliente_id integer NOT NULL,  
-  responsavel_id integer NOT NULL,
   usuario_id integer NOT NULL,
-  CONSTRAINT pk_ordemproducaofinal PRIMARY KEY (id),
-  CONSTRAINT fk_ordemproducaofinal_m FOREIGN KEY (meiodecultura_id)
-      REFERENCES ordemproducaomc (id) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE RESTRICT,  
-  CONSTRAINT fk_ordemproducaofinal_p FOREIGN KEY (produto_id)
+  observacao character varying(512),
+  CONSTRAINT pk_opfinal PRIMARY KEY (id),
+  CONSTRAINT fk_opfinal_p FOREIGN KEY (produto_id)
       REFERENCES produto (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT,  
-    CONSTRAINT fk_ordemproducaofinal_c FOREIGN KEY (cliente_id)
+  CONSTRAINT fk_opfinal_c FOREIGN KEY (cliente_id)
       REFERENCES cliente (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT,  
-CONSTRAINT fk_ordemproducaofinal_r FOREIGN KEY (responsavel_id)
-      REFERENCES usuario (id) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT fk_ordemproducaofinal_u FOREIGN KEY (usuario_id)
+  CONSTRAINT fk_op_u FOREIGN KEY (usuario_id)
       REFERENCES usuario (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT      
 );
