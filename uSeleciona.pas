@@ -32,7 +32,8 @@ type
     { Private declarations }
   public
     { Public declarations }
-    FTabelaPai : TFWPersistence;
+    FTabelaPai,
+    FTabelaAux : TFWPersistence;
     Retorno    : TEdit;
     Filtro     : string;
     procedure SelecionaDados(CriaCampos : Boolean);
@@ -156,21 +157,37 @@ var
   I           : Integer;
   QRConsulta  : TFDQuery;
   FDC         : TFWConnection;
+  Tabela1,
+  Tabela2     : String;
 begin
 
   FDC           := TFWConnection.Create;
   QRConsulta    := TFDQuery.Create(nil);
   try
+    if not Assigned(FTabelaPai) then
+      Tabela1   := Copy(FTabelaPai.ClassName, 2, Length(FTabelaPai.ClassName));
+    if not Assigned(FTabelaAux) then
+      Tabela2   := Copy(FTabelaAux.ClassName, 2, Length(FTabelaAux.ClassName));
 
-    Count := GetPropList(FTabelaPai.ClassInfo, tkProperties, @List, False);
     QRConsulta.SQL.Add('SELECT ');
 
+    Count := GetPropList(FTabelaPai.ClassInfo, tkProperties, @List, False);
     for I := 0 to Pred(Count) do begin
       if (TFieldTypeDomain(GetObjectProp(FTabelaPai, List[I]^.Name)).isPK) or (TFieldTypeDomain(GetObjectProp(FTabelaPai, List[I]^.Name)).isSearchField) then
-        QRConsulta.SQL.Add(Copy(FTabelaPai.ClassName, 2, Length(FTabelaPai.ClassName)) + '.' + List[I]^.Name + ', ');
+        QRConsulta.SQL.Add(Tabela1 + '.' + List[I]^.Name + ', ');
+    end;
+    if Assigned(FTabelaAux) then begin
+      Count := GetPropList(FTabelaAux.ClassInfo, tkProperties, @List, False);
+      for I := 0 to Pred(Count) do begin
+        if (TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).isPK) or (TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).isSearchField) then
+          QRConsulta.SQL.Add(Tabela2 + '.' + List[I]^.Name + ', ');
+      end;
     end;
     QRConsulta.SQL.Text := Copy(QRConsulta.SQL.Text, 1, Length(QRConsulta.SQL.Text) - 4);
-    QRConsulta.SQL.Add(' FROM '+Copy(FTabelaPai.ClassName, 2, Length(FTabelaPai.ClassName)));
+    if Tabela2 = EmptyStr then
+      QRConsulta.SQL.Add(' FROM ' + Tabela1)
+    else
+      QRConsulta.SQL.Add(' FROM ' + Tabela1 + ', ' + Tabela2);
 
     QRConsulta.SQL.Add('WHERE 1 = 1');
     for I := 0 to Pred(Count) do begin
