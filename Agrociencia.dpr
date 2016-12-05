@@ -41,7 +41,10 @@ uses
   uBeanOrdemProducaoFinal in 'Beans\uBeanOrdemProducaoFinal.pas',
   uBeanOrdemProducaoMC_Itens in 'Beans\uBeanOrdemProducaoMC_Itens.pas',
   uBeanOrdemProducaoMC in 'Beans\uBeanOrdemProducaoMC.pas',
-  uBeanOPFinal in 'Beans\uBeanOPFinal.pas';
+  uBeanOPFinal in 'Beans\uBeanOPFinal.pas',
+  uBeanEstagio in 'Beans\uBeanEstagio.pas',
+  uBeanMeioCultura in 'Beans\uBeanMeioCultura.pas',
+  uBeanMeioCulturaEspecie in 'Beans\uBeanMeioCulturaEspecie.pas';
 
 {$R *.res}
 

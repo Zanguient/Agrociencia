@@ -3,8 +3,8 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
   Top = 0
   BorderStyle = bsNone
   Caption = 'Tela de Composi'#231#227'o de Meio de Cultura'
-  ClientHeight = 458
-  ClientWidth = 759
+  ClientHeight = 559
+  ClientWidth = 751
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,15 +21,17 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
   object pnPesquisa: TPanel
     Left = 0
     Top = 48
-    Width = 759
-    Height = 410
+    Width = 751
+    Height = 511
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitWidth = 759
+    ExplicitHeight = 410
     object pnPequisaDados: TPanel
       Left = 0
       Top = 0
-      Width = 759
+      Width = 751
       Height = 40
       Align = alTop
       BevelOuter = bvNone
@@ -42,9 +44,10 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       ParentBackground = False
       ParentFont = False
       TabOrder = 0
+      ExplicitWidth = 759
       object btPesquisar: TSpeedButton
         AlignWithMargins = True
-        Left = 656
+        Left = 648
         Top = 3
         Width = 100
         Height = 34
@@ -114,7 +117,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         AlignWithMargins = True
         Left = 3
         Top = 3
-        Width = 647
+        Width = 639
         Height = 34
         Align = alClient
         AutoSize = False
@@ -127,14 +130,15 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
+        ExplicitWidth = 647
       end
     end
     object gdPesquisa: TDBGrid
       AlignWithMargins = True
       Left = 3
       Top = 43
-      Width = 753
-      Height = 298
+      Width = 745
+      Height = 399
       Align = alClient
       DataSource = ds_Pesquisa
       DrawingStyle = gdsGradient
@@ -166,18 +170,20 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
     object pnBotoesVisualizacao: TPanel
       AlignWithMargins = True
       Left = 3
-      Top = 347
-      Width = 753
+      Top = 448
+      Width = 745
       Height = 60
       Align = alBottom
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
+      ExplicitTop = 347
+      ExplicitWidth = 753
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 745
+        Width = 737
         Height = 52
         Align = alClient
         BevelOuter = bvNone
@@ -204,17 +210,19 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
             Value = 100.000000000000000000
           end>
         TabOrder = 0
+        ExplicitWidth = 745
         object Panel8: TPanel
           Left = 0
           Top = 0
-          Width = 372
+          Width = 368
           Height = 52
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
+          ExplicitWidth = 372
           object btAlterar: TSpeedButton
             AlignWithMargins = True
-            Left = 269
+            Left = 265
             Top = 3
             Width = 100
             Height = 46
@@ -284,13 +292,15 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           end
         end
         object Panel9: TPanel
-          Left = 372
+          Left = 368
           Top = 0
-          Width = 373
+          Width = 369
           Height = 52
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
+          ExplicitLeft = 372
+          ExplicitWidth = 373
           object btFechar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -363,7 +373,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           end
           object btExportar: TSpeedButton
             AlignWithMargins = True
-            Left = 270
+            Left = 266
             Top = 3
             Width = 100
             Height = 46
@@ -480,17 +490,19 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
   object pnCadastro: TPanel
     Left = 0
     Top = 48
-    Width = 759
-    Height = 410
+    Width = 751
+    Height = 511
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 759
+    ExplicitHeight = 410
     object dg_Componentes: TDBGrid
       AlignWithMargins = True
       Left = 3
       Top = 389
-      Width = 753
-      Height = 0
+      Width = 745
+      Height = 53
       Align = alClient
       DataSource = ds_Componentes
       DrawingStyle = gdsGradient
@@ -529,14 +541,14 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       AlignWithMargins = True
       Left = 3
       Top = 322
-      Width = 753
+      Width = 745
       Height = 61
       Align = alTop
       Caption = '  Selecione a Mat'#233'ria-Prima  '
       TabOrder = 3
-      ExplicitTop = 71
+      ExplicitWidth = 753
       DesignSize = (
-        753
+        745
         61)
       object Label3: TLabel
         Left = 114
@@ -553,12 +565,13 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Caption = 'C'#243'digo:'
       end
       object Label5: TLabel
-        Left = 517
+        Left = 509
         Top = 10
         Width = 60
         Height = 13
         Anchors = [akTop, akRight]
         Caption = 'Quantidade:'
+        ExplicitLeft = 517
       end
       object edtMateriaPrima: TButtonedEdit
         AlignWithMargins = True
@@ -583,7 +596,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       object edtNomeMateriaPrima: TEdit
         Left = 114
         Top = 24
-        Width = 400
+        Width = 392
         Height = 27
         Anchors = [akLeft, akTop, akRight]
         Enabled = False
@@ -594,9 +607,10 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 1
+        ExplicitWidth = 400
       end
       object edt_Quantidade: TJvValidateEdit
-        Left = 517
+        Left = 509
         Top = 24
         Width = 121
         Height = 27
@@ -612,10 +626,11 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 2
+        ExplicitLeft = 517
       end
       object btNovo: TBitBtn
         AlignWithMargins = True
-        Left = 642
+        Left = 634
         Top = 18
         Width = 50
         Height = 38
@@ -721,11 +736,11 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 3
         OnClick = btNovoClick
-        ExplicitHeight = 47
+        ExplicitLeft = 642
       end
       object btExcluir: TBitBtn
         AlignWithMargins = True
-        Left = 698
+        Left = 690
         Top = 18
         Width = 50
         Height = 38
@@ -789,14 +804,14 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 4
         OnClick = btExcluirClick
-        ExplicitHeight = 47
+        ExplicitLeft = 698
       end
     end
     object pnBotoesEdicao: TPanel
       AlignWithMargins = True
       Left = 3
-      Top = 347
-      Width = 753
+      Top = 448
+      Width = 745
       Height = 60
       Align = alBottom
       Color = clWhite
@@ -809,11 +824,13 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       ParentFont = False
       TabOrder = 5
       TabStop = True
+      ExplicitTop = 347
+      ExplicitWidth = 753
       object GridPanel2: TGridPanel
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 745
+        Width = 737
         Height = 52
         Align = alClient
         BevelOuter = bvNone
@@ -843,14 +860,17 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
             SizeStyle = ssAuto
           end>
         TabOrder = 0
+        ExplicitWidth = 745
         object Panel4: TPanel
-          Left = 372
+          Left = 368
           Top = 0
-          Width = 373
+          Width = 369
           Height = 52
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
+          ExplicitLeft = 372
+          ExplicitWidth = 373
           object btCancelar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -1260,14 +1280,15 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         object Panel5: TPanel
           Left = 0
           Top = 0
-          Width = 372
+          Width = 368
           Height = 52
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
+          ExplicitWidth = 372
           object btGravar: TSpeedButton
             AlignWithMargins = True
-            Left = 269
+            Left = 265
             Top = 3
             Width = 100
             Height = 46
@@ -1422,13 +1443,14 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       AlignWithMargins = True
       Left = 3
       Top = 3
-      Width = 753
+      Width = 745
       Height = 158
       Align = alTop
       Caption = '  Cabe'#231'alho  '
       TabOrder = 0
+      ExplicitWidth = 753
       DesignSize = (
-        753
+        745
         158)
       object Label1: TLabel
         Left = 232
@@ -1445,12 +1467,13 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Caption = 'C'#243'd. Est'#225'gio:'
       end
       object Label14: TLabel
-        Left = 651
+        Left = 643
         Top = 12
         Width = 88
         Height = 13
         Anchors = [akTop, akRight]
         Caption = 'PH Recomendado:'
+        ExplicitLeft = 651
       end
       object Label8: TLabel
         Left = 5
@@ -1469,7 +1492,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       object edt_NomeEstagio: TEdit
         Left = 232
         Top = 28
-        Width = 415
+        Width = 407
         Height = 27
         Anchors = [akLeft, akTop, akRight]
         Enabled = False
@@ -1480,6 +1503,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 2
+        ExplicitWidth = 415
       end
       object edt_CodigoEstagio: TButtonedEdit
         AlignWithMargins = True
@@ -1502,7 +1526,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         OnRightButtonClick = edt_CodigoEstagioRightButtonClick
       end
       object edt_PHRec: TJvValidateEdit
-        Left = 651
+        Left = 643
         Top = 28
         Width = 97
         Height = 27
@@ -1518,6 +1542,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 3
+        ExplicitLeft = 651
       end
       object edt_CodigoMeioCutura: TEdit
         Left = 5
@@ -1537,7 +1562,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         AlignWithMargins = True
         Left = 5
         Top = 68
-        Width = 743
+        Width = 735
         Height = 85
         Align = alBottom
         Font.Charset = DEFAULT_CHARSET
@@ -1547,23 +1572,21 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 4
-        ExplicitLeft = 2
-        ExplicitTop = 72
-        ExplicitWidth = 749
+        ExplicitWidth = 743
       end
     end
     object GroupBox2: TGroupBox
       AlignWithMargins = True
       Left = 3
       Top = 167
-      Width = 753
+      Width = 745
       Height = 61
       Align = alTop
       Caption = '  Selecione a Esp'#233'cie  '
       TabOrder = 1
-      ExplicitTop = 71
+      ExplicitWidth = 753
       DesignSize = (
-        753
+        745
         61)
       object Label6: TLabel
         Left = 114
@@ -1602,7 +1625,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       object edt_NomeEspecie: TEdit
         Left = 114
         Top = 24
-        Width = 524
+        Width = 516
         Height = 27
         Anchors = [akLeft, akTop, akRight]
         Enabled = False
@@ -1613,10 +1636,11 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 1
+        ExplicitWidth = 524
       end
       object btnNovaEspecie: TBitBtn
         AlignWithMargins = True
-        Left = 642
+        Left = 634
         Top = 18
         Width = 50
         Height = 38
@@ -1722,10 +1746,11 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 2
         OnClick = btnNovaEspecieClick
+        ExplicitLeft = 642
       end
       object btnRetiraEspecie: TBitBtn
         AlignWithMargins = True
-        Left = 698
+        Left = 690
         Top = 18
         Width = 50
         Height = 38
@@ -1789,20 +1814,21 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 3
         OnClick = btnRetiraEspecieClick
+        ExplicitLeft = 698
       end
     end
     object dg_Especies: TDBGrid
       AlignWithMargins = True
       Left = 3
       Top = 234
-      Width = 753
+      Width = 745
       Height = 82
       Align = alTop
       DataSource = ds_Especies
       DrawingStyle = gdsGradient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -11
+      Font.Height = -16
       Font.Name = 'Tahoma'
       Font.Style = []
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -1826,7 +1852,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 753
+    Width = 745
     Height = 42
     Align = alTop
     BevelOuter = bvNone
@@ -1840,6 +1866,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
     ParentBackground = False
     ParentFont = False
     TabOrder = 1
+    ExplicitWidth = 753
   end
   object cds_Componentes: TClientDataSet
     Aggregates = <>

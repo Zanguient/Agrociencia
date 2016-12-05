@@ -13,10 +13,9 @@ type
     FID_PRODUTO: TFieldInteger;
     FDATAHORA: TFieldDateTime;
     FID_RECIPIENTE: TFieldInteger;
-    FPHRECOMENDADO: TFieldFloat;
     FID_USUARIOEXECUTAR: TFieldInteger;
     FID: TFieldInteger;
-    FDATAFIM: TFieldDate;
+    FDATAFIM: TFieldDateTime;
     FDATAINICIO: TFieldDate;
     FPHFINAL: TFieldFloat;
     FPHINICIAL: TFieldFloat;
@@ -25,7 +24,7 @@ type
     FQUANTPRODUTO: TFieldFloat;
     FMLRECIPIENTE: TFieldFloat;
     FID_ESTERILIZACAO: TFieldInteger;
-    procedure SetDATAFIM(const Value: TFieldDate);
+    procedure SetDATAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAINICIO(const Value: TFieldDate);
     procedure SetESTERILIZACAO(const Value: TFieldBoolean);
@@ -36,7 +35,6 @@ type
     procedure SetID_USUARIOEXECUTAR(const Value: TFieldInteger);
     procedure SetPHFINAL(const Value: TFieldFloat);
     procedure SetPHINICIAL(const Value: TFieldFloat);
-    procedure SetPHRECOMENDADO(const Value: TFieldFloat);
     procedure SetQUANTRECIPIENTES(const Value: TFieldInteger);
     procedure SetENCERRADO(const Value: TFieldBoolean);
     procedure SetQUANTPRODUTO(const Value: TFieldFloat);
@@ -52,12 +50,11 @@ type
     property ID_PRODUTO : TFieldInteger read FID_PRODUTO write SetID_PRODUTO;
     property DATAHORA : TFieldDateTime read FDATAHORA write SetDATAHORA;
     property DATAINICIO : TFieldDate read FDATAINICIO write SetDATAINICIO;
-    property DATAFIM : TFieldDate read FDATAFIM write SetDATAFIM;
+    property DATAFIM : TFieldDateTime read FDATAFIM write SetDATAFIM;
     property QUANTRECIPIENTES : TFieldInteger read FQUANTRECIPIENTES write SetQUANTRECIPIENTES;
     property ESTERILIZACAO : TFieldBoolean read FESTERILIZACAO write SetESTERILIZACAO;
     property PHINICIAL : TFieldFloat read FPHINICIAL write SetPHINICIAL;
     property PHFINAL : TFieldFloat read FPHFINAL write SetPHFINAL;
-    property PHRECOMENDADO : TFieldFloat read FPHRECOMENDADO write SetPHRECOMENDADO;
     property ENCERRADO : TFieldBoolean read FENCERRADO write SetENCERRADO;
     property QUANTPRODUTO : TFieldFloat read FQUANTPRODUTO write SetQUANTPRODUTO;
     property MLRECIPIENTE : TFieldFloat read FMLRECIPIENTE write SetMLRECIPIENTE;
@@ -73,7 +70,7 @@ begin
   ID.isPK := True;
 end;
 
-procedure TORDEMPRODUCAOMC.SetDATAFIM(const Value: TFieldDate);
+procedure TORDEMPRODUCAOMC.SetDATAFIM(const Value: TFieldDateTime);
 begin
   FDATAFIM := Value;
 end;
@@ -141,11 +138,6 @@ end;
 procedure TORDEMPRODUCAOMC.SetPHINICIAL(const Value: TFieldFloat);
 begin
   FPHINICIAL := Value;
-end;
-
-procedure TORDEMPRODUCAOMC.SetPHRECOMENDADO(const Value: TFieldFloat);
-begin
-  FPHRECOMENDADO := Value;
 end;
 
 procedure TORDEMPRODUCAOMC.SetQUANTPRODUTO(const Value: TFieldFloat);

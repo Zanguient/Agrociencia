@@ -110,6 +110,14 @@ type
     procedure btEncerrarClick(Sender: TObject);
     procedure cbStatusChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edt_CodigoEsterilizacaoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edt_CodigoMeioCulturaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edt_CodigoRecipientesKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edtMateriaPrimaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -295,8 +303,8 @@ begin
       while not SQL.Eof do begin
         cds_Pesquisa.Append;
         cds_PesquisaID.Value             := SQL.Fields[0].Value;
-        cds_PesquisaDATAINICIO.Value     := SQL.Fields[1].Value;
-        cds_PesquisaDATAFINAL.Value      := SQL.Fields[2].Value;
+        cds_PesquisaDATAINICIO.Value     := SQL.Fields[1].AsDateTime;
+        cds_PesquisaDATAFINAL.Value      := SQL.Fields[2].AsDateTime;
         cds_PesquisaID_MEIOCULTURA.Value := SQL.Fields[3].Value;
         cds_PesquisaMEIOCULTURA.Value    := SQL.Fields[4].Value;
         cds_Pesquisa.Post;
@@ -433,6 +441,12 @@ begin
   edtNomeMateriaPrima.Clear;
 end;
 
+procedure TfrmOrdemProducaoMeioCultura.edtMateriaPrimaKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then SelecionaMateriaPrima;  
+end;
+
 procedure TfrmOrdemProducaoMeioCultura.edtMateriaPrimaRightButtonClick(
   Sender: TObject);
 begin
@@ -443,6 +457,13 @@ procedure TfrmOrdemProducaoMeioCultura.edt_CodigoEsterilizacaoChange(
   Sender: TObject);
 begin
   edt_NomeEsterilizacao.Clear;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoEsterilizacaoKeyDown(
+  Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then SelecionaEsterilizacao;
+  
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.edt_CodigoEsterilizacaoRightButtonClick(
@@ -457,6 +478,13 @@ begin
   edt_DescricaoMeioCultura.Clear;
 end;
 
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoMeioCulturaKeyDown(
+  Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then SelecionaMeioCultura;
+  
+end;
+
 procedure TfrmOrdemProducaoMeioCultura.edt_CodigoMeioCulturaRightButtonClick(
   Sender: TObject);
 begin
@@ -467,6 +495,12 @@ procedure TfrmOrdemProducaoMeioCultura.edt_CodigoRecipientesChange(
   Sender: TObject);
 begin
   edt_NomeRecipiente.Clear;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.edt_CodigoRecipientesKeyDown(
+  Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then SelecionaRecipiente;
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.edt_CodigoRecipientesRightButtonClick(
@@ -651,15 +685,11 @@ begin
       MC.ID_RECIPIENTE.Value      := StrToInt(edt_CodigoRecipientes.Text);
       MC.QUANTRECIPIENTES.Value   := edt_QuantidadeRecipiente.Value;
       MC.MLRECIPIENTE.Value       := edt_MLPorRecipiente.Value;
-//      MC.ID_USUARIOEXECUTAR.Value := StrToInt(edt_CodigoFuncionario.Text);
+      MC.ID_USUARIOEXECUTAR.Value := USUARIO.CODIGO;
       MC.ID_USUARIO.Value         := USUARIO.CODIGO;
       MC.ID_PRODUTO.Value         := StrToInt(edt_CodigoMeioCultura.Text);
       MC.QUANTPRODUTO.Value       := edt_QuantidadeMeioCultura.Value;
-//      MC.PHINICIAL.Value          := edt_PHInicial.Value;
-//      MC.PHFINAL.Value            := edt_PHFinal.Value;
-//      MC.PHRECOMENDADO.Value      := edt_PHRec.Value;
       MC.DATAINICIO.Value         := edt_DataInicio.Date;
-//      MC.DATAFIM.Value            := edt_DataFinal.Date;
       MC.DATAHORA.Value           := Now;
       MC.ENCERRADO.Value          := False;
       MC.ID_ESTERILIZACAO.Value   := StrToInt(edt_CodigoEsterilizacao.Text);
