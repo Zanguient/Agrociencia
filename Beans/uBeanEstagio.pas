@@ -30,10 +30,14 @@ begin
   inherited;
   ID.isPK  := True;
 
+  DESCRICAO.Size  := 100;
+  OBSERVACAO.Size := 512;
+
   DESCRICAO.isSearchField := True;
 
-  DESCRICAO.Size := 100;
-  OBSERVACAO.Size := 500;
+  ID.displayLabel         := 'Código';
+  DESCRICAO.displayLabel  := 'Descrição';
+
 end;
 
 procedure TESTAGIO.SetDESCRICAO(const Value: TFieldString);

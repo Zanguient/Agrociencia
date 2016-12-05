@@ -231,6 +231,14 @@ CREATE TABLE ordemproducaomc_itens
       ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
+CREATE TABLE if not exists estagio
+(
+  id serial NOT NULL,
+  descricao character varying(100) NOT NULL,
+  observacao character varying(512) NOT NULL,
+  CONSTRAINT pk_estagio PRIMARY KEY (id)
+);
+
 CREATE TABLE if not exists opfinal
 (
   id serial NOT NULL,

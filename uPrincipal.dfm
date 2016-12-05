@@ -63,6 +63,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Esteriliza'#231#227'o'
         OnClick = Esterilizacao1Click
       end
+      object Estgio1: TMenuItem
+        Caption = 'Est'#225'gio'
+        OnClick = Estgio1Click
+      end
     end
     object Movimentao1: TMenuItem
       Caption = 'Movimenta'#231#227'o'

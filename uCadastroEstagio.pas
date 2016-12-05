@@ -1,4 +1,4 @@
-unit uCadastroObservacoes;
+unit uCadastroEstagio;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   JvToolEdit, JvBaseEdits;
 
 type
-  TfrmCadastroObservacoes = class(TForm)
+  TfrmCadastroEstagio = class(TForm)
     pnVisualizacao: TPanel;
     gdPesquisa: TDBGrid;
     pnBotoesVisualizacao: TPanel;
@@ -44,9 +44,6 @@ type
     btCancelar: TSpeedButton;
     Panel5: TPanel;
     btGravar: TSpeedButton;
-    edCodigoExterno: TEdit;
-    Label3: TLabel;
-    cds_PesquisaCODIGOEXTERNO: TStringField;
     edObservacao: TEdit;
     Label1: TLabel;
     cds_PesquisaOBSERVACAO: TStringField;
@@ -73,7 +70,7 @@ type
   end;
 
 var
-  frmCadastroObservacoes: TfrmCadastroObservacoes;
+  frmCadastroEstagio: TfrmCadastroEstagio;
 
 implementation
 
@@ -83,26 +80,24 @@ uses
   uFWConnection,
   uMensagem,
   uFuncoes,
-  uBeanObservacao;
+  uBeanEstagio;
 
 {$R *.dfm}
 
-procedure TfrmCadastroObservacoes.AtualizarEdits(Limpar: Boolean);
+procedure TfrmCadastroEstagio.AtualizarEdits(Limpar: Boolean);
 begin
   if Limpar then begin
     edDescricao.Clear;
     edObservacao.Clear;
-    edCodigoExterno.Clear;
     btGravar.Tag  := 0;
   end else begin
     edDescricao.Text      := cds_PesquisaDESCRICAO.Value;
     edObservacao.Text     := cds_PesquisaOBSERVACAO.Value;
-    edCodigoExterno.Text  := cds_PesquisaCODIGOEXTERNO.Value;
     btGravar.Tag          := cds_PesquisaID.Value;
   end;
 end;
 
-procedure TfrmCadastroObservacoes.btAlterarClick(Sender: TObject);
+procedure TfrmCadastroEstagio.btAlterarClick(Sender: TObject);
 begin
   if not cds_Pesquisa.IsEmpty then begin
     AtualizarEdits(False);
@@ -110,30 +105,30 @@ begin
   end;
 end;
 
-procedure TfrmCadastroObservacoes.btCancelarClick(Sender: TObject);
+procedure TfrmCadastroEstagio.btCancelarClick(Sender: TObject);
 begin
   Cancelar;
 end;
 
-procedure TfrmCadastroObservacoes.btExcluirClick(Sender: TObject);
+procedure TfrmCadastroEstagio.btExcluirClick(Sender: TObject);
 Var
   FWC : TFWConnection;
-  O   : TOBSERVACAO;
+  E   : TESTAGIO;
 begin
   if not cds_Pesquisa.IsEmpty then begin
 
-    DisplayMsg(MSG_CONF, 'Excluir a Observação Selecionada?');
+    DisplayMsg(MSG_CONF, 'Excluir o Estágio Selecionado?');
 
     if ResultMsgModal = mrYes then begin
 
       try
 
         FWC := TFWConnection.Create;
-        O   := TOBSERVACAO.Create(FWC);
+        E   := TESTAGIO.Create(FWC);
         try
 
-          O.ID.Value := cds_PesquisaID.Value;
-          O.Delete;
+          E.ID.Value := cds_PesquisaID.Value;
+          E.Delete;
 
           FWC.Commit;
 
@@ -142,18 +137,18 @@ begin
         except
           on E : Exception do begin
             FWC.Rollback;
-            DisplayMsg(MSG_ERR, 'Erro ao Excluir a Observação, Verifique!', '', E.Message);
+            DisplayMsg(MSG_ERR, 'Erro ao Excluir o Estágio, Verifique!', '', E.Message);
           end;
         end;
       finally
-        FreeAndNil(O);
+        FreeAndNil(E);
         FreeAndNil(FWC);
       end;
     end;
   end;
 end;
 
-procedure TfrmCadastroObservacoes.btExportarClick(Sender: TObject);
+procedure TfrmCadastroEstagio.btExportarClick(Sender: TObject);
 begin
   if btExportar.Tag = 0 then begin
     btExportar.Tag := 1;
@@ -165,19 +160,19 @@ begin
   end;
 end;
 
-procedure TfrmCadastroObservacoes.btFecharClick(Sender: TObject);
+procedure TfrmCadastroEstagio.btFecharClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TfrmCadastroObservacoes.btGravarClick(Sender: TObject);
+procedure TfrmCadastroEstagio.btGravarClick(Sender: TObject);
 Var
   FWC : TFWConnection;
-  O   : TOBSERVACAO;
+  E   : TESTAGIO;
 begin
 
   FWC := TFWConnection.Create;
-  O   := TOBSERVACAO.Create(FWC);
+  E   := TESTAGIO.Create(FWC);
 
   try
     try
@@ -196,16 +191,15 @@ begin
         Exit;
       end;
 
-      O.DESCRICAO.Value       := edDescricao.Text;
-      O.OBSERVACAO.Value      := edObservacao.Text;
-      O.CODIGOEXTERNO.Value   := edCodigoExterno.Text;
+      E.DESCRICAO.Value       := edDescricao.Text;
+      E.OBSERVACAO.Value      := edObservacao.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
-        O.ID.Value          := (Sender as TSpeedButton).Tag;
-        O.Update;
+        E.ID.Value          := (Sender as TSpeedButton).Tag;
+        E.Update;
       end else begin
-        O.ID.isNull := True;
-        O.Insert;
+        E.ID.isNull := True;
+        E.Insert;
       end;
 
       FWC.Commit;
@@ -217,39 +211,39 @@ begin
     Except
       on E : Exception do begin
         FWC.Rollback;
-        DisplayMsg(MSG_ERR, 'Erro ao Gravar a Observação!', '', E.Message);
+        DisplayMsg(MSG_ERR, 'Erro ao Gravar o Estágio!', '', E.Message);
       end;
     end;
   finally
-    FreeAndNil(O);
+    FreeAndNil(E);
     FreeAndNil(FWC);
   end;
 end;
 
-procedure TfrmCadastroObservacoes.btNovoClick(Sender: TObject);
+procedure TfrmCadastroEstagio.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
 end;
 
-procedure TfrmCadastroObservacoes.Cancelar;
+procedure TfrmCadastroEstagio.Cancelar;
 begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
   InvertePaineis;
 end;
 
-procedure TfrmCadastroObservacoes.CarregaDados;
+procedure TfrmCadastroEstagio.CarregaDados;
 Var
   FWC : TFWConnection;
-  O   : TOBSERVACAO;
+  E   : TESTAGIO;
   I,
   Codigo  : Integer;
 begin
 
   try
     FWC := TFWConnection.Create;
-    O   := TOBSERVACAO.Create(FWC);
+    E   := TESTAGIO.Create(FWC);
     cds_Pesquisa.DisableControls;
     try
 
@@ -257,14 +251,13 @@ begin
 
       cds_Pesquisa.EmptyDataSet;
 
-      O.SelectList('ID > 0', 'ID');
-      if O.Count > 0 then begin
-        for I := 0 to O.Count -1 do begin
+      E.SelectList('ID > 0', 'ID');
+      if E.Count > 0 then begin
+        for I := 0 to E.Count -1 do begin
           cds_Pesquisa.Append;
-          cds_PesquisaID.Value             := TOBSERVACAO(O.Itens[I]).ID.Value;
-          cds_PesquisaDESCRICAO.Value      := TOBSERVACAO(O.Itens[I]).DESCRICAO.Value;
-          cds_PesquisaOBSERVACAO.Value     := TOBSERVACAO(O.Itens[I]).OBSERVACAO.Value;
-          cds_PesquisaCODIGOEXTERNO.Value  := TOBSERVACAO(O.Itens[I]).CODIGOEXTERNO.Value;
+          cds_PesquisaID.Value             := TESTAGIO(E.Itens[I]).ID.Value;
+          cds_PesquisaDESCRICAO.Value      := TESTAGIO(E.Itens[I]).DESCRICAO.Value;
+          cds_PesquisaOBSERVACAO.Value     := TESTAGIO(E.Itens[I]).OBSERVACAO.Value;
           cds_Pesquisa.Post;
         end;
       end;
@@ -280,12 +273,12 @@ begin
 
   finally
     cds_Pesquisa.EnableControls;
-    FreeAndNil(O);
+    FreeAndNil(E);
     FreeAndNil(FWC);
   end;
 end;
 
-procedure TfrmCadastroObservacoes.csPesquisaFilterRecord(DataSet: TDataSet;
+procedure TfrmCadastroEstagio.csPesquisaFilterRecord(DataSet: TDataSet;
   var Accept: Boolean);
 Var
   I : Integer;
@@ -301,18 +294,18 @@ begin
   end;
 end;
 
-procedure TfrmCadastroObservacoes.Filtrar;
+procedure TfrmCadastroEstagio.Filtrar;
 begin
   cds_Pesquisa.Filtered := False;
   cds_Pesquisa.Filtered := Length(edPesquisa.Text) > 0;
 end;
 
-procedure TfrmCadastroObservacoes.FormCreate(Sender: TObject);
+procedure TfrmCadastroEstagio.FormCreate(Sender: TObject);
 begin
   AjustaForm(Self);
 end;
 
-procedure TfrmCadastroObservacoes.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TfrmCadastroEstagio.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if pnVisualizacao.Visible then begin
@@ -349,19 +342,19 @@ begin
   end;
 end;
 
-procedure TfrmCadastroObservacoes.FormShow(Sender: TObject);
+procedure TfrmCadastroEstagio.FormShow(Sender: TObject);
 begin
   cds_Pesquisa.CreateDataSet;
   CarregaDados;
   AutoSizeDBGrid(gdPesquisa);
 end;
 
-procedure TfrmCadastroObservacoes.gdPesquisaTitleClick(Column: TColumn);
+procedure TfrmCadastroEstagio.gdPesquisaTitleClick(Column: TColumn);
 begin
   OrdenarGrid(Column);
 end;
 
-procedure TfrmCadastroObservacoes.InvertePaineis;
+procedure TfrmCadastroEstagio.InvertePaineis;
 begin
   pnVisualizacao.Visible        := not pnVisualizacao.Visible;
   pnBotoesVisualizacao.Visible  := pnVisualizacao.Visible;

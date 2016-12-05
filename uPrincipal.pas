@@ -29,6 +29,7 @@ type
     OrdemdeProduodeMeiodeCultura1: TMenuItem;
     Esterilizacao1: TMenuItem;
     OrdemdeProduo1: TMenuItem;
+    Estgio1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -45,6 +46,7 @@ type
     procedure OrdemdeProduodeMeiodeCultura1Click(Sender: TObject);
     procedure Esterilizacao1Click(Sender: TObject);
     procedure OrdemdeProduo1Click(Sender: TObject);
+    procedure Estgio1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -78,7 +80,7 @@ uses
   uOrdemProducaoMeioCultura,
   uComposicaoMeioCultura,
   uCadastroEsterilizacao,
-  uOrdemProducao;
+  uOrdemProducao, uCadastroEstagio;
 
 {$R *.dfm}
 
@@ -99,6 +101,17 @@ begin
     frmCadastroEsterilizacao.ShowModal;
   finally
     FreeAndNil(frmCadastroEsterilizacao);
+  end;
+end;
+
+procedure TfrmPrincipal.Estgio1Click(Sender: TObject);
+begin
+  try
+    if frmCadastroEstagio = nil then
+      frmCadastroEstagio := TfrmCadastroEstagio.Create(Self);
+    frmCadastroEstagio.ShowModal;
+  finally
+    FreeAndNil(frmCadastroEstagio);
   end;
 end;
 
