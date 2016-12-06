@@ -41,6 +41,11 @@ begin
 
   CODIGO.Size := 5;
   OBSERVACAO.Size := 512;
+
+  CODIGO.displayLabel         := 'Cód. Meio Cultura';
+  CODIGO.isSearchField        := True;
+  PHRECOMENDADO.isSearchField := True;
+  PHRECOMENDADO.displayLabel  := 'PH Recomendado';
 end;
 
 procedure TMEIOCULTURA.SetCODIGO(const Value: TFieldString);

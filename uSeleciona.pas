@@ -164,9 +164,9 @@ begin
   FDC           := TFWConnection.Create;
   QRConsulta    := TFDQuery.Create(nil);
   try
-    if not Assigned(FTabelaPai) then
+    if Assigned(FTabelaPai) then
       Tabela1   := Copy(FTabelaPai.ClassName, 2, Length(FTabelaPai.ClassName));
-    if not Assigned(FTabelaAux) then
+    if Assigned(FTabelaAux) then
       Tabela2   := Copy(FTabelaAux.ClassName, 2, Length(FTabelaAux.ClassName));
 
     QRConsulta.SQL.Add('SELECT ');
@@ -179,7 +179,7 @@ begin
     if Assigned(FTabelaAux) then begin
       Count := GetPropList(FTabelaAux.ClassInfo, tkProperties, @List, False);
       for I := 0 to Pred(Count) do begin
-        if (TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).isPK) or (TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).isSearchField) then
+        if (TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).isSearchField) then
           QRConsulta.SQL.Add(Tabela2 + '.' + List[I]^.Name + ', ');
       end;
     end;
@@ -203,11 +203,18 @@ begin
     QRConsulta.Offline;
 
     Count := GetPropList(FTabelaPai.ClassInfo, tkProperties, @List, False);
-
     for I := 0 to Pred(Count) do begin
       if (TFieldTypeDomain(GetObjectProp(FTabelaPai, List[I]^.Name)).isPK) or (TFieldTypeDomain(GetObjectProp(FTabelaPai, List[I]^.Name)).isSearchField) then begin
         QRConsulta.FieldByName(List[I]^.Name).DisplayLabel := TFieldTypeDomain(GetObjectProp(FTabelaPai, List[I]^.Name)).displayLabel;
         QRConsulta.FieldByName(List[I]^.Name).DisplayWidth := TFieldTypeDomain(GetObjectProp(FTabelaPai, List[I]^.Name)).displayWidth;
+      end;
+    end;
+
+    Count := GetPropList(FTabelaAux.ClassInfo, tkProperties, @List, False);
+    for I := 0 to Pred(Count) do begin
+      if (TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).isSearchField) then begin
+        QRConsulta.FieldByName(List[I]^.Name).DisplayLabel := TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).displayLabel;
+        QRConsulta.FieldByName(List[I]^.Name).DisplayWidth := TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).displayWidth;
       end;
     end;
 

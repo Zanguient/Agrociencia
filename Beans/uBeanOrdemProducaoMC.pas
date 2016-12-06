@@ -68,6 +68,9 @@ procedure TORDEMPRODUCAOMC.InitInstance;
 begin
   inherited;
   ID.isPK := True;
+  ID.displayLabel           := 'Cód. OP';
+  DATAINICIO.displayLabel   := 'Dt. Inicio';
+  DATAINICIO.isSearchField  := True;
 end;
 
 procedure TORDEMPRODUCAOMC.SetDATAFIM(const Value: TFieldDateTime);

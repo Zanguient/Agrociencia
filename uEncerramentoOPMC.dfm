@@ -3,7 +3,7 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
   Top = 0
   BorderStyle = bsNone
   Caption = 'Encerramento de Ordens de Produ'#231#227'o de Meio de Cultura'
-  ClientHeight = 333
+  ClientHeight = 328
   ClientWidth = 902
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -11,19 +11,22 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   Position = poDesktopCenter
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   object pnPrincipal: TPanel
     Left = 0
     Top = 0
     Width = 902
-    Height = 333
+    Height = 328
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitHeight = 333
     object GroupBox2: TGroupBox
       AlignWithMargins = True
       Left = 3
@@ -33,9 +36,12 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
       Align = alTop
       Caption = '  Dados Principais  '
       TabOrder = 0
+      DesignSize = (
+        896
+        58)
       object Label18: TLabel
         Left = 8
-        Top = 13
+        Top = 12
         Width = 70
         Height = 13
         Caption = 'C'#243'd. OP. MC.:'
@@ -54,6 +60,13 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
         Height = 13
         Caption = 'PH Final:'
       end
+      object Label2: TLabel
+        Left = 318
+        Top = 12
+        Width = 62
+        Height = 13
+        Caption = 'Observa'#231#227'o:'
+      end
       object edt_CodigoOrdem: TButtonedEdit
         AlignWithMargins = True
         Left = 8
@@ -70,6 +83,7 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
         RightButton.ImageIndex = 0
         RightButton.Visible = True
         TabOrder = 0
+        OnChange = edt_CodigoOrdemChange
         OnKeyDown = edt_CodigoOrdemKeyDown
         OnRightButtonClick = edt_CodigoOrdemRightButtonClick
       end
@@ -106,6 +120,21 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
         Font.Style = []
         ParentFont = False
         TabOrder = 2
+      end
+      object edt_Observacao: TEdit
+        Left = 318
+        Top = 26
+        Width = 573
+        Height = 27
+        Anchors = [akLeft, akTop, akRight]
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 3
       end
     end
     object Panel2: TPanel
@@ -349,7 +378,7 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
     object pnBotoesVisualizacao: TPanel
       AlignWithMargins = True
       Left = 3
-      Top = 270
+      Top = 265
       Width = 896
       Height = 60
       Align = alBottom
@@ -357,9 +386,7 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 4
-      ExplicitTop = 400
-      ExplicitWidth = 867
+      ExplicitTop = 270
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 3
@@ -391,10 +418,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
             Value = 100.000000000000000000
           end>
         TabOrder = 0
-        ExplicitLeft = 4
-        ExplicitTop = 4
-        ExplicitWidth = 888
-        ExplicitHeight = 52
         object Panel8: TPanel
           Left = 0
           Top = 0
@@ -403,8 +426,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitWidth = 429
-          ExplicitHeight = 52
           object btEncerrar: TSpeedButton
             AlignWithMargins = True
             Left = 342
@@ -470,6 +491,7 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
               F5E0C2F7E8D7FAF2EAFDFAF7FFFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+            OnClick = btEncerrarClick
             ExplicitLeft = 11
             ExplicitTop = 6
             ExplicitHeight = 46
@@ -483,9 +505,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitLeft = 429
-          ExplicitWidth = 430
-          ExplicitHeight = 52
           object btFechar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -551,6 +570,7 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
               545C610101010101010101010101015C5C5CFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE8E8E8565A5B6266675D626359
               5D5F55595B515556494C4D5C5C5C5C5C5C5C5C5C5C5C5C8A8A8A}
+            OnClick = btFecharClick
             ExplicitLeft = 118
             ExplicitTop = 8
             ExplicitHeight = 42
