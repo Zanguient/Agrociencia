@@ -62,6 +62,10 @@ begin
   CODIGOEXTERNO.Size  := 100;
   CADPROIE.Size       := 30;
 
+  NOME.isSearchField  := True;
+
+  ID.displayLabel     := 'Código';
+  NOME.displayLabel   := 'Nome do Cliente';
 end;
 
 procedure TCLIENTE.SetCADPROIE(const Value: TFieldString);

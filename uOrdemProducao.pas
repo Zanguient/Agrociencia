@@ -73,6 +73,13 @@ type
     procedure btExportarClick(Sender: TObject);
     procedure btObservacaoClick(Sender: TObject);
     procedure edCodigoClienteChange(Sender: TObject);
+    procedure edCodigoClienteKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoClienteRightButtonClick(Sender: TObject);
+    procedure edCodigoProdutoRightButtonClick(Sender: TObject);
+    procedure edCodigoProdutoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoProdutoChange(Sender: TObject);
   private
     procedure SelecionarObservacao;
     { Private declarations }
@@ -95,7 +102,7 @@ uses
   uFWConnection,
   uBeanOPFinal,
   uMensagem,
-  uFuncoes, uBeanObservacao, uDMUtil;
+  uFuncoes, uBeanObservacao, uDMUtil, uBeanCliente, uBeanProdutos;
 
 {$R *.dfm}
 
@@ -404,6 +411,63 @@ end;
 procedure TfrmOrdemProducao.edCodigoClienteChange(Sender: TObject);
 begin
   edNomeCliente.Clear;
+end;
+
+procedure TfrmOrdemProducao.edCodigoClienteKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoClienteRightButtonClick(nil);
+end;
+
+procedure TfrmOrdemProducao.edCodigoClienteRightButtonClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  C   : TCLIENTE;
+begin
+  FWC := TFWConnection.Create;
+  C   := TCLIENTE.Create(FWC);
+
+  try
+    edCodigoCliente.Text := IntToStr(DMUtil.Selecionar(C, edCodigoCliente.Text));
+    C.SelectList('id = ' + edCodigoCliente.Text);
+    if C.Count = 1 then
+      edNomeCliente.Text := TCLIENTE(C.Itens[0]).NOME.asString;
+  finally
+    FreeAndNil(C);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmOrdemProducao.edCodigoProdutoChange(Sender: TObject);
+begin
+  edNomeProduto.Clear;
+end;
+
+procedure TfrmOrdemProducao.edCodigoProdutoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoProdutoRightButtonClick(nil);
+end;
+
+procedure TfrmOrdemProducao.edCodigoProdutoRightButtonClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  P   : TPRODUTO;
+begin
+  FWC := TFWConnection.Create;
+  P   := TPRODUTO.Create(FWC);
+
+  try
+    edCodigoProduto.Text := IntToStr(DMUtil.Selecionar(P, edCodigoProduto.Text));
+    P.SelectList('id = ' + edCodigoProduto.Text);
+    if P.Count = 1 then
+      edNomeProduto.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+  finally
+    FreeAndNil(P);
+    FreeAndNil(FWC);
+  end;
 end;
 
 procedure TfrmOrdemProducao.Filtrar;
