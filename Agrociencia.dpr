@@ -45,7 +45,8 @@ uses
   uBeanEstagio in 'Beans\uBeanEstagio.pas',
   uBeanMeioCultura in 'Beans\uBeanMeioCultura.pas',
   uBeanMeioCulturaEspecie in 'Beans\uBeanMeioCulturaEspecie.pas',
-  uCadastroEstagio in 'uCadastroEstagio.pas' {frmCadastroEstagio};
+  uCadastroEstagio in 'uCadastroEstagio.pas' {frmCadastroEstagio},
+  uEncerramentoOPMC in 'uEncerramentoOPMC.pas' {frmEncerramentoOPMC};
 
 {$R *.res}
 

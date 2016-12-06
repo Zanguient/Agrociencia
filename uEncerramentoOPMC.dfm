@@ -24,10 +24,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = 232
-    ExplicitTop = 144
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object GroupBox2: TGroupBox
       AlignWithMargins = True
       Left = 3
@@ -120,7 +116,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitTop = 76
       object GridPanel1: TGridPanel
         Left = 0
         Top = 0
@@ -151,7 +146,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
             Value = 100.000000000000000000
           end>
         TabOrder = 0
-        ExplicitHeight = 56
         object gbMeioCultura: TGroupBox
           AlignWithMargins = True
           Left = 3
@@ -161,8 +155,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
           Align = alClient
           Caption = 'Meio de Cultura'
           TabOrder = 0
-          ExplicitWidth = 431
-          ExplicitHeight = 71
           DesignSize = (
             445
             59)
@@ -250,9 +242,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
           Align = alClient
           Caption = '  Recipientes  '
           TabOrder = 1
-          ExplicitLeft = 440
-          ExplicitWidth = 432
-          ExplicitHeight = 71
           DesignSize = (
             445
             59)

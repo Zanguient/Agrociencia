@@ -22,7 +22,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    function Selecionar(Tabela : TFWPersistence; Tabela2 : TFWPersistence = nil; ValorControl : String = ''; Filtro : String = '') : Integer;
+    function Selecionar(Tabela : TFWPersistence; ValorControl : String = ''; Filtro : String = ''; Tabela2 : TFWPersistence = nil) : Integer;
     procedure ImprimirRelatorio(Relatorio : String);
   end;
 
@@ -103,7 +103,7 @@ begin
   end;
 end;
 
-function TDMUtil.Selecionar(Tabela : TFWPersistence; Tabela2 : TFWPersistence; ValorControl : String; Filtro : String): Integer;
+function TDMUtil.Selecionar(Tabela : TFWPersistence; ValorControl : String; Filtro : String; Tabela2 : TFWPersistence): Integer;
 var
   Control : TEdit;
 begin

@@ -75,8 +75,15 @@ object frmPrincipal: TfrmPrincipal
         OnClick = Estoque1Click
       end
       object OrdemdeProduodeMeiodeCultura1: TMenuItem
-        Caption = 'Ordem de Produ'#231#227'o (Meio de Cultura)'
-        OnClick = OrdemdeProduodeMeiodeCultura1Click
+        Caption = 'Meio de Cultura'
+        object OrdemdeProduoMeiodeCultura1: TMenuItem
+          Caption = 'Ordem de Produ'#231#227'o'
+          OnClick = OrdemdeProduoMeiodeCultura1Click
+        end
+        object EncerrarOrdemdeProduo1: TMenuItem
+          Caption = 'Encerrar Ordem de Produ'#231#227'o'
+          OnClick = EncerrarOrdemdeProduo1Click
+        end
       end
       object OrdemdeProduo1: TMenuItem
         Caption = 'Ordem de Produ'#231#227'o (Final)'

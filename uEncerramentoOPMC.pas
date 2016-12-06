@@ -99,7 +99,7 @@ begin
   PR := TPRODUTO.Create(FW);
   try
     Filtro := 'ORDEMPRODUCAOMC.ID_PRODUTO = MEIODULTURA.ID_PRODUTO AND NOT ORDEMPRODUCAOMC.ENCERRADO';
-    edt_CodigoOrdem.Tag := DMUtil.Selecionar(OP, MC, edt_CodigoOrdem.Text, Filtro);
+    edt_CodigoOrdem.Tag := DMUtil.Selecionar(OP, edt_CodigoOrdem.Text, Filtro, MC);
     OP.SelectList('ID = ' + QuotedStr(IntToStr(edt_CodigoOrdem.Tag)));
     if OP.Count > 0 then begin
       edt_CodigoOrdem.Text             := TORDEMPRODUCAOMC(OP.Itens[0]).ID.asString;
