@@ -1352,8 +1352,6 @@ object frmOrdemProducao: TfrmOrdemProducao
           Height = 386
           Align = alClient
           TabOrder = 0
-          ExplicitLeft = -5
-          ExplicitTop = 2
           object Label2: TLabel
             AlignWithMargins = True
             Left = 4
@@ -1368,7 +1366,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            ExplicitTop = 3
             ExplicitWidth = 87
           end
           object Label1: TLabel
@@ -1385,7 +1382,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            ExplicitTop = 61
             ExplicitWidth = 230
           end
           object Label3: TLabel
@@ -1402,8 +1398,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            ExplicitLeft = 9
-            ExplicitTop = 261
             ExplicitWidth = 88
           end
           object edQuantidade: TEdit
@@ -1421,7 +1415,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             NumbersOnly = True
             ParentFont = False
             TabOrder = 0
-            ExplicitWidth = 415
           end
           object edIntervaloCrescimento: TEdit
             AlignWithMargins = True
@@ -1438,8 +1431,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             NumbersOnly = True
             ParentFont = False
             TabOrder = 1
-            ExplicitLeft = 2
-            ExplicitTop = 119
           end
           object gbProduto: TGroupBox
             AlignWithMargins = True
@@ -1456,8 +1447,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Style = []
             ParentFont = False
             TabOrder = 3
-            ExplicitLeft = 8
-            ExplicitTop = 206
             DesignSize = (
               417
               58)
@@ -1492,7 +1481,6 @@ object frmOrdemProducao: TfrmOrdemProducao
               Font.Style = []
               ParentFont = False
               TabOrder = 1
-              ExplicitWidth = 341
             end
           end
           object gbCliente: TGroupBox
@@ -1510,8 +1498,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Style = []
             ParentFont = False
             TabOrder = 2
-            ExplicitLeft = 28
-            ExplicitTop = 148
             DesignSize = (
               417
               58)
@@ -1531,6 +1517,7 @@ object frmOrdemProducao: TfrmOrdemProducao
               RightButton.ImageIndex = 0
               RightButton.Visible = True
               TabOrder = 0
+              OnChange = edCodigoClienteChange
             end
             object edNomeCliente: TEdit
               Left = 66
@@ -1546,7 +1533,6 @@ object frmOrdemProducao: TfrmOrdemProducao
               Font.Style = []
               ParentFont = False
               TabOrder = 1
-              ExplicitWidth = 341
             end
           end
           object pnObservacao: TPanel
@@ -1574,7 +1560,6 @@ object frmOrdemProducao: TfrmOrdemProducao
               MaxLength = 512
               ParentFont = False
               TabOrder = 0
-              ExplicitWidth = 238
             end
             object btObservacao: TBitBtn
               AlignWithMargins = True
@@ -1684,9 +1669,6 @@ object frmOrdemProducao: TfrmOrdemProducao
                 FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
               TabOrder = 1
               OnClick = btObservacaoClick
-              ExplicitLeft = 342
-              ExplicitTop = 0
-              ExplicitHeight = 98
             end
           end
         end
@@ -1697,8 +1679,6 @@ object frmOrdemProducao: TfrmOrdemProducao
           Height = 386
           Align = alClient
           TabOrder = 1
-          ExplicitLeft = 428
-          ExplicitTop = 2
         end
       end
     end

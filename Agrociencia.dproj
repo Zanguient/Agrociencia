@@ -173,6 +173,10 @@
         </DCCReference>
         <DCCReference Include="uEncerramentoOPMC.pas">
             <Form>frmEncerramentoOPMC</Form>
+        </DCCReference>
+        <DCCReference Include="Beans\uBeanOPFinal_Estagio.pas"/>
+        <DCCReference Include="uControleEstagioOPF.pas">
+            <Form>frmControleEstagioOPF</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Release">

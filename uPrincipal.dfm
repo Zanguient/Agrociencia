@@ -86,8 +86,15 @@ object frmPrincipal: TfrmPrincipal
         end
       end
       object OrdemdeProduo1: TMenuItem
-        Caption = 'Ordem de Produ'#231#227'o (Final)'
-        OnClick = OrdemdeProduo1Click
+        Caption = 'Produ'#231#227'o (Final)'
+        object OrdemdeProduo2: TMenuItem
+          Caption = 'Ordem de Produ'#231#227'o'
+          OnClick = OrdemdeProduo2Click
+        end
+        object EstgiodaProduo1: TMenuItem
+          Caption = 'Est'#225'gio da Produ'#231#227'o'
+          OnClick = EstgiodaProduo1Click
+        end
       end
     end
     object Relatrios1: TMenuItem

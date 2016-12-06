@@ -260,3 +260,30 @@ CREATE TABLE if not exists opfinal
       REFERENCES usuario (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT      
 );
+
+CREATE TABLE if not exists opfinal_estagio
+(
+  id serial NOT NULL,
+  opfinal_id integer NOT NULL,
+  datahora timestamp NOT NULL,
+  datahorainicio timestamp,
+  datahorafim timestamp,  
+  usuario_id integer NOT NULL,
+  opmc_id integer NOT NULL,
+  estagio_id integer NOT NULL,
+  sequencia integer NOT NULL,
+  observacao character varying(512),
+  CONSTRAINT pk_opfinal_estagio PRIMARY KEY (id),
+  CONSTRAINT fk_opfinal_estagio_op FOREIGN KEY (opfinal_id)
+      REFERENCES opfinal (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_opfinal_estagio_u FOREIGN KEY (usuario_id)
+      REFERENCES usuario (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_opfinal_estagio_mc FOREIGN KEY (opmc_id)
+      REFERENCES ordemproducaomc (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_opfinal_estagio_e FOREIGN KEY (estagio_id)
+      REFERENCES estagio (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT
+);

@@ -72,6 +72,7 @@ type
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
     procedure btObservacaoClick(Sender: TObject);
+    procedure edCodigoClienteChange(Sender: TObject);
   private
     procedure SelecionarObservacao;
     { Private declarations }
@@ -398,6 +399,11 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TfrmOrdemProducao.edCodigoClienteChange(Sender: TObject);
+begin
+  edNomeCliente.Clear;
 end;
 
 procedure TfrmOrdemProducao.Filtrar;

@@ -32,6 +32,8 @@ type
     Estgio1: TMenuItem;
     OrdemdeProduoMeiodeCultura1: TMenuItem;
     EncerrarOrdemdeProduo1: TMenuItem;
+    OrdemdeProduo2: TMenuItem;
+    EstgiodaProduo1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -46,10 +48,11 @@ type
     procedure Estoque1Click(Sender: TObject);
     procedure ComposiodeMeiosdeCultura1Click(Sender: TObject);
     procedure Esterilizacao1Click(Sender: TObject);
-    procedure OrdemdeProduo1Click(Sender: TObject);
     procedure Estgio1Click(Sender: TObject);
     procedure OrdemdeProduoMeiodeCultura1Click(Sender: TObject);
     procedure EncerrarOrdemdeProduo1Click(Sender: TObject);
+    procedure OrdemdeProduo2Click(Sender: TObject);
+    procedure EstgiodaProduo1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -85,7 +88,8 @@ uses
   uCadastroEsterilizacao,
   uOrdemProducao,
   uCadastroEstagio,
-  uEncerramentoOPMC;
+  uEncerramentoOPMC,
+  uControleEstagioOPF;
 
 {$R *.dfm}
 
@@ -128,6 +132,17 @@ begin
     frmCadastroEstagio.ShowModal;
   finally
     FreeAndNil(frmCadastroEstagio);
+  end;
+end;
+
+procedure TfrmPrincipal.EstgiodaProduo1Click(Sender: TObject);
+begin
+  if not Assigned(frmControleEstagioOPF) then
+    frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
+  try
+    frmControleEstagioOPF.ShowModal;
+  finally
+    FreeAndNil(frmControleEstagioOPF);
   end;
 end;
 
@@ -241,7 +256,7 @@ begin
   end;
 end;
 
-procedure TfrmPrincipal.OrdemdeProduo1Click(Sender: TObject);
+procedure TfrmPrincipal.OrdemdeProduo2Click(Sender: TObject);
 begin
   if not Assigned(frmOrdemProducao) then
     frmOrdemProducao := TfrmOrdemProducao.Create(nil);
