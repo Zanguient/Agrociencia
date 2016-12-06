@@ -62,6 +62,9 @@ type
     edObservacao: TEdit;
     Label7: TLabel;
     cds_PesquisaOBSERVACAO: TStringField;
+    edCadProIE: TEdit;
+    Label8: TLabel;
+    cds_PesquisaCADPROIE: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -106,12 +109,14 @@ begin
     edCPFCNPJ.Clear;
     edObservacao.Clear;
     edCodigoExterno.Clear;
+    edCadProIE.Clear;
     btGravar.Tag  := 0;
   end else begin
     edNome.Text           := cds_PesquisaNOME.Value;
     edCPFCNPJ.Text        := cds_PesquisaCPFCNPJ.Value;
     edCodigoExterno.Text  := cds_PesquisaCODIGOEXTERNO.Value;
     edObservacao.Text     := cds_PesquisaOBSERVACAO.Value;
+    edCadProIE.Text       := cds_PesquisaCADPROIE.Value;
     btGravar.Tag          := cds_PesquisaID.Value;
   end;
 end;
@@ -224,6 +229,7 @@ begin
       C.EMAIL.Value           := edCelular.Text;
       C.OBSERVACAO.Value      := edObservacao.Text;
       C.CODIGOEXTERNO.Value   := edCodigoExterno.Text;
+      C.CADPROIE.Value        := edCadProIE.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         C.ID.Value          := (Sender as TSpeedButton).Tag;
@@ -294,6 +300,7 @@ begin
           cds_PesquisaEMAIL.Value         := TCLIENTE(C.Itens[I]).EMAIL.Value;
           cds_PesquisaOBSERVACAO.Value    := TCLIENTE(C.Itens[I]).OBSERVACAO.Value;
           cds_PesquisaCODIGOEXTERNO.Value := TCLIENTE(C.Itens[I]).CODIGOEXTERNO.Value;
+          cds_PesquisaCADPROIE.Value      := TCLIENTE(C.Itens[I]).CADPROIE.Value;
           cds_Pesquisa.Post;
         end;
       end;
