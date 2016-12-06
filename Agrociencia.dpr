@@ -48,7 +48,9 @@ uses
   uCadastroEstagio in 'uCadastroEstagio.pas' {frmCadastroEstagio},
   uEncerramentoOPMC in 'uEncerramentoOPMC.pas' {frmEncerramentoOPMC},
   uBeanOPFinal_Estagio in 'Beans\uBeanOPFinal_Estagio.pas',
-  uControleEstagioOPF in 'uControleEstagioOPF.pas' {frmControleEstagioOPF};
+  uControleEstagioOPF in 'uControleEstagioOPF.pas' {frmControleEstagioOPF},
+  uBeanOrdemProducaoMC_Estoque in 'Beans\uBeanOrdemProducaoMC_Estoque.pas',
+  uBeanOrdemProducaoMC_Estoque_OP in 'Beans\uBeanOrdemProducaoMC_Estoque_OP.pas';
 
 {$R *.res}
 

@@ -179,6 +179,8 @@
             <Form>frmControleEstagioOPF</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Beans\uBeanOrdemProducaoMC_Estoque.pas"/>
+        <DCCReference Include="Beans\uBeanOrdemProducaoMC_Estoque_OP.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

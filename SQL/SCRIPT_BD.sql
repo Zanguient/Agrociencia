@@ -161,23 +161,6 @@ CONSTRAINT fk_meioculturaespecie_especie FOREIGN KEY (id_especie)
     ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
-CREATE TABLE if not exists meioculturaestoque (
-id serial NOT NULL,
-id_meiocultura bigint,
-id_recipiente bigint,
-id_ordemproducaomc bigint,
-CONSTRAINT pk_meioculturaestoque PRIMARY KEY (id),
-CONSTRAINT fk_meioculturaestoque_meiocultura FOREIGN KEY (id_meiocultura)
-    REFERENCES meiocultura (id) MATCH SIMPLE
-    ON UPDATE CASCADE ON DELETE CASCADE,
-CONSTRAINT fk_meioculturaestoque_recipiente FOREIGN KEY (id_recipiente)
-    REFERENCES produto (id) MATCH SIMPLE
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-CONSTRAINT fk_meioculturaestoque_opmc FOREIGN KEY (id_ordemproducaomc)
-    REFERENCES ordemproducaomc (id) MATCH SIMPLE
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-);
-
 CREATE TABLE ordemproducaomc
 (
   id serial NOT NULL,
@@ -229,6 +212,31 @@ CREATE TABLE ordemproducaomc_itens
   CONSTRAINT fk_opmci_produto FOREIGN KEY (id_produto)
       REFERENCES produto (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE if not exists ordemproducaomc_estoque (
+id serial NOT NULL,
+id_ordemproducaomc bigint,
+quantidade double precision,
+saldo double precision,
+CONSTRAINT pk_ordemproducaomc_estoque PRIMARY KEY (id),
+CONSTRAINT fk_ordemproducaomc_estoque_opmc FOREIGN KEY (id_ordemproducaomc)
+    REFERENCES ordemproducaomc (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE if not exists ordemproducaomc_estoque_op (
+id serial NOT NULL,
+id_ordemproducaomc_estoque bigint,
+id_opfinal bigint,
+quantidade double precision,
+CONSTRAINT pk_ordemproducaomc_estoque_op PRIMARY KEY (id),
+CONSTRAINT fk_ordemproducaomc_estoque_op_mce FOREIGN KEY (id_ordemproducaomc_estoque)
+    REFERENCES ordemproducaomc_estoque (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+CONSTRAINT fk_ordemproducaomc_estoque_op_opfinal FOREIGN KEY (id_opfinal)
+    REFERENCES opfinal (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 CREATE TABLE if not exists estagio

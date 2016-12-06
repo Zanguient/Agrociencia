@@ -26,8 +26,7 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 333
-    object GroupBox2: TGroupBox
+    object gbPrincipal: TGroupBox
       AlignWithMargins = True
       Left = 3
       Top = 3
@@ -36,9 +35,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
       Align = alTop
       Caption = '  Dados Principais  '
       TabOrder = 0
-      DesignSize = (
-        896
-        58)
       object Label18: TLabel
         Left = 8
         Top = 12
@@ -59,13 +55,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
         Width = 42
         Height = 13
         Caption = 'PH Final:'
-      end
-      object Label2: TLabel
-        Left = 318
-        Top = 12
-        Width = 62
-        Height = 13
-        Caption = 'Observa'#231#227'o:'
       end
       object edt_CodigoOrdem: TButtonedEdit
         AlignWithMargins = True
@@ -121,23 +110,8 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
         ParentFont = False
         TabOrder = 2
       end
-      object edt_Observacao: TEdit
-        Left = 318
-        Top = 26
-        Width = 573
-        Height = 27
-        Anchors = [akLeft, akTop, akRight]
-        Enabled = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 3
-      end
     end
-    object Panel2: TPanel
+    object pnGridPanel: TPanel
       Left = 0
       Top = 64
       Width = 902
@@ -385,8 +359,7 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
       BevelOuter = bvNone
       Color = clWhite
       ParentBackground = False
-      TabOrder = 2
-      ExplicitTop = 270
+      TabOrder = 3
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 3
@@ -576,6 +549,39 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
             ExplicitHeight = 42
           end
         end
+      end
+    end
+    object gbObservacao: TGroupBox
+      AlignWithMargins = True
+      Left = 3
+      Top = 132
+      Width = 896
+      Height = 127
+      Align = alClient
+      Caption = '  Observa'#231#227'o  '
+      TabOrder = 2
+      ExplicitLeft = 376
+      ExplicitTop = 184
+      ExplicitWidth = 185
+      ExplicitHeight = 105
+      object edt_Observacao: TEdit
+        Left = 2
+        Top = 15
+        Width = 892
+        Height = 110
+        Align = alClient
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        ExplicitLeft = 318
+        ExplicitTop = 26
+        ExplicitWidth = 573
+        ExplicitHeight = 27
       end
     end
   end

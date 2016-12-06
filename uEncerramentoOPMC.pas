@@ -10,14 +10,14 @@ uses
 type
   TfrmEncerramentoOPMC = class(TForm)
     pnPrincipal: TPanel;
-    GroupBox2: TGroupBox;
+    gbPrincipal: TGroupBox;
     Label18: TLabel;
     edt_CodigoOrdem: TButtonedEdit;
     edt_PHInicial: TJvValidateEdit;
     Label14: TLabel;
     edt_PHFinal: TJvValidateEdit;
     Label1: TLabel;
-    Panel2: TPanel;
+    pnGridPanel: TPanel;
     GridPanel1: TGridPanel;
     gbMeioCultura: TGroupBox;
     Label7: TLabel;
@@ -41,8 +41,8 @@ type
     btEncerrar: TSpeedButton;
     Panel9: TPanel;
     btFechar: TSpeedButton;
+    gbObservacao: TGroupBox;
     edt_Observacao: TEdit;
-    Label2: TLabel;
     procedure edt_CodigoOrdemRightButtonClick(Sender: TObject);
     procedure edt_CodigoOrdemKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -73,8 +73,11 @@ uses
   uBeanOrdemProducaoMC,
   uMensagem,
   uBeanProdutos,
-  uFuncoes, uBeanControleEstoque, uBeanControleEstoqueProduto,
-  uBeanOrdemProducaoMC_Itens;
+  uFuncoes,
+  uBeanControleEstoque,
+  uBeanControleEstoqueProduto,
+  uBeanOrdemProducaoMC_Itens,
+  uBeanOrdemProducaoMC_Estoque;
 {$R *.dfm}
 
 { TfrmEncerramentoOPMC }
@@ -99,7 +102,8 @@ end;
 
 procedure TfrmEncerramentoOPMC.edt_CodigoOrdemChange(Sender: TObject);
 begin
-  LimparDadosOrdem;
+  if pnPrincipal.Tag = 0 then
+    LimparDadosOrdem;
 end;
 
 procedure TfrmEncerramentoOPMC.edt_CodigoOrdemKeyDown(Sender: TObject;
@@ -120,6 +124,7 @@ Var
   CEP   : TCONTROLEESTOQUEPRODUTO;
   OPMC  : TORDEMPRODUCAOMC;
   OPMCI : TORDEMPRODUCAOMC_ITENS;
+  OPMCE : TORDEMPRODUCAOMC_ESTOQUE;
   I: Integer;
 begin
   if (edt_CodigoOrdem.Text = EmptyStr) or (edt_CodigoOrdem.Tag = 0) then begin
@@ -132,6 +137,7 @@ begin
   CEP     := TCONTROLEESTOQUEPRODUTO.Create(FWC);
   OPMC    := TORDEMPRODUCAOMC.Create(FWC);
   OPMCI   := TORDEMPRODUCAOMC_ITENS.Create(FWC);
+  OPMCE   := TORDEMPRODUCAOMC_ESTOQUE.Create(FWC);
   try
     DisplayMsg(MSG_WAIT, 'Encerrando Ordem de Produção de Meio de Cultura...');
 
@@ -153,6 +159,12 @@ begin
         CEP.QUANTIDADE.Value        := edt_QuantidadeMeioCultura.Value;
         CEP.Insert;
 
+        CEP.ID.isNull               := True;
+        CEP.CONTROLEESTOQUE_ID.Value:= CE.ID.Value;
+        CEP.PRODUTO_ID.Value        := StrToInt(edt_CodigoRecipientes.Text);
+        CEP.QUANTIDADE.Value        := edt_QuantidadeRecipiente.Value;
+        CEP.Insert;
+
         OPMCI.SelectList('ID_ORDEMPRODUCAOMC = ' + QuotedStr(edt_CodigoOrdem.Text));
         if OPMCI.Count > 0 then begin
           for I := 0 to Pred(OPMCI.Count) do begin
@@ -171,7 +183,17 @@ begin
       OPMC.ID_USUARIOEXECUTAR.Value     := USUARIO.CODIGO;
       OPMC.PHINICIAL.Value              := edt_PHInicial.Value;
       OPMC.PHFINAL.Value                := edt_PHFinal.Value;
+      OPMC.MLRECIPIENTE.Value           := edt_MLPorRecipiente.Value;
+      OPMC.QUANTRECIPIENTES.Value       := edt_QuantidadeRecipiente.Value;
+      OPMC.OBSERVACAOENCERRAMENTO.Value := edt_Observacao.Text;
+
       OPMC.Update;
+
+      OPMCE.ID.isNull                   := True;
+      OPMCE.ID_ORDEMPRODUCAOMC.Value    := OPMC.ID.Value;
+      OPMCE.QUANTIDADE.Value            := OPMC.QUANTRECIPIENTES.Value;
+      OPMCE.SALDO.Value                 := OPMC.QUANTRECIPIENTES.Value;
+      OPMCE.Insert;
 
       FWC.Commit;
       DisplayMsgFinaliza;
@@ -187,6 +209,7 @@ begin
     FreeAndNil(CEP);
     FreeAndNil(OPMC);
     FreeAndNil(OPMCI);
+    FreeAndNil(OPMCE);
     FreeAndNil(FWC);
   end;
 end;
@@ -204,18 +227,23 @@ end;
 
 procedure TfrmEncerramentoOPMC.LimparDadosOrdem;
 begin
-  edt_CodigoOrdem.Tag := 0;
-  edt_CodigoOrdem.Clear;
-  edt_PHInicial.Value := 0;
-  edt_PHFinal.Value   := 0;
-  edt_Observacao.Clear;
-  edt_CodigoMeioCultura.Clear;
-  edt_DescricaoMeioCultura.Clear;
-  edt_CodigoRecipientes.Clear;
-  edt_NomeRecipiente.Clear;
-  edt_MLPorRecipiente.Value  := 0;
-  edt_QuantidadeMeioCultura.Value := 0;
-  edt_QuantidadeRecipiente.Value  := 0;
+  pnPrincipal.Tag := 1;
+  try
+    edt_CodigoOrdem.Tag := 0;
+    edt_CodigoOrdem.Clear;
+    edt_PHInicial.Value := 0;
+    edt_PHFinal.Value   := 0;
+    edt_Observacao.Clear;
+    edt_CodigoMeioCultura.Clear;
+    edt_DescricaoMeioCultura.Clear;
+    edt_CodigoRecipientes.Clear;
+    edt_NomeRecipiente.Clear;
+    edt_MLPorRecipiente.Value  := 0;
+    edt_QuantidadeMeioCultura.Value := 0;
+    edt_QuantidadeRecipiente.Value  := 0;
+  finally
+    pnPrincipal.Tag := 0;
+  end;
 end;
 
 procedure TfrmEncerramentoOPMC.SelecionaOrdemProducao;
@@ -230,7 +258,9 @@ begin
   MC := TMEIOCULTURA.Create(FW);
   OP := TORDEMPRODUCAOMC.Create(FW);
   PR := TPRODUTO.Create(FW);
+  pnPrincipal.Tag := 0;
   try
+    pnPrincipal.Tag := 1;
     Filtro := 'ORDEMPRODUCAOMC.ID_PRODUTO = MEIOCULTURA.ID_PRODUTO AND NOT ORDEMPRODUCAOMC.ENCERRADO';
     edt_CodigoOrdem.Tag := DMUtil.Selecionar(OP, edt_CodigoOrdem.Text, Filtro, MC);
     OP.SelectList('ID = ' + QuotedStr(IntToStr(edt_CodigoOrdem.Tag)));
@@ -254,6 +284,7 @@ begin
       edt_QuantidadeRecipiente.Value   := TORDEMPRODUCAOMC(OP.Itens[0]).QUANTPRODUTO.Value;
     end;
   finally
+    pnPrincipal.Tag := 0;
     FreeAndNil(PR);
     FreeAndNil(OP);
     FreeAndNil(MC);

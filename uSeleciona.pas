@@ -210,11 +210,13 @@ begin
       end;
     end;
 
-    Count := GetPropList(FTabelaAux.ClassInfo, tkProperties, @List, False);
-    for I := 0 to Pred(Count) do begin
-      if (TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).isSearchField) then begin
-        QRConsulta.FieldByName(List[I]^.Name).DisplayLabel := TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).displayLabel;
-        QRConsulta.FieldByName(List[I]^.Name).DisplayWidth := TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).displayWidth;
+    if Assigned(FTabelaAux) then begin
+      Count := GetPropList(FTabelaAux.ClassInfo, tkProperties, @List, False);
+      for I := 0 to Pred(Count) do begin
+        if (TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).isSearchField) then begin
+          QRConsulta.FieldByName(List[I]^.Name).DisplayLabel := TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).displayLabel;
+          QRConsulta.FieldByName(List[I]^.Name).DisplayWidth := TFieldTypeDomain(GetObjectProp(FTabelaAux, List[I]^.Name)).displayWidth;
+        end;
       end;
     end;
 

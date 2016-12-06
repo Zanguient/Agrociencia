@@ -24,6 +24,8 @@ type
     FQUANTPRODUTO: TFieldFloat;
     FMLRECIPIENTE: TFieldFloat;
     FID_ESTERILIZACAO: TFieldInteger;
+    FOBSERVACAO: TFieldString;
+    FOBSERVACAOENCERRAMENTO: TFieldString;
     procedure SetDATAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAINICIO(const Value: TFieldDate);
@@ -40,6 +42,8 @@ type
     procedure SetQUANTPRODUTO(const Value: TFieldFloat);
     procedure SetMLRECIPIENTE(const Value: TFieldFloat);
     procedure SetID_ESTERILIZACAO(const Value: TFieldInteger);
+    procedure SetOBSERVACAO(const Value: TFieldString);
+    procedure SetOBSERVACAOENCERRAMENTO(const Value: TFieldString);
   protected
     procedure InitInstance; override;
   published
@@ -59,6 +63,8 @@ type
     property QUANTPRODUTO : TFieldFloat read FQUANTPRODUTO write SetQUANTPRODUTO;
     property MLRECIPIENTE : TFieldFloat read FMLRECIPIENTE write SetMLRECIPIENTE;
     property ID_ESTERILIZACAO : TFieldInteger read FID_ESTERILIZACAO write SetID_ESTERILIZACAO;
+    property OBSERVACAO : TFieldString read FOBSERVACAO write SetOBSERVACAO;
+    property OBSERVACAOENCERRAMENTO : TFieldString read FOBSERVACAOENCERRAMENTO write SetOBSERVACAOENCERRAMENTO;
   end;
 implementation
 
@@ -68,9 +74,13 @@ procedure TORDEMPRODUCAOMC.InitInstance;
 begin
   inherited;
   ID.isPK := True;
-  ID.displayLabel           := 'Cód. OP';
-  DATAINICIO.displayLabel   := 'Dt. Inicio';
-  DATAINICIO.isSearchField  := True;
+
+  ID.displayLabel                 := 'Cód. OP';
+  DATAINICIO.displayLabel         := 'Dt. Inicio';
+  DATAINICIO.isSearchField        := True;
+
+  OBSERVACAO.Size                 := 500;
+  OBSERVACAOENCERRAMENTO.Size     := 500;
 end;
 
 procedure TORDEMPRODUCAOMC.SetDATAFIM(const Value: TFieldDateTime);
@@ -131,6 +141,16 @@ end;
 procedure TORDEMPRODUCAOMC.SetMLRECIPIENTE(const Value: TFieldFloat);
 begin
   FMLRECIPIENTE := Value;
+end;
+
+procedure TORDEMPRODUCAOMC.SetOBSERVACAO(const Value: TFieldString);
+begin
+  FOBSERVACAO := Value;
+end;
+
+procedure TORDEMPRODUCAOMC.SetOBSERVACAOENCERRAMENTO(const Value: TFieldString);
+begin
+  FOBSERVACAOENCERRAMENTO := Value;
 end;
 
 procedure TORDEMPRODUCAOMC.SetPHFINAL(const Value: TFieldFloat);
