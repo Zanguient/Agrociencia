@@ -143,7 +143,7 @@ begin
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
         SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
         SQL.SQL.Add('WHERE 1 = 1');
-        SQL.SQL.Add('AND APF.ID = :OPID');
+        SQL.SQL.Add('AND OPF.ID = :OPID');
         SQL.Connection  := FWC.FDConnection;
         SQL.ParamByName('OPID').DataType  := ftInteger;
         SQL.Prepare;
@@ -347,7 +347,7 @@ begin
       SQL.Close;
       SQL.SQL.Clear;
       SQL.SQL.Add('SELECT');
-      SQL.SQL.Add('	OPF.ID AS CODIGO,');
+      SQL.SQL.Add('	OPF.ID,');
       SQL.SQL.Add('	OPF.DATAHORA,');
       SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
       SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
@@ -460,7 +460,7 @@ begin
   P   := TPRODUTO.Create(FWC);
 
   try
-    edCodigoProduto.Text := IntToStr(DMUtil.Selecionar(P, edCodigoProduto.Text));
+    edCodigoProduto.Text := IntToStr(DMUtil.Selecionar(P, edCodigoProduto.Text, 'finalidade = ' + IntToStr(Integer(eProdutoFinal)) ));
     P.SelectList('id = ' + edCodigoProduto.Text);
     if P.Count = 1 then
       edNomeProduto.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;

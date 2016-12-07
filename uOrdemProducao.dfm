@@ -3,7 +3,7 @@ object frmOrdemProducao: TfrmOrdemProducao
   Top = 0
   ActiveControl = edPesquisa
   BorderStyle = bsNone
-  Caption = 'Ordem de Produ'#195#167#195#163'o'
+  Caption = 'Ordem de Produ'#231#227'o'
   ClientHeight = 504
   ClientWidth = 861
   Color = clBtnFace

@@ -3,7 +3,7 @@ object frmCadastroEstagio: TfrmCadastroEstagio
   Top = 0
   ActiveControl = edPesquisa
   BorderStyle = bsNone
-  Caption = 'Cadastro de Est'#195#161'gio'
+  Caption = 'Cadastro de Est'#225'gio'
   ClientHeight = 504
   ClientWidth = 861
   Color = clBtnFace

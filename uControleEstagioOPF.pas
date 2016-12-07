@@ -35,8 +35,6 @@ type
     Panel3: TPanel;
     GridPanel1: TGridPanel;
     pnUsuarioEsquerda: TPanel;
-    Label2: TLabel;
-    edDescricao: TEdit;
     pnUsuarioDireita: TPanel;
     btExportar: TSpeedButton;
     GridPanel2: TGridPanel;
@@ -44,12 +42,21 @@ type
     btCancelar: TSpeedButton;
     Panel5: TPanel;
     btGravar: TSpeedButton;
-    edObservacao: TEdit;
-    Label1: TLabel;
     cds_PesquisaNOMEPRODUTO: TStringField;
     cds_PesquisaSEQUENCIA: TIntegerField;
     cds_PesquisaESTAGIO: TStringField;
     cds_PesquisaCODIGOOP: TIntegerField;
+    edObservacao: TEdit;
+    Label1: TLabel;
+    gbOPF: TGroupBox;
+    edOPF: TButtonedEdit;
+    edDescOPF: TEdit;
+    gbOPMC: TGroupBox;
+    edOPMC: TButtonedEdit;
+    edDescOPMC: TEdit;
+    gbEstagio: TGroupBox;
+    edCodigoEstagio: TButtonedEdit;
+    edDescEstagio: TEdit;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -62,6 +69,16 @@ type
     procedure btExcluirClick(Sender: TObject);
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
+    procedure edOPFChange(Sender: TObject);
+    procedure edOPMCChange(Sender: TObject);
+    procedure edOPFRightButtonClick(Sender: TObject);
+    procedure edOPMCRightButtonClick(Sender: TObject);
+    procedure edOPMCKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edOPFKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edCodigoEstagioChange(Sender: TObject);
+    procedure edCodigoEstagioRightButtonClick(Sender: TObject);
+    procedure edCodigoEstagioKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -83,14 +100,13 @@ uses
   uFWConnection,
   uMensagem,
   uFuncoes,
-  uBeanEstagio;
+  uBeanEstagio, uBeanOPFinal, uDMUtil, uBeanOrdemProducaoMC;
 
 {$R *.dfm}
 
 procedure TfrmControleEstagioOPF.AtualizarEdits(Limpar: Boolean);
 begin
   if Limpar then begin
-    edDescricao.Clear;
     edObservacao.Clear;
     btGravar.Tag  := 0;
   end else begin
@@ -180,12 +196,12 @@ begin
   try
     try
 
-      if Length(Trim(edDescricao.Text)) = 0 then begin
+      {if Length(Trim(edDescricao.Text)) = 0 then begin
         DisplayMsg(MSG_WAR, 'Descrição não informada, Verifique!');
         if edDescricao.CanFocus then
           edDescricao.SetFocus;
         Exit;
-      end;
+      end;}
 
       if Length(Trim(edObservacao.Text)) = 0 then begin
         DisplayMsg(MSG_WAR, 'Observação não informada, Verifique!');
@@ -194,7 +210,7 @@ begin
         Exit;
       end;
 
-      E.DESCRICAO.Value       := edDescricao.Text;
+      //E.DESCRICAO.Value       := edDescricao.Text;
       E.OBSERVACAO.Value      := edObservacao.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
@@ -321,6 +337,140 @@ begin
   end;
 end;
 
+procedure TfrmControleEstagioOPF.edCodigoEstagioChange(Sender: TObject);
+begin
+  edDescEstagio.Clear;
+end;
+
+procedure TfrmControleEstagioOPF.edCodigoEstagioKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    edCodigoEstagioRightButtonClick(nil)
+end;
+
+procedure TfrmControleEstagioOPF.edCodigoEstagioRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  E   : TESTAGIO;
+begin
+
+  FWC := TFWConnection.Create;
+  E   := TESTAGIO.Create(FWC);
+  try
+    edCodigoEstagio.Text := IntToStr(DMUtil.Selecionar(E, edCodigoEstagio.Text));
+    E.SelectList('id = ' + edCodigoEstagio.Text);
+    if E.Count = 1 then
+      edDescEstagio.Text := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
+  finally
+    FreeAndNil(E);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmControleEstagioOPF.edOPFChange(Sender: TObject);
+begin
+  edDescOPF.Text := EmptyStr;
+end;
+
+procedure TfrmControleEstagioOPF.edOPFKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    edOPFRightButtonClick(nil)
+end;
+
+procedure TfrmControleEstagioOPF.edOPFRightButtonClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  OPF : TOPFINAL;
+  SQL : TFDQuery;
+begin
+
+  FWC := TFWConnection.Create;
+  OPF := TOPFINAL.Create(FWC);
+  SQL := TFDQuery.Create(nil);
+
+  try
+
+    edOPF.Text := IntToStr(DMUtil.Selecionar(OPF, edOPF.Text));
+
+    SQL.Close;
+    SQL.SQL.Clear;
+    SQL.SQL.Add('SELECT');
+    SQL.SQL.Add('	C.NOME AS NOMECLIENTE');
+    SQL.SQL.Add('FROM OPFINAL OPF');
+    SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+    SQL.SQL.Add('WHERE 1 = 1');
+    SQL.SQL.Add('AND OPF.ID = :IDOPF');
+    SQL.Connection  := FWC.FDConnection;
+    SQL.ParamByName('IDOPF').DataType   := ftInteger;
+    SQL.ParamByName('IDOPF').AsInteger  := StrToIntDef(edOPF.Text, -1);
+    SQL.Prepare;
+    SQL.Open;
+
+    if not SQL.IsEmpty then
+      edDescOPF.Text := SQL.FieldByName('NOMECLIENTE').AsString;
+
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(OPF);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmControleEstagioOPF.edOPMCChange(Sender: TObject);
+begin
+  edDescOPMC.Text := EmptyStr;
+end;
+
+procedure TfrmControleEstagioOPF.edOPMCKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    edOPMCRightButtonClick(nil)
+end;
+
+procedure TfrmControleEstagioOPF.edOPMCRightButtonClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  OPMC: TORDEMPRODUCAOMC;
+  SQL : TFDQuery;
+begin
+
+  FWC := TFWConnection.Create;
+  OPMC:= TORDEMPRODUCAOMC.Create(FWC);
+  SQL := TFDQuery.Create(nil);
+
+  try
+
+    edOPMC.Text := IntToStr(DMUtil.Selecionar(OPMC, edOPMC.Text));
+
+    SQL.Close;
+    SQL.SQL.Clear;
+    SQL.SQL.Add('SELECT');
+    SQL.SQL.Add('	C.NOME AS NOMECLIENTE');
+    SQL.SQL.Add('FROM OPFINAL OPF');
+    SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+    SQL.SQL.Add('WHERE 1 = 1');
+    SQL.SQL.Add('AND OPF.ID = :IDOPF');
+    SQL.Connection  := FWC.FDConnection;
+    SQL.ParamByName('IDOPF').DataType   := ftInteger;
+    SQL.ParamByName('IDOPF').AsInteger  := StrToIntDef(edOPMC.Text, -1);
+    SQL.Prepare;
+    SQL.Open;
+
+    if not SQL.IsEmpty then
+      edDescOPMC.Text := SQL.FieldByName('NOMECLIENTE').AsString;
+
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(OPMC);
+    FreeAndNil(FWC);
+  end;
+end;
+
 procedure TfrmControleEstagioOPF.Filtrar;
 begin
   cds_Pesquisa.Filtered := False;
@@ -388,8 +538,8 @@ begin
   pnEdicao.Visible              := not pnEdicao.Visible;
   pnBotoesEdicao.Visible        := pnEdicao.Visible;
   if pnEdicao.Visible then begin
-    if edDescricao.CanFocus then
-      edDescricao.SetFocus;
+    if edOPF.CanFocus then
+      edOPF.SetFocus;
   end;
 end;
 
