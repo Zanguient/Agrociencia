@@ -225,20 +225,6 @@ CONSTRAINT fk_ordemproducaomc_estoque_opmc FOREIGN KEY (id_ordemproducaomc)
     ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
-CREATE TABLE if not exists ordemproducaomc_estoque_op (
-id serial NOT NULL,
-id_ordemproducaomc_estoque bigint,
-id_opfinal bigint,
-quantidade double precision,
-CONSTRAINT pk_ordemproducaomc_estoque_op PRIMARY KEY (id),
-CONSTRAINT fk_ordemproducaomc_estoque_op_mce FOREIGN KEY (id_ordemproducaomc_estoque)
-    REFERENCES ordemproducaomc_estoque (id) MATCH SIMPLE
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-CONSTRAINT fk_ordemproducaomc_estoque_op_opfinal FOREIGN KEY (id_opfinal)
-    REFERENCES opfinal (id) MATCH SIMPLE
-    ON UPDATE CASCADE ON DELETE RESTRICT
-);
-
 CREATE TABLE if not exists estagio
 (
   id serial NOT NULL,
@@ -294,4 +280,18 @@ CREATE TABLE if not exists opfinal_estagio
   CONSTRAINT fk_opfinal_estagio_e FOREIGN KEY (estagio_id)
       REFERENCES estagio (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE if not exists ordemproducaomc_estoque_op (
+id serial NOT NULL,
+id_ordemproducaomc_estoque bigint,
+id_opfinal bigint,
+quantidade double precision,
+CONSTRAINT pk_ordemproducaomc_estoque_op PRIMARY KEY (id),
+CONSTRAINT fk_ordemproducaomc_estoque_op_mce FOREIGN KEY (id_ordemproducaomc_estoque)
+    REFERENCES ordemproducaomc_estoque (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+CONSTRAINT fk_ordemproducaomc_estoque_op_opfinal FOREIGN KEY (id_opfinal)
+    REFERENCES opfinal (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT
 );
