@@ -7,7 +7,7 @@ CREATE TABLE if not exists usuario
   CONSTRAINT pk_usuario PRIMARY KEY (id)
 );
 
-CREATE TABLE usuario_permissao
+CREATE TABLE if not exists usuario_permissao
 (
 
   id serial NOT NULL,
@@ -105,7 +105,7 @@ CREATE TABLE if not exists controleestoquecancelamento (
 	REFERENCES usuario (id) on delete restrict on update cascade
 );
 
-CREATE TABLE produtocomposicao
+CREATE TABLE if not exists produtocomposicao
 (
    id serial, 
    id_produto bigint, 
@@ -161,7 +161,7 @@ CONSTRAINT fk_meioculturaespecie_especie FOREIGN KEY (id_especie)
     ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
-CREATE TABLE ordemproducaomc
+CREATE TABLE if not exists ordemproducaomc
 (
   id serial NOT NULL,
   id_usuario bigint,
@@ -199,7 +199,7 @@ CREATE TABLE ordemproducaomc
       ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
-CREATE TABLE ordemproducaomc_itens
+CREATE TABLE if not exists ordemproducaomc_itens
 (
   id serial NOT NULL,
   id_ordemproducaomc bigint,
@@ -223,28 +223,6 @@ CONSTRAINT pk_ordemproducaomc_estoque PRIMARY KEY (id),
 CONSTRAINT fk_ordemproducaomc_estoque_opmc FOREIGN KEY (id_ordemproducaomc)
     REFERENCES ordemproducaomc (id) MATCH SIMPLE
     ON UPDATE CASCADE ON DELETE RESTRICT
-);
-
-CREATE TABLE if not exists ordemproducaomc_estoque_op (
-id serial NOT NULL,
-id_ordemproducaomc_estoque bigint,
-id_opfinal bigint,
-quantidade double precision,
-CONSTRAINT pk_ordemproducaomc_estoque_op PRIMARY KEY (id),
-CONSTRAINT fk_ordemproducaomc_estoque_op_mce FOREIGN KEY (id_ordemproducaomc_estoque)
-    REFERENCES ordemproducaomc_estoque (id) MATCH SIMPLE
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-CONSTRAINT fk_ordemproducaomc_estoque_op_opfinal FOREIGN KEY (id_opfinal)
-    REFERENCES opfinal (id) MATCH SIMPLE
-    ON UPDATE CASCADE ON DELETE RESTRICT
-);
-
-CREATE TABLE if not exists estagio
-(
-  id serial NOT NULL,
-  descricao character varying(100) NOT NULL,
-  observacao character varying(512) NOT NULL,
-  CONSTRAINT pk_estagio PRIMARY KEY (id)
 );
 
 CREATE TABLE if not exists opfinal
@@ -294,4 +272,18 @@ CREATE TABLE if not exists opfinal_estagio
   CONSTRAINT fk_opfinal_estagio_e FOREIGN KEY (estagio_id)
       REFERENCES estagio (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE if not exists ordemproducaomc_estoque_op (
+id serial NOT NULL,
+id_ordemproducaomc_estoque bigint,
+id_opfinal bigint,
+quantidade double precision,
+CONSTRAINT pk_ordemproducaomc_estoque_op PRIMARY KEY (id),
+CONSTRAINT fk_ordemproducaomc_estoque_op_mce FOREIGN KEY (id_ordemproducaomc_estoque)
+    REFERENCES ordemproducaomc_estoque (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+CONSTRAINT fk_ordemproducaomc_estoque_op_opfinal FOREIGN KEY (id_opfinal)
+    REFERENCES opfinal (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT
 );
