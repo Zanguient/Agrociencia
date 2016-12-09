@@ -27,7 +27,7 @@ type
     gpBotoes: TGridPanel;
     Panel8: TPanel;
     Panel9: TPanel;
-    btExcluir: TSpeedButton;
+    btRelatorio: TSpeedButton;
     btFechar: TSpeedButton;
     btAlterar: TSpeedButton;
     btNovo: TSpeedButton;
@@ -46,17 +46,21 @@ type
     cds_PesquisaSEQUENCIA: TIntegerField;
     cds_PesquisaESTAGIO: TStringField;
     cds_PesquisaCODIGOOP: TIntegerField;
-    edObservacao: TEdit;
-    Label1: TLabel;
     gbOPF: TGroupBox;
-    edOPF: TButtonedEdit;
+    edCodigoOPF: TButtonedEdit;
     edDescOPF: TEdit;
     gbOPMC: TGroupBox;
-    edOPMC: TButtonedEdit;
+    edCodigoOPMC: TButtonedEdit;
     edDescOPMC: TEdit;
     gbEstagio: TGroupBox;
     edCodigoEstagio: TButtonedEdit;
     edDescEstagio: TEdit;
+    cds_PesquisaDATAINICIO: TDateTimeField;
+    cds_PesquisaDATAFINAL: TDateTimeField;
+    Panel6: TPanel;
+    edObservacao: TEdit;
+    btObservacao: TBitBtn;
+    Label1: TLabel;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -66,20 +70,22 @@ type
     procedure btCancelarClick(Sender: TObject);
     procedure btAlterarClick(Sender: TObject);
     procedure btNovoClick(Sender: TObject);
-    procedure btExcluirClick(Sender: TObject);
+    procedure btRelatorioClick(Sender: TObject);
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
-    procedure edOPFChange(Sender: TObject);
-    procedure edOPMCChange(Sender: TObject);
-    procedure edOPFRightButtonClick(Sender: TObject);
-    procedure edOPMCRightButtonClick(Sender: TObject);
-    procedure edOPMCKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure edOPFKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edCodigoOPFChange(Sender: TObject);
+    procedure edCodigoOPMCChange(Sender: TObject);
+    procedure edCodigoOPFRightButtonClick(Sender: TObject);
+    procedure edCodigoOPMCRightButtonClick(Sender: TObject);
+    procedure edCodigoOPMCKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edCodigoOPFKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edCodigoEstagioChange(Sender: TObject);
     procedure edCodigoEstagioRightButtonClick(Sender: TObject);
     procedure edCodigoEstagioKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure btObservacaoClick(Sender: TObject);
   private
+    procedure SelecionarObservacao;
     { Private declarations }
   public
     procedure CarregaDados;
@@ -100,27 +106,96 @@ uses
   uFWConnection,
   uMensagem,
   uFuncoes,
-  uBeanEstagio, uBeanOPFinal, uDMUtil, uBeanOrdemProducaoMC;
+  uBeanEstagio,
+  uBeanOPFinal,
+  uDMUtil,
+  uBeanOrdemProducaoMC,
+  uBeanOPFinal_Estagio,
+  uBeanObservacao;
 
 {$R *.dfm}
 
 procedure TfrmControleEstagioOPF.AtualizarEdits(Limpar: Boolean);
+Var
+  FWC : TFWConnection;
+  SQL : TFDQuery;
 begin
   if Limpar then begin
+    edCodigoOPF.Clear;
+    edDescOPF.Clear;
+    edCodigoEstagio.Clear;
+    edDescEstagio.Clear;
+    edCodigoOPMC.Clear;
+    edDescOPMC.Clear;
     edObservacao.Clear;
     btGravar.Tag  := 0;
   end else begin
-    //edDescricao.Text      := cds_PesquisaDESCRICAO.Value;
-    //edObservacao.Text     := cds_PesquisaOBSERVACAO.Value;
+
     btGravar.Tag          := cds_PesquisaID.Value;
+
+    FWC := TFWConnection.Create;
+    SQL := TFDQuery.Create(nil);
+
+    try
+      try
+        SQL.Close;
+        SQL.SQL.Clear;
+        SQL.SQL.Add('SELECT');
+        SQL.SQL.Add('	OPFE.ID AS CODIGO,');
+        SQL.SQL.Add('	OPF.ID AS IDOPF,');
+        SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
+        SQL.SQL.Add('	E.ID AS IDESTAGIO,');
+        SQL.SQL.Add('	E.DESCRICAO AS DESCRICAOESTAGIO,');
+        SQL.SQL.Add('	OPMC.ID AS IDOPMC,');
+        SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
+        SQL.SQL.Add('	OPFE.OBSERVACAO');
+        SQL.SQL.Add('FROM OPFINAL_ESTAGIO OPFE');
+        SQL.SQL.Add('INNER JOIN OPFINAL OPF ON (OPF.ID = OPFE.OPFINAL_ID)');
+        SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+        SQL.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
+        SQL.SQL.Add('INNER JOIN ORDEMPRODUCAOMC OPMC ON (OPMC.ID = OPFE.OPMC_ID)');
+        SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPMC.ID_PRODUTO)');
+        SQL.SQL.Add('WHERE 1 = 1');
+        SQL.SQL.Add('AND OPFE.ID = :IDOPFE');
+        SQL.Connection                      := FWC.FDConnection;
+        SQL.ParamByName('IDOPFE').DataType  := ftInteger;
+        SQL.Prepare;
+        SQL.ParamByName('IDOPFE').AsInteger := btGravar.Tag;
+        SQL.Open;
+
+        if not SQL.IsEmpty then begin
+          if SQL.FieldByName('CODIGO').AsInteger = btGravar.Tag then begin
+            edCodigoOPF.Text            := SQL.FieldByName('IDOPF').AsString;
+            edDescOPF.Text              := SQL.FieldByName('NOMECLIENTE').AsString;
+            edCodigoEstagio.Text        := SQL.FieldByName('IDESTAGIO').AsString;
+            edDescEstagio.Text          := SQL.FieldByName('DESCRICAOESTAGIO').AsString;
+            edCodigoOPMC.Text           := SQL.FieldByName('IDOPMC').AsString;
+            edDescOPMC.Text             := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
+            edObservacao.Text           := SQL.FieldByName('OBSERVACAO').AsString;
+          end;
+        end;
+      except
+        on E : Exception do begin
+          DisplayMsg(MSG_ERR, 'Erro ao Carregar os dados para Alteração.', '', E.Message);
+        end;
+      end;
+    finally
+      FreeAndNil(SQL);
+      FreeAndNil(FWC);
+    end;
   end;
 end;
 
 procedure TfrmControleEstagioOPF.btAlterarClick(Sender: TObject);
 begin
   if not cds_Pesquisa.IsEmpty then begin
-    AtualizarEdits(False);
-    InvertePaineis;
+    if ((cds_PesquisaDATAFINAL.IsNull) or (cds_PesquisaDATAINICIO.AsDateTime < cds_PesquisaDATAFINAL.AsDateTime)) then begin
+      AtualizarEdits(False);
+      InvertePaineis;
+    end else begin
+      DisplayMsg(MSG_WAR, 'Estágio Encerrado, Portanto não pode ser Alterado!');
+      Exit;
+    end;
   end;
 end;
 
@@ -129,39 +204,66 @@ begin
   Cancelar;
 end;
 
-procedure TfrmControleEstagioOPF.btExcluirClick(Sender: TObject);
-Var
-  FWC : TFWConnection;
-  E   : TESTAGIO;
+procedure TfrmControleEstagioOPF.btRelatorioClick(Sender: TObject);
+var
+  FWC       : TFWConnection;
+  Consulta  : TFDQuery;
 begin
+
   if not cds_Pesquisa.IsEmpty then begin
-
-    DisplayMsg(MSG_CONF, 'Excluir o Estágio Selecionado?');
-
-    if ResultMsgModal = mrYes then begin
-
+    if btRelatorio.Tag = 0 then begin
+      btRelatorio.Tag := 1;
       try
 
-        FWC := TFWConnection.Create;
-        E   := TESTAGIO.Create(FWC);
+        DisplayMsg(MSG_WAIT, 'Buscando dados para visualizar!');
+
+        FWC       := TFWConnection.Create;
+        Consulta  := TFDQuery.Create(nil);
+
         try
+          try
 
-          E.ID.Value := cds_PesquisaID.Value;
-          E.Delete;
+            Consulta.Close;
+            Consulta.SQL.Clear;
+            Consulta.SQL.Add('SELECT');
+            Consulta.SQL.Add('	OPFE.ID AS IDOPF,');
+            Consulta.SQL.Add('	OPF.QUANTIDADE,');
+            Consulta.SQL.Add('	PF.ID AS CODIGOPRODUTO,');
+            Consulta.SQL.Add('	PF.DESCRICAO AS NOMEPRODUTO,');
+            Consulta.SQL.Add('	CAST(OPFE.DATAHORA AS DATE) AS DATAGERACAOOPF,');
+            Consulta.SQL.Add('	OPMC.ID AS IDOPMC,');
+            Consulta.SQL.Add('	CAST(OPFE.DATAHORA AS DATE) AS DATAGERACAOOPMC,');
+            Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC,');
+            Consulta.SQL.Add('	OPFE.OBSERVACAO');
+            Consulta.SQL.Add('FROM OPFINAL OPF');
+            Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+            Consulta.SQL.Add('INNER JOIN PRODUTO PF ON (PF.ID = OPF.PRODUTO_ID)');
+            Consulta.SQL.Add('INNER JOIN ORDEMPRODUCAOMC OPMC ON (OPMC.ID = OPFE.OPMC_ID)');
+            Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPMC.ID_PRODUTO)');
+            Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
+            Consulta.SQL.Add('WHERE 1 = 1');
+            Consulta.SQL.Add('AND OPFE.ID = :IDOPFE');
+            Consulta.Connection                     := FWC.FDConnection;
+            Consulta.ParamByName('IDOPFE').DataType := ftInteger;
+            Consulta.ParamByName('IDOPFE').AsInteger:= cds_PesquisaID.Value;
+            Consulta.Prepare;
+            Consulta.Open;
+            Consulta.FetchAll;
 
-          FWC.Commit;
-
-          cds_Pesquisa.Delete;
-
-        except
-          on E : Exception do begin
-            FWC.Rollback;
-            DisplayMsg(MSG_ERR, 'Erro ao Excluir o Estágio, Verifique!', '', E.Message);
+            DMUtil.frxDBDataset1.DataSet := Consulta;
+            DMUtil.ImprimirRelatorio('frOPFinal.fr3');
+            DisplayMsgFinaliza;
+          Except
+            on E : Exception do begin
+              DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta!', '', E.Message);
+            end;
           end;
+        finally
+          FreeAndNil(Consulta);
+          FreeAndNil(FWC);
         end;
       finally
-        FreeAndNil(E);
-        FreeAndNil(FWC);
+        btRelatorio.Tag := 0;
       end;
     end;
   end;
@@ -186,22 +288,36 @@ end;
 
 procedure TfrmControleEstagioOPF.btGravarClick(Sender: TObject);
 Var
-  FWC : TFWConnection;
-  E   : TESTAGIO;
+  FWC   : TFWConnection;
+  OPFE  : TOPFINAL_ESTAGIO;
 begin
 
-  FWC := TFWConnection.Create;
-  E   := TESTAGIO.Create(FWC);
+  FWC   := TFWConnection.Create;
+  OPFE  := TOPFINAL_ESTAGIO.Create(FWC);
 
   try
     try
 
-      {if Length(Trim(edDescricao.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'Descrição não informada, Verifique!');
-        if edDescricao.CanFocus then
-          edDescricao.SetFocus;
+      if Length(Trim(edDescOPF.Text)) = 0 then begin
+        DisplayMsg(MSG_WAR, 'Ordem de Produção não informada, Verifique!');
+        if edCodigoOPF.CanFocus then
+          edCodigoOPF.SetFocus;
         Exit;
-      end;}
+      end;
+
+      if Length(Trim(edDescEstagio.Text)) = 0 then begin
+        DisplayMsg(MSG_WAR, 'Estágio da OP não informada, Verifique!');
+        if edCodigoEstagio.CanFocus then
+          edCodigoEstagio.SetFocus;
+        Exit;
+      end;
+
+      if Length(Trim(edDescOPMC.Text)) = 0 then begin
+        DisplayMsg(MSG_WAR, 'Meio de Cultura não informado, Verifique!');
+        if edCodigoOPMC.CanFocus then
+          edCodigoOPMC.SetFocus;
+        Exit;
+      end;
 
       if Length(Trim(edObservacao.Text)) = 0 then begin
         DisplayMsg(MSG_WAR, 'Observação não informada, Verifique!');
@@ -210,15 +326,28 @@ begin
         Exit;
       end;
 
-      //E.DESCRICAO.Value       := edDescricao.Text;
-      E.OBSERVACAO.Value      := edObservacao.Text;
+      OPFE.OPFINAL_ID.Value   := StrToIntDef(edCodigoOPF.Text, 0);
+      OPFE.OPMC_ID.Value      := StrToIntDef(edCodigoOPMC.Text, 0);
+      OPFE.ESTAGIO_ID.Value   := StrToIntDef(edCodigoEstagio.Text, 0);
+      OPFE.OBSERVACAO.Value      := edObservacao.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
-        E.ID.Value          := (Sender as TSpeedButton).Tag;
-        E.Update;
+        OPFE.ID.Value          := (Sender as TSpeedButton).Tag;
+        OPFE.Update;
       end else begin
-        E.ID.isNull := True;
-        E.Insert;
+        OPFE.ID.isNull            := True;
+        OPFE.DATAHORA.Value       := Now;
+        OPFE.DATAHORAINICIO.Value := Now;
+        OPFE.USUARIO_ID.Value     := USUARIO.CODIGO;
+
+        //Verifica a sequencia do estágio
+        OPFE.SelectList('OPFINAL_ID = ' + edCodigoOPF.Text, 'SEQUENCIA DESC');
+        if OPFE.Count > 0 then
+          OPFE.SEQUENCIA.Value    := TOPFINAL_ESTAGIO(OPFE.Itens[0]).SEQUENCIA.Value + 1
+        else
+          OPFE.SEQUENCIA.Value    := 1;
+
+        OPFE.Insert;
       end;
 
       FWC.Commit;
@@ -230,11 +359,11 @@ begin
     Except
       on E : Exception do begin
         FWC.Rollback;
-        DisplayMsg(MSG_ERR, 'Erro ao Gravar o Estágio!', '', E.Message);
+        DisplayMsg(MSG_ERR, 'Erro ao Gravar o Estágio da OP!', '', E.Message);
       end;
     end;
   finally
-    FreeAndNil(E);
+    FreeAndNil(OPFE);
     FreeAndNil(FWC);
   end;
 end;
@@ -243,6 +372,18 @@ procedure TfrmControleEstagioOPF.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
+end;
+
+procedure TfrmControleEstagioOPF.btObservacaoClick(Sender: TObject);
+begin
+  if btObservacao.Tag = 0 then begin
+    btObservacao.Tag := 1;
+    try
+      SelecionarObservacao;
+    finally
+      btObservacao.Tag := 0;
+    end;
+  end;
 end;
 
 procedure TfrmControleEstagioOPF.Cancelar;
@@ -273,19 +414,21 @@ begin
       SQL.Close;
       SQL.SQL.Clear;
       SQL.SQL.Add('SELECT');
-      SQL.SQL.Add('	OPF.ID,');
-      SQL.SQL.Add('	OP.ID AS CODIGOOP,');
-      SQL.SQL.Add('	OPF.SEQUENCIA,');
+      SQL.SQL.Add('	OPFE.ID,');
+      SQL.SQL.Add('	OPF.ID AS CODIGOOP,');
+      SQL.SQL.Add('	OPFE.SEQUENCIA,');
       SQL.SQL.Add('	C.NOME AS CLIENTE,');
       SQL.SQL.Add('	P.DESCRICAO AS PRODUTO,');
-      SQL.SQL.Add('	E.DESCRICAO AS ESTAGIO');
-      SQL.SQL.Add('FROM OPFINAL OP');
-      SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPF ON (OPF.OPFINAL_ID = OP.ID)');
-      SQL.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPF.ESTAGIO_ID)');
-      SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OP.CLIENTE_ID)');
-      SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OP.PRODUTO_ID)');
+      SQL.SQL.Add('	E.DESCRICAO AS ESTAGIO,');
+      SQL.SQL.Add('	OPFE.DATAHORAINICIO AS DATAINICIO,');
+      SQL.SQL.Add('	OPFE.DATAHORAFIM AS DATAFINAL');
+      SQL.SQL.Add('FROM OPFINAL OPF');
+      SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+      SQL.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
+      SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+      SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
       SQL.SQL.Add('WHERE 1 = 1');
-      SQL.SQL.Add('ORDER BY 1,2');
+      SQL.SQL.Add('ORDER BY OPF.ID, OPFE.SEQUENCIA');
       SQL.Connection  := FWC.FDConnection;
       SQL.Prepare;
       SQL.Open;
@@ -300,6 +443,10 @@ begin
           cds_PesquisaNOMECLIENTE.Value := SQL.FieldByName('CLIENTE').AsString;
           cds_PesquisaNOMEPRODUTO.Value := SQL.FieldByName('PRODUTO').AsString;
           cds_PesquisaESTAGIO.Value     := SQL.FieldByName('ESTAGIO').AsString;
+          if not SQL.FieldByName('DATAINICIO').IsNull then
+            cds_PesquisaDATAINICIO.Value  := SQL.FieldByName('DATAINICIO').AsDateTime;
+          if not SQL.FieldByName('DATAFINAL').IsNull then
+            cds_PesquisaDATAFINAL.Value   := SQL.FieldByName('DATAFINAL').AsDateTime;
           cds_Pesquisa.Post;
           SQL.Next;
         end;
@@ -369,19 +516,19 @@ begin
   end;
 end;
 
-procedure TfrmControleEstagioOPF.edOPFChange(Sender: TObject);
+procedure TfrmControleEstagioOPF.edCodigoOPFChange(Sender: TObject);
 begin
   edDescOPF.Text := EmptyStr;
 end;
 
-procedure TfrmControleEstagioOPF.edOPFKeyDown(Sender: TObject; var Key: Word;
+procedure TfrmControleEstagioOPF.edCodigoOPFKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
-    edOPFRightButtonClick(nil)
+    edCodigoOPFRightButtonClick(nil)
 end;
 
-procedure TfrmControleEstagioOPF.edOPFRightButtonClick(Sender: TObject);
+procedure TfrmControleEstagioOPF.edCodigoOPFRightButtonClick(Sender: TObject);
 var
   FWC : TFWConnection;
   OPF : TOPFINAL;
@@ -394,7 +541,7 @@ begin
 
   try
 
-    edOPF.Text := IntToStr(DMUtil.Selecionar(OPF, edOPF.Text));
+    edCodigoOPF.Text := IntToStr(DMUtil.Selecionar(OPF, edCodigoOPF.Text));
 
     SQL.Close;
     SQL.SQL.Clear;
@@ -406,7 +553,7 @@ begin
     SQL.SQL.Add('AND OPF.ID = :IDOPF');
     SQL.Connection  := FWC.FDConnection;
     SQL.ParamByName('IDOPF').DataType   := ftInteger;
-    SQL.ParamByName('IDOPF').AsInteger  := StrToIntDef(edOPF.Text, -1);
+    SQL.ParamByName('IDOPF').AsInteger  := StrToIntDef(edCodigoOPF.Text, -1);
     SQL.Prepare;
     SQL.Open;
 
@@ -420,19 +567,19 @@ begin
   end;
 end;
 
-procedure TfrmControleEstagioOPF.edOPMCChange(Sender: TObject);
+procedure TfrmControleEstagioOPF.edCodigoOPMCChange(Sender: TObject);
 begin
   edDescOPMC.Text := EmptyStr;
 end;
 
-procedure TfrmControleEstagioOPF.edOPMCKeyDown(Sender: TObject; var Key: Word;
+procedure TfrmControleEstagioOPF.edCodigoOPMCKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
-    edOPMCRightButtonClick(nil)
+    edCodigoOPMCRightButtonClick(nil)
 end;
 
-procedure TfrmControleEstagioOPF.edOPMCRightButtonClick(Sender: TObject);
+procedure TfrmControleEstagioOPF.edCodigoOPMCRightButtonClick(Sender: TObject);
 var
   FWC : TFWConnection;
   OPMC: TORDEMPRODUCAOMC;
@@ -445,24 +592,25 @@ begin
 
   try
 
-    edOPMC.Text := IntToStr(DMUtil.Selecionar(OPMC, edOPMC.Text));
+    edCodigoOPMC.Text := IntToStr(DMUtil.Selecionar(OPMC, edCodigoOPMC.Text));
 
     SQL.Close;
     SQL.SQL.Clear;
     SQL.SQL.Add('SELECT');
-    SQL.SQL.Add('	C.NOME AS NOMECLIENTE');
-    SQL.SQL.Add('FROM OPFINAL OPF');
-    SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+    SQL.SQL.Add('	OPMC.ID AS IDOPMC,');
+    SQL.SQL.Add('	P.DESCRICAO AS NOMEPRODUTO');
+    SQL.SQL.Add('FROM ORDEMPRODUCAOMC OPMC');
+    SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPMC.ID_PRODUTO)');
     SQL.SQL.Add('WHERE 1 = 1');
-    SQL.SQL.Add('AND OPF.ID = :IDOPF');
+    SQL.SQL.Add('AND OPMC.ID = :IDOPMC');
     SQL.Connection  := FWC.FDConnection;
-    SQL.ParamByName('IDOPF').DataType   := ftInteger;
-    SQL.ParamByName('IDOPF').AsInteger  := StrToIntDef(edOPMC.Text, -1);
+    SQL.ParamByName('IDOPMC').DataType   := ftInteger;
+    SQL.ParamByName('IDOPMC').AsInteger  := StrToIntDef(edCodigoOPMC.Text, -1);
     SQL.Prepare;
     SQL.Open;
 
     if not SQL.IsEmpty then
-      edDescOPMC.Text := SQL.FieldByName('NOMECLIENTE').AsString;
+      edDescOPMC.Text := SQL.FieldByName('NOMEPRODUTO').AsString;
 
   finally
     FreeAndNil(SQL);
@@ -538,8 +686,43 @@ begin
   pnEdicao.Visible              := not pnEdicao.Visible;
   pnBotoesEdicao.Visible        := pnEdicao.Visible;
   if pnEdicao.Visible then begin
-    if edOPF.CanFocus then
-      edOPF.SetFocus;
+    if edCodigoOPF.CanFocus then
+      edCodigoOPF.SetFocus;
+  end;
+end;
+
+procedure TfrmControleEstagioOPF.SelecionarObservacao;
+var
+  FWC     : TFWConnection;
+  OBS     : TOBSERVACAO;
+  CodOBS  : Integer;
+begin
+
+  FWC     := TFWConnection.Create;
+  OBS     := TOBSERVACAO.Create(FWC);
+  try
+    try
+
+      CodOBS := DMUtil.Selecionar(OBS);
+      if CodOBS > 0 then begin
+        OBS.SelectList('id = ' + IntToStr(CodOBS));
+        if OBS.Count = 1 then begin
+          if Pos(TOBSERVACAO(OBS.Itens[0]).OBSERVACAO.Value, edObservacao.Text) = 0 then begin
+            if Length(Trim(edObservacao.Text)) = 0 then
+              edObservacao.Text := TOBSERVACAO(OBS.Itens[0]).OBSERVACAO.Value
+            else
+              edObservacao.Text := edObservacao.Text + ' ' + TOBSERVACAO(OBS.Itens[0]).OBSERVACAO.Value
+          end;
+        end;
+      end;
+    except
+      on E : Exception do begin
+        DisplayMsg(MSG_ERR, 'Erro ao Selecionar a Observação', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(OBS);
+    FreeAndNil(FWC);
   end;
 end;
 
