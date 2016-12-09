@@ -67,7 +67,6 @@ type
     SpeedButton2: TSpeedButton;
     btFechar: TSpeedButton;
     btExportar: TSpeedButton;
-    btEncerrar: TSpeedButton;
     cds_PesquisaDATAINICIO: TDateField;
     cds_PesquisaDATAFINAL: TDateField;
     cds_PesquisaID_MEIOCULTURA: TIntegerField;
@@ -86,6 +85,9 @@ type
     edt_NomeEsterilizacao: TEdit;
     cbStatus: TComboBox;
     dg_MateriaPrima: TDBGrid;
+    cds_MateriaPrimaUNIDADE: TStringField;
+    edt_UnidadeMedida: TEdit;
+    Label10: TLabel;
     procedure FormShow(Sender: TObject);
     procedure btn_CancelarClick(Sender: TObject);
     procedure cds_PesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
@@ -107,7 +109,6 @@ type
     procedure edt_CodigoEsterilizacaoRightButtonClick(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
     procedure edt_MLPorRecipienteChange(Sender: TObject);
-    procedure btEncerrarClick(Sender: TObject);
     procedure cbStatusChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edt_CodigoEsterilizacaoKeyDown(Sender: TObject; var Key: Word;
@@ -130,7 +131,6 @@ type
     procedure CarregaDadosOrdemProducao(Codigo : Integer);
     procedure GravarDados;
     procedure DeletarOrdemProducao;
-    procedure EncerrarOrdem;
 
     procedure SelecionaMeioCultura;
     procedure SelecionaRecipiente;
@@ -152,6 +152,7 @@ uses
   uFuncoes,
   uMensagem,
   uBeanUsuario,
+  uBeanUnidadeMedida,
   uBeanOrdemProducaoMC,
   uBeanOrdemProducaoMC_Itens,
   uBeanEsterilizacao, uBeanControleEstoque, uBeanControleEstoqueProduto;
@@ -160,18 +161,6 @@ uses
 procedure TfrmOrdemProducaoMeioCultura.btBuscarClick(Sender: TObject);
 begin
   BuscaMateriaPrima;
-end;
-
-procedure TfrmOrdemProducaoMeioCultura.btEncerrarClick(Sender: TObject);
-begin
-  if btEncerrar.Tag = 0 then begin
-    btEncerrar.Tag := 1;
-    try
-      EncerrarOrdem;
-    finally
-      btEncerrar.Tag := 0;
-    end;
-  end;
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.btExcluirClick(Sender: TObject);
@@ -204,6 +193,7 @@ begin
     cds_MateriaPrimaIDPRODUTO.Value  := StrToInt(edtMateriaPrima.Text);
     cds_MateriaPrimaNOMEPRODUTO.Value:= edtNomeMateriaPrima.Text;
     cds_MateriaPrimaQUANTIDADE.Value := edt_Quantidade.Value;
+    cds_MateriaPrimaUNIDADE.Value    := edt_UnidadeMedida.Text;
     cds_MateriaPrima.Post;
 
     edtMateriaPrima.Clear;
@@ -235,6 +225,7 @@ var
   FW  : TFWConnection;
   PC  : TPRODUTOCOMPOSICAO;
   C   : TPRODUTO;
+  UN  : TUNIDADEMEDIDA;
   I: Integer;
 begin
   if edt_DescricaoMeioCultura.Text = EmptyStr then begin
@@ -251,6 +242,7 @@ begin
   FW := TFWConnection.Create;
   PC := TPRODUTOCOMPOSICAO.Create(FW);
   C  := TPRODUTO.Create(FW);
+  UN := TUNIDADEMEDIDA.Create(FW);
   try
     PC.SelectList('ID_PRODUTO = ' + edt_CodigoMeioCultura.Text);
     if PC.Count > 0 then begin
@@ -262,8 +254,12 @@ begin
           cds_MateriaPrimaIDPRODUTO.Value := TPRODUTOCOMPOSICAO(PC.Itens[I]).ID_COMPONENTE.Value;
         end;
         C.SelectList('ID = ' + cds_MateriaPrimaIDPRODUTO.AsString);
-        if C.Count > 0 then
+        if C.Count > 0 then begin
           cds_MateriaPrimaNOMEPRODUTO.Value := TPRODUTO(C.Itens[0]).DESCRICAO.Value;
+          UN.SelectList('ID = ' + TPRODUTO(C.Itens[0]).UNIDADEMEDIDA_ID.asSQL);
+          if UN.Count > 0 then
+            cds_MateriaPrimaUNIDADE.Value   := TUNIDADEMEDIDA(UN.Itens[0]).SIMBOLO.asString;
+        end;
         cds_MateriaPrimaQUANTIDADE.Value    := TPRODUTOCOMPOSICAO(PC.Itens[I]).QUANTIDADE.Value * edt_QuantidadeMeioCultura.Value;
         cds_MateriaPrima.Post;
       end;
@@ -271,6 +267,7 @@ begin
   finally
     FreeAndNil(PC);
     FreeAndNil(C);
+    FreeAndNil(UN);
     FreeAndNil(FW);
   end;
 end;
@@ -326,6 +323,7 @@ var
   MC : TORDEMPRODUCAOMC;
   MI : TORDEMPRODUCAOMC_ITENS;
   PR : TPRODUTO;
+  UN : TUNIDADEMEDIDA;
   FU : TUSUARIO;
   E  : TESTERILIZACAO;
   I  : Integer;
@@ -335,6 +333,7 @@ begin
   MI := TORDEMPRODUCAOMC_ITENS.Create(FW);
   FU := TUSUARIO.Create(FW);
   PR := TPRODUTO.Create(FW);
+  UN := TUNIDADEMEDIDA.Create(FW);
   E  := TESTERILIZACAO.Create(FW);
   try
     MC.SelectList('ID = ' + IntToStr(Codigo));
@@ -364,8 +363,12 @@ begin
           cds_MateriaPrimaID.Value             := TORDEMPRODUCAOMC_ITENS(MI.Itens[I]).ID.Value;
           cds_MateriaPrimaIDPRODUTO.Value      := TORDEMPRODUCAOMC_ITENS(MI.Itens[I]).ID_PRODUTO.Value;
           PR.SelectList('ID = ' + cds_MateriaPrimaIDPRODUTO.AsString);
-          if PR.Count > 0 then
+          if PR.Count > 0 then begin
             cds_MateriaPrimaNOMEPRODUTO.Value  := TPRODUTO(PR.Itens[0]).DESCRICAO.asString;
+            UN.SelectList('ID = ' + TPRODUTO(PR.Itens[0]).UNIDADEMEDIDA_ID.asSQL);
+            if UN.Count > 0 then
+              cds_MateriaPrimaUNIDADE.Value    := TUNIDADEMEDIDA(UN.Itens[0]).SIMBOLO.asString;
+          end;
           cds_MateriaPrimaQUANTIDADE.Value     := TORDEMPRODUCAOMC_ITENS(MI.Itens[I]).QUANTIDADE.Value;
           cds_MateriaPrima.Post;
         end;
@@ -375,6 +378,7 @@ begin
     FreeAndNil(MI);
     FreeAndNil(MC);
     FreeAndNil(PR);
+    FreeAndNil(UN);
     FreeAndNil(FU);
     FreeAndNil(E);
     FreeAndNil(FW);
@@ -517,93 +521,19 @@ begin
     try
       if Sender = edt_MLPorRecipiente then begin
         if (edt_MLPorRecipiente.Value > 0) and (edt_QuantidadeMeioCultura.Value > 0) then
-          edt_QuantidadeRecipiente.Value := edt_QuantidadeMeioCultura.Value / edt_MLPorRecipiente.Value;
+          edt_QuantidadeRecipiente.Value := (edt_QuantidadeMeioCultura.Value / edt_MLPorRecipiente.Value) * 1000;
       end
       else if Sender = edt_QuantidadeRecipiente then begin
         if (edt_QuantidadeRecipiente.Value > 0) and (edt_QuantidadeMeioCultura.Value > 0) then
-          edt_MLPorRecipiente.Value := edt_QuantidadeMeioCultura.Value / edt_QuantidadeRecipiente.Value;
+          edt_MLPorRecipiente.Value := edt_QuantidadeMeioCultura.Value / (edt_QuantidadeRecipiente.Value / 1000);
       end
       else if Sender = edt_QuantidadeMeioCultura then begin
         if (edt_MLPorRecipiente.Value > 0) and (edt_QuantidadeMeioCultura.Value > 0) then
-          edt_QuantidadeRecipiente.Value := edt_QuantidadeMeioCultura.Value / edt_MLPorRecipiente.Value;
+          edt_QuantidadeRecipiente.Value := (edt_QuantidadeMeioCultura.Value / edt_MLPorRecipiente.Value) * 1000;
       end;
     finally
       Panel2.Tag := 0;
     end;
-  end;
-end;
-
-procedure TfrmOrdemProducaoMeioCultura.EncerrarOrdem;
-Var
-  FWC   : TFWConnection;
-  CE    : TCONTROLEESTOQUE;
-  CEP   : TCONTROLEESTOQUEPRODUTO;
-  OPMC  : TORDEMPRODUCAOMC;
-  OPMCI : TORDEMPRODUCAOMC_ITENS;
-  I: Integer;
-begin
-  if cds_Pesquisa.IsEmpty then begin
-    DisplayMsg(MSG_INF, 'Selecione uma Ordem de Produção de Meio de Cultura!');
-    Exit;
-  end;
-
-  FWC     := TFWConnection.Create;
-  CE      := TCONTROLEESTOQUE.Create(FWC);
-  CEP     := TCONTROLEESTOQUEPRODUTO.Create(FWC);
-  OPMC    := TORDEMPRODUCAOMC.Create(FWC);
-  OPMCI   := TORDEMPRODUCAOMC_ITENS.Create(FWC);
-  try
-    DisplayMsg(MSG_WAIT, 'Encerrando Ordem de Produção de Meio de Cultura...');
-
-    FWC.StartTransaction;
-    try
-      OPMC.SelectList('ID = ' + QuotedStr(cds_PesquisaID.AsString));
-      if OPMC.Count > 0 then begin
-        CE.ID.isNull                := True;
-        CE.DATAHORA.Value           := Now;
-        CE.USUARIO_ID.Value         := USUARIO.CODIGO;
-        CE.TIPOMOVIMENTACAO.Value   := 1;
-        CE.CANCELADO.Value          := False;
-        CE.OBSERVACAO.Value         := 'Encerramento da Ordem de Produção de Meio de Cultura: ' + TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.asString;
-        CE.Insert;
-
-        CEP.ID.isNull               := True;
-        CEP.CONTROLEESTOQUE_ID.Value:= CE.ID.Value;
-        CEP.PRODUTO_ID.Value        := TORDEMPRODUCAOMC(OPMC.Itens[0]).ID_PRODUTO.Value;
-        CEP.QUANTIDADE.Value        := TORDEMPRODUCAOMC(OPMC.Itens[0]).QUANTPRODUTO.Value;
-        CEP.Insert;
-
-        OPMCI.SelectList('ID_ORDEMPRODUCAOMC = ' + QuotedStr(cds_PesquisaID.AsString));
-        if OPMCI.Count > 0 then begin
-          for I := 0 to Pred(OPMCI.Count) do begin
-            CEP.ID.isNull               := True;
-            CEP.CONTROLEESTOQUE_ID.Value:= CE.ID.Value;
-            CEP.PRODUTO_ID.Value        := TORDEMPRODUCAOMC_ITENS(OPMCI.Itens[I]).ID_PRODUTO.Value;
-            CEP.QUANTIDADE.Value        := TORDEMPRODUCAOMC_ITENS(OPMCI.Itens[I]).QUANTIDADE.Value * -1;
-            CEP.Insert;
-          end;
-        end;
-      end;
-
-      OPMC.ID.Value                     := TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.Value;
-      OPMC.ENCERRADO.Value              := True;
-      OPMC.Update;
-
-      FWC.Commit;
-      DisplayMsgFinaliza;
-      BuscarDados;
-    except
-      on E : Exception do begin
-        FWC.Rollback;
-        DisplayMsg(MSG_WAR, 'Erro ao Encerrar Ordem de Produção de Meios de Cultura!');
-      end;
-    end;
-  finally
-    FreeAndNil(CE);
-    FreeAndNil(CEP);
-    FreeAndNil(OPMC);
-    FreeAndNil(OPMCI);
-    FreeAndNil(FWC);
   end;
 end;
 
@@ -800,10 +730,12 @@ procedure TfrmOrdemProducaoMeioCultura.SelecionaMateriaPrima;
 var
   FWC : TFWConnection;
   P   : TPRODUTO;
+  UN  : TUNIDADEMEDIDA;
   Filtro : string;
 begin
   FWC    := TFWConnection.Create;
   P      := TPRODUTO.Create(FWC);
+  UN     := TUNIDADEMEDIDA.Create(FWC);
   try
     Filtro := 'finalidade = 2';
     edtMateriaPrima.Tag := DMUtil.Selecionar(P, edtMateriaPrima.Text, Filtro);
@@ -812,10 +744,14 @@ begin
       if P.Count > 0 then begin
         edtMateriaPrima.Text     := TPRODUTO(P.Itens[0]).ID.asString;
         edtNomeMateriaPrima.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+        UN.SelectList('ID = ' + TPRODUTO(P.Itens[0]).UNIDADEMEDIDA_ID.asSQL);
+        if UN.Count > 0 then
+          edt_UnidadeMedida.Text := TUNIDADEMEDIDA(UN.Itens[0]).SIMBOLO.asString;
         if edt_Quantidade.CanFocus then edt_Quantidade.SetFocus;
       end;
     end;
   finally
+    FreeAndNil(UN);
     FreeAndNil(P);
     FreeAndNil(FWC);
   end;
