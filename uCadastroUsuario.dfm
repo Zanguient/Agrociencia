@@ -557,28 +557,26 @@ object FrmCadastroUsuario: TFrmCadastroUsuario
           end>
         RowCollection = <
           item
-            Value = 31.034483213599900000
+            Value = 39.999999999999980000
           end
           item
-            Value = 68.965516786400100000
-          end
-          item
-            SizeStyle = ssAuto
+            Value = 60.000000000000030000
           end>
         TabOrder = 1
         object pnUsuarioEsquerda: TPanel
           Left = 1
           Top = 1
           Width = 393
-          Height = 113
+          Height = 145
           Align = alClient
           TabOrder = 0
+          ExplicitHeight = 113
           DesignSize = (
             393
-            113)
+            145)
           object Label1: TLabel
             Left = 4
-            Top = 59
+            Top = 50
             Width = 105
             Height = 19
             Caption = 'Usu'#225'rio/Email:'
@@ -604,7 +602,7 @@ object FrmCadastroUsuario: TFrmCadastroUsuario
           end
           object edEmail: TEdit
             Left = 5
-            Top = 83
+            Top = 68
             Width = 382
             Height = 27
             Anchors = [akLeft, akTop, akRight]
@@ -618,7 +616,7 @@ object FrmCadastroUsuario: TFrmCadastroUsuario
           end
           object edNome: TEdit
             Left = 4
-            Top = 26
+            Top = 23
             Width = 383
             Height = 27
             Anchors = [akLeft, akTop, akRight]
@@ -630,17 +628,32 @@ object FrmCadastroUsuario: TFrmCadastroUsuario
             ParentFont = False
             TabOrder = 0
           end
+          object chk_AdicionaItemForaReceita: TCheckBox
+            Left = 5
+            Top = 112
+            Width = 382
+            Height = 17
+            Caption = 'Permite Adicionar Itens Al'#233'm da Composi'#231#227'o'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 2
+          end
         end
         object pnUsuarioDireita: TPanel
           Left = 394
           Top = 1
           Width = 393
-          Height = 113
+          Height = 145
           Align = alClient
           TabOrder = 1
+          ExplicitHeight = 113
           DesignSize = (
             393
-            113)
+            145)
           object Label3: TLabel
             Left = 6
             Top = 3
@@ -656,7 +669,7 @@ object FrmCadastroUsuario: TFrmCadastroUsuario
           end
           object Label4: TLabel
             Left = 6
-            Top = 59
+            Top = 50
             Width = 159
             Height = 19
             Caption = 'Confirma'#231#227'o de Senha'
@@ -669,7 +682,7 @@ object FrmCadastroUsuario: TFrmCadastroUsuario
           end
           object edConfirmarSenha: TEdit
             Left = 6
-            Top = 83
+            Top = 68
             Width = 379
             Height = 27
             Anchors = [akLeft, akTop, akRight]
@@ -684,7 +697,7 @@ object FrmCadastroUsuario: TFrmCadastroUsuario
           end
           object edSenha: TEdit
             Left = 6
-            Top = 26
+            Top = 22
             Width = 379
             Height = 27
             Anchors = [akLeft, akTop, akRight]
@@ -700,9 +713,9 @@ object FrmCadastroUsuario: TFrmCadastroUsuario
         end
         object gdMenus: TDBGrid
           Left = 1
-          Top = 114
+          Top = 146
           Width = 786
-          Height = 251
+          Height = 220
           Align = alClient
           Anchors = []
           DataSource = dsMenus
@@ -1337,6 +1350,9 @@ object FrmCadastroUsuario: TFrmCadastroUsuario
     end
     object csPesquisaPERMITIRCADUSUARIO: TBooleanField
       FieldName = 'PERMITIRCADUSUARIO'
+    end
+    object csPesquisaPERMITEPRODUTOALEMCOMPOSICAO: TBooleanField
+      FieldName = 'PERMITEPRODUTOALEMCOMPOSICAO'
     end
   end
   object csMenus: TClientDataSet

@@ -774,6 +774,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Top = 13
         Width = 58
         Height = 13
+        Anchors = [akTop, akRight]
         Caption = 'Un. Medida:'
       end
       object edtMateriaPrima: TButtonedEdit
@@ -1077,7 +1078,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Top = 27
         Width = 75
         Height = 27
-        Anchors = [akLeft, akTop, akRight]
+        Anchors = [akTop, akRight]
         Enabled = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText

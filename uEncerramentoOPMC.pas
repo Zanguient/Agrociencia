@@ -51,6 +51,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edt_CodigoOrdemChange(Sender: TObject);
     procedure btEncerrarClick(Sender: TObject);
+    procedure edt_MLPorRecipienteChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -115,6 +116,29 @@ end;
 procedure TfrmEncerramentoOPMC.edt_CodigoOrdemRightButtonClick(Sender: TObject);
 begin
   SelecionaOrdemProducao;
+end;
+
+procedure TfrmEncerramentoOPMC.edt_MLPorRecipienteChange(Sender: TObject);
+begin
+  if pnGridPanel.Tag = 0 then begin
+    pnGridPanel.Tag := 1;
+    try
+      if Sender = edt_MLPorRecipiente then begin
+        if (edt_MLPorRecipiente.Value > 0) and (edt_QuantidadeMeioCultura.Value > 0) then
+          edt_QuantidadeRecipiente.Value := (edt_QuantidadeMeioCultura.Value / edt_MLPorRecipiente.Value) * 1000;
+      end
+      else if Sender = edt_QuantidadeRecipiente then begin
+        if (edt_QuantidadeRecipiente.Value > 0) and (edt_QuantidadeMeioCultura.Value > 0) then
+          edt_MLPorRecipiente.Value := edt_QuantidadeMeioCultura.Value / (edt_QuantidadeRecipiente.Value / 1000);
+      end
+      else if Sender = edt_QuantidadeMeioCultura then begin
+        if (edt_MLPorRecipiente.Value > 0) and (edt_QuantidadeMeioCultura.Value > 0) then
+          edt_QuantidadeRecipiente.Value := (edt_QuantidadeMeioCultura.Value / edt_MLPorRecipiente.Value) * 1000;
+      end;
+    finally
+      pnGridPanel.Tag := 0;
+    end;
+  end;
 end;
 
 procedure TfrmEncerramentoOPMC.EncerrarOrdem;
@@ -281,7 +305,7 @@ begin
       PR.SelectList('ID = ' + TORDEMPRODUCAOMC(OP.Itens[0]).ID_RECIPIENTE.asSQL);
       if PR.Count > 0 then
         edt_NomeRecipiente.Text        := TPRODUTO(PR.Itens[0]).DESCRICAO.asString;
-      edt_QuantidadeRecipiente.Value   := TORDEMPRODUCAOMC(OP.Itens[0]).QUANTPRODUTO.Value;
+      edt_QuantidadeRecipiente.Value   := TORDEMPRODUCAOMC(OP.Itens[0]).QUANTRECIPIENTES.Value;
     end;
   finally
     pnPrincipal.Tag := 0;

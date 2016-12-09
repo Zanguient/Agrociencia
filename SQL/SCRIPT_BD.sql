@@ -4,6 +4,7 @@ CREATE TABLE if not exists usuario
   nome character varying(100) NOT NULL,
   email character varying(100) NOT NULL,
   senha character varying(100),
+  permiteprodutoalemcomposicao boolean,
   CONSTRAINT pk_usuario PRIMARY KEY (id)
 );
 

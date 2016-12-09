@@ -327,6 +327,7 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
             Font.Style = []
             ParentFont = False
             TabOrder = 3
+            OnChange = edt_MLPorRecipienteChange
           end
           object edt_MLPorRecipiente: TJvValidateEdit
             Left = 308
@@ -336,7 +337,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
             Anchors = [akTop, akRight]
             CriticalPoints.MaxValueIncluded = False
             CriticalPoints.MinValueIncluded = False
-            DisplayFormat = dfFloat
             DecimalPlaces = 3
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -345,6 +345,7 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
             Font.Style = []
             ParentFont = False
             TabOrder = 2
+            OnChange = edt_MLPorRecipienteChange
           end
         end
       end
@@ -560,17 +561,13 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
       Align = alClient
       Caption = '  Observa'#231#227'o  '
       TabOrder = 2
-      ExplicitLeft = 376
-      ExplicitTop = 184
-      ExplicitWidth = 185
-      ExplicitHeight = 105
       object edt_Observacao: TEdit
-        Left = 2
-        Top = 15
-        Width = 892
-        Height = 110
+        AlignWithMargins = True
+        Left = 5
+        Top = 18
+        Width = 886
+        Height = 104
         Align = alClient
-        Enabled = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -578,9 +575,9 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitLeft = 318
-        ExplicitTop = 26
-        ExplicitWidth = 573
+        ExplicitLeft = 2
+        ExplicitTop = 15
+        ExplicitWidth = 892
         ExplicitHeight = 27
       end
     end

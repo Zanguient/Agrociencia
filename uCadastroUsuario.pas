@@ -53,6 +53,8 @@ type
     csMenusPERMITIR: TBooleanField;
     csMenusMENU: TStringField;
     csMenusCAPTION: TStringField;
+    chk_AdicionaItemForaReceita: TCheckBox;
+    csPesquisaPERMITEPRODUTOALEMCOMPOSICAO: TBooleanField;
     procedure sbFecharClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btBuscarClick(Sender: TObject);
@@ -106,11 +108,12 @@ begin
     edEmail.Clear;
     btGravar.Tag  := 0;
   end else begin
-    edNome.Text                 := csPesquisaNOME.Value;
-    edEmail.Text                := csPesquisaEMAIL.Value;
-    edSenha.Text                := Criptografa(csPesquisaSENHA.Value, 'D');
-    edConfirmarSenha.Text       := Criptografa(csPesquisaSENHA.Value, 'D');
-    btGravar.Tag                := csPesquisaCODIGO.Value;
+    edNome.Text                           := csPesquisaNOME.Value;
+    edEmail.Text                          := csPesquisaEMAIL.Value;
+    chk_AdicionaItemForaReceita.Checked   := csPesquisaPERMITEPRODUTOALEMCOMPOSICAO.Value;
+    edSenha.Text                          := Criptografa(csPesquisaSENHA.Value, 'D');
+    edConfirmarSenha.Text                 := Criptografa(csPesquisaSENHA.Value, 'D');
+    btGravar.Tag                          := csPesquisaCODIGO.Value;
   end;
 end;
 
@@ -212,15 +215,16 @@ begin
         Exit;
       end;
 
-      USU.NOME.Value                    := edNome.Text;
-      USU.EMAIL.Value                   := edEmail.Text;
+      USU.NOME.Value                          := edNome.Text;
+      USU.EMAIL.Value                         := edEmail.Text;
+      USU.PERMITEPRODUTOALEMCOMPOSICAO.Value  := chk_AdicionaItemForaReceita.Checked;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
-        USU.ID.Value                    := (Sender as TSpeedButton).Tag;
-        USU.SENHA.Value                 := Criptografa(edSenha.Text, 'E');
+        USU.ID.Value                          := (Sender as TSpeedButton).Tag;
+        USU.SENHA.Value                       := Criptografa(edSenha.Text, 'E');
         USU.Update;
       end else begin
-        USU.SENHA.Value                 := Criptografa(edSenha.Text, 'E');
+        USU.SENHA.Value                       := Criptografa(edSenha.Text, 'E');
         USU.Insert;
       end;
 
@@ -300,10 +304,11 @@ begin
       if USU.Count > 0 then begin
         for I := 0 to USU.Count -1 do begin
           csPesquisa.Append;
-          csPesquisaCODIGO.Value              := TUSUARIO(USU.Itens[I]).ID.Value;
-          csPesquisaNOME.Value                := TUSUARIO(USU.Itens[I]).NOME.Value;
-          csPesquisaEMAIL.Value               := TUSUARIO(USU.Itens[I]).EMAIL.Value;
-          csPesquisaSENHA.Value               := TUSUARIO(USU.Itens[I]).SENHA.Value;
+          csPesquisaCODIGO.Value                        := TUSUARIO(USU.Itens[I]).ID.Value;
+          csPesquisaNOME.Value                          := TUSUARIO(USU.Itens[I]).NOME.Value;
+          csPesquisaEMAIL.Value                         := TUSUARIO(USU.Itens[I]).EMAIL.Value;
+          csPesquisaSENHA.Value                         := TUSUARIO(USU.Itens[I]).SENHA.Value;
+          csPesquisaPERMITEPRODUTOALEMCOMPOSICAO.Value  := TUSUARIO(USU.Itens[I]).PERMITEPRODUTOALEMCOMPOSICAO.Value;
           csPesquisa.Post;
         end;
       end;

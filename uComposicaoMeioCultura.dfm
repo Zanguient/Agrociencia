@@ -26,8 +26,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitWidth = 759
-    ExplicitHeight = 410
     object pnPequisaDados: TPanel
       Left = 0
       Top = 0
@@ -44,7 +42,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       ParentBackground = False
       ParentFont = False
       TabOrder = 0
-      ExplicitWidth = 759
       object btPesquisar: TSpeedButton
         AlignWithMargins = True
         Left = 648
@@ -130,7 +127,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
-        ExplicitWidth = 647
       end
     end
     object gdPesquisa: TDBGrid
@@ -177,8 +173,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitTop = 347
-      ExplicitWidth = 753
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 4
@@ -210,7 +204,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
             Value = 100.000000000000000000
           end>
         TabOrder = 0
-        ExplicitWidth = 745
         object Panel8: TPanel
           Left = 0
           Top = 0
@@ -219,7 +212,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitWidth = 372
           object btAlterar: TSpeedButton
             AlignWithMargins = True
             Left = 265
@@ -299,8 +291,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitLeft = 372
-          ExplicitWidth = 373
           object btFechar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -495,8 +485,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 759
-    ExplicitHeight = 410
     object dg_Componentes: TDBGrid
       AlignWithMargins = True
       Left = 3
@@ -533,6 +521,11 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         end
         item
           Expanded = False
+          FieldName = 'UNIDADE'
+          Visible = True
+        end
+        item
+          Expanded = False
           FieldName = 'QUANTIDADE'
           Visible = True
         end>
@@ -546,7 +539,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       Align = alTop
       Caption = '  Selecione a Mat'#233'ria-Prima  '
       TabOrder = 3
-      ExplicitWidth = 753
       DesignSize = (
         745
         61)
@@ -565,13 +557,20 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Caption = 'C'#243'digo:'
       end
       object Label5: TLabel
-        Left = 509
+        Left = 544
         Top = 10
         Width = 60
         Height = 13
         Anchors = [akTop, akRight]
         Caption = 'Quantidade:'
-        ExplicitLeft = 517
+      end
+      object Label10: TLabel
+        Left = 463
+        Top = 10
+        Width = 58
+        Height = 13
+        Anchors = [akTop, akRight]
+        Caption = 'Un. Medida:'
       end
       object edtMateriaPrima: TButtonedEdit
         AlignWithMargins = True
@@ -596,7 +595,7 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       object edtNomeMateriaPrima: TEdit
         Left = 114
         Top = 24
-        Width = 392
+        Width = 343
         Height = 27
         Anchors = [akLeft, akTop, akRight]
         Enabled = False
@@ -607,12 +606,11 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 1
-        ExplicitWidth = 400
       end
       object edt_Quantidade: TJvValidateEdit
-        Left = 509
+        Left = 544
         Top = 24
-        Width = 121
+        Width = 86
         Height = 27
         Anchors = [akTop, akRight]
         CriticalPoints.MaxValueIncluded = False
@@ -626,7 +624,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 2
-        ExplicitLeft = 517
       end
       object btNovo: TBitBtn
         AlignWithMargins = True
@@ -736,7 +733,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 3
         OnClick = btNovoClick
-        ExplicitLeft = 642
       end
       object btExcluir: TBitBtn
         AlignWithMargins = True
@@ -804,7 +800,21 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 4
         OnClick = btExcluirClick
-        ExplicitLeft = 698
+      end
+      object edt_UnidadeMedida: TEdit
+        Left = 463
+        Top = 24
+        Width = 75
+        Height = 27
+        Anchors = [akTop, akRight]
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 5
       end
     end
     object pnBotoesEdicao: TPanel
@@ -824,8 +834,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       ParentFont = False
       TabOrder = 5
       TabStop = True
-      ExplicitTop = 347
-      ExplicitWidth = 753
       object GridPanel2: TGridPanel
         AlignWithMargins = True
         Left = 4
@@ -860,7 +868,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
             SizeStyle = ssAuto
           end>
         TabOrder = 0
-        ExplicitWidth = 745
         object Panel4: TPanel
           Left = 368
           Top = 0
@@ -869,8 +876,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitLeft = 372
-          ExplicitWidth = 373
           object btCancelar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -1285,7 +1290,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitWidth = 372
           object btGravar: TSpeedButton
             AlignWithMargins = True
             Left = 265
@@ -1448,7 +1452,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       Align = alTop
       Caption = '  Cabe'#231'alho  '
       TabOrder = 0
-      ExplicitWidth = 753
       DesignSize = (
         745
         158)
@@ -1503,7 +1506,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 2
-        ExplicitWidth = 415
       end
       object edt_CodigoEstagio: TButtonedEdit
         AlignWithMargins = True
@@ -1542,7 +1544,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 3
-        ExplicitLeft = 651
       end
       object edt_CodigoMeioCutura: TEdit
         Left = 5
@@ -1572,7 +1573,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 4
-        ExplicitWidth = 743
       end
     end
     object GroupBox2: TGroupBox
@@ -1584,7 +1584,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
       Align = alTop
       Caption = '  Selecione a Esp'#233'cie  '
       TabOrder = 1
-      ExplicitWidth = 753
       DesignSize = (
         745
         61)
@@ -1636,7 +1635,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 1
-        ExplicitWidth = 524
       end
       object btnNovaEspecie: TBitBtn
         AlignWithMargins = True
@@ -1746,7 +1744,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 2
         OnClick = btnNovaEspecieClick
-        ExplicitLeft = 642
       end
       object btnRetiraEspecie: TBitBtn
         AlignWithMargins = True
@@ -1814,7 +1811,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 3
         OnClick = btnRetiraEspecieClick
-        ExplicitLeft = 698
       end
     end
     object dg_Especies: TDBGrid
@@ -1866,7 +1862,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
     ParentBackground = False
     ParentFont = False
     TabOrder = 1
-    ExplicitWidth = 753
   end
   object cds_Componentes: TClientDataSet
     Aggregates = <>
@@ -1889,6 +1884,11 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
     end
     object cds_ComponentesID: TIntegerField
       FieldName = 'ID'
+    end
+    object cds_ComponentesUNIDADE: TStringField
+      DisplayLabel = 'Un. Medida'
+      FieldName = 'UNIDADE'
+      Size = 10
     end
   end
   object ds_Componentes: TDataSource

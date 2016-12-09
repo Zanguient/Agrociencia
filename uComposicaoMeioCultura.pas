@@ -79,6 +79,9 @@ type
     edt_CodigoMeioCutura: TEdit;
     Label9: TLabel;
     edt_Observacao: TMemo;
+    edt_UnidadeMedida: TEdit;
+    Label10: TLabel;
+    cds_ComponentesUNIDADE: TStringField;
     procedure edtMeioCulturaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure btNovoClick(Sender: TObject);
@@ -136,7 +139,7 @@ uses
   uBeanProdutoComposicao,
   uSeleciona,
   uFuncoes,
-  uMensagem;
+  uMensagem, uBeanUnidadeMedida;
 {$R *.dfm}
 
 { TfrmComposicaoMeioCultura }
@@ -194,6 +197,10 @@ begin
     DisplayMsg(MSG_INF, 'Informe um produto final para continuar!');
     Exit;
   end;
+  if cds_Especies.Locate(cds_EspeciesID_ESPECIE.FieldName, edt_CodigoEspecie.Text, []) then begin
+    DisplayMsg(MSG_INF, 'Especie já adicionada ao meio de cultura!');
+    Exit;
+  end;
   cds_Especies.Append;
   cds_EspeciesID_ESPECIE.AsString := edt_CodigoEspecie.Text;
   cds_EspeciesESPECIE.Value       := edt_NomeEspecie.Text;
@@ -207,9 +214,10 @@ procedure TfrmComposicaoMeioCultura.btNovoClick(Sender: TObject);
 begin
   if not cds_Componentes.Locate(cds_ComponentesIDPRODUTO.FieldName, edtMateriaPrima.Text, []) then begin
     cds_Componentes.Append;
-    cds_ComponentesIDPRODUTO.Value := StrToInt(edtMateriaPrima.Text);
+    cds_ComponentesIDPRODUTO.Value  := StrToInt(edtMateriaPrima.Text);
     cds_ComponentesNOMEPRODUTO.Value:= edtNomeMateriaPrima.Text;
     cds_ComponentesQUANTIDADE.Value := edt_Quantidade.Value;
+    cds_ComponentesUNIDADE.Value    := edt_UnidadeMedida.Text;
     cds_Componentes.Post;
 
     edtMateriaPrima.Clear;
@@ -571,6 +579,7 @@ begin
 
       M.SelectList('ID_PRODUTO = ' + QuotedStr(IntToStr(pnCadastro.Tag)));
       if M.Count > 0 then begin
+        edt_CodigoMeioCutura.Text := TMEIOCULTURA(M.Itens[0]).CODIGO.asString;
         edt_CodigoEstagio.Text := TMEIOCULTURA(M.Itens[0]).ID_ESTAGIO.asString;
         E.SelectList('ID = ' + TMEIOCULTURA(M.Itens[0]).ID_ESTAGIO.asSQL);
         if E.Count > 0 then
@@ -596,7 +605,9 @@ begin
       SQL.Close;
       SQL.SQL.Clear;
       SQL.Connection := FWC.FDConnection;
-      SQL.SQL.Add('SELECT p.id, p.descricao, pc.quantidade, pc.id FROM produto p INNER JOIN produtocomposicao pc ON p.id = pc.id_componente WHERE pc.id_produto = :PRODUTO');
+      SQL.SQL.Add('SELECT p.id, p.descricao, pc.quantidade, pc.id, un.simbolo FROM produto p');
+      SQL.SQL.Add('INNER JOIN unidademedida un ON p.unidademedida_id = un.id');
+      SQL.SQL.Add('INNER JOIN produtocomposicao pc ON p.id = pc.id_componente WHERE pc.id_produto = :PRODUTO');
       SQL.ParamByName('PRODUTO').AsInteger := pnCadastro.Tag;
       SQL.Prepare;
       SQL.Open();
@@ -608,6 +619,8 @@ begin
         cds_ComponentesIDPRODUTO.Value    := SQL.Fields[0].Value;
         cds_ComponentesNOMEPRODUTO.Value  := SQL.Fields[1].Value;
         cds_ComponentesQUANTIDADE.Value   := SQL.Fields[2].Value;
+        cds_ComponentesUNIDADE.Value      := SQL.Fields[4].Value;
+
         cds_Componentes.Post;
 
         SQL.Next;
@@ -679,10 +692,12 @@ procedure TfrmComposicaoMeioCultura.SelecionaMateriaPrima;
 var
   FWC : TFWConnection;
   P   : TPRODUTO;
+  UM  : TUNIDADEMEDIDA;
   Filtro : string;
 begin
   FWC    := TFWConnection.Create;
   P      := TPRODUTO.Create(FWC);
+  UM     := TUNIDADEMEDIDA.Create(FWC);
   edtNomeMateriaPrima.Clear;
   try
     Filtro := 'finalidade = 2';
@@ -692,12 +707,16 @@ begin
       if P.Count > 0 then begin
         edtMateriaPrima.Text     := TPRODUTO(P.Itens[0]).ID.asString;
         edtNomeMateriaPrima.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+        UM.SelectList('ID = ' + TPRODUTO(P.Itens[0]).UNIDADEMEDIDA_ID.asSQL);
+        if UM.Count > 0 then
+          edt_UnidadeMedida.Text  := TUNIDADEMEDIDA(UM.Itens[0]).SIMBOLO.Value;
         if edt_Quantidade.CanFocus then
           edt_Quantidade.SetFocus;
       end;
     end;
   finally
     FreeAndNil(P);
+    FreeAndNil(UM);
     FreeAndNil(FWC);
   end;
 end;

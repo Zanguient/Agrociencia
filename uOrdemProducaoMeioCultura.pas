@@ -198,7 +198,8 @@ begin
 
     edtMateriaPrima.Clear;
     edt_Quantidade.Clear;
-  end;
+  end else
+    DisplayMsg(MSG_WAR, 'Materia Prima ' + edtMateriaPrima.Text + ' - ' + edtNomeMateriaPrima.Text + ' já Adicionado, Verifique!');
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.btn_CancelarClick(Sender: TObject);
@@ -346,6 +347,7 @@ begin
       edt_QuantidadeMeioCultura.Value  := TORDEMPRODUCAOMC(MC.Itens[0]).QUANTPRODUTO.Value;
       edt_CodigoRecipientes.Text       := TORDEMPRODUCAOMC(MC.Itens[0]).ID_RECIPIENTE.asString;
       edt_MLPorRecipiente.Value        := TORDEMPRODUCAOMC(MC.Itens[0]).MLRECIPIENTE.Value;
+      edt_DataInicio.Date              := TORDEMPRODUCAOMC(MC.Itens[0]).DATAINICIO.Value;
       PR.SelectList('ID = ' + edt_CodigoRecipientes.Text);
       if PR.Count > 0 then
         edt_NomeRecipiente.Text        := TPRODUTO(PR.Itens[0]).DESCRICAO.asString;
@@ -671,11 +673,29 @@ begin
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.InvertePaineis;
+var
+  FW : TFWConnection;
+  U  : TUSUARIO;
 begin
   pnPesquisa.Visible               := not pnPesquisa.Visible;
   pnBotoesVisualizacao.Visible     := pnDados.Visible;
   pnDados.Visible                  := not pnDados.Visible;
   pnBotoesEdicao.Visible           := pnDados.Visible;
+
+  if pnDados.Visible then begin
+    FW := TFWConnection.Create;
+    U  := TUSUARIO.Create(FW);
+    try
+      U.SelectList('ID = ' + QuotedStr(IntToStr(USUARIO.CODIGO)));
+      if U.Count > 0 then begin
+        btNovo.Enabled    := TUSUARIO(U.Itens[0]).PERMITEPRODUTOALEMCOMPOSICAO.Value;
+        btExcluir.Enabled := TUSUARIO(U.Itens[0]).PERMITEPRODUTOALEMCOMPOSICAO.Value;
+      end;
+    finally
+      FreeAndNil(U);
+      FreeAndNil(FW);
+    end;
+  end;
   AutoSizeDBGrid(dg_MateriaPrima);
   AutoSizeDBGrid(gdPesquisa);
 end;
