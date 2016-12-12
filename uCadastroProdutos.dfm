@@ -1380,6 +1380,9 @@ object frmCadastroProdutos: TfrmCadastroProdutos
       ParentBackground = False
       ParentFont = False
       TabOrder = 2
+      DesignSize = (
+        859
+        40)
       object btPesquisar: TSpeedButton
         AlignWithMargins = True
         Left = 756
@@ -1451,9 +1454,10 @@ object frmCadastroProdutos: TfrmCadastroProdutos
         AlignWithMargins = True
         Left = 3
         Top = 3
-        Width = 747
+        Width = 596
         Height = 34
-        Align = alClient
+        Align = alLeft
+        Anchors = [akLeft, akTop, akRight, akBottom]
         AutoSize = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -1464,6 +1468,16 @@ object frmCadastroProdutos: TfrmCadastroProdutos
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
+      end
+      object cbTipoProduto: TComboBox
+        Left = 605
+        Top = 7
+        Width = 145
+        Height = 27
+        Style = csDropDownList
+        Anchors = [akTop, akRight]
+        TabOrder = 1
+        OnChange = cbTipoProdutoChange
       end
     end
     object Panel2: TPanel
@@ -1527,7 +1541,7 @@ object frmCadastroProdutos: TfrmCadastroProdutos
     Left = 440
     Top = 328
     Bitmap = {
-      494C010103000C00840010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000C00880010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -615,7 +615,6 @@ object frmComposicaoMeioCultura: TfrmComposicaoMeioCultura
         Anchors = [akTop, akRight]
         CriticalPoints.MaxValueIncluded = False
         CriticalPoints.MinValueIncluded = False
-        DisplayFormat = dfFloat
         DecimalPlaces = 3
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText

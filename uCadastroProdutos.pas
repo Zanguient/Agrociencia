@@ -56,6 +56,7 @@ type
     ImageList: TImageList;
     cds_PesquisaUNIDADEMEDIDA: TIntegerField;
     cds_PesquisaESTOQUE: TCurrencyField;
+    cbTipoProduto: TComboBox;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -72,6 +73,7 @@ type
     procedure edUnidadeMedidaRightButtonClick(Sender: TObject);
     procedure edUnidadeMedidaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure cbTipoProdutoChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -297,6 +299,8 @@ begin
       SQL.SQL.Add('FROM PRODUTO P');
       SQL.SQL.Add('WHERE 1 = 1');
       SQL.SQL.Add('AND P.ID > 0');
+      if cbTipoProduto.ItemIndex > 0 then
+        SQL.SQL.Add('AND P.FINALIDADE = ' + IntToStr(cbTipoProduto.ItemIndex));
       SQL.SQL.Add('ORDER BY P.ID ASC');
       SQL.Connection  := FWC.FDConnection;
       SQL.Prepare;
@@ -320,13 +324,6 @@ begin
 
       if Codigo > 0 then
         cds_Pesquisa.Locate('ID', Codigo, []);
-
-      cbFinalidadeProduto.Items.Clear;
-      for F := Low(TFinalidadeProduto) to High(TFinalidadeProduto) do
-        cbFinalidadeProduto.Items.Add(GetEnumName(TypeInfo(TFinalidadeProduto), Integer(F)));
-
-      cbFinalidadeProduto.ItemIndex := 0;
-
     except
       on E : Exception do begin
         DisplayMsg(MSG_ERR, 'Erro ao Carregar os dados da Tela.', '', E.Message);
@@ -363,6 +360,11 @@ begin
     end;
   end;
 
+end;
+
+procedure TfrmCadastroProdutos.cbTipoProdutoChange(Sender: TObject);
+begin
+  CarregaDados;
 end;
 
 procedure TfrmCadastroProdutos.csPesquisaFilterRecord(DataSet: TDataSet;
@@ -461,8 +463,20 @@ begin
 end;
 
 procedure TfrmCadastroProdutos.FormShow(Sender: TObject);
+var
+  F : TFinalidadeProduto;
 begin
   cds_Pesquisa.CreateDataSet;
+  cbFinalidadeProduto.Items.Clear;
+  cbTipoProduto.Items.Clear;
+  for F := Low(TFinalidadeProduto) to High(TFinalidadeProduto) do
+    cbFinalidadeProduto.Items.Add(GetEnumName(TypeInfo(TFinalidadeProduto), Integer(F)));
+
+  cbTipoProduto.Items := cbFinalidadeProduto.Items;
+
+  cbFinalidadeProduto.ItemIndex := 0;
+  cbTipoProduto.ItemIndex       := 0;
+
   CarregaDados;
   AutoSizeDBGrid(gdPesquisa);
 end;

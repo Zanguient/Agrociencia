@@ -293,12 +293,9 @@ begin
       edt_PHInicial.Value              := TORDEMPRODUCAOMC(OP.Itens[0]).PHINICIAL.Value;
       edt_PHFinal.Value                := TORDEMPRODUCAOMC(OP.Itens[0]).PHFINAL.Value;
       edt_CodigoMeioCultura.Text       := TORDEMPRODUCAOMC(OP.Itens[0]).ID_PRODUTO.asString;
-      MC.SelectList('ID = ' + TORDEMPRODUCAOMC(OP.Itens[0]).ID_PRODUTO.asSQL);
-      if MC.Count > 0 then begin
-        PR.SelectList('ID = ' + TMEIOCULTURA(MC.Itens[0]).ID_PRODUTO.asSQL);
+        PR.SelectList('ID = ' + TORDEMPRODUCAOMC(OP.Itens[0]).ID_PRODUTO.asSQL);
         if PR.Count > 0 then
           edt_DescricaoMeioCultura.Text:= TPRODUTO(PR.Itens[0]).DESCRICAO.asString;
-      end;
       edt_QuantidadeMeioCultura.Value  := TORDEMPRODUCAOMC(OP.Itens[0]).QUANTPRODUTO.Value;
       edt_CodigoRecipientes.Text       := TORDEMPRODUCAOMC(OP.Itens[0]).ID_RECIPIENTE.asString;
       edt_MLPorRecipiente.Value        := TORDEMPRODUCAOMC(OP.Itens[0]).MLRECIPIENTE.Value;

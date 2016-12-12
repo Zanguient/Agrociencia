@@ -575,9 +575,6 @@ object frmEncerramentoOPMC: TfrmEncerramentoOPMC
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitLeft = 2
-        ExplicitTop = 15
-        ExplicitWidth = 892
         ExplicitHeight = 27
       end
     end
