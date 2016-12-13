@@ -50,7 +50,9 @@ uses
   uBeanOPFinal_Estagio in 'Beans\uBeanOPFinal_Estagio.pas',
   uControleEstagioOPF in 'uControleEstagioOPF.pas' {frmControleEstagioOPF},
   uBeanOrdemProducaoMC_Estoque in 'Beans\uBeanOrdemProducaoMC_Estoque.pas',
-  uBeanOrdemProducaoMC_Estoque_OP in 'Beans\uBeanOrdemProducaoMC_Estoque_OP.pas';
+  uBeanOrdemProducaoMC_Estoque_OP in 'Beans\uBeanOrdemProducaoMC_Estoque_OP.pas',
+  uSeleciona in 'uSeleciona.pas' {frmSeleciona},
+  uSelecionaMeioCultura in 'uSelecionaMeioCultura.pas' {frmSelecionaMeioCultura};
 
 {$R *.res}
 

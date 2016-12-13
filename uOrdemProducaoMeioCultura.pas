@@ -781,13 +781,11 @@ procedure TfrmOrdemProducaoMeioCultura.SelecionaMeioCultura;
 var
   FWC : TFWConnection;
   P   : TPRODUTO;
-  Filtro : string;
 begin
   FWC    := TFWConnection.Create;
   P      := TPRODUTO.Create(FWC);
   try
-    Filtro := 'finalidade = 3';
-    edt_CodigoMeioCultura.Tag := DMUtil.Selecionar(P, edt_CodigoMeioCultura.Text, Filtro);
+    edt_CodigoMeioCultura.Tag := DMUtil.SelecionarMeioCultura();
     if edt_CodigoMeioCultura.Tag > 0 then begin
       P.SelectList('id = ' + IntToStr(edt_CodigoMeioCultura.Tag));
       if P.Count > 0 then begin

@@ -24,6 +24,7 @@ type
   public
     { Public declarations }
     function Selecionar(Tabela : TFWPersistence; ValorControl : String = ''; Filtro : String = ''; Tabela2 : TFWPersistence = nil) : Integer;
+    function SelecionarMeioCultura(Estagio : Integer = 0; Especie : Integer = 0; Valor : String = '') : Integer;
     procedure ImprimirRelatorio(Relatorio : String);
   end;
 
@@ -37,6 +38,7 @@ Uses
   uConstantes,
   uFuncoes,
   uSeleciona,
+  uSelecionaMeioCultura,
   uMensagem;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
@@ -123,6 +125,25 @@ begin
       frmSeleciona.Filtro     := Filtro;
     if (frmSeleciona.ShowModal = mrOk) or (Control.Text <> '') then
       Result                  := StrToIntDef(Control.Text,0);
+  finally
+    FreeAndNil(Control);
+  end;
+end;
+
+function TDMUtil.SelecionarMeioCultura(Estagio, Especie: Integer; Valor : String): Integer;
+var
+  Control : TEdit;
+begin
+  Result                      := 0;
+  Control                     := TEdit.Create(nil);
+  try
+    if not Assigned(frmSelecionaMeioCultura) then
+      frmSelecionaMeioCultura            := TfrmSelecionaMeioCultura.Create(nil);
+    if Valor <> EmptyStr then
+      Control.Text                       := Valor;
+    frmSelecionaMeioCultura.Retorno      := Control;
+    if (frmSelecionaMeioCultura.ShowModal = mrOk) or (Control.Text <> '') then
+      Result                             := StrToIntDef(Control.Text,0);
   finally
     FreeAndNil(Control);
   end;

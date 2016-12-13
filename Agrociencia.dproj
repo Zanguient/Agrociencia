@@ -181,6 +181,14 @@
         </DCCReference>
         <DCCReference Include="Beans\uBeanOrdemProducaoMC_Estoque.pas"/>
         <DCCReference Include="Beans\uBeanOrdemProducaoMC_Estoque_OP.pas"/>
+        <DCCReference Include="uSeleciona.pas">
+            <Form>frmSeleciona</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uSelecionaMeioCultura.pas">
+            <Form>frmSelecionaMeioCultura</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
