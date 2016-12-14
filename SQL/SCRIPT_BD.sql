@@ -231,7 +231,6 @@ CREATE TABLE if not exists opfinal
   id serial NOT NULL,
   datahora timestamp NOT NULL,
   quantidade integer NOT NULL,
-  intervalocrescimento integer NOT NULL,
   produto_id integer NOT NULL,
   cliente_id integer NOT NULL,  
   usuario_id integer NOT NULL,
@@ -259,6 +258,7 @@ CREATE TABLE if not exists opfinal_estagio
   opmc_id integer NOT NULL,
   estagio_id integer NOT NULL,
   sequencia integer NOT NULL,
+  intervalocrescimento integer NOT NULL,
   observacao character varying(512),
   CONSTRAINT pk_opfinal_estagio PRIMARY KEY (id),
   CONSTRAINT fk_opfinal_estagio_op FOREIGN KEY (opfinal_id)

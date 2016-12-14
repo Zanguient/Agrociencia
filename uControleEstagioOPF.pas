@@ -61,6 +61,8 @@ type
     edObservacao: TEdit;
     btObservacao: TBitBtn;
     Label1: TLabel;
+    edIntervaloCrescimento: TEdit;
+    Label2: TLabel;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -127,6 +129,7 @@ begin
     edDescEstagio.Clear;
     edCodigoOPMC.Clear;
     edDescOPMC.Clear;
+    edIntervaloCrescimento.Clear;
     edObservacao.Clear;
     btGravar.Tag  := 0;
   end else begin
@@ -148,6 +151,7 @@ begin
         SQL.SQL.Add('	E.DESCRICAO AS DESCRICAOESTAGIO,');
         SQL.SQL.Add('	OPMC.ID AS IDOPMC,');
         SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
+        SQL.SQL.Add('	OPFE.INTERVALOCRESCIMENTO,');
         SQL.SQL.Add('	OPFE.OBSERVACAO');
         SQL.SQL.Add('FROM OPFINAL_ESTAGIO OPFE');
         SQL.SQL.Add('INNER JOIN OPFINAL OPF ON (OPF.ID = OPFE.OPFINAL_ID)');
@@ -171,6 +175,7 @@ begin
             edDescEstagio.Text          := SQL.FieldByName('DESCRICAOESTAGIO').AsString;
             edCodigoOPMC.Text           := SQL.FieldByName('IDOPMC').AsString;
             edDescOPMC.Text             := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
+            edIntervaloCrescimento.Text := SQL.FieldByName('INTERVALOCRESCIMENTO').AsString;
             edObservacao.Text           := SQL.FieldByName('OBSERVACAO').AsString;
           end;
         end;
@@ -326,10 +331,11 @@ begin
         Exit;
       end;
 
-      OPFE.OPFINAL_ID.Value   := StrToIntDef(edCodigoOPF.Text, 0);
-      OPFE.OPMC_ID.Value      := StrToIntDef(edCodigoOPMC.Text, 0);
-      OPFE.ESTAGIO_ID.Value   := StrToIntDef(edCodigoEstagio.Text, 0);
-      OPFE.OBSERVACAO.Value      := edObservacao.Text;
+      OPFE.OPFINAL_ID.Value           := StrToIntDef(edCodigoOPF.Text, 0);
+      OPFE.OPMC_ID.Value              := StrToIntDef(edCodigoOPMC.Text, 0);
+      OPFE.ESTAGIO_ID.Value           := StrToIntDef(edCodigoEstagio.Text, 0);
+      OPFE.OBSERVACAO.Value           := edObservacao.Text;
+      OPFE.INTERVALOCRESCIMENTO.Value := StrToIntDef(edIntervaloCrescimento.Text,0);
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         OPFE.ID.Value          := (Sender as TSpeedButton).Tag;

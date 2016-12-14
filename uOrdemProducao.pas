@@ -47,8 +47,6 @@ type
     cds_PesquisaQUANTIDADE: TIntegerField;
     cds_PesquisaPRODUTO: TStringField;
     cds_PesquisaCLIENTE: TStringField;
-    edIntervaloCrescimento: TEdit;
-    Label1: TLabel;
     gbProduto: TGroupBox;
     edCodigoProduto: TButtonedEdit;
     edNomeProduto: TEdit;
@@ -113,7 +111,6 @@ Var
 begin
   if Limpar then begin
     edQuantidade.Clear;
-    edIntervaloCrescimento.Clear;
     edCodigoCliente.Clear;
     edNomeCliente.Clear;
     edCodigoProduto.Clear;
@@ -133,7 +130,6 @@ begin
         SQL.SQL.Add('SELECT');
         SQL.SQL.Add('	OPF.ID AS CODIGO,');
         SQL.SQL.Add('	OPF.QUANTIDADE,');
-        SQL.SQL.Add('	OPF.INTERVALOCRESCIMENTO,');
         SQL.SQL.Add('	OPF.CLIENTE_ID,');
         SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
         SQL.SQL.Add('	OPF.PRODUTO_ID,');
@@ -153,7 +149,6 @@ begin
         if not SQL.IsEmpty then begin
           if SQL.FieldByName('CODIGO').AsInteger = btGravar.Tag then begin
             edQuantidade.Text           := SQL.FieldByName('QUANTIDADE').AsString;
-            edIntervaloCrescimento.Text := SQL.FieldByName('INTERVALOCRESCIMENTO').AsString;
             edCodigoCliente.Text        := SQL.FieldByName('CLIENTE_ID').AsString;
             edNomeCliente.Text          := SQL.FieldByName('NOMECLIENTE').AsString;
             edCodigoProduto.Text        := SQL.FieldByName('PRODUTO_ID').AsString;
@@ -269,7 +264,6 @@ begin
 
       OPF.DATAHORA.Value              := Now;
       OPF.QUANTIDADE.Value            := StrToIntDef(edQuantidade.Text,0);
-      OPF.INTERVALOCRESCIMENTO.Value  := StrToIntDef(edIntervaloCrescimento.Text,0);
       OPF.CLIENTE_ID.Value            := StrToIntDef(edCodigoCliente.Text,0);
       OPF.PRODUTO_ID.Value            := StrToIntDef(edCodigoProduto.Text,0);
       OPF.USUARIO_ID.Value            := USUARIO.CODIGO;

@@ -19,6 +19,7 @@ type
     FUSUARIO_ID: TFieldInteger;
     FOPFINAL_ID: TFieldInteger;
     FSEQUENCIA: TFieldInteger;
+    FINTERVALOCRESCIMENTO: TFieldInteger;
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
@@ -29,6 +30,7 @@ type
     procedure SetOPMC_ID(const Value: TFieldInteger);
     procedure SetUSUARIO_ID(const Value: TFieldInteger);
     procedure SetSEQUENCIA(const Value: TFieldInteger);
+    procedure SetINTERVALOCRESCIMENTO(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
@@ -41,6 +43,7 @@ type
     property OPMC_ID        : TFieldInteger read FOPMC_ID write SetOPMC_ID;
     property ESTAGIO_ID     : TFieldInteger read FESTAGIO_ID write SetESTAGIO_ID;
     property SEQUENCIA      : TFieldInteger read FSEQUENCIA write SetSEQUENCIA;
+    property INTERVALOCRESCIMENTO : TFieldInteger read FINTERVALOCRESCIMENTO write SetINTERVALOCRESCIMENTO;
     property OBSERVACAO     : TFieldString read FOBSERVACAO write SetOBSERVACAO;
   end;
 
@@ -51,16 +54,17 @@ implementation
 procedure TOPFINAL_ESTAGIO.InitInstance;
 begin
   inherited;
-  ID.isPK               := True;
+  ID.isPK                       := True;
 
-  OPFINAL_ID.isNotNull  := True;
-  DATAHORA.isNotNull    := True;
-  USUARIO_ID.isNotNull  := True;
-  OPMC_ID.isNotNull     := True;
-  ESTAGIO_ID.isNotNull  := True;
-  SEQUENCIA.isNotNull   := True;
+  OPFINAL_ID.isNotNull          := True;
+  DATAHORA.isNotNull            := True;
+  USUARIO_ID.isNotNull          := True;
+  OPMC_ID.isNotNull             := True;
+  ESTAGIO_ID.isNotNull          := True;
+  SEQUENCIA.isNotNull           := True;
+  INTERVALOCRESCIMENTO.isNotNull:= True;
 
-  OBSERVACAO.Size       := 512;
+  OBSERVACAO.Size               := 512;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetDATAHORA(const Value: TFieldDateTime);
@@ -86,6 +90,11 @@ end;
 procedure TOPFINAL_ESTAGIO.SetID(const Value: TFieldInteger);
 begin
   FID := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO.SetINTERVALOCRESCIMENTO(const Value: TFieldInteger);
+begin
+  FINTERVALOCRESCIMENTO := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetOBSERVACAO(const Value: TFieldString);

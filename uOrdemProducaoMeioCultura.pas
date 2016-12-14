@@ -288,10 +288,12 @@ begin
     SQL.SQL.Add('SELECT MC.ID, MC.DATAINICIO, MC.DATAFIM, P.ID, P.DESCRICAO FROM ORDEMPRODUCAOMC MC');
     SQL.SQL.Add('INNER JOIN PRODUTO P ON MC.ID_PRODUTO = P.ID');
     SQL.SQL.Add('WHERE 1 = 1');
-    if cbStatus.ItemIndex = 0 then
-      SQL.SQL.Add('AND NOT MC.ENCERRADO')
-    else
-      SQL.SQL.Add('AND MC.ENCERRADO');
+
+    case cbStatus.ItemIndex of
+      0 : SQL.SQL.Add('AND NOT MC.ENCERRADO');
+      1 : SQL.SQL.Add('AND MC.ENCERRADO');
+    end;
+
     SQL.Connection := FW.FDConnection;
     SQL.Prepare;
     SQL.Open();
