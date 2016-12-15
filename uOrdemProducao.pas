@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Datasnap.DBClient,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
-  JvToolEdit, JvBaseEdits, FireDAC.Comp.Client;
+  JvToolEdit, JvBaseEdits, FireDAC.Comp.Client, Vcl.ImgList, Vcl.Menus;
 
 type
   TfrmOrdemProducao = class(TForm)
@@ -26,7 +26,7 @@ type
     gpBotoes: TGridPanel;
     Panel8: TPanel;
     Panel9: TPanel;
-    btExcluir: TSpeedButton;
+    btCancelarOP: TSpeedButton;
     btFechar: TSpeedButton;
     btAlterar: TSpeedButton;
     btNovo: TSpeedButton;
@@ -57,6 +57,34 @@ type
     pnObservacao: TPanel;
     edObservacao: TEdit;
     btObservacao: TBitBtn;
+    edFazendaAreaTalhao: TEdit;
+    Label4: TLabel;
+    edColetadoPor: TEdit;
+    Label5: TLabel;
+    edOrigemMaterial: TEdit;
+    Label7: TLabel;
+    edCodSelecaoCampo: TEdit;
+    Label8: TLabel;
+    Label6: TLabel;
+    cbSelecaoPositiva: TComboBox;
+    edDataColeta: TJvDateEdit;
+    Label9: TLabel;
+    Label1: TLabel;
+    edLocalizador: TEdit;
+    Label10: TLabel;
+    edQuantidadeMaterial: TEdit;
+    Label11: TLabel;
+    edTransportadora: TEdit;
+    edDataRecebimento: TJvDateEdit;
+    Label12: TLabel;
+    Label13: TLabel;
+    edDataEstimada: TJvDateEdit;
+    btMenu: TSpeedButton;
+    cbStatus: TComboBox;
+    PopupMenu: TPopupMenu;
+    ENCERRAR1: TMenuItem;
+    IMPRIMIRETIQUETAS1: TMenuItem;
+    ImageList1: TImageList;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -66,7 +94,7 @@ type
     procedure btCancelarClick(Sender: TObject);
     procedure btAlterarClick(Sender: TObject);
     procedure btNovoClick(Sender: TObject);
-    procedure btExcluirClick(Sender: TObject);
+    procedure btCancelarOPClick(Sender: TObject);
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
     procedure btObservacaoClick(Sender: TObject);
@@ -78,8 +106,12 @@ type
     procedure edCodigoProdutoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edCodigoProdutoChange(Sender: TObject);
+    procedure cbStatusChange(Sender: TObject);
+    procedure ENCERRAR1Click(Sender: TObject);
+    procedure btMenuClick(Sender: TObject);
   private
     procedure SelecionarObservacao;
+    procedure EncerrarOPF;
     { Private declarations }
   public
     procedure CarregaDados;
@@ -108,6 +140,7 @@ procedure TfrmOrdemProducao.AtualizarEdits(Limpar: Boolean);
 Var
   FWC : TFWConnection;
   SQL : TFDQuery;
+  I   : Integer;
 begin
   if Limpar then begin
     edQuantidade.Clear;
@@ -115,6 +148,18 @@ begin
     edNomeCliente.Clear;
     edCodigoProduto.Clear;
     edNomeProduto.Clear;
+    edObservacao.Clear;
+    cbSelecaoPositiva.ItemIndex := 0;
+    edCodSelecaoCampo.Clear;
+    edOrigemMaterial.Clear;
+    edDataColeta.Clear;
+    edColetadoPor.Clear;
+    edFazendaAreaTalhao.Clear;
+    edLocalizador.Clear;
+    edQuantidadeMaterial.Text := '0';
+    edTransportadora.Clear;
+    edDataRecebimento.Clear;
+    edDataEstimada.Clear;
     btGravar.Tag  := 0;
   end else begin
 
@@ -134,6 +179,17 @@ begin
         SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
         SQL.SQL.Add('	OPF.PRODUTO_ID,');
         SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
+        SQL.SQL.Add('	OPF.SELECAOPOSITIVA,');
+        SQL.SQL.Add('	OPF.ORIGEMMATERIAL,');
+        SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO,');
+        SQL.SQL.Add('	OPF.DATADECOLETA,');
+        SQL.SQL.Add('	OPF.COLETADOPOR,');
+        SQL.SQL.Add('	OPF.FAZENDAAREATALHAO,');
+        SQL.SQL.Add('	OPF.LOCALIZADOR,');
+        SQL.SQL.Add('	OPF.QUANTIDADEENVIADA,');
+        SQL.SQL.Add('	OPF.TRANSPORTADORA,');
+        SQL.SQL.Add('	OPF.DATADERECEBIMENTO,');
+        SQL.SQL.Add('	OPF.DATAESTIMADAPROCESSAMENTO,');
         SQL.SQL.Add('	OPF.OBSERVACAO');
         SQL.SQL.Add('FROM OPFINAL OPF');
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
@@ -154,6 +210,24 @@ begin
             edCodigoProduto.Text        := SQL.FieldByName('PRODUTO_ID').AsString;
             edNomeProduto.Text          := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
             edObservacao.Text           := SQL.FieldByName('OBSERVACAO').AsString;
+
+            for I := 0 to cbSelecaoPositiva.Items.Count - 1 do begin
+              if cbSelecaoPositiva.Items[I] = SQL.FieldByName('SELECAOPOSITIVA').AsString then begin
+                cbSelecaoPositiva.ItemIndex := I;
+                Break;
+              end;
+            end;
+
+            edCodSelecaoCampo.Text      := SQL.FieldByName('CODIGOSELECAOCAMPO').AsString;
+            edOrigemMaterial.Text       := SQL.FieldByName('ORIGEMMATERIAL').AsString;
+            edDataColeta.Date           := SQL.FieldByName('DATADECOLETA').AsDateTime;
+            edColetadoPor.Text          := SQL.FieldByName('COLETADOPOR').AsString;
+            edFazendaAreaTalhao.Text    := SQL.FieldByName('FAZENDAAREATALHAO').AsString;
+            edLocalizador.Text          := SQL.FieldByName('LOCALIZADOR').AsString;
+            edQuantidadeMaterial.Text   := SQL.FieldByName('QUANTIDADEENVIADA').AsString;
+            edTransportadora.Text       := SQL.FieldByName('TRANSPORTADORA').AsString;
+            edDataRecebimento.Date      := SQL.FieldByName('DATADERECEBIMENTO').AsDateTime;
+            edDataEstimada.Date         := SQL.FieldByName('DATAESTIMADAPROCESSAMENTO').AsDateTime;
           end;
         end;
       except
@@ -169,8 +243,35 @@ begin
 end;
 
 procedure TfrmOrdemProducao.btAlterarClick(Sender: TObject);
+Var
+  FWC : TFWConnection;
+  OPF : TOPFINAL;
 begin
   if not cds_Pesquisa.IsEmpty then begin
+
+    FWC := TFWConnection.Create;
+    OPF := TOPFINAL.Create(FWC);
+    try
+      try
+        OPF.SelectList('ID = ' + cds_PesquisaID.AsString);
+        if OPF.Count = 1 then begin
+          if TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNotNull then begin
+            DisplayMsg(MSG_ERR, 'Ordem de Produção já Encerrada, Não pode ser Alterada!');
+            Exit;
+          end;
+        end;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_ERR, 'Erro ao Verificar Ordem de Produção, Verifique!', '', E.Message);
+        end;
+      end;
+
+    finally
+      FreeAndNil(OPF);
+      FreeAndNil(FWC);
+    end;
+
     AtualizarEdits(False);
     InvertePaineis;
   end;
@@ -181,12 +282,12 @@ begin
   Cancelar;
 end;
 
-procedure TfrmOrdemProducao.btExcluirClick(Sender: TObject);
-Var
-  FWC : TFWConnection;
-  OPF : TOPFINAL;
+procedure TfrmOrdemProducao.btCancelarOPClick(Sender: TObject);
+//Var
+//  FWC : TFWConnection;
+//  OPF : TOPFINAL;
 begin
-  if not cds_Pesquisa.IsEmpty then begin
+{  if not cds_Pesquisa.IsEmpty then begin
 
     DisplayMsg(MSG_CONF, 'Excluir a Ordem de Produção Selecionada?');
 
@@ -216,7 +317,7 @@ begin
         FreeAndNil(FWC);
       end;
     end;
-  end;
+  end;}
 end;
 
 procedure TfrmOrdemProducao.btExportarClick(Sender: TObject);
@@ -262,18 +363,63 @@ begin
         Exit;
       end;
 
-      OPF.DATAHORA.Value              := Now;
-      OPF.QUANTIDADE.Value            := StrToIntDef(edQuantidade.Text,0);
-      OPF.CLIENTE_ID.Value            := StrToIntDef(edCodigoCliente.Text,0);
-      OPF.PRODUTO_ID.Value            := StrToIntDef(edCodigoProduto.Text,0);
-      OPF.USUARIO_ID.Value            := USUARIO.CODIGO;
-      OPF.OBSERVACAO.Value            := edObservacao.Text;
+      if Length(SoNumeros(edDataColeta.Text)) > 0 then begin
+        try
+          StrToDate(edDataColeta.Text);
+        except
+          DisplayMsg(MSG_WAR, 'Data de Coleta Inválida, Verifique!');
+          if edDataColeta.CanFocus then
+            edDataColeta.SetFocus;
+          Exit;
+        end;
+      end;
+
+      if Length(SoNumeros(edDataRecebimento.Text)) > 0 then begin
+        try
+          StrToDate(edDataRecebimento.Text);
+        except
+          DisplayMsg(MSG_WAR, 'Data de Recebimento Inválida, Verifique!');
+          if edDataRecebimento.CanFocus then
+            edDataRecebimento.SetFocus;
+          Exit;
+        end;
+      end;
+
+      if Length(SoNumeros(edDataEstimada.Text)) > 0 then begin
+        try
+          StrToDate(edDataEstimada.Text);
+        except
+          DisplayMsg(MSG_WAR, 'Data Estimada Inválida, Verifique!');
+          if edDataEstimada.CanFocus then
+            edDataEstimada.SetFocus;
+          Exit;
+        end;
+      end;
+
+      OPF.DATAHORA.Value                  := Now;
+      OPF.QUANTIDADE.Value                := StrToIntDef(edQuantidade.Text,0);
+      OPF.CLIENTE_ID.Value                := StrToIntDef(edCodigoCliente.Text,0);
+      OPF.PRODUTO_ID.Value                := StrToIntDef(edCodigoProduto.Text,0);
+      OPF.USUARIO_ID.Value                := USUARIO.CODIGO;
+      OPF.OBSERVACAO.Value                := edObservacao.Text;
+      OPF.SELECAOPOSITIVA.Value           := cbSelecaoPositiva.Items[cbSelecaoPositiva.ItemIndex];
+      OPF.CODIGOSELECAOCAMPO.Value        := edCodSelecaoCampo.Text;
+      OPF.ORIGEMMATERIAL.Value            := edOrigemMaterial.Text;
+      OPF.DATADECOLETA.Value              := edDataColeta.Date;
+      OPF.COLETADOPOR.Value               := edColetadoPor.Text;
+      OPF.FAZENDAAREATALHAO.Value         := edFazendaAreaTalhao.Text;
+      OPF.LOCALIZADOR.Value               := edLocalizador.Text;
+      OPF.QUANTIDADEENVIADA.Value         := StrToIntDef(edQuantidadeMaterial.Text, 0);
+      OPF.TRANSPORTADORA.Value            := edTransportadora.Text;
+      OPF.DATADERECEBIMENTO.Value         := edDataRecebimento.Date;
+      OPF.DATAESTIMADAPROCESSAMENTO.Value := edDataEstimada.Date;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         OPF.ID.Value          := (Sender as TSpeedButton).Tag;
         OPF.Update;
       end else begin
-        OPF.ID.isNull := True;
+        OPF.ID.isNull                     := True;
+        OPF.QUANTIDADEPRODUZIDA.Value     := 0;
         OPF.Insert;
       end;
 
@@ -293,6 +439,11 @@ begin
     FreeAndNil(OPF);
     FreeAndNil(FWC);
   end;
+end;
+
+procedure TfrmOrdemProducao.btMenuClick(Sender: TObject);
+begin
+  PopupMenu.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
 end;
 
 procedure TfrmOrdemProducao.btNovoClick(Sender: TObject);
@@ -350,6 +501,12 @@ begin
       SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
       SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
       SQL.SQL.Add('WHERE 1 = 1');
+
+      case cbStatus.ItemIndex of
+        0 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
+        1 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NOT NULL');
+      end;
+
       SQL.SQL.Add('ORDER BY OPF.ID ASC');
       SQL.Connection  := FWC.FDConnection;
       SQL.Prepare;
@@ -384,6 +541,11 @@ begin
     FreeAndNil(SQL);
     FreeAndNil(FWC);
   end;
+end;
+
+procedure TfrmOrdemProducao.cbStatusChange(Sender: TObject);
+begin
+  CarregaDados;
 end;
 
 procedure TfrmOrdemProducao.csPesquisaFilterRecord(DataSet: TDataSet;
@@ -461,6 +623,64 @@ begin
   finally
     FreeAndNil(P);
     FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmOrdemProducao.ENCERRAR1Click(Sender: TObject);
+begin
+  if ENCERRAR1.Tag = 0 then begin
+    ENCERRAR1.Tag := 1;
+    try
+      EncerrarOPF;
+    finally
+      ENCERRAR1.Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmOrdemProducao.EncerrarOPF;
+Var
+  FWC : TFWConnection;
+  OPF : TOPFINAL;
+begin
+
+  if not cds_Pesquisa.IsEmpty then begin
+
+    FWC := TFWConnection.Create;
+    OPF := TOPFINAL.Create(FWC);
+    try
+      try
+        OPF.SelectList('ID = ' + cds_PesquisaID.AsString);
+        if OPF.Count = 1 then begin
+          if TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNotNull then begin
+            DisplayMsg(MSG_ERR, 'Ordem de Produção já Encerrada!');
+            Exit;
+          end;
+
+          DisplayMsg(MSG_INPUT_INT, 'Informe a Quantidade de Plantas Produzidas!');
+          if ResultMsgModal = mrOk then begin
+            OPF.ID.Value                  := TOPFINAL(OPF.Itens[0]).ID.Value;
+            OPF.DATAENCERRAMENTO.Value    := Now;
+            OPF.QUANTIDADEPRODUZIDA.Value := ResultMsgInputInt;
+            OPF.Update;
+
+            FWC.Commit;
+
+            DisplayMsg(MSG_OK, 'Ordem de Produção Nº ' + TOPFINAL(OPF.Itens[0]).ID.asString + ' Encerrada com Sucesso!');
+
+            CarregaDados;
+          end;
+        end;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_ERR, 'Erro ao Encerrar a Ordem de Produção, Verifique!', '', E.Message);
+        end;
+      end;
+    finally
+      FreeAndNil(OPF);
+      FreeAndNil(FWC);
+    end;
   end;
 end;
 

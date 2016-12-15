@@ -154,8 +154,24 @@ begin
                     frmMensagem.btOk.Cancel           := True;
                     frmMensagem.EdEdit.PasswordChar   := '*';
                   end;
+      MSG_INPUT_INT : begin
+                    frmMensagem.Caption               := 'INSIRA UM VALOR';
+                    frmMensagem.pnTiraAlerta.Caption  := 'INSIRA UM VALOR';
+                    frmMensagem.pnTiraAlerta.Color    := $00F59D25;
+                    frmMensagem.ilMsgStatus.GetBitmap(7, frmMensagem.imMsgStatus.Picture.Bitmap);
+                    frmMensagem.btNao.Caption         := '&OK';
+                    frmMensagem.ilBotoes.GetBitmap(3, frmMensagem.btNao.Glyph);
+                    frmMensagem.btNao.Default         := True;
+                    frmMensagem.btNao.Cancel          := False;
+                    frmMensagem.btNao.ModalResult     := mrOK;
+                    frmMensagem.btOk.Caption          := '&Fechar';
+                    frmMensagem.ilBotoes.GetBitmap(2, frmMensagem.btOk.Glyph);
+                    frmMensagem.btOk.Default          := False;
+                    frmMensagem.btOk.Cancel           := True;
+                    frmMensagem.EdEdit.PasswordChar   := #0;
+                    frmMensagem.edEdit.NumbersOnly    := True;
+      end;
       MSG_INPUT_TEXT,
-      MSG_INPUT_INT,
       MSG_INPUT_CURR
                 : begin
                     frmMensagem.Caption               := 'INSIRA UM VALOR';
