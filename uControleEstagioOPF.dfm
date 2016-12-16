@@ -779,21 +779,64 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           Height = 386
           Align = alClient
           TabOrder = 0
-          object Label2: TLabel
+          DesignSize = (
+            425
+            386)
+          object Label5: TLabel
             AlignWithMargins = True
-            Left = 4
+            Left = 128
             Top = 196
-            Width = 417
+            Width = 218
             Height = 19
-            Align = alTop
-            Caption = 'Intervalo de Crescimento (Dias):'
+            Caption = 'Dias de Crescimento (Est'#225'gio):'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            ExplicitWidth = 230
+          end
+          object Label9: TLabel
+            AlignWithMargins = True
+            Left = 4
+            Top = 196
+            Width = 104
+            Height = 19
+            Caption = 'Data de In'#237'cio:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label2: TLabel
+            AlignWithMargins = True
+            Left = 4
+            Top = 254
+            Width = 103
+            Height = 19
+            Caption = 'Data T'#233'rmino:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label3: TLabel
+            AlignWithMargins = True
+            Left = 128
+            Top = 254
+            Width = 156
+            Height = 19
+            Caption = 'Quantidade Estimada:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
           end
           object gbOPF: TGroupBox
             AlignWithMargins = True
@@ -959,11 +1002,11 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           end
           object edIntervaloCrescimento: TEdit
             AlignWithMargins = True
-            Left = 4
+            Left = 128
             Top = 221
-            Width = 417
+            Width = 293
             Height = 27
-            Align = alTop
+            Anchors = [akLeft, akTop, akRight]
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
@@ -971,7 +1014,53 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Style = []
             NumbersOnly = True
             ParentFont = False
+            TabOrder = 4
+            OnChange = edIntervaloCrescimentoChange
+          end
+          object edDataPrevistaInicio: TJvDateEdit
+            Left = 4
+            Top = 221
+            Width = 118
+            Height = 27
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            ShowNullDate = False
             TabOrder = 3
+          end
+          object edDataPrevistaTermino: TJvDateEdit
+            Left = 4
+            Top = 279
+            Width = 118
+            Height = 27
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            ShowNullDate = False
+            TabOrder = 5
+          end
+          object edQuantidadeEstimada: TEdit
+            AlignWithMargins = True
+            Left = 128
+            Top = 279
+            Width = 293
+            Height = 27
+            Anchors = [akLeft, akTop, akRight]
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            NumbersOnly = True
+            ParentFont = False
+            TabOrder = 6
+            OnChange = edIntervaloCrescimentoChange
           end
         end
         object pnUsuarioDireita: TPanel

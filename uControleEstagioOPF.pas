@@ -62,7 +62,13 @@ type
     btObservacao: TBitBtn;
     Label1: TLabel;
     edIntervaloCrescimento: TEdit;
+    Label5: TLabel;
+    edDataPrevistaInicio: TJvDateEdit;
+    Label9: TLabel;
+    edDataPrevistaTermino: TJvDateEdit;
     Label2: TLabel;
+    edQuantidadeEstimada: TEdit;
+    Label3: TLabel;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -86,6 +92,7 @@ type
     procedure edCodigoEstagioKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure btObservacaoClick(Sender: TObject);
+    procedure edIntervaloCrescimentoChange(Sender: TObject);
   private
     procedure SelecionarObservacao;
     { Private declarations }
@@ -336,6 +343,7 @@ begin
       OPFE.ESTAGIO_ID.Value           := StrToIntDef(edCodigoEstagio.Text, 0);
       OPFE.OBSERVACAO.Value           := edObservacao.Text;
       OPFE.INTERVALOCRESCIMENTO.Value := StrToIntDef(edIntervaloCrescimento.Text,0);
+      OPFE.QUANTIDADEESTIMADA.Value   := StrToIntDef(edQuantidadeEstimada.Text,0);
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         OPFE.ID.Value          := (Sender as TSpeedButton).Tag;
@@ -536,9 +544,10 @@ end;
 
 procedure TfrmControleEstagioOPF.edCodigoOPFRightButtonClick(Sender: TObject);
 var
-  FWC : TFWConnection;
-  OPF : TOPFINAL;
-  SQL : TFDQuery;
+  FWC     : TFWConnection;
+  OPF     : TOPFINAL;
+  SQL     : TFDQuery;
+  Filtro  : string;
 begin
 
   FWC := TFWConnection.Create;
@@ -547,7 +556,8 @@ begin
 
   try
 
-    edCodigoOPF.Text := IntToStr(DMUtil.Selecionar(OPF, edCodigoOPF.Text));
+    Filtro := 'DATAENCERRAMENTO IS NULL AND CANCELADO = False';
+    edCodigoOPF.Text := IntToStr(DMUtil.Selecionar(OPF, edCodigoOPF.Text, Filtro));
 
     SQL.Close;
     SQL.SQL.Clear;
@@ -622,6 +632,17 @@ begin
     FreeAndNil(SQL);
     FreeAndNil(OPMC);
     FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmControleEstagioOPF.edIntervaloCrescimentoChange(Sender: TObject);
+Var
+  DataInicio : TDate;
+begin
+  try
+    DataInicio                  := StrToDate(edDataPrevistaInicio.Text);
+    edDataPrevistaTermino.Date  := edDataPrevistaInicio.Date + StrToIntDef(edIntervaloCrescimento.Text, 0);
+  except
   end;
 end;
 

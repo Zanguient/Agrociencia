@@ -20,6 +20,7 @@ type
     FOPFINAL_ID: TFieldInteger;
     FSEQUENCIA: TFieldInteger;
     FINTERVALOCRESCIMENTO: TFieldInteger;
+    FQUANTIDADEESTIMADA: TFieldInteger;
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
@@ -31,20 +32,22 @@ type
     procedure SetUSUARIO_ID(const Value: TFieldInteger);
     procedure SetSEQUENCIA(const Value: TFieldInteger);
     procedure SetINTERVALOCRESCIMENTO(const Value: TFieldInteger);
+    procedure SetQUANTIDADEESTIMADA(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
-    property ID             : TFieldInteger read FID write SetID;
-    property OPFINAL_ID     : TFieldInteger read FOPFINAL_ID write SetOPFINAL_ID;
-    property DATAHORA       : TFieldDateTime read FDATAHORA write SetDATAHORA;
-    property DATAHORAINICIO : TFieldDateTime read FDATAHORAINICIO write SetDATAHORAINICIO;
-    property DATAHORAFIM    : TFieldDateTime read FDATAHORAFIM write SetDATAHORAFIM;
-    property USUARIO_ID     : TFieldInteger read FUSUARIO_ID write SetUSUARIO_ID;
-    property OPMC_ID        : TFieldInteger read FOPMC_ID write SetOPMC_ID;
-    property ESTAGIO_ID     : TFieldInteger read FESTAGIO_ID write SetESTAGIO_ID;
-    property SEQUENCIA      : TFieldInteger read FSEQUENCIA write SetSEQUENCIA;
+    property ID                   : TFieldInteger read FID write SetID;
+    property OPFINAL_ID           : TFieldInteger read FOPFINAL_ID write SetOPFINAL_ID;
+    property DATAHORA             : TFieldDateTime read FDATAHORA write SetDATAHORA;
+    property DATAHORAINICIO       : TFieldDateTime read FDATAHORAINICIO write SetDATAHORAINICIO;
+    property DATAHORAFIM          : TFieldDateTime read FDATAHORAFIM write SetDATAHORAFIM;
+    property USUARIO_ID           : TFieldInteger read FUSUARIO_ID write SetUSUARIO_ID;
+    property OPMC_ID              : TFieldInteger read FOPMC_ID write SetOPMC_ID;
+    property ESTAGIO_ID           : TFieldInteger read FESTAGIO_ID write SetESTAGIO_ID;
+    property SEQUENCIA            : TFieldInteger read FSEQUENCIA write SetSEQUENCIA;
     property INTERVALOCRESCIMENTO : TFieldInteger read FINTERVALOCRESCIMENTO write SetINTERVALOCRESCIMENTO;
-    property OBSERVACAO     : TFieldString read FOBSERVACAO write SetOBSERVACAO;
+    property QUANTIDADEESTIMADA   : TFieldInteger read FQUANTIDADEESTIMADA write SetQUANTIDADEESTIMADA;
+    property OBSERVACAO           : TFieldString read FOBSERVACAO write SetOBSERVACAO;
   end;
 
 implementation
@@ -63,6 +66,7 @@ begin
   ESTAGIO_ID.isNotNull          := True;
   SEQUENCIA.isNotNull           := True;
   INTERVALOCRESCIMENTO.isNotNull:= True;
+  QUANTIDADEESTIMADA.isNotNull  := True;
 
   OBSERVACAO.Size               := 512;
 end;
@@ -110,6 +114,11 @@ end;
 procedure TOPFINAL_ESTAGIO.SetOPMC_ID(const Value: TFieldInteger);
 begin
   FOPMC_ID := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO.SetQUANTIDADEESTIMADA(const Value: TFieldInteger);
+begin
+  FQUANTIDADEESTIMADA := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetSEQUENCIA(const Value: TFieldInteger);

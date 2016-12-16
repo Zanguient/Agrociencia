@@ -26,7 +26,6 @@ type
     gpBotoes: TGridPanel;
     Panel8: TPanel;
     Panel9: TPanel;
-    btCancelarOP: TSpeedButton;
     btFechar: TSpeedButton;
     btAlterar: TSpeedButton;
     btNovo: TSpeedButton;
@@ -85,6 +84,7 @@ type
     ENCERRAR1: TMenuItem;
     IMPRIMIRETIQUETAS1: TMenuItem;
     ImageList1: TImageList;
+    Cancelar1: TMenuItem;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -94,7 +94,6 @@ type
     procedure btCancelarClick(Sender: TObject);
     procedure btAlterarClick(Sender: TObject);
     procedure btNovoClick(Sender: TObject);
-    procedure btCancelarOPClick(Sender: TObject);
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
     procedure btObservacaoClick(Sender: TObject);
@@ -109,6 +108,8 @@ type
     procedure cbStatusChange(Sender: TObject);
     procedure ENCERRAR1Click(Sender: TObject);
     procedure btMenuClick(Sender: TObject);
+    procedure Cancelar1Click(Sender: TObject);
+    procedure btPesquisarClick(Sender: TObject);
   private
     procedure SelecionarObservacao;
     procedure EncerrarOPF;
@@ -282,44 +283,6 @@ begin
   Cancelar;
 end;
 
-procedure TfrmOrdemProducao.btCancelarOPClick(Sender: TObject);
-//Var
-//  FWC : TFWConnection;
-//  OPF : TOPFINAL;
-begin
-{  if not cds_Pesquisa.IsEmpty then begin
-
-    DisplayMsg(MSG_CONF, 'Excluir a Ordem de Produção Selecionada?');
-
-    if ResultMsgModal = mrYes then begin
-
-      try
-
-        FWC := TFWConnection.Create;
-        OPF := TOPFINAL.Create(FWC);
-        try
-
-          OPF.ID.Value := cds_PesquisaID.Value;
-          OPF.Delete;
-
-          FWC.Commit;
-
-          cds_Pesquisa.Delete;
-
-        except
-          on E : Exception do begin
-            FWC.Rollback;
-            DisplayMsg(MSG_ERR, 'Erro ao Excluir a Ordem de Produção, Verifique!', '', E.Message);
-          end;
-        end;
-      finally
-        FreeAndNil(OPF);
-        FreeAndNil(FWC);
-      end;
-    end;
-  end;}
-end;
-
 procedure TfrmOrdemProducao.btExportarClick(Sender: TObject);
 begin
   if btExportar.Tag = 0 then begin
@@ -420,6 +383,7 @@ begin
       end else begin
         OPF.ID.isNull                     := True;
         OPF.QUANTIDADEPRODUZIDA.Value     := 0;
+        OPF.CANCELADO.Value               := False;
         OPF.Insert;
       end;
 
@@ -464,11 +428,76 @@ begin
   end;
 end;
 
+procedure TfrmOrdemProducao.btPesquisarClick(Sender: TObject);
+begin
+  if btPesquisar.Tag = 0 then begin
+    btPesquisar.Tag := 1;
+    try
+      Filtrar;
+    finally
+      btPesquisar.Tag := 0;
+    end;
+  end;
+end;
+
 procedure TfrmOrdemProducao.Cancelar;
 begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
   InvertePaineis;
+end;
+
+procedure TfrmOrdemProducao.Cancelar1Click(Sender: TObject);
+Var
+  FWC : TFWConnection;
+  OPF : TOPFINAL;
+begin
+
+  if not cds_Pesquisa.IsEmpty then begin
+
+    DisplayMsg(MSG_CONF, 'Cancelar a Ordem de Produção Selecionada?');
+
+    if ResultMsgModal = mrYes then begin
+
+      try
+
+        FWC := TFWConnection.Create;
+        OPF := TOPFINAL.Create(FWC);
+        try
+
+          OPF.SelectList('ID = ' + cds_PesquisaID.AsString);
+          if OPF.Count = 1 then begin
+
+            if TOPFINAL(OPF.Itens[0]).CANCELADO.Value then begin
+              DisplayMsg(MSG_WAR, 'Ordem de Produção já Cancelada, Verifique!');
+              Exit;
+            end;
+
+            if not TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNull then begin
+              DisplayMsg(MSG_WAR, 'Ordem de Produção já Encerrada, Portanto não pode ser Cancelada!');
+              Exit;
+            end;
+
+            OPF.ID.Value        := TOPFINAL(OPF.Itens[0]).ID.Value;
+            OPF.CANCELADO.Value := True;
+            OPF.Update;
+
+            FWC.Commit;
+
+            CarregaDados;
+          end;
+        except
+          on E : Exception do begin
+            FWC.Rollback;
+            DisplayMsg(MSG_ERR, 'Erro ao Cancelar a Ordem de Produção, Verifique!', '', E.Message);
+          end;
+        end;
+      finally
+        FreeAndNil(OPF);
+        FreeAndNil(FWC);
+      end;
+    end;
+  end;
 end;
 
 procedure TfrmOrdemProducao.CarregaDados;
@@ -503,8 +532,9 @@ begin
       SQL.SQL.Add('WHERE 1 = 1');
 
       case cbStatus.ItemIndex of
-        0 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
-        1 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NOT NULL');
+        0 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL AND OPF.CANCELADO = False');
+        1 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NOT NULL AND OPF.CANCELADO = False');
+        2 : SQL.SQL.Add('AND OPF.CANCELADO = True');
       end;
 
       SQL.SQL.Add('ORDER BY OPF.ID ASC');
@@ -652,12 +682,13 @@ begin
       try
         OPF.SelectList('ID = ' + cds_PesquisaID.AsString);
         if OPF.Count = 1 then begin
-          if TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNotNull then begin
-            DisplayMsg(MSG_ERR, 'Ordem de Produção já Encerrada!');
+          if not TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNull then begin
+            DisplayMsg(MSG_WAR, 'Ordem de Produção já Encerrada!');
             Exit;
           end;
 
           DisplayMsg(MSG_INPUT_INT, 'Informe a Quantidade de Plantas Produzidas!');
+
           if ResultMsgModal = mrOk then begin
             OPF.ID.Value                  := TOPFINAL(OPF.Itens[0]).ID.Value;
             OPF.DATAENCERRAMENTO.Value    := Now;

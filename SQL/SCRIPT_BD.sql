@@ -236,6 +236,7 @@ CREATE TABLE if not exists opfinal
   produto_id integer NOT NULL,
   cliente_id integer NOT NULL,  
   usuario_id integer NOT NULL,
+  cancelado boolean NOT NULL,
   selecaopositiva character varying(3),
   origemmaterial character varying(100),
   codigoselecaocampo character varying(100),
@@ -272,6 +273,7 @@ CREATE TABLE if not exists opfinal_estagio
   estagio_id integer NOT NULL,
   sequencia integer NOT NULL,
   intervalocrescimento integer NOT NULL,
+  quantidadeestimada integer NOT NULL,
   observacao character varying(512),
   CONSTRAINT pk_opfinal_estagio PRIMARY KEY (id),
   CONSTRAINT fk_opfinal_estagio_op FOREIGN KEY (opfinal_id)

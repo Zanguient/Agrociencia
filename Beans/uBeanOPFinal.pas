@@ -29,6 +29,7 @@ type
     FCOLETADOPOR: TFieldString;
     FDATAENCERRAMENTO: TFieldDateTime;
     FQUANTIDADEPRODUZIDA: TFieldInteger;
+    FCANCELADO: TFieldBoolean;
     procedure SetCLIENTE_ID(const Value: TFieldInteger);
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetID(const Value: TFieldInteger);
@@ -49,6 +50,7 @@ type
     procedure SetCOLETADOPOR(const Value: TFieldString);
     procedure SetDATAENCERRAMENTO(const Value: TFieldDateTime);
     procedure SetQUANTIDADEPRODUZIDA(const Value: TFieldInteger);
+    procedure SetCANCELADO(const Value: TFieldBoolean);
   protected
     procedure InitInstance; override;
   published
@@ -60,6 +62,7 @@ type
     property PRODUTO_ID                 : TFieldInteger read FPRODUTO_ID write SetPRODUTO_ID;
     property CLIENTE_ID                 : TFieldInteger read FCLIENTE_ID write SetCLIENTE_ID;
     property USUARIO_ID                 : TFieldInteger read FUSUARIO_ID write SetUSUARIO_ID;
+    property CANCELADO                  : TFieldBoolean read FCANCELADO write SetCANCELADO;
     property SELECAOPOSITIVA            : TFieldString read FSELECAOPOSITIVA write SetSELECAOPOSITIVA;
     property ORIGEMMATERIAL             : TFieldString read FORIGEMMATERIAL write SetORIGEMMATERIAL;
     property CODIGOSELECAOCAMPO         : TFieldString read FCODIGOSELECAOCAMPO write SetCODIGOSELECAOCAMPO;
@@ -89,6 +92,7 @@ begin
   FCLIENTE_ID.isNotNull             := True;
   FUSUARIO_ID.isNotNull             := True;
   FQUANTIDADEPRODUZIDA.isNotNull    := True;
+  FCANCELADO.isNotNull              := True;
 
   SELECAOPOSITIVA.Size              := 3;
   ORIGEMMATERIAL.Size               := 100;
@@ -99,6 +103,11 @@ begin
   TRANSPORTADORA.Size               := 100;
   OBSERVACAO.Size                   := 512;
 
+end;
+
+procedure TOPFINAL.SetCANCELADO(const Value: TFieldBoolean);
+begin
+  FCANCELADO := Value;
 end;
 
 procedure TOPFINAL.SetCLIENTE_ID(const Value: TFieldInteger);
