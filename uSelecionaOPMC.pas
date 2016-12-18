@@ -1,33 +1,17 @@
-unit uSelecionaMeioCultura;
+unit uSelecionaOPMC;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls,
-  Vcl.Buttons, Vcl.ExtCtrls, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Grids,
+  Vcl.DBGrids, Vcl.Buttons, Data.DB, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, Datasnap.DBClient;
 
 type
-  TfrmSelecionaMeioCultura = class(TForm)
-    pnPrincipal: TPanel;
-    GroupBox1: TGroupBox;
-    edPesquisa: TEdit;
-    btSelecionar: TBitBtn;
-    btBuscar: TBitBtn;
-    dgSeleciona: TDBGrid;
-    GroupBox2: TGroupBox;
-    edt_Especie: TButtonedEdit;
-    Label18: TLabel;
-    edt_NomeEspecie: TEdit;
-    Label19: TLabel;
-    edt_CodigoEstagio: TButtonedEdit;
-    Label1: TLabel;
-    edt_NomeEstagio: TEdit;
-    Label2: TLabel;
-    btn_Buscar: TBitBtn;
+  TfrmSelecionaOPMC = class(TForm)
     cds_Pesquisa: TClientDataSet;
     cds_PesquisaID: TIntegerField;
     cds_PesquisaID_PRODUTO: TIntegerField;
@@ -35,22 +19,35 @@ type
     cds_PesquisaDESCRICAO: TStringField;
     cds_PesquisaPHRECOMENDADO: TFloatField;
     ds_Pesquisa: TDataSource;
-    procedure edt_EspecieChange(Sender: TObject);
-    procedure edt_EspecieKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure edt_EspecieRightButtonClick(Sender: TObject);
-    procedure edt_CodigoEstagioRightButtonClick(Sender: TObject);
-    procedure edt_CodigoEstagioChange(Sender: TObject);
-    procedure edt_CodigoEstagioKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    pnPrincipal: TPanel;
+    GroupBox1: TGroupBox;
+    edPesquisa: TEdit;
+    btSelecionar: TBitBtn;
+    btBuscar: TBitBtn;
+    dgSeleciona: TDBGrid;
+    GroupBox2: TGroupBox;
+    Label18: TLabel;
+    Label19: TLabel;
+    Label1: TLabel;
+    Label2: TLabel;
+    edt_Especie: TButtonedEdit;
+    edt_NomeEspecie: TEdit;
+    edt_CodigoEstagio: TButtonedEdit;
+    edt_NomeEstagio: TEdit;
+    btn_Buscar: TBitBtn;
+    cds_PesquisaORDEMPRODUCAO: TIntegerField;
+    procedure cds_PesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure btn_BuscarClick(Sender: TObject);
     procedure btBuscarClick(Sender: TObject);
     procedure btSelecionarClick(Sender: TObject);
+    procedure btn_BuscarClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormCreate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure cds_PesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
+    procedure edt_EspecieChange(Sender: TObject);
+    procedure edt_CodigoEstagioChange(Sender: TObject);
+    procedure edt_CodigoEstagioRightButtonClick(Sender: TObject);
+    procedure edt_EspecieRightButtonClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -67,7 +64,7 @@ type
   end;
 
 var
-  frmSelecionaMeioCultura: TfrmSelecionaMeioCultura;
+  frmSelecionaOPMC: TfrmSelecionaOPMC;
 
 implementation
 uses
@@ -77,27 +74,25 @@ uses
   uFuncoes,
   uBeanProdutos,
   uBeanEstagio;
+
 {$R *.dfm}
 
-{ TfrmSelecionaMeioCultura }
-{ TfrmSelecionaMeioCultura }
-
-procedure TfrmSelecionaMeioCultura.btBuscarClick(Sender: TObject);
+procedure TfrmSelecionaOPMC.btBuscarClick(Sender: TObject);
 begin
   Filter;
 end;
 
-procedure TfrmSelecionaMeioCultura.btn_BuscarClick(Sender: TObject);
+procedure TfrmSelecionaOPMC.btn_BuscarClick(Sender: TObject);
 begin
   BuscaDados;
 end;
 
-procedure TfrmSelecionaMeioCultura.btSelecionarClick(Sender: TObject);
+procedure TfrmSelecionaOPMC.btSelecionarClick(Sender: TObject);
 begin
   Seleciona;
 end;
 
-procedure TfrmSelecionaMeioCultura.BuscaDados;
+procedure TfrmSelecionaOPMC.BuscaDados;
 var
   FW   : TFWConnection;
   SQL  : TFDQuery;
@@ -114,10 +109,12 @@ begin
     SQL.SQL.Add('M.ID_PRODUTO,');
     SQL.SQL.Add('M.CODIGO,');
     SQL.SQL.Add('P.DESCRICAO,');
-    SQL.SQL.Add('M.PHRECOMENDADO');
-    SQL.SQL.Add('FROM PRODUTO P');
+    SQL.SQL.Add('M.PHRECOMENDADO,');
+    SQL.SQL.Add('OP.ID AS ORDEMPRODUCAO');
+    SQL.SQL.Add('FROM ORDEMPRODUCAOMC OP');
+    SQL.SQL.Add('INNER JOIN PRODUTO P ON OP.ID_PRODUTO = P.ID');
     SQL.SQL.Add('INNER JOIN MEIOCULTURA M ON P.ID = M.ID_PRODUTO');
-    SQL.SQL.Add('WHERE 1 = 1');
+    SQL.SQL.Add('WHERE NOT MC.ENCERRADO');
     if edt_NomeEspecie.Text <> EmptyStr then
       SQL.SQL.Add('AND EXISTS (SELECT 1 FROM MEIOCULTURAESPECIE ME WHERE ME.ID_MEIOCULTURA = M.ID AND ME.ID_ESPECIE = ' + QuotedStr(edt_Especie.Text) + ')');
     if edt_NomeEstagio.Text <> EmptyStr then
@@ -144,7 +141,7 @@ begin
   end;
 end;
 
-procedure TfrmSelecionaMeioCultura.cds_PesquisaFilterRecord(DataSet: TDataSet;
+procedure TfrmSelecionaOPMC.cds_PesquisaFilterRecord(DataSet: TDataSet;
   var Accept: Boolean);
 Var
   I : Integer;
@@ -158,62 +155,47 @@ begin
   end;
 end;
 
-procedure TfrmSelecionaMeioCultura.edt_CodigoEstagioChange(Sender: TObject);
+procedure TfrmSelecionaOPMC.edt_CodigoEstagioChange(Sender: TObject);
 begin
   edt_NomeEstagio.Clear;
 end;
 
-procedure TfrmSelecionaMeioCultura.edt_CodigoEstagioKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-    SelecionaEstagio;
-end;
-
-procedure TfrmSelecionaMeioCultura.edt_CodigoEstagioRightButtonClick(
-  Sender: TObject);
+procedure TfrmSelecionaOPMC.edt_CodigoEstagioRightButtonClick(Sender: TObject);
 begin
   SelecionaEstagio;
 end;
 
-procedure TfrmSelecionaMeioCultura.edt_EspecieChange(Sender: TObject);
+procedure TfrmSelecionaOPMC.edt_EspecieChange(Sender: TObject);
 begin
   edt_NomeEspecie.Clear;
 end;
 
-procedure TfrmSelecionaMeioCultura.edt_EspecieKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-    SelecionaEspecie;
-end;
-
-procedure TfrmSelecionaMeioCultura.edt_EspecieRightButtonClick(Sender: TObject);
+procedure TfrmSelecionaOPMC.edt_EspecieRightButtonClick(Sender: TObject);
 begin
   SelecionaEspecie;
 end;
 
-procedure TfrmSelecionaMeioCultura.Filter;
+procedure TfrmSelecionaOPMC.Filter;
 begin
   cds_Pesquisa.Filtered := False;
   cds_Pesquisa.Filtered := Length(edPesquisa.Text) > 0;
 end;
 
-procedure TfrmSelecionaMeioCultura.FormClose(Sender: TObject;
+procedure TfrmSelecionaOPMC.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  frmSelecionaMeioCultura := nil;
+  frmSelecionaOPMC := nil;
   Action := caFree;
 end;
 
-procedure TfrmSelecionaMeioCultura.FormCreate(Sender: TObject);
+procedure TfrmSelecionaOPMC.FormCreate(Sender: TObject);
 begin
   AjustaForm(Self);
   cds_Pesquisa.CreateDataSet;
   cds_Pesquisa.Open;
 end;
 
-procedure TfrmSelecionaMeioCultura.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TfrmSelecionaOPMC.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case Key of
@@ -242,7 +224,7 @@ begin
   end;
 end;
 
-procedure TfrmSelecionaMeioCultura.FormShow(Sender: TObject);
+procedure TfrmSelecionaOPMC.FormShow(Sender: TObject);
 var
   FW : TFWConnection;
   E : TESTAGIO;
@@ -282,12 +264,12 @@ begin
   end;
 end;
 
-procedure TfrmSelecionaMeioCultura.Seleciona;
+procedure TfrmSelecionaOPMC.Seleciona;
 begin
-  Retorno.Text    := cds_PesquisaID_PRODUTO.AsString;
+  Retorno.Text    := cds_PesquisaORDEMPRODUCAO.AsString;
 end;
 
-procedure TfrmSelecionaMeioCultura.SelecionaEspecie;
+procedure TfrmSelecionaOPMC.SelecionaEspecie;
 var
   FWC : TFWConnection;
   P   : TPRODUTO;
@@ -312,7 +294,7 @@ begin
   end;
 end;
 
-procedure TfrmSelecionaMeioCultura.SelecionaEstagio;
+procedure TfrmSelecionaOPMC.SelecionaEstagio;
 var
   FW : TFWConnection;
   E : TESTAGIO;
@@ -334,5 +316,6 @@ begin
     FreeAndNil(FW);
   end;
 end;
+
 
 end.

@@ -52,7 +52,8 @@ uses
   uBeanOrdemProducaoMC_Estoque in 'Beans\uBeanOrdemProducaoMC_Estoque.pas',
   uBeanOrdemProducaoMC_Estoque_OP in 'Beans\uBeanOrdemProducaoMC_Estoque_OP.pas',
   uSeleciona in 'uSeleciona.pas' {frmSeleciona},
-  uSelecionaMeioCultura in 'uSelecionaMeioCultura.pas' {frmSelecionaMeioCultura};
+  uSelecionaMeioCultura in 'uSelecionaMeioCultura.pas' {frmSelecionaMeioCultura},
+  uSelecionaOPMC in 'uSelecionaOPMC.pas' {frmSelecionaOPMC};
 
 {$R *.res}
 

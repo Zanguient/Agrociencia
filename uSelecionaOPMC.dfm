@@ -1,10 +1,9 @@
-object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
+object frmSelecionaOPMC: TfrmSelecionaOPMC
   Left = 0
   Top = 0
   BorderStyle = bsNone
-  Caption = 'Seleciona Meio de Cultura'
-  ClientHeight = 394
-  ClientWidth = 725
+  ClientHeight = 511
+  ClientWidth = 864
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,18 +21,20 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
   object pnPrincipal: TPanel
     Left = 0
     Top = 0
-    Width = 725
-    Height = 394
+    Width = 864
+    Height = 511
     Align = alClient
     BevelOuter = bvNone
     Color = clWhite
     ParentBackground = False
     TabOrder = 0
+    ExplicitWidth = 725
+    ExplicitHeight = 394
     object GroupBox1: TGroupBox
       AlignWithMargins = True
       Left = 3
       Top = 69
-      Width = 719
+      Width = 858
       Height = 61
       Align = alTop
       Caption = '  Digite o Filtro  '
@@ -44,13 +45,14 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
       Font.Style = []
       ParentFont = False
       TabOrder = 0
+      ExplicitWidth = 719
       DesignSize = (
-        719
+        858
         61)
       object edPesquisa: TEdit
         Left = 8
         Top = 25
-        Width = 478
+        Width = 617
         Height = 31
         Anchors = [akLeft, akTop, akRight]
         Font.Charset = DEFAULT_CHARSET
@@ -60,10 +62,11 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 0
+        ExplicitWidth = 478
       end
       object btSelecionar: TBitBtn
         AlignWithMargins = True
-        Left = 606
+        Left = 745
         Top = 18
         Width = 108
         Height = 38
@@ -594,10 +597,11 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
         ParentFont = False
         TabOrder = 1
         OnClick = btSelecionarClick
+        ExplicitLeft = 606
       end
       object btBuscar: TBitBtn
         AlignWithMargins = True
-        Left = 492
+        Left = 631
         Top = 18
         Width = 108
         Height = 38
@@ -1127,14 +1131,15 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
         ParentFont = False
         TabOrder = 2
         OnClick = btBuscarClick
+        ExplicitLeft = 492
       end
     end
     object dgSeleciona: TDBGrid
       AlignWithMargins = True
       Left = 3
       Top = 136
-      Width = 719
-      Height = 255
+      Width = 858
+      Height = 372
       Align = alClient
       DataSource = ds_Pesquisa
       DrawingStyle = gdsGradient
@@ -1154,12 +1159,18 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
       Columns = <
         item
           Expanded = False
+          FieldName = 'ORDEMPRODUCAO'
+          Visible = True
+        end
+        item
+          Expanded = False
           FieldName = 'CODIGO'
           Visible = True
         end
         item
           Expanded = False
           FieldName = 'DESCRICAO'
+          Width = 500
           Visible = True
         end
         item
@@ -1172,13 +1183,14 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
       AlignWithMargins = True
       Left = 3
       Top = 3
-      Width = 719
+      Width = 858
       Height = 60
       Align = alTop
       Caption = '  Filtros da Pesquisa  '
       TabOrder = 2
+      ExplicitWidth = 719
       DesignSize = (
-        719
+        858
         60)
       object Label18: TLabel
         Left = 8
@@ -1225,7 +1237,6 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
         RightButton.Visible = True
         TabOrder = 0
         OnChange = edt_EspecieChange
-        OnKeyDown = edt_EspecieKeyDown
         OnRightButtonClick = edt_EspecieRightButtonClick
       end
       object edt_NomeEspecie: TEdit
@@ -1259,13 +1270,12 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
         RightButton.Visible = True
         TabOrder = 2
         OnChange = edt_CodigoEstagioChange
-        OnKeyDown = edt_CodigoEstagioKeyDown
         OnRightButtonClick = edt_CodigoEstagioRightButtonClick
       end
       object edt_NomeEstagio: TEdit
         Left = 351
         Top = 27
-        Width = 249
+        Width = 388
         Height = 27
         Anchors = [akLeft, akTop, akRight]
         Enabled = False
@@ -1276,10 +1286,11 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
         Font.Style = []
         ParentFont = False
         TabOrder = 3
+        ExplicitWidth = 249
       end
       object btn_Buscar: TBitBtn
         AlignWithMargins = True
-        Left = 606
+        Left = 745
         Top = 18
         Width = 108
         Height = 37
@@ -1809,6 +1820,7 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
         ParentFont = False
         TabOrder = 4
         OnClick = btn_BuscarClick
+        ExplicitLeft = 606
       end
     end
   end
@@ -1837,6 +1849,10 @@ object frmSelecionaMeioCultura: TfrmSelecionaMeioCultura
     object cds_PesquisaPHRECOMENDADO: TFloatField
       DisplayLabel = 'PH Recomendado'
       FieldName = 'PHRECOMENDADO'
+    end
+    object cds_PesquisaORDEMPRODUCAO: TIntegerField
+      DisplayLabel = 'C'#243'd. OP Meio de Cultura'
+      FieldName = 'ORDEMPRODUCAO'
     end
   end
   object ds_Pesquisa: TDataSource
