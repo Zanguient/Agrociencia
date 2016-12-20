@@ -161,9 +161,11 @@ begin
         SQL.SQL.Add('	E.ID AS IDESTAGIO,');
         SQL.SQL.Add('	E.DESCRICAO AS DESCRICAOESTAGIO,');
         SQL.SQL.Add('	OPMC.ID AS IDOPMC,');
+        SQL.SQL.Add('	P.ID AS ID_PRODUTO,');
         SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
         SQL.SQL.Add('	OPFE.INTERVALOCRESCIMENTO,');
-        SQL.SQL.Add('	OPFE.OBSERVACAO');
+        SQL.SQL.Add('	OPFE.OBSERVACAO,');
+        SQL.SQL.Add('	OPFE.QUANTIDADEESTIMADA');
         SQL.SQL.Add('FROM OPFINAL_ESTAGIO OPFE');
         SQL.SQL.Add('INNER JOIN OPFINAL OPF ON (OPF.ID = OPFE.OPFINAL_ID)');
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
@@ -188,6 +190,9 @@ begin
             edDescOPMC.Text             := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
             edIntervaloCrescimento.Text := SQL.FieldByName('INTERVALOCRESCIMENTO').AsString;
             edObservacao.Text           := SQL.FieldByName('OBSERVACAO').AsString;
+            edt_CodigoEspecie.Text      := SQL.FieldByName('ID_PRODUTO').AsString;
+            edt_NomeEspecie.Text        := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
+            edQuantidadeEstimada.Text   := SQL.FieldByName('QUANTIDADEESTIMADA').AsString;
           end;
         end;
       except
