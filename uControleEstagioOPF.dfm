@@ -779,65 +779,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           Height = 386
           Align = alClient
           TabOrder = 0
-          DesignSize = (
-            425
-            386)
-          object Label5: TLabel
-            AlignWithMargins = True
-            Left = 128
-            Top = 196
-            Width = 218
-            Height = 19
-            Caption = 'Dias de Crescimento (Est'#225'gio):'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label9: TLabel
-            AlignWithMargins = True
-            Left = 4
-            Top = 196
-            Width = 104
-            Height = 19
-            Caption = 'Data de In'#237'cio:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label2: TLabel
-            AlignWithMargins = True
-            Left = 4
-            Top = 254
-            Width = 103
-            Height = 19
-            Caption = 'Data T'#233'rmino:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label3: TLabel
-            AlignWithMargins = True
-            Left = 128
-            Top = 254
-            Width = 156
-            Height = 19
-            Caption = 'Quantidade Estimada:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
           object gbOPF: TGroupBox
             AlignWithMargins = True
             Left = 4
@@ -907,6 +848,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Style = []
             ParentFont = False
             TabOrder = 2
+            ExplicitTop = 197
             DesignSize = (
               417
               58)
@@ -1000,67 +942,191 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               TabOrder = 1
             end
           end
-          object edIntervaloCrescimento: TEdit
+          object gbPeriodoEstagio: TGroupBox
             AlignWithMargins = True
-            Left = 128
-            Top = 221
-            Width = 293
-            Height = 27
-            Anchors = [akLeft, akTop, akRight]
+            Left = 4
+            Top = 260
+            Width = 417
+            Height = 122
+            Align = alClient
+            TabOrder = 3
+            ExplicitTop = 196
+            ExplicitHeight = 115
+            DesignSize = (
+              417
+              122)
+            object Label2: TLabel
+              AlignWithMargins = True
+              Left = 3
+              Top = 52
+              Width = 103
+              Height = 19
+              Caption = 'Data T'#233'rmino:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label3: TLabel
+              AlignWithMargins = True
+              Left = 119
+              Top = 52
+              Width = 156
+              Height = 19
+              Caption = 'Quantidade Estimada:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label9: TLabel
+              AlignWithMargins = True
+              Left = 3
+              Top = 7
+              Width = 104
+              Height = 19
+              Caption = 'Data de In'#237'cio:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label5: TLabel
+              AlignWithMargins = True
+              Left = 127
+              Top = 7
+              Width = 218
+              Height = 19
+              Caption = 'Dias de Crescimento (Est'#225'gio):'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object edQuantidadeEstimada: TEdit
+              AlignWithMargins = True
+              Left = 127
+              Top = 72
+              Width = 286
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              NumbersOnly = True
+              ParentFont = False
+              TabOrder = 3
+              OnChange = edIntervaloCrescimentoChange
+            end
+            object edDataPrevistaTermino: TJvDateEdit
+              Left = 3
+              Top = 72
+              Width = 118
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ShowNullDate = False
+              TabOrder = 2
+            end
+            object edIntervaloCrescimento: TEdit
+              AlignWithMargins = True
+              Left = 127
+              Top = 26
+              Width = 286
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              NumbersOnly = True
+              ParentFont = False
+              TabOrder = 1
+              OnChange = edIntervaloCrescimentoChange
+            end
+            object edDataPrevistaInicio: TJvDateEdit
+              Left = 3
+              Top = 26
+              Width = 118
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ShowNullDate = False
+              TabOrder = 0
+            end
+          end
+          object gbEspecie: TGroupBox
+            AlignWithMargins = True
+            Left = 4
+            Top = 196
+            Width = 417
+            Height = 58
+            Align = alTop
+            Caption = '  Esp'#233'cie   '
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
-            NumbersOnly = True
             ParentFont = False
             TabOrder = 4
-            OnChange = edIntervaloCrescimentoChange
-          end
-          object edDataPrevistaInicio: TJvDateEdit
-            Left = 4
-            Top = 221
-            Width = 118
-            Height = 27
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            ShowNullDate = False
-            TabOrder = 3
-          end
-          object edDataPrevistaTermino: TJvDateEdit
-            Left = 4
-            Top = 279
-            Width = 118
-            Height = 27
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            ShowNullDate = False
-            TabOrder = 5
-          end
-          object edQuantidadeEstimada: TEdit
-            AlignWithMargins = True
-            Left = 128
-            Top = 279
-            Width = 293
-            Height = 27
-            Anchors = [akLeft, akTop, akRight]
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            NumbersOnly = True
-            ParentFont = False
-            TabOrder = 6
-            OnChange = edIntervaloCrescimentoChange
+            ExplicitLeft = 8
+            ExplicitTop = 248
+            DesignSize = (
+              417
+              58)
+            object edt_CodigoEspecie: TButtonedEdit
+              AlignWithMargins = True
+              Left = 3
+              Top = 28
+              Width = 56
+              Height = 27
+              Enabled = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              Images = DMUtil.ImageList1
+              ParentFont = False
+              RightButton.ImageIndex = 0
+              RightButton.Visible = True
+              TabOrder = 0
+            end
+            object edt_NomeEspecie: TEdit
+              Left = 66
+              Top = 28
+              Width = 343
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Enabled = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 1
+            end
           end
         end
         object pnUsuarioDireita: TPanel

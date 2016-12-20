@@ -61,14 +61,18 @@ type
     edObservacao: TEdit;
     btObservacao: TBitBtn;
     Label1: TLabel;
-    edIntervaloCrescimento: TEdit;
-    Label5: TLabel;
-    edDataPrevistaInicio: TJvDateEdit;
-    Label9: TLabel;
-    edDataPrevistaTermino: TJvDateEdit;
+    gbPeriodoEstagio: TGroupBox;
     Label2: TLabel;
-    edQuantidadeEstimada: TEdit;
     Label3: TLabel;
+    Label9: TLabel;
+    Label5: TLabel;
+    edQuantidadeEstimada: TEdit;
+    edDataPrevistaTermino: TJvDateEdit;
+    edIntervaloCrescimento: TEdit;
+    edDataPrevistaInicio: TJvDateEdit;
+    gbEspecie: TGroupBox;
+    edt_CodigoEspecie: TButtonedEdit;
+    edt_NomeEspecie: TEdit;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -532,7 +536,9 @@ end;
 
 procedure TfrmControleEstagioOPF.edCodigoOPFChange(Sender: TObject);
 begin
-  edDescOPF.Text := EmptyStr;
+  edDescOPF.Clear;
+  edt_CodigoEspecie.Clear;
+  edt_NomeEspecie.Clear;
 end;
 
 procedure TfrmControleEstagioOPF.edCodigoOPFKeyDown(Sender: TObject; var Key: Word;
@@ -562,9 +568,12 @@ begin
     SQL.Close;
     SQL.SQL.Clear;
     SQL.SQL.Add('SELECT');
-    SQL.SQL.Add('	C.NOME AS NOMECLIENTE');
+    SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
+    SQL.SQL.Add('	P.ID,');
+    SQL.SQL.Add(' P.DESCRICAO');
     SQL.SQL.Add('FROM OPFINAL OPF');
     SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+    SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
     SQL.SQL.Add('WHERE 1 = 1');
     SQL.SQL.Add('AND OPF.ID = :IDOPF');
     SQL.Connection  := FWC.FDConnection;
@@ -573,8 +582,11 @@ begin
     SQL.Prepare;
     SQL.Open;
 
-    if not SQL.IsEmpty then
-      edDescOPF.Text := SQL.FieldByName('NOMECLIENTE').AsString;
+    if not SQL.IsEmpty then begin
+      edDescOPF.Text         := SQL.Fields[0].AsString;
+      edt_CodigoEspecie.Text := SQL.Fields[1].AsString;
+      edt_NomeEspecie.Text   := SQL.Fields[2].AsString;
+    end;
 
   finally
     FreeAndNil(SQL);
@@ -608,7 +620,7 @@ begin
 
   try
 
-    edCodigoOPMC.Text := IntToStr(DMUtil.Selecionar(OPMC, edCodigoOPMC.Text));
+    edCodigoOPMC.Text := IntToStr(DMUtil.SelecionarOrdemProducaoMeioCultura(StrToIntDef(edCodigoEstagio.Text , 0) , StrToIntDef(edt_CodigoEspecie.Text, 0), edCodigoOPMC.Text));
 
     SQL.Close;
     SQL.SQL.Clear;
