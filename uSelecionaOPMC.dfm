@@ -28,8 +28,6 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
     Color = clWhite
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 725
-    ExplicitHeight = 394
     object GroupBox1: TGroupBox
       AlignWithMargins = True
       Left = 3
@@ -45,7 +43,6 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      ExplicitWidth = 719
       DesignSize = (
         858
         61)
@@ -62,7 +59,6 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 478
       end
       object btSelecionar: TBitBtn
         AlignWithMargins = True
@@ -597,7 +593,6 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
         ParentFont = False
         TabOrder = 1
         OnClick = btSelecionarClick
-        ExplicitLeft = 606
       end
       object btBuscar: TBitBtn
         AlignWithMargins = True
@@ -1131,7 +1126,6 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
         ParentFont = False
         TabOrder = 2
         OnClick = btBuscarClick
-        ExplicitLeft = 492
       end
     end
     object dgSeleciona: TDBGrid
@@ -1188,7 +1182,6 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
       Align = alTop
       Caption = '  Filtros da Pesquisa  '
       TabOrder = 2
-      ExplicitWidth = 719
       DesignSize = (
         858
         60)
@@ -1286,7 +1279,6 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
         Font.Style = []
         ParentFont = False
         TabOrder = 3
-        ExplicitWidth = 249
       end
       object btn_Buscar: TBitBtn
         AlignWithMargins = True
@@ -1820,7 +1812,6 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
         ParentFont = False
         TabOrder = 4
         OnClick = btn_BuscarClick
-        ExplicitLeft = 606
       end
     end
   end

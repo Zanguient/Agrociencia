@@ -234,14 +234,14 @@ begin
   E  := TESTAGIO.Create(FW);
   P  := TPRODUTO.Create(FW);
   try
-    if IntToStr(prm_Estagio) <> EmptyStr then begin
+    if prm_Estagio <> 0 then begin
       E.SelectList('ID = ' + QuotedStr(IntToStr(prm_Estagio)));
       if E.Count > 0 then begin
         edt_CodigoEstagio.Text  := TESTAGIO(E.Itens[0]).ID.asString;
         edt_NomeEstagio.Text    := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
       end;
     end;
-    if IntToStr(prm_Especie) <> EmptyStr then begin
+    if prm_Especie <> 0 then begin
       P.SelectList('ID = ' + QuotedStr(IntToStr(prm_Especie)));
       if P.Count > 0 then begin
         edt_Especie.Text        := TPRODUTO(P.Itens[0]).ID.asString;

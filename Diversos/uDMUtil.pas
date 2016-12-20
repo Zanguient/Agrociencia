@@ -25,6 +25,7 @@ type
     { Public declarations }
     function Selecionar(Tabela : TFWPersistence; ValorControl : String = ''; Filtro : String = ''; Tabela2 : TFWPersistence = nil) : Integer;
     function SelecionarMeioCultura(Estagio : Integer = 0; Especie : Integer = 0; Valor : String = '') : Integer;
+    function SelecionarOrdemProducaoMeioCultura(Estagio : Integer = 0; Especie : Integer = 0; Valor : String = '') : Integer;
     procedure ImprimirRelatorio(Relatorio : String);
   end;
 
@@ -38,6 +39,7 @@ Uses
   uConstantes,
   uFuncoes,
   uSeleciona,
+  uSelecionaOPMC,
   uSelecionaMeioCultura,
   uMensagem;
 
@@ -142,7 +144,31 @@ begin
     if Valor <> EmptyStr then
       Control.Text                       := Valor;
     frmSelecionaMeioCultura.Retorno      := Control;
+    frmSelecionaMeioCultura.prm_Estagio  := Estagio;
+    frmSelecionaMeioCultura.prm_Especie  := Especie;
     if (frmSelecionaMeioCultura.ShowModal = mrOk) or (Control.Text <> '') then
+      Result                             := StrToIntDef(Control.Text,0);
+  finally
+    FreeAndNil(Control);
+  end;
+end;
+
+function TDMUtil.SelecionarOrdemProducaoMeioCultura(Estagio, Especie: Integer;
+  Valor: String): Integer;
+var
+  Control : TEdit;
+begin
+  Result                      := 0;
+  Control                     := TEdit.Create(nil);
+  try
+    if not Assigned(frmSelecionaOPMC) then
+      frmSelecionaOPMC                   := TfrmSelecionaOPMC.Create(nil);
+    if Valor <> EmptyStr then
+      Control.Text                       := Valor;
+    frmSelecionaOPMC.prm_Estagio         := Estagio;
+    frmSelecionaOPMC.prm_Especie         := Especie;
+    frmSelecionaOPMC.Retorno             := Control;
+    if (frmSelecionaOPMC.ShowModal = mrOk) or (Control.Text <> '') then
       Result                             := StrToIntDef(Control.Text,0);
   finally
     FreeAndNil(Control);

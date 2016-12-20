@@ -787,7 +787,7 @@ begin
   FWC    := TFWConnection.Create;
   P      := TPRODUTO.Create(FWC);
   try
-    edt_CodigoMeioCultura.Tag := DMUtil.SelecionarMeioCultura();
+    edt_CodigoMeioCultura.Tag := DMUtil.SelecionarMeioCultura(0, 0, edt_CodigoMeioCultura.Text);
     if edt_CodigoMeioCultura.Tag > 0 then begin
       P.SelectList('id = ' + IntToStr(edt_CodigoMeioCultura.Tag));
       if P.Count > 0 then begin
