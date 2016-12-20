@@ -1147,7 +1147,7 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
       TabOrder = 1
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
-      TitleFont.Height = -20
+      TitleFont.Height = -16
       TitleFont.Name = 'Tahoma'
       TitleFont.Style = []
       Columns = <

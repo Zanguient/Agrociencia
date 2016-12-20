@@ -250,6 +250,7 @@ begin
   pnCadastro.Tag := 0;
   edt_CodigoEstagio.Clear;
   edt_PHRec.Value  := 0;
+  edt_CodigoEstagio.Clear;
   InvertePaineis;
 end;
 
