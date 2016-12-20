@@ -9,7 +9,7 @@ uses
   JvExMask, JvToolEdit, Data.DB, Datasnap.DBClient, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, frxClass, frxDBSet;
 
 type
   TfrmOrdemProducaoMeioCultura = class(TForm)
@@ -64,7 +64,6 @@ type
     btAlterar: TSpeedButton;
     SpeedButton1: TSpeedButton;
     Panel9: TPanel;
-    SpeedButton2: TSpeedButton;
     btFechar: TSpeedButton;
     btExportar: TSpeedButton;
     cds_PesquisaDATAINICIO: TDateField;
@@ -88,6 +87,8 @@ type
     cds_MateriaPrimaUNIDADE: TStringField;
     edt_UnidadeMedida: TEdit;
     Label10: TLabel;
+    btRelatorio: TSpeedButton;
+    SpeedButton2: TSpeedButton;
     procedure FormShow(Sender: TObject);
     procedure btn_CancelarClick(Sender: TObject);
     procedure cds_PesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
@@ -119,6 +120,7 @@ type
       Shift: TShiftState);
     procedure edtMateriaPrimaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure btRelatorioClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -131,6 +133,8 @@ type
     procedure CarregaDadosOrdemProducao(Codigo : Integer);
     procedure GravarDados;
     procedure DeletarOrdemProducao;
+
+    procedure ImprimirRelatorio;
 
     procedure SelecionaMeioCultura;
     procedure SelecionaRecipiente;
@@ -219,6 +223,11 @@ end;
 procedure TfrmOrdemProducaoMeioCultura.btPesquisarClick(Sender: TObject);
 begin
   Filtrar;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.btRelatorioClick(Sender: TObject);
+begin
+  ImprimirRelatorio;
 end;
 
 procedure TfrmOrdemProducaoMeioCultura.BuscaMateriaPrima;
@@ -670,6 +679,85 @@ begin
   finally
     FreeAndNil(MI);
     FreeAndNil(MC);
+    FreeAndNil(FW);
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.ImprimirRelatorio;
+var
+  FW    : TFWConnection;
+  SQL   : TFDQuery;
+  FR    : TfrxDBDataset;
+  SQL_I : TFDQuery;
+  FR_I  : TfrxDBDataset;
+begin
+  FW    := TFWConnection.Create;
+  SQL   := TFDQuery.Create(nil);
+  SQL_I := TFDQuery.Create(nil);
+  try
+    SQL.Close;
+    SQL.SQL.Clear;
+    SQL.Connection := FW.FDConnection;
+    SQL.SQL.Add('SELECT');
+    SQL.SQL.Add('OPMC.ID,');
+    SQL.SQL.Add('MC.CODIGO,');
+    SQL.SQL.Add('E.METODO,');
+    SQL.SQL.Add('OPMC.ID_RECIPIENTE,');
+    SQL.SQL.Add('PR.DESCRICAO,');
+    SQL.SQL.Add('MC.PHRECOMENDADO,');
+    SQL.SQL.Add('OPMC.DATAHORA,');
+    SQL.SQL.Add('OPMC.QUANTRECIPIENTES,');
+    SQL.SQL.Add('OPMC.MLRECIPIENTE,');
+    SQL.SQL.Add('OPMC.QUANTPRODUTO,');
+    SQL.SQL.Add('OPMC.OBSERVACAO');
+    SQL.SQL.Add('FROM ORDEMPRODUCAOMC OPMC');
+    SQL.SQL.Add('INNER JOIN MEIOCULTURA MC ON OPMC.ID_PRODUTO = MC.ID_PRODUTO');
+    SQL.SQL.Add('INNER JOIN ESTERILIZACAO E ON OPMC.ID_ESTERILIZACAO = E.ID');
+    SQL.SQL.Add('INNER JOIN PRODUTO PR ON OPMC.ID_RECIPIENTE = PR.ID');
+    SQL.SQL.Add('WHERE OPMC.ID = :ID');
+    SQL.ParamByName('ID').AsInteger := cds_PesquisaID.AsInteger;
+    SQL.Prepare;
+    SQL.Open();
+
+    if SQL.IsEmpty then begin
+      DisplayMsg(MSG_INF, 'Dados da Ordem de Produção não encontrados!');
+      Exit;
+    end;
+
+    SQL_I.Close;
+    SQL_I.SQL.Clear;
+    SQL_I.Connection := FW.FDConnection;
+    SQL_I.SQL.Add('SELECT');
+    SQL_I.SQL.Add('OPMCI.ID_PRODUTO,');
+    SQL_I.SQL.Add('PR.DESCRICAO,');
+    SQL_I.SQL.Add('UN.SIMBOLO,');
+    SQL_I.SQL.Add('OPMCI.QUANTIDADE');
+    SQL_I.SQL.Add('FROM ORDEMPRODUCAOMC_ITENS OPMCI');
+    SQL_I.SQL.Add('INNER JOIN PRODUTO PR ON OPMCI.ID_PRODUTO = PR.ID');
+    SQL_I.SQL.Add('INNER JOIN UNIDADEMEDIDA UN ON PR.UNIDADEMEDIDA_ID = UN.ID');
+    SQL_I.SQL.Add('WHERE OPMCI.ID_ORDEMPRODUCAOMC = :ID');
+    SQL_I.ParamByName('ID').AsInteger := cds_PesquisaID.AsInteger;
+    SQL_I.Prepare;
+    SQL_I.Open();
+
+    FR    := TfrxDBDataset.Create(nil);
+    FR_I  := TfrxDBDataset.Create(nil);
+    try
+      FR.UserName     := 'ORDEMPRODUCAO';
+      FR_I.UserName   := 'ITENS';
+
+      FR.DataSet      := SQL;
+      FR_I.DataSet    := SQL_I;
+
+      DMUtil.ImprimirRelatorio('frOPMC.fr3');
+      DisplayMsgFinaliza;
+    finally
+      FreeAndNil(FR_I);
+      FreeAndNil(FR);
+    end;
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(SQL_I);
     FreeAndNil(FW);
   end;
 end;

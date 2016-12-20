@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<TfrxReport Version="5.1.9" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="42396,5981039468" ReportOptions.Description.Text="" ReportOptions.LastChange="42724,0477508565" ScriptLanguage="PascalScript" ScriptText.Text="&#13;&#10;begin&#13;&#10;&#13;&#10;end.">
+  <Datasets>
+    <item DataSetName="ITENS"/>
+    <item DataSetName="ORDEMPRODUCAO"/>
+  </Datasets>
+  <Variables>
+    <item Name="Usuario" Value="'JEFERSON KOCHEN'"/>
+    <item Name="UserLogin" Value="user"/>
+    <item Name="Login" Value="'Sergio Jonas NetSchulz'"/>
+  </Variables>
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxReportPage Name="Page1" PaperWidth="210" PaperHeight="148,5" PaperSize="256" LeftMargin="10" RightMargin="10" TopMargin="10" BottomMargin="10" ColumnWidth="0" ColumnPositions.Text="" HGuides.Text="362,83488&#13;&#10;340,1577&#13;&#10;188,9765" VGuides.Text="359,05535&#13;&#10;347,71676&#13;&#10;347,71676">
+    <TfrxReportTitle Name="ReportTitle1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="136,06308" Left="0" Top="18,89765" Width="718,1107">
+      <TfrxMemoView Name="Memo1" Align="baWidth" Left="0" Top="0" Width="718,1107" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-16" Font.Name="Arial" Font.Style="1" Frame.Typ="12" HAlign="haCenter" ParentFont="False" Text="Ordem de produção - Meio de Cultura - [ORDEMPRODUCAO.&#34;id&#34;]"/>
+      <TfrxMemoView Name="Memo2" Align="baLeft" Left="0" Top="18,89765" Width="136,06308" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="OP Número:"/>
+      <TfrxMemoView Name="Memo3" Align="baLeft" Left="0" Top="37,7953" Width="136,06308" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="Data/hora:"/>
+      <TfrxMemoView Name="Memo4" Align="baLeft" Left="0" Top="56,69291339" Width="136,06308" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="Código Meio:"/>
+      <TfrxMemoView Name="Memo5" Align="baLeft" Left="0" Top="75,59055118" Width="136,06308" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="Tipo de Frasco:"/>
+      <TfrxMemoView Name="Memo6" Align="baLeft" Left="0" Top="94,48825" Width="136,06308" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="Número de Frascos:"/>
+      <TfrxMemoView Name="Memo7" Align="baLeft" Left="0" Top="113,3859" Width="136,06308" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="Esterilização:"/>
+      <TfrxMemoView Name="Memo8" Align="baLeft" Left="136,06308" Top="19,45671" Width="226,7718" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haCenter" ParentFont="False" Text="[ORDEMPRODUCAO.&#34;id&#34;]"/>
+      <TfrxMemoView Name="Memo9" Align="baLeft" Left="136,06308" Top="38,35436" Width="226,7718" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haCenter" ParentFont="False" Text="[ORDEMPRODUCAO.&#34;datahora&#34;]"/>
+      <TfrxMemoView Name="Memo10" Align="baLeft" Left="136,06308" Top="57,25197339" Width="226,7718" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haCenter" ParentFont="False" Text="[ORDEMPRODUCAO.&#34;codigo&#34;]"/>
+      <TfrxMemoView Name="Memo11" Align="baLeft" Left="136,06308" Top="76,14961118" Width="226,7718" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haCenter" ParentFont="False" Text="[ORDEMPRODUCAO.&#34;descricao&#34;]"/>
+      <TfrxMemoView Name="Memo12" Align="baLeft" Left="136,06308" Top="95,04731" Width="226,7718" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haCenter" ParentFont="False" Text="[ORDEMPRODUCAO.&#34;quantrecipientes&#34;]"/>
+      <TfrxMemoView Name="Memo13" Align="baLeft" Left="136,06308" Top="113,94496" Width="226,7718" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haCenter" ParentFont="False" Text="[ORDEMPRODUCAO.&#34;metodo&#34;]"/>
+      <TfrxMemoView Name="Memo14" Align="baWidth" Left="362,83488" Top="19,45671" Width="204,09462" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="OP Número:"/>
+      <TfrxMemoView Name="Memo15" Align="baWidth" Left="362,83488" Top="38,35436" Width="204,09462" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="Data/hora:"/>
+      <TfrxMemoView Name="Memo16" Align="baWidth" Left="362,83488" Top="57,25197339" Width="204,09462" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="Código Meio:"/>
+      <TfrxMemoView Name="Memo17" Align="baWidth" Left="362,83488" Top="76,14961118" Width="204,09462" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="Tipo de Frasco:"/>
+      <TfrxMemoView Name="Memo18" Align="baWidth" Left="362,83488" Top="95,04731" Width="204,09462" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="Número de Frascos:"/>
+      <TfrxMemoView Name="Memo19" Align="baWidth" Left="362,83488" Top="113,94496" Width="204,09462" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" Text="Esterilização:"/>
+      <TfrxMemoView Name="Memo20" Align="baRight" Left="566,9295" Top="19,45671" Width="151,1812" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haRight" ParentFont="False" Text="OP Número:"/>
+      <TfrxMemoView Name="Memo21" Align="baRight" Left="566,9295" Top="38,35436" Width="151,1812" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haRight" ParentFont="False" Text="Data/hora:"/>
+      <TfrxMemoView Name="Memo22" Align="baRight" Left="566,9295" Top="57,25197339" Width="151,1812" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haRight" ParentFont="False" Text="Código Meio:"/>
+      <TfrxMemoView Name="Memo23" Align="baRight" Left="566,9295" Top="76,14961118" Width="151,1812" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haRight" ParentFont="False" Text="Tipo de Frasco:"/>
+      <TfrxMemoView Name="Memo24" Align="baRight" Left="566,9295" Top="95,04731" Width="151,1812" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haRight" ParentFont="False" Text="Número de Frascos:"/>
+      <TfrxMemoView Name="Memo25" Align="baRight" Left="566,9295" Top="113,94496" Width="151,1812" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haRight" ParentFont="False" Text="Esterilização:"/>
+    </TfrxReportTitle>
+  </TfrxReportPage>
+</TfrxReport>
