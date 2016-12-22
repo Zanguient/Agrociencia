@@ -21,6 +21,8 @@ type
     FSEQUENCIA: TFieldInteger;
     FINTERVALOCRESCIMENTO: TFieldInteger;
     FQUANTIDADEESTIMADA: TFieldInteger;
+    FPREVISAOTERMINO: TFieldDateTime;
+    FPREVISAOINICIO: TFieldDateTime;
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
@@ -33,6 +35,8 @@ type
     procedure SetSEQUENCIA(const Value: TFieldInteger);
     procedure SetINTERVALOCRESCIMENTO(const Value: TFieldInteger);
     procedure SetQUANTIDADEESTIMADA(const Value: TFieldInteger);
+    procedure SetPREVISAOINICIO(const Value: TFieldDateTime);
+    procedure SetPREVISAOTERMINO(const Value: TFieldDateTime);
   protected
     procedure InitInstance; override;
   published
@@ -47,6 +51,8 @@ type
     property SEQUENCIA            : TFieldInteger read FSEQUENCIA write SetSEQUENCIA;
     property INTERVALOCRESCIMENTO : TFieldInteger read FINTERVALOCRESCIMENTO write SetINTERVALOCRESCIMENTO;
     property QUANTIDADEESTIMADA   : TFieldInteger read FQUANTIDADEESTIMADA write SetQUANTIDADEESTIMADA;
+    property PREVISAOINICIO       : TFieldDateTime read FPREVISAOINICIO write SetPREVISAOINICIO;
+    property PREVISAOTERMINO      : TFieldDateTime read FPREVISAOTERMINO write SetPREVISAOTERMINO;
     property OBSERVACAO           : TFieldString read FOBSERVACAO write SetOBSERVACAO;
   end;
 
@@ -114,6 +120,16 @@ end;
 procedure TOPFINAL_ESTAGIO.SetOPMC_ID(const Value: TFieldInteger);
 begin
   FOPMC_ID := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO.SetPREVISAOINICIO(const Value: TFieldDateTime);
+begin
+  FPREVISAOINICIO := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO.SetPREVISAOTERMINO(const Value: TFieldDateTime);
+begin
+  FPREVISAOTERMINO := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetQUANTIDADEESTIMADA(const Value: TFieldInteger);

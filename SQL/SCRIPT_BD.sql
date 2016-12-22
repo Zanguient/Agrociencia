@@ -274,6 +274,8 @@ CREATE TABLE if not exists opfinal_estagio
   sequencia integer NOT NULL,
   intervalocrescimento integer NOT NULL,
   quantidadeestimada integer NOT NULL,
+  previsaoinicio timestamp,
+  previsaotermino timestamp,
   observacao character varying(512),
   CONSTRAINT pk_opfinal_estagio PRIMARY KEY (id),
   CONSTRAINT fk_opfinal_estagio_op FOREIGN KEY (opfinal_id)

@@ -141,6 +141,8 @@ begin
     edCodigoOPMC.Clear;
     edDescOPMC.Clear;
     edIntervaloCrescimento.Clear;
+    edDataPrevistaInicio.Clear;
+    edDataPrevistaTermino.Clear;
     edObservacao.Clear;
     btGravar.Tag  := 0;
   end else begin
@@ -165,7 +167,9 @@ begin
         SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
         SQL.SQL.Add('	OPFE.INTERVALOCRESCIMENTO,');
         SQL.SQL.Add('	OPFE.OBSERVACAO,');
-        SQL.SQL.Add('	OPFE.QUANTIDADEESTIMADA');
+        SQL.SQL.Add('	OPFE.QUANTIDADEESTIMADA,');
+        SQL.SQL.Add('	OPFE.PREVISAOINICIO,');
+        SQL.SQL.Add('	OPFE.PREVISAOTERMINO');
         SQL.SQL.Add('FROM OPFINAL_ESTAGIO OPFE');
         SQL.SQL.Add('INNER JOIN OPFINAL OPF ON (OPF.ID = OPFE.OPFINAL_ID)');
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
@@ -193,6 +197,8 @@ begin
             edt_CodigoEspecie.Text      := SQL.FieldByName('ID_PRODUTO').AsString;
             edt_NomeEspecie.Text        := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
             edQuantidadeEstimada.Text   := SQL.FieldByName('QUANTIDADEESTIMADA').AsString;
+            edDataPrevistaInicio.Date   := SQL.FieldByName('PREVISAOINICIO').AsDateTime;
+            edDataPrevistaTermino.Date  := SQL.FieldByName('PREVISAOTERMINO').AsDateTime;
           end;
         end;
       except
@@ -353,6 +359,8 @@ begin
       OPFE.OBSERVACAO.Value           := edObservacao.Text;
       OPFE.INTERVALOCRESCIMENTO.Value := StrToIntDef(edIntervaloCrescimento.Text,0);
       OPFE.QUANTIDADEESTIMADA.Value   := StrToIntDef(edQuantidadeEstimada.Text,0);
+      OPFE.PREVISAOINICIO.Value       := edDataPrevistaInicio.Date;
+      OPFE.PREVISAOTERMINO.Value      := edDataPrevistaTermino.Date;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         OPFE.ID.Value          := (Sender as TSpeedButton).Tag;
@@ -451,6 +459,9 @@ begin
       SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
       SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
       SQL.SQL.Add('WHERE 1 = 1');
+      SQL.SQL.Add('AND OPF.CANCELADO = False');
+      SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
+      SQL.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
       SQL.SQL.Add('ORDER BY OPF.ID, OPFE.SEQUENCIA');
       SQL.Connection  := FWC.FDConnection;
       SQL.Prepare;
