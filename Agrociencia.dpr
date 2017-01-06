@@ -53,7 +53,11 @@ uses
   uBeanOrdemProducaoMC_Estoque_OP in 'Beans\uBeanOrdemProducaoMC_Estoque_OP.pas',
   uSeleciona in 'uSeleciona.pas' {frmSeleciona},
   uSelecionaMeioCultura in 'uSelecionaMeioCultura.pas' {frmSelecionaMeioCultura},
-  uSelecionaOPMC in 'uSelecionaOPMC.pas' {frmSelecionaOPMC};
+  uSelecionaOPMC in 'uSelecionaOPMC.pas' {frmSelecionaOPMC},
+  uBeanOPFinal_Estagio_Lote in 'Beans\uBeanOPFinal_Estagio_Lote.pas',
+  uBeanOPFinal_Estagio_Lote_E in 'Beans\uBeanOPFinal_Estagio_Lote_E.pas',
+  uBeanOPFinal_Estagio_Lote_S in 'Beans\uBeanOPFinal_Estagio_Lote_S.pas',
+  uBeanOPFinal_Estagio_Lote_Intervalo in 'Beans\uBeanOPFinal_Estagio_Lote_Intervalo.pas';
 
 {$R *.res}
 

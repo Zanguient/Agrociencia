@@ -30,6 +30,7 @@ type
     FDATAENCERRAMENTO: TFieldDateTime;
     FQUANTIDADEPRODUZIDA: TFieldInteger;
     FCANCELADO: TFieldBoolean;
+    FLIMITEMULTIPLICACOES: TFieldInteger;
     procedure SetCLIENTE_ID(const Value: TFieldInteger);
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetID(const Value: TFieldInteger);
@@ -51,6 +52,7 @@ type
     procedure SetDATAENCERRAMENTO(const Value: TFieldDateTime);
     procedure SetQUANTIDADEPRODUZIDA(const Value: TFieldInteger);
     procedure SetCANCELADO(const Value: TFieldBoolean);
+    procedure SetLIMITEMULTIPLICACOES(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
@@ -63,6 +65,7 @@ type
     property CLIENTE_ID                 : TFieldInteger read FCLIENTE_ID write SetCLIENTE_ID;
     property USUARIO_ID                 : TFieldInteger read FUSUARIO_ID write SetUSUARIO_ID;
     property CANCELADO                  : TFieldBoolean read FCANCELADO write SetCANCELADO;
+    property LIMITEMULTIPLICACOES       : TFieldInteger read FLIMITEMULTIPLICACOES write SetLIMITEMULTIPLICACOES;
     property SELECAOPOSITIVA            : TFieldString read FSELECAOPOSITIVA write SetSELECAOPOSITIVA;
     property ORIGEMMATERIAL             : TFieldString read FORIGEMMATERIAL write SetORIGEMMATERIAL;
     property CODIGOSELECAOCAMPO         : TFieldString read FCODIGOSELECAOCAMPO write SetCODIGOSELECAOCAMPO;
@@ -93,6 +96,7 @@ begin
   FUSUARIO_ID.isNotNull             := True;
   FQUANTIDADEPRODUZIDA.isNotNull    := True;
   FCANCELADO.isNotNull              := True;
+  FLIMITEMULTIPLICACOES.isNotNull   := True;
 
   SELECAOPOSITIVA.Size              := 3;
   ORIGEMMATERIAL.Size               := 100;
@@ -158,6 +162,11 @@ end;
 procedure TOPFINAL.SetID(const Value: TFieldInteger);
 begin
   FID := Value;
+end;
+
+procedure TOPFINAL.SetLIMITEMULTIPLICACOES(const Value: TFieldInteger);
+begin
+  FLIMITEMULTIPLICACOES := Value;
 end;
 
 procedure TOPFINAL.SetLOCALIZADOR(const Value: TFieldString);

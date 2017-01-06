@@ -57,6 +57,8 @@ type
     cds_PesquisaUNIDADEMEDIDA: TIntegerField;
     cds_PesquisaESTOQUE: TCurrencyField;
     cbTipoProduto: TComboBox;
+    cbRecepienteReaproveitavel: TCheckBox;
+    cds_PesquisaRECIPIENTEREAPROVEITAVEL: TBooleanField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -74,6 +76,7 @@ type
     procedure edUnidadeMedidaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure cbTipoProdutoChange(Sender: TObject);
+    procedure cbFinalidadeProdutoChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -83,6 +86,7 @@ type
     procedure Filtrar;
     procedure AtualizarEdits(Limpar : Boolean);
     procedure CarregaDescricoes;
+    procedure MostrarOcultarCampos;
   end;
 
 var
@@ -109,16 +113,21 @@ begin
     cbFinalidadeProduto.ItemIndex := 0;
     edUnidadeMedida.Clear;
     lbUnidadeMedida.Caption := EmptyStr;
+    cbRecepienteReaproveitavel.Checked  := False;
     edCodigoExterno.Clear;
     btGravar.Tag  := 0;
   end else begin
-    edDescricao.Text              := cds_PesquisaDESCRICAO.Value;
-    cbFinalidadeProduto.ItemIndex := cds_PesquisaFINALIDADE.Value;
-    edUnidadeMedida.Text          := cds_PesquisaUNIDADEMEDIDA.AsString;
-    edCodigoExterno.Text          := cds_PesquisaCODIGOEXTERNO.Value;
-    btGravar.Tag                  := cds_PesquisaID.Value;
+    edDescricao.Text                    := cds_PesquisaDESCRICAO.Value;
+    cbFinalidadeProduto.ItemIndex       := cds_PesquisaFINALIDADE.Value;
+    edUnidadeMedida.Text                := cds_PesquisaUNIDADEMEDIDA.AsString;
+    cbRecepienteReaproveitavel.Checked  := cds_PesquisaRECIPIENTEREAPROVEITAVEL.Value;
+    edCodigoExterno.Text                := cds_PesquisaCODIGOEXTERNO.Value;
+    btGravar.Tag                        := cds_PesquisaID.Value;
     CarregaDescricoes;
   end;
+
+  MostrarOcultarCampos;
+
 end;
 
 procedure TfrmCadastroProdutos.btAlterarClick(Sender: TObject);
@@ -222,9 +231,14 @@ begin
         Exit;
       end;
 
-      P.DESCRICAO.Value        := edDescricao.Text;
-      P.FINALIDADE.Value       := cbFinalidadeProduto.ItemIndex;
-      p.UNIDADEMEDIDA_ID.Value := StrToIntDef(edUnidadeMedida.Text, 0);
+      P.DESCRICAO.Value                 := edDescricao.Text;
+      P.FINALIDADE.Value                := cbFinalidadeProduto.ItemIndex;
+      P.UNIDADEMEDIDA_ID.Value          := StrToIntDef(edUnidadeMedida.Text, 0);
+      P.RECIPIENTEREAPROVEITAVEL.Value  := False;
+
+      if cbRecepienteReaproveitavel.Visible then
+        P.RECIPIENTEREAPROVEITAVEL.Value := cbRecepienteReaproveitavel.Checked;
+
       P.CODIGOEXTERNO.Value    := edCodigoExterno.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
@@ -292,6 +306,7 @@ begin
       SQL.SQL.Add('        P.DESCRICAO,');
       SQL.SQL.Add('        P.FINALIDADE,');
       SQL.SQL.Add('        P.UNIDADEMEDIDA_ID,');
+      SQL.SQL.Add('        P.RECIPIENTEREAPROVEITAVEL,');
       SQL.SQL.Add('        P.CODIGOEXTERNO,');
       SQL.SQL.Add('        (COALESCE((SELECT SUM(COALESCE(CEP.QUANTIDADE, 0.00))');
       SQL.SQL.Add('	  FROM CONTROLEESTOQUE CE INNER JOIN CONTROLEESTOQUEPRODUTO CEP ON (CEP.CONTROLEESTOQUE_ID = CE.ID)');
@@ -311,12 +326,13 @@ begin
         SQL.First;
         while not SQL.Eof do begin
           cds_Pesquisa.Append;
-          cds_PesquisaID.Value              := SQL.FieldByName('ID').AsInteger;
-          cds_PesquisaDESCRICAO.Value       := SQL.FieldByName('DESCRICAO').AsString;
-          cds_PesquisaFINALIDADE.Value      := SQL.FieldByName('FINALIDADE').AsInteger;
-          cds_PesquisaUNIDADEMEDIDA.Value   := SQL.FieldByName('UNIDADEMEDIDA_ID').AsInteger;
-          cds_PesquisaCODIGOEXTERNO.Value   := SQL.FieldByName('CODIGOEXTERNO').AsString;
-          cds_PesquisaESTOQUE.Value         := SQL.FieldByName('ESTOQUE').AsCurrency;
+          cds_PesquisaID.Value                      := SQL.FieldByName('ID').AsInteger;
+          cds_PesquisaDESCRICAO.Value               := SQL.FieldByName('DESCRICAO').AsString;
+          cds_PesquisaFINALIDADE.Value              := SQL.FieldByName('FINALIDADE').AsInteger;
+          cds_PesquisaUNIDADEMEDIDA.Value           := SQL.FieldByName('UNIDADEMEDIDA_ID').AsInteger;
+          cds_PesquisaRECIPIENTEREAPROVEITAVEL.Value:= SQL.FieldByName('RECIPIENTEREAPROVEITAVEL').AsBoolean;
+          cds_PesquisaCODIGOEXTERNO.Value           := SQL.FieldByName('CODIGOEXTERNO').AsString;
+          cds_PesquisaESTOQUE.Value                 := SQL.FieldByName('ESTOQUE').AsCurrency;
           cds_Pesquisa.Post;
           SQL.Next;
         end;
@@ -360,6 +376,11 @@ begin
     end;
   end;
 
+end;
+
+procedure TfrmCadastroProdutos.cbFinalidadeProdutoChange(Sender: TObject);
+begin
+  MostrarOcultarCampos;
 end;
 
 procedure TfrmCadastroProdutos.cbTipoProdutoChange(Sender: TObject);
@@ -495,6 +516,15 @@ begin
   if pnEdicao.Visible then begin
     if edDescricao.CanFocus then
       edDescricao.SetFocus;
+  end;
+end;
+
+procedure TfrmCadastroProdutos.MostrarOcultarCampos;
+begin
+  case TFinalidadeProduto(cbFinalidadeProduto.ItemIndex) of
+    eRecipiente : cbRecepienteReaproveitavel.Visible := True;
+    else
+      cbRecepienteReaproveitavel.Visible := False;
   end;
 end;
 

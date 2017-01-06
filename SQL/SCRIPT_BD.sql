@@ -61,6 +61,7 @@ CREATE TABLE if not exists produto
   descricao character varying(100) NOT NULL,
   finalidade integer NOT NULL,
   unidademedida_id integer NOT NULL,
+  recipientereaproveitavel boolean NOT NULL,
   codigoexterno character varying(100),
   CONSTRAINT pk_produto PRIMARY KEY (id),
   CONSTRAINT fk_produto_unidademedida foreign key (unidademedida_id) 
@@ -237,6 +238,7 @@ CREATE TABLE if not exists opfinal
   cliente_id integer NOT NULL,  
   usuario_id integer NOT NULL,
   cancelado boolean NOT NULL,
+  limitemultiplicacoes integer NOT NULL,
   selecaopositiva character varying(3),
   origemmaterial character varying(100),
   codigoselecaocampo character varying(100),
@@ -304,4 +306,58 @@ CONSTRAINT fk_ordemproducaomc_estoque_op_mce FOREIGN KEY (id_ordemproducaomc_est
 CONSTRAINT fk_ordemproducaomc_estoque_op_opfinal FOREIGN KEY (id_opfinal)
     REFERENCES opfinal (id) MATCH SIMPLE
     ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE if not exists opfinal_estagio_lote
+(
+  id serial NOT NULL,
+  opfinal_estagio_id bigint NOT NULL,
+  numerolote integer NOT NULL,
+  datahorainicio timestamp,
+  datahorafim timestamp,  
+  usuario_id integer NOT NULL,
+  observacao character varying(512),
+  CONSTRAINT pk_opfinal_estagio_lote PRIMARY KEY (id),
+  CONSTRAINT fk_opfinal_estagio_lote_op FOREIGN KEY (opfinal_estagio_id)
+      REFERENCES opfinal_estagio (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_opfinal_estagio_lote_u FOREIGN KEY (usuario_id)
+      REFERENCES usuario (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE if not exists opfinal_estagio_lote_e
+(
+  id serial NOT NULL,
+  opfinal_estagio_lote_id bigint NOT NULL,
+  codigobarras character varying(20),
+  datahora timestamp NOT NULL,
+  CONSTRAINT pk_opfinal_estagio_lote_e PRIMARY KEY (id),
+  CONSTRAINT fk_opfinal_estagio_lote_e_ope FOREIGN KEY (opfinal_estagio_lote_id)
+      REFERENCES opfinal_estagio_lote (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE if not exists opfinal_estagio_lote_s
+(
+  id serial NOT NULL,
+  opfinal_estagio_lote_id bigint NOT NULL,
+  codigobarras character varying(20),
+  datahora timestamp NOT NULL,
+  CONSTRAINT pk_opfinal_estagio_lote_s PRIMARY KEY (id),
+  CONSTRAINT fk_opfinal_estagio_lote_s_ope FOREIGN KEY (opfinal_estagio_lote_id)
+      REFERENCES opfinal_estagio_lote (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE if not exists opfinal_estagio_lote_intervalo
+(
+  id serial NOT NULL,
+  opfinal_estagio_lote_id bigint NOT NULL,
+  datahoraentrada timestamp NOT NULL,
+  datahorasaida timestamp,
+  CONSTRAINT pk_opfinal_estagio_lote_intervalo PRIMARY KEY (id),
+  CONSTRAINT fk_opfinal_estagio_lote_e_ope FOREIGN KEY (opfinal_estagio_lote_id)
+      REFERENCES opfinal_estagio_lote (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT
 );

@@ -85,6 +85,8 @@ type
     IMPRIMIRETIQUETAS1: TMenuItem;
     ImageList1: TImageList;
     Cancelar1: TMenuItem;
+    edLimiteMultiplicacao: TEdit;
+    Label14: TLabel;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -150,6 +152,7 @@ begin
     edCodigoProduto.Clear;
     edNomeProduto.Clear;
     edObservacao.Clear;
+    edLimiteMultiplicacao.Text := '0';
     cbSelecaoPositiva.ItemIndex := 0;
     edCodSelecaoCampo.Clear;
     edOrigemMaterial.Clear;
@@ -191,7 +194,8 @@ begin
         SQL.SQL.Add('	OPF.TRANSPORTADORA,');
         SQL.SQL.Add('	OPF.DATADERECEBIMENTO,');
         SQL.SQL.Add('	OPF.DATAESTIMADAPROCESSAMENTO,');
-        SQL.SQL.Add('	OPF.OBSERVACAO');
+        SQL.SQL.Add('	OPF.OBSERVACAO,');
+        SQL.SQL.Add('	OPF.LIMITEMULTIPLICACOES');
         SQL.SQL.Add('FROM OPFINAL OPF');
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
         SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
@@ -211,6 +215,7 @@ begin
             edCodigoProduto.Text        := SQL.FieldByName('PRODUTO_ID').AsString;
             edNomeProduto.Text          := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
             edObservacao.Text           := SQL.FieldByName('OBSERVACAO').AsString;
+            edLimiteMultiplicacao.Text  := SQL.FieldByName('LIMITEMULTIPLICACOES').AsString;
 
             for I := 0 to cbSelecaoPositiva.Items.Count - 1 do begin
               if cbSelecaoPositiva.Items[I] = SQL.FieldByName('SELECAOPOSITIVA').AsString then begin
@@ -365,6 +370,7 @@ begin
       OPF.PRODUTO_ID.Value                := StrToIntDef(edCodigoProduto.Text,0);
       OPF.USUARIO_ID.Value                := USUARIO.CODIGO;
       OPF.OBSERVACAO.Value                := edObservacao.Text;
+      OPF.LIMITEMULTIPLICACOES.Value      := StrToIntDef(edLimiteMultiplicacao.Text,0);
       OPF.SELECAOPOSITIVA.Value           := cbSelecaoPositiva.Items[cbSelecaoPositiva.ItemIndex];
       OPF.CODIGOSELECAOCAMPO.Value        := edCodSelecaoCampo.Text;
       OPF.ORIGEMMATERIAL.Value            := edOrigemMaterial.Text;

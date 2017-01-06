@@ -1369,7 +1369,7 @@ object frmOrdemProducao: TfrmOrdemProducao
         Width = 860
         Height = 42
         Align = alTop
-        Caption = 'Ordem de Produ'#231#227'o (Final)'
+        Caption = 'CADASTRO DE RECEBIMENTO E PRODU'#199#195'O DE PLANTAS'
         Color = clSkyBlue
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -1435,7 +1435,7 @@ object frmOrdemProducao: TfrmOrdemProducao
           object Label3: TLabel
             AlignWithMargins = True
             Left = 4
-            Top = 190
+            Top = 248
             Width = 421
             Height = 19
             Align = alTop
@@ -1446,7 +1446,24 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            ExplicitTop = 190
             ExplicitWidth = 88
+          end
+          object Label14: TLabel
+            AlignWithMargins = True
+            Left = 4
+            Top = 62
+            Width = 421
+            Height = 19
+            Align = alTop
+            Caption = 'Limite de Multiplica'#231#245'es'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            ExplicitWidth = 167
           end
           object edQuantidade: TEdit
             AlignWithMargins = True
@@ -1467,7 +1484,7 @@ object frmOrdemProducao: TfrmOrdemProducao
           object gbProduto: TGroupBox
             AlignWithMargins = True
             Left = 4
-            Top = 126
+            Top = 184
             Width = 421
             Height = 58
             Align = alTop
@@ -1478,7 +1495,8 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            TabOrder = 2
+            TabOrder = 3
+            ExplicitTop = 126
             DesignSize = (
               421
               58)
@@ -1521,7 +1539,7 @@ object frmOrdemProducao: TfrmOrdemProducao
           object gbCliente: TGroupBox
             AlignWithMargins = True
             Left = 4
-            Top = 62
+            Top = 120
             Width = 421
             Height = 58
             Align = alTop
@@ -1532,7 +1550,9 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            TabOrder = 1
+            TabOrder = 2
+            ExplicitLeft = 8
+            ExplicitTop = 62
             DesignSize = (
               421
               58)
@@ -1575,12 +1595,13 @@ object frmOrdemProducao: TfrmOrdemProducao
           object pnObservacao: TPanel
             AlignWithMargins = True
             Left = 4
-            Top = 215
+            Top = 273
             Width = 421
             Height = 98
             Align = alTop
             BevelOuter = bvNone
-            TabOrder = 3
+            TabOrder = 4
+            ExplicitTop = 216
             object edObservacao: TEdit
               AlignWithMargins = True
               Left = 3
@@ -1707,6 +1728,24 @@ object frmOrdemProducao: TfrmOrdemProducao
               TabOrder = 1
               OnClick = btObservacaoClick
             end
+          end
+          object edLimiteMultiplicacao: TEdit
+            AlignWithMargins = True
+            Left = 4
+            Top = 87
+            Width = 421
+            Height = 27
+            Align = alTop
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            NumbersOnly = True
+            ParentFont = False
+            TabOrder = 1
+            ExplicitLeft = 8
+            ExplicitTop = 169
           end
         end
         object pnUsuarioDireita: TPanel
@@ -2102,7 +2141,7 @@ object frmOrdemProducao: TfrmOrdemProducao
     Left = 360
     Top = 304
     Bitmap = {
-      494C0101030014003C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103001400400020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
