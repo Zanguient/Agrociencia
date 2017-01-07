@@ -16,7 +16,8 @@ uses
   Datasnap.DBClient,
   Data.DB,
   Vcl.Graphics,
-  System.Win.ComObj;
+  System.Win.ComObj,
+  FireDAC.Comp.Client;
 
   procedure CarregarConfigLocal;
   procedure CarregaArrayMenus(Menu : TMainMenu);
@@ -32,13 +33,14 @@ uses
   function Criptografa(Texto : String; Tipo : String) : String;
   function SoNumeros(Texto: String): String;
   function CalculaPercentualDiferenca(ValorAnterior, ValorNovo : Currency) : Currency;
-  function StrZero(Zeros : string; Quant : Integer): string;
+  function StrZero(Texto : string; Quant : Integer): string;
   function carregaArrayClassificacao : Boolean;
   function FormataCNPJ(CNPJ : String) : String;
   function AjustaTamnhoCNPJ(CNPJ : String) : String;
   function ExcluirCaracteresdeNumeric(Valor : Variant) : String;
   function RetornaCodigo_CF(CF : String) : Integer;
   function ValidaCPFCNPJ(Texto : String) : Boolean;
+  function LimiteMultiplicacao(CodigoOPF : Integer) : Boolean;
 
 implementation
 
@@ -482,9 +484,9 @@ begin
 end;
 
 
-function StrZero(Zeros : string; Quant : Integer): string;
+function StrZero(Texto : string; Quant : Integer): string;
 begin
-  Result := Zeros;
+  Result := Texto;
   Quant := Quant - Length(Result);
   if Quant > 0 then
    Result := StringOfChar('0', Quant)+Result;
@@ -669,6 +671,59 @@ begin
       Result    := Calculado = Digitado;
 
     end;
+  end;
+end;
+
+function LimiteMultiplicacao(CodigoOPF : Integer) : Boolean;
+Var
+  FWC     : TFWConnection;
+  Consulta: TFDQuery;
+begin
+
+  Result    := False;
+
+  FWC       := TFWConnection.Create;
+  Consulta  := TFDQuery.Create(nil);
+
+  try
+    try
+
+      Consulta.Close;
+      Consulta.SQL.Clear;
+      Consulta.SQL.Add('SELECT');
+      Consulta.SQL.Add('  OPF.LIMITEMULTIPLICACOES,');
+      Consulta.SQL.Add('  COUNT(*) AS MULTIPLICACOES');
+      Consulta.SQL.Add('FROM');
+      Consulta.SQL.Add('OPFINAL OPF');
+      Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND OPF.ID = :CODIGOOPF');
+      Consulta.SQL.Add('AND OPF.LIMITEMULTIPLICACOES > 0');
+      Consulta.SQL.Add('GROUP BY 1');
+
+      Consulta.Connection                         := FWC.FDConnection;
+      Consulta.ParamByName('CODIGOOPF').DataType  := ftInteger;
+      Consulta.ParamByName('CODIGOOPF').AsInteger := CodigoOPF;
+      Consulta.Prepare;
+      Consulta.Open;
+      Consulta.FetchAll;
+
+      if not Consulta.IsEmpty then begin
+        Consulta.First;
+        if ((Consulta.FieldByName('MULTIPLICACOES').AsInteger + 1) >= Consulta.FieldByName('LIMITEMULTIPLICACOES').AsInteger) then
+          Result := True;
+      end;
+
+    except
+      on E : Exception do begin
+        FWC.Rollback;
+        DisplayMsg(MSG_ERR, 'Erro ao Verificar o Limite de Multiplicações!', '', E.Message);
+        Exit;
+      end;
+    end;
+  finally
+    FreeAndNil(Consulta);
+    FreeAndNil(FWC);
   end;
 end;
 

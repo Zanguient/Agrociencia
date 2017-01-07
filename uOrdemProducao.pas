@@ -87,6 +87,8 @@ type
     Cancelar1: TMenuItem;
     edLimiteMultiplicacao: TEdit;
     Label14: TLabel;
+    cds_Etiqueta1: TClientDataSet;
+    cds_Etiqueta1CODIGOOP: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -112,6 +114,7 @@ type
     procedure btMenuClick(Sender: TObject);
     procedure Cancelar1Click(Sender: TObject);
     procedure btPesquisarClick(Sender: TObject);
+    procedure IMPRIMIRETIQUETAS1Click(Sender: TObject);
   private
     procedure SelecionarObservacao;
     procedure EncerrarOPF;
@@ -772,6 +775,7 @@ end;
 procedure TfrmOrdemProducao.FormShow(Sender: TObject);
 begin
   cds_Pesquisa.CreateDataSet;
+  cds_Etiqueta1.CreateDataSet;
   CarregaDados;
   AutoSizeDBGrid(gdPesquisa);
 end;
@@ -779,6 +783,42 @@ end;
 procedure TfrmOrdemProducao.gdPesquisaTitleClick(Column: TColumn);
 begin
   OrdenarGrid(Column);
+end;
+
+procedure TfrmOrdemProducao.IMPRIMIRETIQUETAS1Click(Sender: TObject);
+Var
+  I : Integer;
+  CodigoBarras : string;
+begin
+
+  if not cds_Pesquisa.IsEmpty then begin
+
+    cds_Etiqueta1.EmptyDataSet;
+
+    try
+
+      DisplayMsg(MSG_INPUT_INT, 'Informe a Quantidade de Estiquetas!');
+
+      if ResultMsgModal = mrOk then begin
+        if ResultMsgInputInt > 0 then begin
+          CodigoBarras := StrZero(IntToStr(cds_PesquisaID.AsInteger), 13);
+          for I := 1 to ResultMsgInputInt do begin
+            cds_Etiqueta1.Append;
+            cds_Etiqueta1CODIGOOP.AsString  := CodigoBarras;
+            cds_Etiqueta1.Post;
+          end;
+        end;
+      end;
+
+      if not cds_Etiqueta1.IsEmpty then begin
+        DMUtil.frxDBDataset1.DataSet := cds_Etiqueta1;
+        DMUtil.ImprimirRelatorio('frEtiqueta1.fr3');
+      end;
+    finally
+      cds_Etiqueta1.EmptyDataSet;
+    end;
+  end;
+
 end;
 
 procedure TfrmOrdemProducao.InvertePaineis;

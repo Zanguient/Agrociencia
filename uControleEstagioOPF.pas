@@ -317,6 +317,7 @@ procedure TfrmControleEstagioOPF.btGravarClick(Sender: TObject);
 Var
   FWC   : TFWConnection;
   OPFE  : TOPFINAL_ESTAGIO;
+  ID    : Integer;
 begin
 
   FWC   := TFWConnection.Create;
@@ -353,6 +354,16 @@ begin
         Exit;
       end;
 
+      ID := (Sender as TSpeedButton).Tag;
+
+      if ID = 0 then begin //Só Verificar o limite Caso o for Cadastro.
+        if LimiteMultiplicacao(StrToIntDef(edCodigoOPF.Text, 0)) then begin
+          DisplayMsg(MSG_CONF, 'Limite de Multiplicações atingido, Deseja Continuar?');
+          if ResultMsgModal <> mrYes then
+            Exit;
+        end;
+      end;
+
       OPFE.OPFINAL_ID.Value           := StrToIntDef(edCodigoOPF.Text, 0);
       OPFE.OPMC_ID.Value              := StrToIntDef(edCodigoOPMC.Text, 0);
       OPFE.ESTAGIO_ID.Value           := StrToIntDef(edCodigoEstagio.Text, 0);
@@ -362,8 +373,8 @@ begin
       OPFE.PREVISAOINICIO.Value       := edDataPrevistaInicio.Date;
       OPFE.PREVISAOTERMINO.Value      := edDataPrevistaTermino.Date;
 
-      if (Sender as TSpeedButton).Tag > 0 then begin
-        OPFE.ID.Value          := (Sender as TSpeedButton).Tag;
+      if ID > 0 then begin
+        OPFE.ID.Value          := ID;
         OPFE.Update;
       end else begin
         OPFE.ID.isNull            := True;
