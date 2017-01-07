@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Datasnap.DBClient,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
-  JvToolEdit, JvBaseEdits, FireDAC.Comp.Client;
+  JvToolEdit, JvBaseEdits, FireDAC.Comp.Client, System.Math;
 
 type
   TfrmControleEstagioOPF = class(TForm)
@@ -73,6 +73,17 @@ type
     gbEspecie: TGroupBox;
     edt_CodigoEspecie: TButtonedEdit;
     edt_NomeEspecie: TEdit;
+    cds_FichadeProducao: TClientDataSet;
+    cds_FichadeProducaoIPOPFE: TIntegerField;
+    cds_FichadeProducaoCODIGOPRODUTO: TIntegerField;
+    cds_FichadeProducaoNOMEPRODUTO: TStringField;
+    cds_FichadeProducaoDATAGERACAOOPFE: TDateField;
+    cds_FichadeProducaoIDOPMC: TIntegerField;
+    cds_FichadeProducaoDATAGERACAOOPMC: TDateField;
+    cds_FichadeProducaoCODIGOMC: TStringField;
+    cds_FichadeProducaoOBSERVACAO: TStringField;
+    cds_FichadeProducaoNUMEROLOTE: TIntegerField;
+    cds_FichadeProducaoIPOPF: TIntegerField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -242,19 +253,19 @@ begin
       btRelatorio.Tag := 1;
       try
 
-        DisplayMsg(MSG_WAIT, 'Buscando dados para visualizar!');
-
         FWC       := TFWConnection.Create;
         Consulta  := TFDQuery.Create(nil);
 
         try
           try
 
+            cds_FichadeProducao.EmptyDataSet;
+
             Consulta.Close;
             Consulta.SQL.Clear;
             Consulta.SQL.Add('SELECT');
-            Consulta.SQL.Add('	OPFE.ID AS IDOPF,');
-            Consulta.SQL.Add('	OPF.QUANTIDADE,');
+            Consulta.SQL.Add('	OPF.ID AS IDOPF,');
+            Consulta.SQL.Add('	OPFE.ID AS IDOPFE,');
             Consulta.SQL.Add('	PF.ID AS CODIGOPRODUTO,');
             Consulta.SQL.Add('	PF.DESCRICAO AS NOMEPRODUTO,');
             Consulta.SQL.Add('	CAST(OPFE.DATAHORA AS DATE) AS DATAGERACAOOPF,');
@@ -277,9 +288,35 @@ begin
             Consulta.Open;
             Consulta.FetchAll;
 
-            DMUtil.frxDBDataset1.DataSet := Consulta;
-            DMUtil.ImprimirRelatorio('frOPFinal.fr3');
-            DisplayMsgFinaliza;
+            if not Consulta.IsEmpty then begin
+              Consulta.First;
+
+              DisplayMsg(MSG_INPUT_INT, 'Informe o Numero do Lote (Maior que 0(Zero))!');
+
+              if ResultMsgModal = mrOk then begin
+                if ResultMsgInputInt > 0 then begin
+
+                  cds_FichadeProducao.Append;
+                  cds_FichadeProducaoIPOPF.Value              := Consulta.FieldByName('IDOPF').AsInteger;
+                  cds_FichadeProducaoIPOPFE.Value             := Consulta.FieldByName('IDOPFE').AsInteger;
+                  cds_FichadeProducaoCODIGOPRODUTO.Value      := Consulta.FieldByName('CODIGOPRODUTO').AsInteger;
+                  cds_FichadeProducaoNOMEPRODUTO.Value        := Consulta.FieldByName('NOMEPRODUTO').AsString;
+                  cds_FichadeProducaoDATAGERACAOOPFE.Value    := Consulta.FieldByName('DATAGERACAOOPF').AsDateTime;
+                  cds_FichadeProducaoIDOPMC.Value             := Consulta.FieldByName('IDOPMC').AsInteger;
+                  cds_FichadeProducaoDATAGERACAOOPMC.Value    := Consulta.FieldByName('DATAGERACAOOPMC').AsDateTime;
+                  cds_FichadeProducaoCODIGOMC.Value           := Consulta.FieldByName('CODIGOMC').AsString;
+                  cds_FichadeProducaoOBSERVACAO.Value         := Consulta.FieldByName('OBSERVACAO').AsString;
+                  cds_FichadeProducaoNUMEROLOTE.Value         := ResultMsgInputInt;
+                  cds_FichadeProducao.Post;
+
+                  DMUtil.frxDBDataset1.DataSet := cds_FichadeProducao;
+                  DMUtil.ImprimirRelatorio('frFichaTecnicadeProducao.fr3');
+                end else begin
+                  DisplayMsg(MSG_WAR, 'Número do Lote precisar ser maior que 0(Zero), Verifique!');
+                  Exit;
+                end;
+              end;
+            end;
           Except
             on E : Exception do begin
               DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta!', '', E.Message);
@@ -288,6 +325,7 @@ begin
         finally
           FreeAndNil(Consulta);
           FreeAndNil(FWC);
+          cds_FichadeProducao.EmptyDataSet;
         end;
       finally
         btRelatorio.Tag := 0;
@@ -736,6 +774,7 @@ end;
 procedure TfrmControleEstagioOPF.FormShow(Sender: TObject);
 begin
   cds_Pesquisa.CreateDataSet;
+  cds_FichadeProducao.CreateDataSet;
   CarregaDados;
   AutoSizeDBGrid(gdPesquisa);
 end;

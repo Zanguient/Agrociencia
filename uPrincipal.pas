@@ -34,6 +34,7 @@ type
     EncerrarOrdemdeProduo1: TMenuItem;
     OrdemdeProduo2: TMenuItem;
     EstgiodaProduo1: TMenuItem;
+    Multiplicaes1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -53,6 +54,7 @@ type
     procedure EncerrarOrdemdeProduo1Click(Sender: TObject);
     procedure OrdemdeProduo2Click(Sender: TObject);
     procedure EstgiodaProduo1Click(Sender: TObject);
+    procedure Multiplicaes1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -89,7 +91,7 @@ uses
   uOrdemProducao,
   uCadastroEstagio,
   uEncerramentoOPMC,
-  uControleEstagioOPF;
+  uControleEstagioOPF, uControleMultiplicacao;
 
 {$R *.dfm}
 
@@ -243,6 +245,17 @@ begin
 
   if (ResultMsgModal = mrYes) then
     Close;
+end;
+
+procedure TfrmPrincipal.Multiplicaes1Click(Sender: TObject);
+begin
+  try
+    if frmControleMultiplicacao = nil then
+      frmControleMultiplicacao     := TfrmControleMultiplicacao.Create(Self);
+    frmControleMultiplicacao.ShowModal;
+  finally
+    FreeAndNil(frmControleMultiplicacao);
+  end;
 end;
 
 procedure TfrmPrincipal.Observaes1Click(Sender: TObject);
