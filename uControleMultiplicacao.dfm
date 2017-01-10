@@ -1,7 +1,7 @@
 object frmControleMultiplicacao: TfrmControleMultiplicacao
   Left = 0
   Top = 0
-  ActiveControl = edOrdemProducao
+  ActiveControl = edCodigoOrdemProducao
   BorderStyle = bsNone
   Caption = 'Encerramento de Ordens de Produ'#231#227'o de Meio de Cultura'
   ClientHeight = 460
@@ -17,6 +17,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
   Position = poDesktopCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object pnPrincipal: TPanel
@@ -27,7 +28,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 902
     object pnBotoesVisualizacao: TPanel
       AlignWithMargins = True
       Left = 3
@@ -39,8 +39,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitTop = 265
-      ExplicitWidth = 896
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 3
@@ -72,7 +70,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Value = 100.000000000000000000
           end>
         TabOrder = 0
-        ExplicitWidth = 890
         object Panel8: TPanel
           Left = 0
           Top = 0
@@ -81,7 +78,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitWidth = 445
           object btFinalizar: TSpeedButton
             AlignWithMargins = True
             Left = 239
@@ -189,6 +185,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFDFDDADADAB7B7B7A5A5
               A5A2A2A2B5B5B5E4E4E4FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFC1C1C1EAEAEAFFFFFFFFFFFF}
+            OnClick = btFinalizarClick
             ExplicitLeft = 11
             ExplicitTop = 6
             ExplicitHeight = 46
@@ -312,8 +309,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitLeft = 445
-          ExplicitWidth = 445
           object btFechar: TSpeedButton
             AlignWithMargins = True
             Left = 239
@@ -414,9 +409,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
       Height = 340
       Align = alClient
       TabOrder = 2
-      ExplicitTop = 3
-      ExplicitWidth = 684
-      ExplicitHeight = 54
       object pnSuperior: TPanel
         AlignWithMargins = True
         Left = 4
@@ -425,10 +417,13 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
         Height = 165
         Align = alTop
         TabOrder = 0
+        DesignSize = (
+          682
+          165)
         object edEstagio: TLabeledEdit
-          Left = 16
+          Left = 2
           Top = 127
-          Width = 145
+          Width = 159
           Height = 27
           EditLabel.Width = 142
           EditLabel.Height = 19
@@ -447,8 +442,8 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           ParentFont = False
           TabOrder = 0
         end
-        object edLoteEstagio: TLabeledEdit
-          Left = 16
+        object edNumeroLoteEstagio: TLabeledEdit
+          Left = 2
           Top = 76
           Width = 73
           Height = 27
@@ -470,10 +465,10 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           ParentFont = False
           TabOrder = 1
         end
-        object edOrdemProducao: TLabeledEdit
-          Left = 16
+        object edCodigoOrdemProducao: TLabeledEdit
+          Left = 2
           Top = 24
-          Width = 145
+          Width = 159
           Height = 27
           EditLabel.Width = 142
           EditLabel.Height = 19
@@ -491,6 +486,30 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Font.Style = []
           ParentFont = False
           TabOrder = 2
+        end
+        object edNomeProduto: TLabeledEdit
+          Left = 167
+          Top = 24
+          Width = 506
+          Height = 27
+          Anchors = [akLeft, akTop, akRight]
+          EditLabel.Width = 56
+          EditLabel.Height = 19
+          EditLabel.Caption = 'Produto'
+          EditLabel.Font.Charset = DEFAULT_CHARSET
+          EditLabel.Font.Color = clWindowText
+          EditLabel.Font.Height = -16
+          EditLabel.Font.Name = 'Tahoma'
+          EditLabel.Font.Style = []
+          EditLabel.ParentFont = False
+          Enabled = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 3
         end
       end
       object DBGrid1: TDBGrid
@@ -515,7 +534,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
     Left = 264
     Top = 208
     Bitmap = {
-      494C010103000800200020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000800280020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000000000000000DADA
