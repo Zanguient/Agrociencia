@@ -6,7 +6,11 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExStdCtrls, JvEdit, JvValidateEdit,
   Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Mask, JvExMask, JvToolEdit, Vcl.Buttons,
-  Vcl.ImgList, Vcl.Grids, Vcl.DBGrids, FireDAC.Comp.Client, Data.DB;
+  Vcl.ImgList, Vcl.Grids, Vcl.DBGrids, FireDAC.Comp.Client, Data.DB,
+  Datasnap.DBClient;
+
+type
+  TControleProducao = (eIniciar, eContinuar, ePausar);
 
 type
   TIntervalo = record
@@ -36,21 +40,40 @@ type
     Panel1: TPanel;
     pnDados: TPanel;
     pnSuperior: TPanel;
-    edEstagio: TLabeledEdit;
     edNumeroLoteEstagio: TLabeledEdit;
     edCodigoOrdemProducao: TLabeledEdit;
-    DBGrid1: TDBGrid;
     edNomeProduto: TLabeledEdit;
+    cds_CodigoBarras: TClientDataSet;
+    ds_CodigoBarras: TDataSource;
+    cds_CodigoBarrasCODIGOBARRAS: TIntegerField;
+    GridPanel1: TGridPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    gdCodigoBarras: TDBGrid;
+    Panel4: TPanel;
+    Label1: TLabel;
+    edQuantidadeEntrada: TEdit;
+    Panel5: TPanel;
+    Label2: TLabel;
+    edQuantidadeSaida: TEdit;
+    Panel6: TPanel;
+    rgEntrada: TRadioGroup;
+    edCodigoEntrada: TLabeledEdit;
+    Panel7: TPanel;
+    rgSaida: TRadioGroup;
+    LabeledEdit2: TLabeledEdit;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btPausePlayClick(Sender: TObject);
     procedure btFinalizarClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure ds_CodigoBarrasDataChange(Sender: TObject; Field: TField);
   private
     MULTIPLICACAO : TMultiplicacao;
     procedure ExecutarEvento;
     procedure NovaMultiplicacao;
+    procedure ControleProducao(Controle : TControleProducao);
     { Private declarations }
   public
     { Public declarations }
@@ -95,96 +118,144 @@ end;
 
 procedure TfrmControleMultiplicacao.btPausePlayClick(Sender: TObject);
 begin
-  if MULTIPLICACAO.EMANDAMENTO then begin
-    btPausePlay.Glyph   := nil;
-    btPausePlay.Caption := 'Iniciar';
-    ImageList1.GetBitmap(1, btPausePlay.Glyph);
-    MULTIPLICACAO.EMANDAMENTO := False;
-    SetLength(MULTIPLICACAO.INTERVALO, Length(MULTIPLICACAO.INTERVALO) + 1);
-    MULTIPLICACAO.INTERVALO[High(MULTIPLICACAO.INTERVALO)].DATAHORAINICIO := Now;
-  end else begin
-    btPausePlay.Glyph   := nil;
-    btPausePlay.Caption := 'Parar';
-    ImageList1.GetBitmap(2, btPausePlay.Glyph);
-    MULTIPLICACAO.EMANDAMENTO := True;
-    if Length(MULTIPLICACAO.INTERVALO) > 0 then
-      MULTIPLICACAO.INTERVALO[High(MULTIPLICACAO.INTERVALO)].DATAHORAFIM := Now;
+  if MULTIPLICACAO.EMANDAMENTO then
+    ControleProducao(ePausar)
+  else
+    ControleProducao(eContinuar);
+end;
+
+procedure TfrmControleMultiplicacao.ControleProducao(
+  Controle: TControleProducao);
+begin
+  case Controle of
+    eIniciar: begin
+                btPausePlay.Glyph             := nil;
+                btPausePlay.Caption           := 'Parar';
+                ImageList1.GetBitmap(2, btPausePlay.Glyph);
+                btPausePlay.Visible           := True;
+              end;
+    eContinuar: begin
+                  btPausePlay.Glyph   := nil;
+                  btPausePlay.Caption := 'Parar';
+                  ImageList1.GetBitmap(2, btPausePlay.Glyph);
+                  MULTIPLICACAO.EMANDAMENTO := True;
+                  if Length(MULTIPLICACAO.INTERVALO) > 0 then
+                    MULTIPLICACAO.INTERVALO[High(MULTIPLICACAO.INTERVALO)].DATAHORAFIM := Now;
+                end;
+    ePausar: begin
+                btPausePlay.Glyph         := nil;
+                btPausePlay.Caption       := 'Iniciar';
+                ImageList1.GetBitmap(1, btPausePlay.Glyph);
+                MULTIPLICACAO.EMANDAMENTO := False;
+                SetLength(MULTIPLICACAO.INTERVALO, Length(MULTIPLICACAO.INTERVALO) + 1);
+                MULTIPLICACAO.INTERVALO[High(MULTIPLICACAO.INTERVALO)].DATAHORAINICIO := Now;
+              end;
   end;
+end;
+
+procedure TfrmControleMultiplicacao.ds_CodigoBarrasDataChange(Sender: TObject;
+  Field: TField);
+begin
+  edQuantidadeEntrada.Text := IntToStr(cds_CodigoBarras.RecordCount);
 end;
 
 procedure TfrmControleMultiplicacao.ExecutarEvento;
 var
   FWC       : TFWConnection;
   Consulta  : TFDQuery;
-  OPFE      : TOPFINAL_ESTAGIO;
   CodigoOPF : Integer;
 begin
-  if edCodigoOrdemProducao.Focused then begin
+  if ((edCodigoOrdemProducao.Enabled) or (MULTIPLICACAO.EMANDAMENTO)) then begin
 
-    CodigoOPF := StrToIntDef(edCodigoOrdemProducao.Text, 0);
+    if edCodigoOrdemProducao.Focused then begin
 
-    if CodigoOPF > 0 then begin
+      CodigoOPF := StrToIntDef(edCodigoOrdemProducao.Text, 0);
 
-      FWC       := TFWConnection.Create;
-      Consulta  := TFDQuery.Create(nil);
-      OPFE      := TOPFINAL_ESTAGIO.Create(FWC);
-      try
+      if CodigoOPF > 0 then begin
+
+        FWC       := TFWConnection.Create;
+        Consulta  := TFDQuery.Create(nil);
         try
-          Consulta.Close;
-          Consulta.SQL.Clear;
-          Consulta.SQL.Add('SELECT');
-          Consulta.SQL.Add('	OPF.ID,');
-          Consulta.SQL.Add('	P.DESCRICAO');
-          Consulta.SQL.Add('FROM OPFINAL OPF');
-          Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
-          Consulta.SQL.Add('WHERE 1 = 1');
-          Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
-          Consulta.SQL.Add('AND OPF.ID = :CODIGOOP');
-          Consulta.Connection := FWC.FDConnection;
-          Consulta.ParamByName('CODIGOOP').DataType := ftInteger;
-          Consulta.ParamByName('CODIGOOP').Value := CodigoOPF;
-          Consulta.Open;
+          try
+            Consulta.Close;
+            Consulta.SQL.Clear;
+            Consulta.SQL.Add('SELECT');
+            Consulta.SQL.Add('	OPF.ID,');
+            Consulta.SQL.Add('	P.DESCRICAO');
+            Consulta.SQL.Add('FROM OPFINAL OPF');
+            Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+            Consulta.SQL.Add('WHERE 1 = 1');
+            Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
+            Consulta.SQL.Add('AND OPF.ID = :CODIGOOP');
+            Consulta.Connection := FWC.FDConnection;
+            Consulta.ParamByName('CODIGOOP').DataType := ftInteger;
+            Consulta.ParamByName('CODIGOOP').Value := CodigoOPF;
+            Consulta.Open;
 
-          if not Consulta.IsEmpty then begin
-            edNomeProduto.Text            := Consulta.FieldByName('DESCRICAO').AsString;
-            edCodigoOrdemProducao.Enabled := False;
-            MULTIPLICACAO.CODIGOOP        := Consulta.FieldByName('ID').AsInteger;
-            MULTIPLICACAO.DATAHORAI       := Now;
-            MULTIPLICACAO.EMANDAMENTO     := True;
+            if not Consulta.IsEmpty then begin
+              edNomeProduto.Text            := Consulta.FieldByName('DESCRICAO').AsString;
+              edCodigoOrdemProducao.Enabled := False;
+              MULTIPLICACAO.CODIGOOP        := Consulta.FieldByName('ID').AsInteger;
+              MULTIPLICACAO.DATAHORAI       := Now;
+              MULTIPLICACAO.EMANDAMENTO     := True;
 
-            btPausePlay.Glyph             := nil;
-            btPausePlay.Caption           := 'Parar';
-            ImageList1.GetBitmap(2, btPausePlay.Glyph);
-            btPausePlay.Visible           := True;
+              ControleProducao(eIniciar);
 
-            OPFE.SelectList('OPFINAL_ID = ' + Consulta.FieldByName('ID').AsString);
-            if OPFE.Count = 0 then begin
-              edNumeroLoteEstagio.Text    := '1';
-              edNumeroLoteEstagio.Enabled := False;
-            end else begin
-              edNumeroLoteEstagio.Enabled := True;
+              edNumeroLoteEstagio.Enabled   := True;
               if edNumeroLoteEstagio.CanFocus then
                 edNumeroLoteEstagio.SetFocus;
-            end;
 
+            end;
+          except
+            on E : Exception do begin
+              DisplayMsg(MSG_ERR, 'Erro ao Buscar Ordem de Produção!', '', E.Message);
+              Exit;
+            end;
           end;
-        except
-          on E : Exception do begin
-            DisplayMsg(MSG_ERR, 'Erro ao Buscar Ordem de Produção!', '', E.Message);
-            Exit;
-          end;
+        finally
+          FreeAndNil(Consulta);
+          FreeAndNil(FWC);
         end;
-      finally
-        FreeAndNil(Consulta);
-        FreeAndNil(OPFE);
-        FreeAndNil(FWC);
+      end;
+    end else begin
+      if edNumeroLoteEstagio.Focused then begin
+        if StrToIntDef(edNumeroLoteEstagio.Text, 0) > 0 then begin
+          edCodigoEntrada.Enabled := True;
+          if edCodigoEntrada.CanFocus then
+            edCodigoEntrada.SetFocus;
+          edNumeroLoteEstagio.Enabled   := False;
+        end;
+      end else begin
+        if edCodigoEntrada.Focused then begin
+          case rgEntrada.ItemIndex of
+            0 : begin
+              if StrToIntDef(edCodigoEntrada.Text,0) > 0 then begin
+                cds_CodigoBarras.Insert;
+                cds_CodigoBarrasCODIGOBARRAS.Value  := StrToIntDef(edCodigoEntrada.Text,0);
+                cds_CodigoBarras.Post;
+              end;
+            end;
+            1 : begin
+              if not cds_CodigoBarras.IsEmpty then begin
+                if StrToIntDef(edCodigoEntrada.Text,0) > 0 then begin
+                  if cds_CodigoBarras.Locate('CODIGOBARRAS', edCodigoEntrada.Text,[]) then
+                    cds_CodigoBarras.Delete;
+                end;
+              end;
+            end;
+          end;
+          edCodigoEntrada.Clear;
+        end;
       end;
     end;
+  end else begin
+    DisplayMsg(MSG_WAR, 'Multiplicação Paralisada, Verifique!');
   end;
 end;
 
 procedure TfrmControleMultiplicacao.FormCreate(Sender: TObject);
 begin
+  cds_CodigoBarras.CreateDataSet;
   AjustaForm(Self);
 end;
 
@@ -195,6 +266,26 @@ begin
     VK_ESCAPE : begin
       if MULTIPLICACAO.CODIGOOP = 0 then
         Close;
+    end;
+    VK_F2 : begin
+      rgEntrada.ItemIndex := 0;
+      if edQuantidadeEntrada.CanFocus then
+        edQuantidadeEntrada.SetFocus;
+    end;
+    VK_F3 : begin
+      rgEntrada.ItemIndex := 1;
+      if edQuantidadeEntrada.CanFocus then
+        edQuantidadeEntrada.SetFocus;
+    end;
+    VK_F4 : begin
+      rgSaida.ItemIndex := 0;
+      if edQuantidadeSaida.CanFocus then
+        edQuantidadeSaida.SetFocus;
+    end;
+    VK_F5 : begin
+      rgSaida.ItemIndex := 1;
+      if edQuantidadeSaida.CanFocus then
+        edQuantidadeSaida.SetFocus;
     end;
     VK_RETURN : begin
       ExecutarEvento;
@@ -209,13 +300,20 @@ end;
 
 procedure TfrmControleMultiplicacao.NovaMultiplicacao;
 begin
-  MULTIPLICACAO.CODIGOOP    := 0;
-  MULTIPLICACAO.EMANDAMENTO := False;
+  MULTIPLICACAO.CODIGOOP        := 0;
+  MULTIPLICACAO.EMANDAMENTO     := False;
   SetLength(MULTIPLICACAO.INTERVALO, 0);
   edCodigoOrdemProducao.Clear;
   edCodigoOrdemProducao.Enabled := True;
+  edNumeroLoteEstagio.Clear;
+  edNumeroLoteEstagio.Enabled   := False;
+  edCodigoEntrada.Clear;
+  edCodigoEntrada.Enabled := False;
   edNomeProduto.Clear;
-  btPausePlay.Visible     := False;
+  btPausePlay.Visible           := False;
+  edQuantidadeEntrada.Text      := '0';
+  edQuantidadeSaida.Text        := '0';
+  cds_CodigoBarras.EmptyDataSet;
   if edCodigoOrdemProducao.CanFocus then
     edCodigoOrdemProducao.SetFocus;
 end;
