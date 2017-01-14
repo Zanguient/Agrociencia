@@ -84,6 +84,7 @@ type
     cds_FichadeProducaoOBSERVACAO: TStringField;
     cds_FichadeProducaoNUMEROLOTE: TIntegerField;
     cds_FichadeProducaoIPOPF: TIntegerField;
+    cds_FichadeProducaoCODIGOBARRAS: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -266,6 +267,7 @@ begin
             Consulta.SQL.Add('SELECT');
             Consulta.SQL.Add('	OPF.ID AS IDOPF,');
             Consulta.SQL.Add('	OPFE.ID AS IDOPFE,');
+            Consulta.SQL.Add('	OPFE.SEQUENCIA AS SEQUENCIA,');
             Consulta.SQL.Add('	PF.ID AS CODIGOPRODUTO,');
             Consulta.SQL.Add('	PF.DESCRICAO AS NOMEPRODUTO,');
             Consulta.SQL.Add('	CAST(OPFE.DATAHORA AS DATE) AS DATAGERACAOOPF,');
@@ -307,6 +309,7 @@ begin
                   cds_FichadeProducaoCODIGOMC.Value           := Consulta.FieldByName('CODIGOMC').AsString;
                   cds_FichadeProducaoOBSERVACAO.Value         := Consulta.FieldByName('OBSERVACAO').AsString;
                   cds_FichadeProducaoNUMEROLOTE.Value         := ResultMsgInputInt;
+                  cds_FichadeProducaoCODIGOBARRAS.Value       := Consulta.FieldByName('IDOPF').AsString + '*' + Consulta.FieldByName('SEQUENCIA').AsString;
                   cds_FichadeProducao.Post;
 
                   DMUtil.frxDBDataset1.DataSet := cds_FichadeProducao;

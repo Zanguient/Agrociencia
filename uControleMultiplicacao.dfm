@@ -28,8 +28,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 696
-    ExplicitHeight = 460
     object pnBotoesVisualizacao: TPanel
       AlignWithMargins = True
       Left = 3
@@ -41,8 +39,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      ExplicitTop = 397
-      ExplicitWidth = 690
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 3
@@ -74,7 +70,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Value = 100.000000000000000000
           end>
         TabOrder = 0
-        ExplicitWidth = 684
         object Panel8: TPanel
           Left = 0
           Top = 0
@@ -83,7 +78,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitWidth = 342
           object btFinalizar: TSpeedButton
             AlignWithMargins = True
             Left = 255
@@ -315,8 +309,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitLeft = 342
-          ExplicitWidth = 342
           object btFechar: TSpeedButton
             AlignWithMargins = True
             Left = 256
@@ -408,7 +400,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
       ParentBackground = False
       ParentFont = False
       TabOrder = 1
-      ExplicitWidth = 690
     end
     object pnDados: TPanel
       AlignWithMargins = True
@@ -418,8 +409,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
       Height = 430
       Align = alClient
       TabOrder = 2
-      ExplicitWidth = 690
-      ExplicitHeight = 340
       object pnSuperior: TPanel
         AlignWithMargins = True
         Left = 4
@@ -474,7 +463,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Font.Height = -16
           Font.Name = 'Tahoma'
           Font.Style = []
-          NumbersOnly = True
           ParentFont = False
           TabOrder = 1
         end
@@ -532,8 +520,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Value = 100.000000000000000000
           end>
         TabOrder = 1
-        ExplicitTop = 184
-        ExplicitHeight = 133
         object Panel2: TPanel
           Left = 1
           Top = 1
@@ -541,10 +527,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Height = 303
           Align = alClient
           TabOrder = 0
-          ExplicitLeft = 272
-          ExplicitTop = 48
-          ExplicitWidth = 185
-          ExplicitHeight = 41
           object gdCodigoBarras: TDBGrid
             AlignWithMargins = True
             Left = 4
@@ -552,7 +534,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Width = 351
             Height = 169
             Align = alClient
-            DataSource = ds_CodigoBarras
+            DataSource = ds_Entradas
             DrawingStyle = gdsGradient
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
@@ -583,9 +565,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Height = 46
             Align = alBottom
             TabOrder = 1
-            ExplicitLeft = 1
-            ExplicitTop = 208
-            ExplicitWidth = 357
             DesignSize = (
               351
               46)
@@ -593,8 +572,8 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
               AlignWithMargins = True
               Left = 31
               Top = 12
-              Width = 189
-              Height = 26
+              Width = 176
+              Height = 23
               Alignment = taCenter
               Anchors = [akTop, akRight]
               Caption = 'Quantidade Entrada:'
@@ -606,7 +585,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
               Font.Style = []
               ParentColor = False
               ParentFont = False
-              ExplicitLeft = 37
             end
             object edQuantidadeEntrada: TEdit
               AlignWithMargins = True
@@ -625,8 +603,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
               ParentFont = False
               TabOrder = 0
               Text = '0'
-              ExplicitLeft = 232
-              ExplicitHeight = 35
+              ExplicitHeight = 37
             end
           end
           object Panel6: TPanel
@@ -637,9 +614,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Height = 68
             Align = alTop
             TabOrder = 2
-            ExplicitLeft = 1
-            ExplicitTop = 1
-            ExplicitWidth = 357
             DesignSize = (
               351
               68)
@@ -656,9 +630,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
                 'F2 - Adicionar'
                 'F3 - Remover')
               TabOrder = 0
-              ExplicitLeft = 20
-              ExplicitTop = 23
-              ExplicitHeight = 45
             end
             object edCodigoEntrada: TLabeledEdit
               AlignWithMargins = True
@@ -695,10 +666,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Height = 303
           Align = alClient
           TabOrder = 1
-          ExplicitLeft = 272
-          ExplicitTop = 48
-          ExplicitWidth = 185
-          ExplicitHeight = 41
           object Panel5: TPanel
             AlignWithMargins = True
             Left = 4
@@ -707,8 +674,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Height = 46
             Align = alBottom
             TabOrder = 0
-            ExplicitLeft = 8
-            ExplicitTop = 209
             DesignSize = (
               352
               46)
@@ -758,30 +723,14 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Height = 68
             Align = alTop
             TabOrder = 1
-            ExplicitLeft = 6
-            ExplicitTop = 78
             DesignSize = (
               352
               68)
-            object rgSaida: TRadioGroup
+            object edCodigoSaida: TLabeledEdit
               AlignWithMargins = True
-              Left = 4
-              Top = 4
-              Width = 96
-              Height = 60
-              Align = alLeft
-              Caption = 'Sa'#237'da'
-              ItemIndex = 0
-              Items.Strings = (
-                'F4 - Adicionar'
-                'F5 - Remover')
-              TabOrder = 0
-            end
-            object LabeledEdit2: TLabeledEdit
-              AlignWithMargins = True
-              Left = 107
+              Left = 106
               Top = 33
-              Width = 230
+              Width = 231
               Height = 27
               Anchors = [akLeft, akTop, akRight]
               EditLabel.Width = 176
@@ -801,6 +750,20 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
               Font.Style = []
               NumbersOnly = True
               ParentFont = False
+              TabOrder = 0
+            end
+            object rgSaida: TRadioGroup
+              AlignWithMargins = True
+              Left = 4
+              Top = 4
+              Width = 96
+              Height = 60
+              Align = alLeft
+              Caption = 'Sa'#237'da'
+              ItemIndex = 0
+              Items.Strings = (
+                'F4 - Adicionar'
+                'F5 - Remover')
               TabOrder = 1
             end
           end
@@ -814,7 +777,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
     Left = 264
     Top = 208
     Bitmap = {
-      494C0101030008002C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000800380020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000000000000000DADA
@@ -1349,20 +1312,36 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
       FF80FFF3F03FFFFFFFFFFFFF0000000000000000000000000000000000000000
       000000000000}
   end
-  object cds_CodigoBarras: TClientDataSet
+  object cds_Entradas: TClientDataSet
     Aggregates = <>
     Params = <>
-    Left = 443
-    Top = 275
-    object cds_CodigoBarrasCODIGOBARRAS: TIntegerField
+    Left = 91
+    Top = 323
+    object cds_EntradasCODIGOBARRAS: TIntegerField
       DisplayLabel = 'C'#243'digo de Barras'
       FieldName = 'CODIGOBARRAS'
     end
   end
-  object ds_CodigoBarras: TDataSource
-    DataSet = cds_CodigoBarras
-    OnDataChange = ds_CodigoBarrasDataChange
-    Left = 531
-    Top = 299
+  object ds_Entradas: TDataSource
+    DataSet = cds_Entradas
+    OnDataChange = ds_EntradasDataChange
+    Left = 179
+    Top = 347
+  end
+  object ds_Saidas: TDataSource
+    DataSet = cds_Saidas
+    OnDataChange = ds_SaidasDataChange
+    Left = 555
+    Top = 331
+  end
+  object cds_Saidas: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 467
+    Top = 307
+    object cds_SaidasCODIGOBARRAS: TIntegerField
+      DisplayLabel = 'C'#243'digo de Barras'
+      FieldName = 'CODIGOBARRAS'
+    end
   end
 end

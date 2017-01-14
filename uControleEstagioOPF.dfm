@@ -2003,5 +2003,8 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
     object cds_FichadeProducaoNUMEROLOTE: TIntegerField
       FieldName = 'NUMEROLOTE'
     end
+    object cds_FichadeProducaoCODIGOBARRAS: TStringField
+      FieldName = 'CODIGOBARRAS'
+    end
   end
 end
