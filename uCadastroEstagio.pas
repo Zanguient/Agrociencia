@@ -91,7 +91,8 @@ begin
   if Limpar then begin
     edDescricao.Clear;
     edObservacao.Clear;
-    btGravar.Tag  := 0;
+    chkEstagioInicial.Checked := False;
+    btGravar.Tag              := 0;
   end else begin
     edDescricao.Text          := cds_PesquisaDESCRICAO.Value;
     edObservacao.Text         := cds_PesquisaOBSERVACAO.Value;

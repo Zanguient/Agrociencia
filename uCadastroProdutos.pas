@@ -110,9 +110,9 @@ procedure TfrmCadastroProdutos.AtualizarEdits(Limpar: Boolean);
 begin
   if Limpar then begin
     edDescricao.Clear;
-    cbFinalidadeProduto.ItemIndex := 0;
+    cbFinalidadeProduto.ItemIndex       := 0;
     edUnidadeMedida.Clear;
-    lbUnidadeMedida.Caption := EmptyStr;
+    lbUnidadeMedida.Caption             := EmptyStr;
     cbRecepienteReaproveitavel.Checked  := False;
     edCodigoExterno.Clear;
     btGravar.Tag  := 0;
