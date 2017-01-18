@@ -32,6 +32,8 @@ type
     IDLOTE : Integer;
     DATAHORAI: TDateTime;
     EMANDAMENTO: Boolean;
+    INICIAL : Boolean;
+    SALDOMC : Double;
     INTERVALO: ARRAY OF TIntervalo;
     SAIDAS : ARRAY OF TSaidas;
   end;
@@ -92,6 +94,7 @@ type
     procedure GravarLoteEntradas(FWC : TFWConnection);
     procedure GravarLoteSaidas(FWC : TFWConnection);
     procedure GravarLoteIntervalos(FWC : TFWConnection);
+    procedure GravarEstoque(FWC : TFWConnection);
     { Private declarations }
   public
     { Public declarations }
@@ -110,7 +113,11 @@ uses
   uBeanOPFinal_Estagio_Lote_S,
   uBeanOPFinal_Estagio_Lote_E,
   uBeanOPFinal_Estagio_Lote_Intervalo,
-  uConstantes;
+  uConstantes,
+  uBeanControleEstoque,
+  uBeanControleEstoqueProduto,
+  uBeanOrdemProducaoMC_Estoque,
+  uBeanOrdemProducaoMC_Estoque_OP;
 
 {$R *.dfm}
 
@@ -228,6 +235,7 @@ procedure TfrmControleMultiplicacao.ExecutarEvento;
 var
   FWC       : TFWConnection;
   Consulta  : TFDQuery;
+  BuscaOP   : TFDQuery;
   Codigo,
   CodigoOPF,
   SeqEstagio: Integer;
@@ -253,10 +261,15 @@ begin
               Consulta.SQL.Add('	OPF.ID,');
               Consulta.SQL.Add('	OPFE.ID AS IDESTAGIO,');
               Consulta.SQL.Add('	OPFE.SEQUENCIA,');
-              Consulta.SQL.Add('	P.DESCRICAO');
+              Consulta.SQL.Add('	P.DESCRICAO,');
+              Consulta.SQL.Add('	E.INICIAL,');
+              Consulta.SQL.Add('	OPMCE.SALDO');
               Consulta.SQL.Add('FROM OPFINAL OPF');
               Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
               Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+              Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (OPFE.ESTAGIO_ID = E.ID)');
+              Consulta.SQL.Add('INNER JOIN ORDEMPRODUCAOMC_ESTOQUE OPMCE ON (OPMCE.ID_ORDEMPRODUCAOMC = OPFE.OPMC_ID)');
+
               Consulta.SQL.Add('WHERE 1 = 1');
               Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
               Consulta.SQL.Add('AND OPF.ID = :CODIGOOP');
@@ -280,6 +293,8 @@ begin
                     MULTIPLICACAO.IDESTAGIO       := Consulta.FieldByName('IDESTAGIO').AsInteger;
                     MULTIPLICACAO.DATAHORAI       := Now;
                     MULTIPLICACAO.EMANDAMENTO     := True;
+                    MULTIPLICACAO.INICIAL         := Consulta.FieldByName('INICIAL').AsBoolean;
+                    MULTIPLICACAO.SALDOMC         := Consulta.FieldByName('SALDO').AsFloat;
 
                     ControleProducao(eIniciar);
 
@@ -318,6 +333,44 @@ begin
           case rgEntrada.ItemIndex of
             0 : begin
               if Codigo > 0 then begin
+                if MULTIPLICACAO.INICIAL then begin
+                  if Codigo <> MULTIPLICACAO.CODIGOOP then begin
+                    DisplayMsg(MSG_WAR, 'Pote selecionado não pertence a ordem de produção atual!');
+                    Exit;
+                  end;
+                end else begin
+                  FWC     := TFWConnection.Create;
+                  BuscaOP := TFDQuery.Create(nil);
+                  try
+                    BuscaOP.Connection := FWC.FDConnection;
+                    BuscaOP.Close;
+                    BuscaOP.SQL.Clear;
+                    BuscaOP.SQL.Add('SELECT OE.OPFINAL_ID AS OP, OELS.BAIXADO FROM OPFINAL_ESTAGIO OE');
+                    BuscaOP.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OEL ON OEL.OPFINAL_ESTAGIO_ID = OE.ID');
+                    BuscaOP.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OELS ON OELS.OPFINAL_ESTAGIO_LOTE_ID = OEL.ID');
+                    BuscaOP.SQL.Add('WHERE OELS.ID = :CODIGOBARRAS');
+                    BuscaOP.ParamByName('CODIGOBARRAS').AsInteger := Codigo;
+                    BuscaOP.Open();
+
+                    if BuscaOP.IsEmpty then begin
+                      DisplayMsg(MSG_WAR, 'Código de barras não encontrado!');
+                      Exit;
+                    end;
+
+                    if BuscaOP.FieldByName('OP').AsInteger <> MULTIPLICACAO.CODIGOOP then begin
+                      DisplayMsg(MSG_WAR, 'Código de barras informado não pertence a Ordem de Produção selecionada!');
+                      Exit;
+                    end;
+
+                    if BuscaOP.FieldByName('BAIXADO').AsBoolean then begin
+                      DisplayMsg(MSG_WAR, 'Código de barras informado já foi baixado anteriormente!');
+                      Exit;
+                    end;
+                  finally
+                    FreeAndNil(BuscaOP);
+                    FreeAndNil(FWC);
+                  end;
+                end;
                 cds_Entradas.Insert;
                 cds_EntradasCODIGOBARRAS.Value  := Codigo;
                 cds_Entradas.Post;
@@ -339,6 +392,10 @@ begin
             case rgSaida.ItemIndex of
               0 : begin
                 if Codigo = MULTIPLICACAO.IDESTAGIO then begin
+                  if MULTIPLICACAO.SALDOMC <= cds_Saidas.RecordCount + 1 then begin
+                    DisplayMsg(MSG_WAR, 'Acabaram os potes da Ordem de Produção MC! Verifique com o Administrador!');
+                    Exit;
+                  end;
                   cds_Saidas.Insert;
                   cds_SaidasCODIGOBARRAS.Value  := Codigo;
                   cds_Saidas.Post;
@@ -441,6 +498,108 @@ begin
   end;
 end;
 
+procedure TfrmControleMultiplicacao.GravarEstoque(FWC: TFWConnection);
+var
+  E      : TOPFINAL_ESTAGIO;
+  OPMCEO : TORDEMPRODUCAOMC_ESTOQUE_OP;
+  OPMCE  : TORDEMPRODUCAOMC_ESTOQUE;
+  CE     : TCONTROLEESTOQUE;
+  CEP    : TCONTROLEESTOQUEPRODUTO;
+  SQL    : TFDQuery;
+begin
+  SQL    := TFDQuery.Create(nil);
+  CE     := TCONTROLEESTOQUE.Create(FWC);
+  CEP    := TCONTROLEESTOQUEPRODUTO.Create(FWC);
+  try
+    try
+      SQL.Connection := FWC.FDConnection;
+
+      SQL.Close;
+      SQL.SQL.Clear;
+      SQL.SQL.Add('SELECT');
+      SQL.SQL.Add('OPMC.ID_RECIPIENTE AS RECIPIENTE,');
+      SQL.SQL.Add('PR.RECIPIENTEREAPROVEITAVEL');
+      SQL.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE_S OPS');
+      SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPL ON OPS.OPFINAL_ESTAGIO_LOTE_ID = OPL.ID');
+      SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPE ON OPL.OPFINAL_ESTAGIO_ID = OPE.ID');
+      SQL.SQL.Add('INNER JOIN ORDEMPRODUCAOMC OPMC ON OPMC.ID = OPE.OPMC_ID');
+      SQL.SQL.Add('INNER JOIN PRODUTO PR ON OPMC.ID_RECIPIENTE = PR.ID');
+      SQL.SQL.Add('WHERE OPS.ID = :ID');
+      SQL.Connection                 := FWC.FDConnection;
+      SQL.ParamByName('ID').DataType := ftInteger;
+      SQL.Prepare;
+
+      CE.ID.isNull              := True;
+      CE.DATAHORA.Value         := Now;
+      CE.USUARIO_ID.Value       := USUARIO.CODIGO;
+      CE.TIPOMOVIMENTACAO.Value := 0;
+      CE.CANCELADO.Value        := False;
+      CE.OBSERVACAO.Value       := 'Retorno de Recipiente Reutilizável';
+      CE.Insert;
+
+      cds_Entradas.First;
+      while not cds_Entradas.Eof do begin
+        SQL.Close;
+        SQL.Params[0].AsInteger := cds_EntradasCODIGOBARRAS.Value;
+        SQL.Open();
+
+        if not SQL.IsEmpty then begin
+          if SQL.Fields[1].AsBoolean then begin
+
+            CEP.ID.isNull                 := True;
+            CEP.CONTROLEESTOQUE_ID.Value  := CE.ID.Value;
+            CEP.PRODUTO_ID.Value          := SQL.Fields[0].Value;
+            CEP.QUANTIDADE.Value          := 1;
+            CEP.Insert;
+          end;
+        end;
+
+        cds_Entradas.Next;
+      end;
+    except
+      on E : Exception do begin
+        raise EAbort.Create('Erro ao retornar o estoque dos recipientes: ' + E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(CEP);
+    FreeAndNil(CE);
+    FreeAndNil(SQL);
+  end;
+
+  OPMCE  := TORDEMPRODUCAOMC_ESTOQUE.Create(FWC);
+  OPMCEO := TORDEMPRODUCAOMC_ESTOQUE_OP.Create(FWC);
+  E      := TOPFINAL_ESTAGIO.Create(FWC);
+  try
+    try
+      E.SelectList('ID = ' + IntToStr(MULTIPLICACAO.IDESTAGIO));
+      if E.Count > 0 then begin
+        OPMCE.SelectList('ID_ORDEMPRODUCAOMC = ' + TOPFINAL_ESTAGIO(E.Itens[0]).OPMC_ID.asSQL);
+        if OPMCE.Count > 0 then begin
+          OPMCE.ID.Value    := TORDEMPRODUCAOMC_ESTOQUE(OPMCE.Itens[0]).ID.Value;
+          OPMCE.SALDO.Value := TORDEMPRODUCAOMC_ESTOQUE(OPMCE.Itens[0]).SALDO.Value - cds_Saidas.RecordCount;
+          OPMCE.Update;
+
+          OPMCEO.ID.isNull                        := True;
+          OPMCEO.ID_ORDEMPRODUCAOMC_ESTOQUE.Value := OPMCE.ID.Value;
+          OPMCEO.ID_OPFINAL.Value                 := MULTIPLICACAO.CODIGOOP;
+          OPMCEO.QUANTIDADE.Value                 := cds_Saidas.RecordCount;
+          OPMCEO.Insert;
+        end;
+      end;
+    except
+      on E : Exception do begin
+        raise EAbort.Create('Erro ao tirar o estoque do meio de cultura: ' + E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(E);
+    FreeAndNil(OPMCEO);
+    FreeAndNil(OPMCE);
+  end;
+end;
+
 procedure TfrmControleMultiplicacao.GravarLote(FWC: TFWConnection);
 Var
   OPFEL : TOPFINAL_ESTAGIO_LOTE;
@@ -474,8 +633,48 @@ begin
 end;
 
 procedure TfrmControleMultiplicacao.GravarLoteEntradas(FWC : TFWConnection);
+var
+  OPFELE : TOPFINAL_ESTAGIO_LOTE_E;
+  OPFELS : TOPFINAL_ESTAGIO_LOTE_S;
 begin
-  //Implementar Entradas.
+  if not cds_Entradas.IsEmpty then begin
+    OPFELE := TOPFINAL_ESTAGIO_LOTE_E.Create(FWC);
+    OPFELS := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
+    cds_Entradas.DisableControls;
+    try
+
+      try
+        cds_Entradas.First;
+        while not cds_Entradas.Eof do begin
+          OPFELE.ID.isNull := True;
+          OPFELE.OPFINAL_ESTAGIO_LOTE_ID.Value := MULTIPLICACAO.IDLOTE;
+          OPFELE.CODIGOBARRAS.Value            := cds_EntradasCODIGOBARRAS.AsString;
+          OPFELE.DATAHORA.Value                := Now;
+          OPFELE.Insert;
+
+          if not MULTIPLICACAO.INICIAL then begin
+            OPFELS.SelectList('ID = ' + cds_EntradasCODIGOBARRAS.AsString);
+            if OPFELS.Count > 0 then begin
+              OPFELS.ID.Value                    := cds_EntradasCODIGOBARRAS.Value;
+              OPFELS.BAIXADO.Value               := True;
+              OPFELS.Update;
+            end;
+          end;
+
+          cds_Entradas.Next;
+        end;
+      except
+        on E : Exception do begin
+          raise EAbort.Create('Erro ao Gravar as Entradas.: ' + E.Message);
+        end;
+      end;
+
+    finally
+      FreeAndNil(OPFELE);
+      FreeAndNil(OPFELS);
+      cds_Entradas.EnableControls;
+    end;
+  end;
 end;
 
 procedure TfrmControleMultiplicacao.GravarLoteSaidas(FWC : TFWConnection);
@@ -496,7 +695,6 @@ begin
         while not cds_Saidas.Eof do begin
           OPFELS.ID.isNull                      := True;
           OPFELS.OPFINAL_ESTAGIO_LOTE_ID.Value  := MULTIPLICACAO.IDLOTE;
-          OPFELS.CODIGOBARRAS.Value             := cds_SaidasCODIGOBARRAS.AsString;
           OPFELS.DATAHORA.Value                 := Now;
           OPFELS.Insert;
           cds_Saidas.Next;
@@ -523,6 +721,7 @@ begin
   MULTIPLICACAO.IDLOTE          := 0;
   MULTIPLICACAO.DATAHORAI       := 0;
   MULTIPLICACAO.EMANDAMENTO     := False;
+  MULTIPLICACAO.INICIAL         := False;
   SetLength(MULTIPLICACAO.INTERVALO, 0);
   SetLength(MULTIPLICACAO.SAIDAS, 0);
   edCodigoOrdemProducao.Clear;

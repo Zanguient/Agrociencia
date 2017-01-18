@@ -177,16 +177,16 @@ begin
         CE.OBSERVACAO.Value         := 'Encerramento da Ordem de Produção de Meio de Cultura: ' + TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.asString;
         CE.Insert;
 
-        CEP.ID.isNull               := True;
-        CEP.CONTROLEESTOQUE_ID.Value:= CE.ID.Value;
-        CEP.PRODUTO_ID.Value        := StrToInt(edt_CodigoMeioCultura.Text);
-        CEP.QUANTIDADE.Value        := edt_QuantidadeMeioCultura.Value;
-        CEP.Insert;
+//        CEP.ID.isNull               := True;
+//        CEP.CONTROLEESTOQUE_ID.Value:= CE.ID.Value;
+//        CEP.PRODUTO_ID.Value        := StrToInt(edt_CodigoMeioCultura.Text);
+//        CEP.QUANTIDADE.Value        := edt_QuantidadeMeioCultura.Value;
+//        CEP.Insert;
 
         CEP.ID.isNull               := True;
         CEP.CONTROLEESTOQUE_ID.Value:= CE.ID.Value;
         CEP.PRODUTO_ID.Value        := StrToInt(edt_CodigoRecipientes.Text);
-        CEP.QUANTIDADE.Value        := edt_QuantidadeRecipiente.Value;
+        CEP.QUANTIDADE.Value        := edt_QuantidadeRecipiente.Value * -1;
         CEP.Insert;
 
         OPMCI.SelectList('ID_ORDEMPRODUCAOMC = ' + QuotedStr(edt_CodigoOrdem.Text));

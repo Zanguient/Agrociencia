@@ -47,6 +47,8 @@ type
     edObservacao: TEdit;
     Label1: TLabel;
     cds_PesquisaOBSERVACAO: TStringField;
+    chkEstagioInicial: TCheckBox;
+    cds_PesquisaINICIAL: TBooleanField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -91,9 +93,10 @@ begin
     edObservacao.Clear;
     btGravar.Tag  := 0;
   end else begin
-    edDescricao.Text      := cds_PesquisaDESCRICAO.Value;
-    edObservacao.Text     := cds_PesquisaOBSERVACAO.Value;
-    btGravar.Tag          := cds_PesquisaID.Value;
+    edDescricao.Text          := cds_PesquisaDESCRICAO.Value;
+    edObservacao.Text         := cds_PesquisaOBSERVACAO.Value;
+    chkEstagioInicial.Checked := cds_PesquisaINICIAL.Value;
+    btGravar.Tag              := cds_PesquisaID.Value;
   end;
 end;
 
@@ -193,6 +196,7 @@ begin
 
       E.DESCRICAO.Value       := edDescricao.Text;
       E.OBSERVACAO.Value      := edObservacao.Text;
+      E.INICIAL.Value         := chkEstagioInicial.Checked;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         E.ID.Value          := (Sender as TSpeedButton).Tag;
@@ -257,6 +261,7 @@ begin
           cds_Pesquisa.Append;
           cds_PesquisaID.Value             := TESTAGIO(E.Itens[I]).ID.Value;
           cds_PesquisaDESCRICAO.Value      := TESTAGIO(E.Itens[I]).DESCRICAO.Value;
+          cds_PesquisaINICIAL.Value        := TESTAGIO(E.Itens[I]).INICIAL.Value;
           cds_PesquisaOBSERVACAO.Value     := TESTAGIO(E.Itens[I]).OBSERVACAO.Value;
           cds_Pesquisa.Post;
         end;

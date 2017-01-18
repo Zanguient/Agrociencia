@@ -138,7 +138,13 @@ uses
   uFWConnection,
   uBeanOPFinal,
   uMensagem,
-  uFuncoes, uBeanObservacao, uDMUtil, uBeanCliente, uBeanProdutos;
+  uFuncoes,
+  uBeanObservacao,
+  uDMUtil,
+  uBeanCliente,
+  uBeanProdutos,
+  uBeanEstagio,
+  uBeanOPFinal_Estagio;
 
 {$R *.dfm}
 
@@ -312,14 +318,22 @@ procedure TfrmOrdemProducao.btGravarClick(Sender: TObject);
 Var
   FWC : TFWConnection;
   OPF : TOPFINAL;
+  E   : TESTAGIO;
+  OPE : TOPFINAL_ESTAGIO;
 begin
 
   FWC := TFWConnection.Create;
   OPF := TOPFINAL.Create(FWC);
+  E   := TESTAGIO.Create(FWC);
+  OPE := TOPFINAL_ESTAGIO.Create(FWC);
 
   try
     try
-
+//      E.SelectList('INICIAL');
+//      if E.Count = 0 then begin
+//        DisplayMsg(MSG_WAR, 'Estagio inicial não encontrado! Cadastre para continuar!');
+//        Exit;
+//      end;
       if Length(Trim(edNomeCliente.Text)) = 0 then begin
         DisplayMsg(MSG_WAR, 'Cliente não informado, Verifique!');
         if edCodigoCliente.CanFocus then
@@ -410,6 +424,8 @@ begin
     end;
   finally
     FreeAndNil(OPF);
+    FreeAndNil(E);
+    FreeAndNil(OPE);
     FreeAndNil(FWC);
   end;
 end;

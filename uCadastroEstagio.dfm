@@ -765,6 +765,20 @@ object frmCadastroEstagio: TfrmCadastroEstagio
             ParentFont = False
             TabOrder = 1
           end
+          object chkEstagioInicial: TCheckBox
+            Left = 4
+            Top = 218
+            Width = 149
+            Height = 17
+            Caption = 'Est'#225'gio Inicial'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 2
+          end
         end
         object pnUsuarioDireita: TPanel
           Left = 426
@@ -1428,6 +1442,9 @@ object frmCadastroEstagio: TfrmCadastroEstagio
     object cds_PesquisaOBSERVACAO: TStringField
       FieldName = 'OBSERVACAO'
       Size = 512
+    end
+    object cds_PesquisaINICIAL: TBooleanField
+      FieldName = 'INICIAL'
     end
   end
 end

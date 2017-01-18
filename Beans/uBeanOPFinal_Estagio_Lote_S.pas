@@ -13,17 +13,20 @@ type
     FCODIGOBARRAS: TFieldString;
     FID: TFieldInteger;
     FOPFINAL_ESTAGIO_LOTE_ID: TFieldInteger;
+    FBAIXADO: TFieldBoolean;
     procedure SetCODIGOBARRAS(const Value: TFieldString);
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetID(const Value: TFieldInteger);
     procedure SetOPFINAL_ESTAGIO_LOTE_ID(const Value: TFieldInteger);
+    procedure SetBAIXADO(const Value: TFieldBoolean);
   protected
     procedure InitInstance; override;
   published
     property ID                       : TFieldInteger read FID write SetID;
     property OPFINAL_ESTAGIO_LOTE_ID  : TFieldInteger read FOPFINAL_ESTAGIO_LOTE_ID write SetOPFINAL_ESTAGIO_LOTE_ID;
-    property CODIGOBARRAS             : TFieldString read FCODIGOBARRAS write SetCODIGOBARRAS;
+//    property CODIGOBARRAS             : TFieldString read FCODIGOBARRAS write SetCODIGOBARRAS;
     property DATAHORA                 : TFieldDateTime read FDATAHORA write SetDATAHORA;
+    property BAIXADO                  : TFieldBoolean read FBAIXADO write SetBAIXADO;
   end;
 
 implementation
@@ -40,6 +43,11 @@ begin
 
   FCODIGOBARRAS.Size                  := 20;
 
+end;
+
+procedure TOPFINAL_ESTAGIO_LOTE_S.SetBAIXADO(const Value: TFieldBoolean);
+begin
+  FBAIXADO := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO_LOTE_S.SetCODIGOBARRAS(const Value: TFieldString);

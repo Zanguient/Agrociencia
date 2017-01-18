@@ -134,6 +134,7 @@ CREATE TABLE if not exists estagio
   id serial NOT NULL,
   descricao character varying(100) NOT NULL,
   observacao character varying(500),
+  inicial boolean,
   CONSTRAINT pk_estagio PRIMARY KEY (id)
 );
 
@@ -342,7 +343,6 @@ CREATE TABLE if not exists opfinal_estagio_lote_s
 (
   id serial NOT NULL,
   opfinal_estagio_lote_id bigint NOT NULL,
-  codigobarras character varying(20),
   datahora timestamp NOT NULL,
   CONSTRAINT pk_opfinal_estagio_lote_s PRIMARY KEY (id),
   CONSTRAINT fk_opfinal_estagio_lote_s_ope FOREIGN KEY (opfinal_estagio_lote_id)
