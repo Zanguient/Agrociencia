@@ -65,7 +65,6 @@ type
     SpeedButton1: TSpeedButton;
     Panel9: TPanel;
     btFechar: TSpeedButton;
-    btExportar: TSpeedButton;
     cds_PesquisaDATAINICIO: TDateField;
     cds_PesquisaDATAFINAL: TDateField;
     cds_PesquisaID_MEIOCULTURA: TIntegerField;
@@ -785,6 +784,9 @@ begin
       FreeAndNil(U);
       FreeAndNil(FW);
     end;
+
+    if edt_CodigoEsterilizacao.CanFocus then
+      edt_CodigoEsterilizacao.SetFocus;
   end;
   AutoSizeDBGrid(dg_MateriaPrima);
   AutoSizeDBGrid(gdPesquisa);
