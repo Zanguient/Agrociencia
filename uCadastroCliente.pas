@@ -107,6 +107,9 @@ begin
   if Limpar then begin
     edNome.Clear;
     edCPFCNPJ.Clear;
+    edTelefone.Clear;
+    edCelular.Clear;
+    edEmail.Clear;
     edObservacao.Clear;
     edCodigoExterno.Clear;
     edCadProIE.Clear;
@@ -114,6 +117,9 @@ begin
   end else begin
     edNome.Text           := cds_PesquisaNOME.Value;
     edCPFCNPJ.Text        := cds_PesquisaCPFCNPJ.Value;
+    edTelefone.Text       := cds_PesquisaTELEFONE.Value;
+    edCelular.Text        := cds_PesquisaCELULAR.Value;
+    edEmail.Text          := cds_PesquisaEMAIL.Value;
     edCodigoExterno.Text  := cds_PesquisaCODIGOEXTERNO.Value;
     edObservacao.Text     := cds_PesquisaOBSERVACAO.Value;
     edCadProIE.Text       := cds_PesquisaCADPROIE.Value;
@@ -226,7 +232,7 @@ begin
       C.CPFCNPJ.Value         := SoNumeros(edCPFCNPJ.Text);
       C.TELEFONE.Value        := edTelefone.Text;
       C.CELULAR.Value         := edCelular.Text;
-      C.EMAIL.Value           := edCelular.Text;
+      C.EMAIL.Value           := edEmail.Text;
       C.OBSERVACAO.Value      := edObservacao.Text;
       C.CODIGOEXTERNO.Value   := edCodigoExterno.Text;
       C.CADPROIE.Value        := edCadProIE.Text;
