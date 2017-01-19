@@ -817,7 +817,7 @@ begin
 
       if ResultMsgModal = mrOk then begin
         if ResultMsgInputInt > 0 then begin
-          CodigoBarras := cds_PesquisaID.AsString + '*1';
+          CodigoBarras := cds_PesquisaID.AsString;
           for I := 1 to ResultMsgInputInt do begin
             cds_Etiqueta1.Append;
             cds_Etiqueta1CODIGOOP.AsString  := CodigoBarras;

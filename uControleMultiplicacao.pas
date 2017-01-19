@@ -696,6 +696,7 @@ begin
           OPFELS.ID.isNull                      := True;
           OPFELS.OPFINAL_ESTAGIO_LOTE_ID.Value  := MULTIPLICACAO.IDLOTE;
           OPFELS.DATAHORA.Value                 := Now;
+          OPFELS.BAIXADO.Value                  := False;
           OPFELS.Insert;
           cds_Saidas.Next;
         end;

@@ -35,6 +35,7 @@ type
     OrdemdeProduo2: TMenuItem;
     EstgiodaProduo1: TMenuItem;
     Multiplicaes1: TMenuItem;
+    Etiquetas1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -55,6 +56,7 @@ type
     procedure OrdemdeProduo2Click(Sender: TObject);
     procedure EstgiodaProduo1Click(Sender: TObject);
     procedure Multiplicaes1Click(Sender: TObject);
+    procedure Etiquetas1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -91,7 +93,9 @@ uses
   uOrdemProducao,
   uCadastroEstagio,
   uEncerramentoOPMC,
-  uControleEstagioOPF, uControleMultiplicacao;
+  uControleEstagioOPF,
+  uControleMultiplicacao,
+  uImpressaoEtiquetas;
 
 {$R *.dfm}
 
@@ -156,6 +160,17 @@ begin
     frmMovimentacaoEstoque.ShowModal;
   finally
     FreeAndNil(frmMovimentacaoEstoque);
+  end;
+end;
+
+procedure TfrmPrincipal.Etiquetas1Click(Sender: TObject);
+begin
+  if not Assigned(frmImpressaoEtiquetas) then
+    frmImpressaoEtiquetas := TfrmImpressaoEtiquetas.Create(nil);
+  try
+    frmImpressaoEtiquetas.ShowModal;
+  finally
+    FreeAndNil(frmImpressaoEtiquetas);
   end;
 end;
 

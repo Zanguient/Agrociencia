@@ -344,6 +344,7 @@ CREATE TABLE if not exists opfinal_estagio_lote_s
   id serial NOT NULL,
   opfinal_estagio_lote_id bigint NOT NULL,
   datahora timestamp NOT NULL,
+  baixado boolean,
   CONSTRAINT pk_opfinal_estagio_lote_s PRIMARY KEY (id),
   CONSTRAINT fk_opfinal_estagio_lote_s_ope FOREIGN KEY (opfinal_estagio_lote_id)
       REFERENCES opfinal_estagio_lote (id) MATCH SIMPLE

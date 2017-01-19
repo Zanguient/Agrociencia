@@ -100,6 +100,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Multiplica'#231#245'es'
         OnClick = Multiplicaes1Click
       end
+      object Etiquetas1: TMenuItem
+        Caption = 'Etiquetas'
+        OnClick = Etiquetas1Click
+      end
     end
     object Relatrios1: TMenuItem
       Caption = 'Relat'#243'rios'

@@ -58,7 +58,8 @@ uses
   uBeanOPFinal_Estagio_Lote_E in 'Beans\uBeanOPFinal_Estagio_Lote_E.pas',
   uBeanOPFinal_Estagio_Lote_S in 'Beans\uBeanOPFinal_Estagio_Lote_S.pas',
   uBeanOPFinal_Estagio_Lote_Intervalo in 'Beans\uBeanOPFinal_Estagio_Lote_Intervalo.pas',
-  uControleMultiplicacao in 'uControleMultiplicacao.pas' {frmControleMultiplicacao};
+  uControleMultiplicacao in 'uControleMultiplicacao.pas' {frmControleMultiplicacao},
+  uImpressaoEtiquetas in 'uImpressaoEtiquetas.pas' {frmImpressaoEtiquetas};
 
 {$R *.res}
 
