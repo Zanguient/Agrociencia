@@ -158,6 +158,8 @@ begin
 
               GravarLoteSaidas(FWC);
 
+              GravarEstoque(FWC);
+
               FWC.Commit;
 
               DisplayMsg(MSG_OK, 'Multiplicação Realizada com Sucesso!');
