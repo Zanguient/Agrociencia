@@ -117,7 +117,7 @@ uses
   uBeanControleEstoque,
   uBeanControleEstoqueProduto,
   uBeanOrdemProducaoMC_Estoque,
-  uBeanOrdemProducaoMC_Estoque_OP;
+  uBeanOrdemProducaoMC_Estoque_OP, uBeanProdutos;
 
 {$R *.dfm}
 
@@ -265,12 +265,12 @@ begin
               Consulta.SQL.Add('	OPFE.SEQUENCIA,');
               Consulta.SQL.Add('	P.DESCRICAO,');
               Consulta.SQL.Add('	E.INICIAL,');
-              Consulta.SQL.Add('	OPMCE.SALDO');
+              Consulta.SQL.Add('	COALESCE((SELECT SUM(CEP.QUANTIDADE) FROM CONTROLEESTOQUEPRODUTO CEP WHERE CEP.PRODUTO_ID = PP.ID),0) AS SALDO');
               Consulta.SQL.Add('FROM OPFINAL OPF');
               Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
               Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+              Consulta.SQL.Add('INNER JOIN PRODUTO PP ON OPFE.MEIOCULTURA_ID = PP.ID');
               Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (OPFE.ESTAGIO_ID = E.ID)');
-              Consulta.SQL.Add('INNER JOIN ORDEMPRODUCAOMC_ESTOQUE OPMCE ON (OPMCE.ID_ORDEMPRODUCAOMC = OPFE.OPMC_ID)');
 
               Consulta.SQL.Add('WHERE 1 = 1');
               Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
@@ -395,7 +395,7 @@ begin
               0 : begin
                 if Codigo = MULTIPLICACAO.IDESTAGIO then begin
                   if MULTIPLICACAO.SALDOMC <= cds_Saidas.RecordCount + 1 then begin
-                    DisplayMsg(MSG_WAR, 'Acabaram os potes da Ordem de Produção MC! Verifique com o Administrador!');
+                    DisplayMsg(MSG_WAR, 'Acabaram os potes do MC! Verifique com o Administrador!');
                     Exit;
                   end;
                   cds_Saidas.Insert;
@@ -507,11 +507,14 @@ var
   OPMCE  : TORDEMPRODUCAOMC_ESTOQUE;
   CE     : TCONTROLEESTOQUE;
   CEP    : TCONTROLEESTOQUEPRODUTO;
+  P      : TPRODUTO;
   SQL    : TFDQuery;
 begin
   SQL    := TFDQuery.Create(nil);
   CE     := TCONTROLEESTOQUE.Create(FWC);
   CEP    := TCONTROLEESTOQUEPRODUTO.Create(FWC);
+  E      := TOPFINAL_ESTAGIO.Create(FWC);
+  P      := TPRODUTO.Create(FWC);
   try
     try
       SQL.Connection := FWC.FDConnection;
@@ -519,13 +522,12 @@ begin
       SQL.Close;
       SQL.SQL.Clear;
       SQL.SQL.Add('SELECT');
-      SQL.SQL.Add('OPMC.ID_RECIPIENTE AS RECIPIENTE,');
+      SQL.SQL.Add('OPE.RECIPIENTE_ID AS RECIPIENTE,');
       SQL.SQL.Add('PR.RECIPIENTEREAPROVEITAVEL');
       SQL.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE_S OPS');
       SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPL ON OPS.OPFINAL_ESTAGIO_LOTE_ID = OPL.ID');
       SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPE ON OPL.OPFINAL_ESTAGIO_ID = OPE.ID');
-      SQL.SQL.Add('INNER JOIN ORDEMPRODUCAOMC OPMC ON OPMC.ID = OPE.OPMC_ID');
-      SQL.SQL.Add('INNER JOIN PRODUTO PR ON OPMC.ID_RECIPIENTE = PR.ID');
+      SQL.SQL.Add('INNER JOIN PRODUTO PR ON OPE.RECIPIENTE_ID = PR.ID');
       SQL.SQL.Add('WHERE OPS.ID = :ID');
       SQL.Connection                 := FWC.FDConnection;
       SQL.ParamByName('ID').DataType := ftInteger;
@@ -539,24 +541,38 @@ begin
       CE.OBSERVACAO.Value       := 'Retorno de Recipiente Reutilizável';
       CE.Insert;
 
-      cds_Entradas.First;
-      while not cds_Entradas.Eof do begin
-        SQL.Close;
-        SQL.Params[0].AsInteger := cds_EntradasCODIGOBARRAS.Value;
-        SQL.Open();
+      E.SelectList('ID = ' + IntToStr(MULTIPLICACAO.IDESTAGIO));
+      if E.Count > 0 then begin
+        P.SelectList('ID = ' + TOPFINAL_ESTAGIO(E.Itens[0]).MEIOCULTURA_ID.asSQL);
+        if P.Count > 0 then begin
 
-        if not SQL.IsEmpty then begin
-          if SQL.Fields[1].AsBoolean then begin
-
-            CEP.ID.isNull                 := True;
-            CEP.CONTROLEESTOQUE_ID.Value  := CE.ID.Value;
-            CEP.PRODUTO_ID.Value          := SQL.Fields[0].Value;
-            CEP.QUANTIDADE.Value          := 1;
-            CEP.Insert;
-          end;
+          CEP.ID.isNull                 := True;
+          CEP.CONTROLEESTOQUE_ID.Value  := CE.ID.Value;
+          CEP.PRODUTO_ID.Value          := TPRODUTO(P.Itens[0]).ID.Value;
+          CEP.QUANTIDADE.Value          := cds_Saidas.RecordCount * -1;
+          CEP.Insert;
         end;
+      end;
+      if not MULTIPLICACAO.INICIAL then begin
+        cds_Entradas.First;
+        while not cds_Entradas.Eof do begin
+          SQL.Close;
+          SQL.Params[0].AsInteger := cds_EntradasCODIGOBARRAS.Value;
+          SQL.Open();
 
-        cds_Entradas.Next;
+          if not SQL.IsEmpty then begin
+            if SQL.Fields[1].AsBoolean then begin
+
+              CEP.ID.isNull                 := True;
+              CEP.CONTROLEESTOQUE_ID.Value  := CE.ID.Value;
+              CEP.PRODUTO_ID.Value          := SQL.Fields[0].Value;
+              CEP.QUANTIDADE.Value          := 1;
+              CEP.Insert;
+            end;
+          end;
+
+          cds_Entradas.Next;
+        end;
       end;
     except
       on E : Exception do begin
@@ -567,38 +583,9 @@ begin
     FreeAndNil(SQL);
     FreeAndNil(CEP);
     FreeAndNil(CE);
-    FreeAndNil(SQL);
-  end;
-
-  OPMCE  := TORDEMPRODUCAOMC_ESTOQUE.Create(FWC);
-  OPMCEO := TORDEMPRODUCAOMC_ESTOQUE_OP.Create(FWC);
-  E      := TOPFINAL_ESTAGIO.Create(FWC);
-  try
-    try
-      E.SelectList('ID = ' + IntToStr(MULTIPLICACAO.IDESTAGIO));
-      if E.Count > 0 then begin
-        OPMCE.SelectList('ID_ORDEMPRODUCAOMC = ' + TOPFINAL_ESTAGIO(E.Itens[0]).OPMC_ID.asSQL);
-        if OPMCE.Count > 0 then begin
-          OPMCE.ID.Value    := TORDEMPRODUCAOMC_ESTOQUE(OPMCE.Itens[0]).ID.Value;
-          OPMCE.SALDO.Value := TORDEMPRODUCAOMC_ESTOQUE(OPMCE.Itens[0]).SALDO.Value - cds_Saidas.RecordCount;
-          OPMCE.Update;
-
-          OPMCEO.ID.isNull                        := True;
-          OPMCEO.ID_ORDEMPRODUCAOMC_ESTOQUE.Value := OPMCE.ID.Value;
-          OPMCEO.ID_OPFINAL.Value                 := MULTIPLICACAO.CODIGOOP;
-          OPMCEO.QUANTIDADE.Value                 := cds_Saidas.RecordCount;
-          OPMCEO.Insert;
-        end;
-      end;
-    except
-      on E : Exception do begin
-        raise EAbort.Create('Erro ao tirar o estoque do meio de cultura: ' + E.Message);
-      end;
-    end;
-  finally
     FreeAndNil(E);
-    FreeAndNil(OPMCEO);
-    FreeAndNil(OPMCE);
+    FreeAndNil(P);
+    FreeAndNil(SQL);
   end;
 end;
 

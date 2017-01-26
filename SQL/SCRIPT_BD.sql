@@ -264,37 +264,43 @@ CREATE TABLE if not exists opfinal
       ON UPDATE CASCADE ON DELETE RESTRICT      
 );
 
-CREATE TABLE if not exists opfinal_estagio
+CREATE TABLE opfinal_estagio
 (
   id serial NOT NULL,
   opfinal_id integer NOT NULL,
-  datahora timestamp NOT NULL,
-  datahorainicio timestamp,
-  datahorafim timestamp,  
+  datahora timestamp without time zone NOT NULL,
+  datahorainicio timestamp without time zone,
+  datahorafim timestamp without time zone,
   usuario_id integer NOT NULL,
-  opmc_id integer NOT NULL,
   estagio_id integer NOT NULL,
   sequencia integer NOT NULL,
   intervalocrescimento integer NOT NULL,
   quantidadeestimada integer NOT NULL,
-  previsaoinicio timestamp,
-  previsaotermino timestamp,
+  previsaoinicio timestamp without time zone,
+  previsaotermino timestamp without time zone,
   observacao character varying(512),
+  meiocultura_id bigint,
+  recipiente_id bigint,
   CONSTRAINT pk_opfinal_estagio PRIMARY KEY (id),
+  CONSTRAINT fk_opfinal_estagio_e FOREIGN KEY (estagio_id)
+      REFERENCES estagio (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_opfinal_estagio_meiocultura FOREIGN KEY (meiocultura_id)
+      REFERENCES produto (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
   CONSTRAINT fk_opfinal_estagio_op FOREIGN KEY (opfinal_id)
       REFERENCES opfinal (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_opfinal_estagio_recipiente FOREIGN KEY (recipiente_id)
+      REFERENCES produto (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
   CONSTRAINT fk_opfinal_estagio_u FOREIGN KEY (usuario_id)
       REFERENCES usuario (id) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT fk_opfinal_estagio_mc FOREIGN KEY (opmc_id)
-      REFERENCES ordemproducaomc (id) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT fk_opfinal_estagio_e FOREIGN KEY (estagio_id)
-      REFERENCES estagio (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT
+)
+WITH (
+  OIDS=FALSE
 );
-
 CREATE TABLE if not exists ordemproducaomc_estoque_op (
 id serial NOT NULL,
 id_ordemproducaomc_estoque bigint,

@@ -189,6 +189,12 @@ begin
         CEP.QUANTIDADE.Value        := edt_QuantidadeRecipiente.Value * -1;
         CEP.Insert;
 
+        CEP.ID.isNull               := True;
+        CEP.CONTROLEESTOQUE_ID.Value:= CE.ID.Value;
+        CEP.PRODUTO_ID.Value        := StrToInt(edt_CodigoMeioCultura.Text);
+        CEP.QUANTIDADE.Value        := edt_QuantidadeRecipiente.Value;
+        CEP.Insert;
+
         OPMCI.SelectList('ID_ORDEMPRODUCAOMC = ' + QuotedStr(edt_CodigoOrdem.Text));
         if OPMCI.Count > 0 then begin
           for I := 0 to Pred(OPMCI.Count) do begin
@@ -213,11 +219,11 @@ begin
 
       OPMC.Update;
 
-      OPMCE.ID.isNull                   := True;
-      OPMCE.ID_ORDEMPRODUCAOMC.Value    := OPMC.ID.Value;
-      OPMCE.QUANTIDADE.Value            := OPMC.QUANTRECIPIENTES.Value;
-      OPMCE.SALDO.Value                 := OPMC.QUANTRECIPIENTES.Value;
-      OPMCE.Insert;
+//      OPMCE.ID.isNull                   := True;
+//      OPMCE.ID_ORDEMPRODUCAOMC.Value    := OPMC.ID.Value;
+//      OPMCE.QUANTIDADE.Value            := OPMC.QUANTRECIPIENTES.Value;
+//      OPMCE.SALDO.Value                 := OPMC.QUANTRECIPIENTES.Value;
+//      OPMCE.Insert;
 
       FWC.Commit;
       DisplayMsgFinaliza;

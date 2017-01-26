@@ -85,6 +85,9 @@ type
     cds_FichadeProducaoNUMEROLOTE: TIntegerField;
     cds_FichadeProducaoIPOPF: TIntegerField;
     cds_FichadeProducaoCODIGOBARRAS: TStringField;
+    gbRecipiente: TGroupBox;
+    edt_Recipiente: TButtonedEdit;
+    edt_NomeRecipiente: TEdit;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -109,6 +112,10 @@ type
       Shift: TShiftState);
     procedure btObservacaoClick(Sender: TObject);
     procedure edIntervaloCrescimentoChange(Sender: TObject);
+    procedure edt_RecipienteRightButtonClick(Sender: TObject);
+    procedure edt_RecipienteChange(Sender: TObject);
+    procedure edt_RecipienteKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     procedure SelecionarObservacao;
     { Private declarations }
@@ -136,7 +143,7 @@ uses
   uDMUtil,
   uBeanOrdemProducaoMC,
   uBeanOPFinal_Estagio,
-  uBeanObservacao;
+  uBeanObservacao, uBeanProdutos;
 
 {$R *.dfm}
 
@@ -156,6 +163,9 @@ begin
     edDataPrevistaInicio.Clear;
     edDataPrevistaTermino.Clear;
     edObservacao.Clear;
+    edt_Recipiente.Clear;
+    edQuantidadeEstimada.Clear;
+    edIntervaloCrescimento.Clear;
     btGravar.Tag  := 0;
   end else begin
 
@@ -172,22 +182,25 @@ begin
         SQL.SQL.Add('	OPFE.ID AS CODIGO,');
         SQL.SQL.Add('	OPF.ID AS IDOPF,');
         SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
+        SQL.SQL.Add('	OPFE.MEIOCULTURA_ID,');
+        SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
         SQL.SQL.Add('	E.ID AS IDESTAGIO,');
         SQL.SQL.Add('	E.DESCRICAO AS DESCRICAOESTAGIO,');
-        SQL.SQL.Add('	OPMC.ID AS IDOPMC,');
         SQL.SQL.Add('	P.ID AS ID_PRODUTO,');
         SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
         SQL.SQL.Add('	OPFE.INTERVALOCRESCIMENTO,');
         SQL.SQL.Add('	OPFE.OBSERVACAO,');
         SQL.SQL.Add('	OPFE.QUANTIDADEESTIMADA,');
         SQL.SQL.Add('	OPFE.PREVISAOINICIO,');
-        SQL.SQL.Add('	OPFE.PREVISAOTERMINO');
+        SQL.SQL.Add('	OPFE.PREVISAOTERMINO,');
+        SQL.SQL.Add('	OPFE.RECIPIENTE_ID,');
+        SQL.SQL.Add('	PP.DESCRICAO AS RECIPIENTE');
         SQL.SQL.Add('FROM OPFINAL_ESTAGIO OPFE');
         SQL.SQL.Add('INNER JOIN OPFINAL OPF ON (OPF.ID = OPFE.OPFINAL_ID)');
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
         SQL.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
-        SQL.SQL.Add('INNER JOIN ORDEMPRODUCAOMC OPMC ON (OPMC.ID = OPFE.OPMC_ID)');
-        SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPMC.ID_PRODUTO)');
+        SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPFE.MEIOCULTURA_ID)');
+        SQL.SQL.Add('INNER JOIN PRODUTO PP ON (PP.ID = OPFE.RECIPIENTE_ID)');
         SQL.SQL.Add('WHERE 1 = 1');
         SQL.SQL.Add('AND OPFE.ID = :IDOPFE');
         SQL.Connection                      := FWC.FDConnection;
@@ -202,7 +215,7 @@ begin
             edDescOPF.Text              := SQL.FieldByName('NOMECLIENTE').AsString;
             edCodigoEstagio.Text        := SQL.FieldByName('IDESTAGIO').AsString;
             edDescEstagio.Text          := SQL.FieldByName('DESCRICAOESTAGIO').AsString;
-            edCodigoOPMC.Text           := SQL.FieldByName('IDOPMC').AsString;
+            edCodigoOPMC.Text           := SQL.FieldByName('MEIOCULTURA_ID').AsString;
             edDescOPMC.Text             := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
             edIntervaloCrescimento.Text := SQL.FieldByName('INTERVALOCRESCIMENTO').AsString;
             edObservacao.Text           := SQL.FieldByName('OBSERVACAO').AsString;
@@ -211,6 +224,8 @@ begin
             edQuantidadeEstimada.Text   := SQL.FieldByName('QUANTIDADEESTIMADA').AsString;
             edDataPrevistaInicio.Date   := SQL.FieldByName('PREVISAOINICIO').AsDateTime;
             edDataPrevistaTermino.Date  := SQL.FieldByName('PREVISAOTERMINO').AsDateTime;
+            edt_Recipiente.Text         := SQL.FieldByName('RECIPIENTE_ID').AsString;
+            edt_NomeRecipiente.Text     := SQL.FieldByName('RECIPIENTE').AsString;
           end;
         end;
       except
@@ -406,13 +421,14 @@ begin
       end;
 
       OPFE.OPFINAL_ID.Value           := StrToIntDef(edCodigoOPF.Text, 0);
-      OPFE.OPMC_ID.Value              := StrToIntDef(edCodigoOPMC.Text, 0);
+      OPFE.MEIOCULTURA_ID.Value       := StrToIntDef(edCodigoOPMC.Text, 0);
       OPFE.ESTAGIO_ID.Value           := StrToIntDef(edCodigoEstagio.Text, 0);
       OPFE.OBSERVACAO.Value           := edObservacao.Text;
       OPFE.INTERVALOCRESCIMENTO.Value := StrToIntDef(edIntervaloCrescimento.Text,0);
       OPFE.QUANTIDADEESTIMADA.Value   := StrToIntDef(edQuantidadeEstimada.Text,0);
       OPFE.PREVISAOINICIO.Value       := edDataPrevistaInicio.Date;
       OPFE.PREVISAOTERMINO.Value      := edDataPrevistaTermino.Date;
+      OPFE.RECIPIENTE_ID.Value        := StrToIntDef(edt_Recipiente.Text, 0);
 
       if ID > 0 then begin
         OPFE.ID.Value          := ID;
@@ -688,17 +704,16 @@ begin
 
   try
 
-    edCodigoOPMC.Text := IntToStr(DMUtil.SelecionarOrdemProducaoMeioCultura(StrToIntDef(edCodigoEstagio.Text , 0) , StrToIntDef(edt_CodigoEspecie.Text, 0), edCodigoOPMC.Text));
+    edCodigoOPMC.Text := IntToStr(DMUtil.SelecionarMeioCultura(StrToIntDef(edCodigoEstagio.Text , 0) , StrToIntDef(edt_CodigoEspecie.Text, 0), edCodigoOPMC.Text));
 
     SQL.Close;
     SQL.SQL.Clear;
     SQL.SQL.Add('SELECT');
-    SQL.SQL.Add('	OPMC.ID AS IDOPMC,');
+    SQL.SQL.Add('	P.ID,');
     SQL.SQL.Add('	P.DESCRICAO AS NOMEPRODUTO');
-    SQL.SQL.Add('FROM ORDEMPRODUCAOMC OPMC');
-    SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPMC.ID_PRODUTO)');
+    SQL.SQL.Add('FROM PRODUTO P');
     SQL.SQL.Add('WHERE 1 = 1');
-    SQL.SQL.Add('AND OPMC.ID = :IDOPMC');
+    SQL.SQL.Add('AND P.ID = :IDOPMC');
     SQL.Connection  := FWC.FDConnection;
     SQL.ParamByName('IDOPMC').DataType   := ftInteger;
     SQL.ParamByName('IDOPMC').AsInteger  := StrToIntDef(edCodigoOPMC.Text, -1);
@@ -723,6 +738,38 @@ begin
     DataInicio                  := StrToDate(edDataPrevistaInicio.Text);
     edDataPrevistaTermino.Date  := edDataPrevistaInicio.Date + StrToIntDef(edIntervaloCrescimento.Text, 0);
   except
+  end;
+end;
+
+procedure TfrmControleEstagioOPF.edt_RecipienteChange(Sender: TObject);
+begin
+  edt_NomeRecipiente.Clear;
+end;
+
+procedure TfrmControleEstagioOPF.edt_RecipienteKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    edt_RecipienteRightButtonClick(nil);
+end;
+
+procedure TfrmControleEstagioOPF.edt_RecipienteRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  P   : TPRODUTO;
+begin
+
+  FWC := TFWConnection.Create;
+  P   := TPRODUTO.Create(FWC);
+  try
+    edt_Recipiente.Text := IntToStr(DMUtil.Selecionar(P, edt_Recipiente.Text));
+    P.SelectList('id = ' + edt_Recipiente.Text);
+    if P.Count = 1 then
+      edt_NomeRecipiente.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+  finally
+    FreeAndNil(P);
+    FreeAndNil(FWC);
   end;
 end;
 

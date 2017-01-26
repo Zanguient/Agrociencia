@@ -23,6 +23,8 @@ type
     FQUANTIDADEESTIMADA: TFieldInteger;
     FPREVISAOTERMINO: TFieldDateTime;
     FPREVISAOINICIO: TFieldDateTime;
+    FMEIOCULTURA_ID: TFieldInteger;
+    FRECIPIENTE_ID: TFieldInteger;
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
@@ -37,6 +39,8 @@ type
     procedure SetQUANTIDADEESTIMADA(const Value: TFieldInteger);
     procedure SetPREVISAOINICIO(const Value: TFieldDateTime);
     procedure SetPREVISAOTERMINO(const Value: TFieldDateTime);
+    procedure SetMEIOCULTURA_ID(const Value: TFieldInteger);
+    procedure SetRECIPIENTE_ID(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
@@ -46,7 +50,8 @@ type
     property DATAHORAINICIO       : TFieldDateTime read FDATAHORAINICIO write SetDATAHORAINICIO;
     property DATAHORAFIM          : TFieldDateTime read FDATAHORAFIM write SetDATAHORAFIM;
     property USUARIO_ID           : TFieldInteger read FUSUARIO_ID write SetUSUARIO_ID;
-    property OPMC_ID              : TFieldInteger read FOPMC_ID write SetOPMC_ID;
+//    property OPMC_ID              : TFieldInteger read FOPMC_ID write SetOPMC_ID;
+    property MEIOCULTURA_ID       : TFieldInteger read FMEIOCULTURA_ID write SetMEIOCULTURA_ID;
     property ESTAGIO_ID           : TFieldInteger read FESTAGIO_ID write SetESTAGIO_ID;
     property SEQUENCIA            : TFieldInteger read FSEQUENCIA write SetSEQUENCIA;
     property INTERVALOCRESCIMENTO : TFieldInteger read FINTERVALOCRESCIMENTO write SetINTERVALOCRESCIMENTO;
@@ -54,6 +59,7 @@ type
     property PREVISAOINICIO       : TFieldDateTime read FPREVISAOINICIO write SetPREVISAOINICIO;
     property PREVISAOTERMINO      : TFieldDateTime read FPREVISAOTERMINO write SetPREVISAOTERMINO;
     property OBSERVACAO           : TFieldString read FOBSERVACAO write SetOBSERVACAO;
+    property RECIPIENTE_ID        : TFieldInteger read FRECIPIENTE_ID write SetRECIPIENTE_ID;
   end;
 
 implementation
@@ -68,7 +74,7 @@ begin
   OPFINAL_ID.isNotNull          := True;
   DATAHORA.isNotNull            := True;
   USUARIO_ID.isNotNull          := True;
-  OPMC_ID.isNotNull             := True;
+//  OPMC_ID.isNotNull             := True;
   ESTAGIO_ID.isNotNull          := True;
   SEQUENCIA.isNotNull           := True;
   INTERVALOCRESCIMENTO.isNotNull:= True;
@@ -107,6 +113,11 @@ begin
   FINTERVALOCRESCIMENTO := Value;
 end;
 
+procedure TOPFINAL_ESTAGIO.SetMEIOCULTURA_ID(const Value: TFieldInteger);
+begin
+  FMEIOCULTURA_ID := Value;
+end;
+
 procedure TOPFINAL_ESTAGIO.SetOBSERVACAO(const Value: TFieldString);
 begin
   FOBSERVACAO := Value;
@@ -135,6 +146,11 @@ end;
 procedure TOPFINAL_ESTAGIO.SetQUANTIDADEESTIMADA(const Value: TFieldInteger);
 begin
   FQUANTIDADEESTIMADA := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO.SetRECIPIENTE_ID(const Value: TFieldInteger);
+begin
+  FRECIPIENTE_ID := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetSEQUENCIA(const Value: TFieldInteger);
