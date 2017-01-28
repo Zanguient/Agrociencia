@@ -26,8 +26,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
     Height = 570
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 861
-    ExplicitHeight = 504
     object gdPesquisa: TDBGrid
       AlignWithMargins = True
       Left = 4
@@ -103,8 +101,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitTop = 440
-      ExplicitWidth = 853
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 4
@@ -136,7 +132,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Value = 100.000000000000000000
           end>
         TabOrder = 0
-        ExplicitWidth = 845
         object Panel8: TPanel
           Left = 0
           Top = 0
@@ -145,7 +140,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitWidth = 422
           object btAlterar: TSpeedButton
             AlignWithMargins = True
             Left = 321
@@ -295,8 +289,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitLeft = 422
-          ExplicitWidth = 423
           object btRelatorio: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -610,7 +602,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
       ParentBackground = False
       ParentFont = False
       TabOrder = 2
-      ExplicitWidth = 859
       object btPesquisar: TSpeedButton
         AlignWithMargins = True
         Left = 760
@@ -695,7 +686,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
-        ExplicitWidth = 747
       end
     end
     object Panel2: TPanel
@@ -716,7 +706,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
       ParentBackground = False
       ParentFont = False
       TabOrder = 3
-      ExplicitWidth = 853
     end
   end
   object pnEdicao: TPanel
@@ -727,8 +716,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
     Align = alClient
     TabOrder = 1
     Visible = False
-    ExplicitWidth = 861
-    ExplicitHeight = 504
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -739,8 +726,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitWidth = 859
-      ExplicitHeight = 436
       object Panel3: TPanel
         Left = 1
         Top = 1
@@ -757,7 +742,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
         ParentBackground = False
         ParentFont = False
         TabOrder = 0
-        ExplicitWidth = 853
       end
       object GridPanel1: TGridPanel
         Left = 1
@@ -788,8 +772,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Value = 100.000000000000000000
           end>
         TabOrder = 1
-        ExplicitWidth = 853
-        ExplicitHeight = 388
         object pnUsuarioEsquerda: TPanel
           Left = 1
           Top = 1
@@ -797,8 +779,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           Height = 452
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 425
-          ExplicitHeight = 386
           object gbOPF: TGroupBox
             AlignWithMargins = True
             Left = 4
@@ -814,7 +794,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Style = []
             ParentFont = False
             TabOrder = 0
-            ExplicitWidth = 417
             DesignSize = (
               419
               58)
@@ -852,7 +831,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               Font.Style = []
               ParentFont = False
               TabOrder = 1
-              ExplicitWidth = 343
             end
           end
           object gbOPMC: TGroupBox
@@ -870,7 +848,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Style = []
             ParentFont = False
             TabOrder = 2
-            ExplicitWidth = 417
             DesignSize = (
               419
               58)
@@ -908,7 +885,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               Font.Style = []
               ParentFont = False
               TabOrder = 1
-              ExplicitWidth = 343
             end
           end
           object gbEstagio: TGroupBox
@@ -926,7 +902,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Style = []
             ParentFont = False
             TabOrder = 1
-            ExplicitWidth = 417
             DesignSize = (
               419
               58)
@@ -964,7 +939,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               Font.Style = []
               ParentFont = False
               TabOrder = 1
-              ExplicitWidth = 343
             end
           end
           object gbPeriodoEstagio: TGroupBox
@@ -975,9 +949,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Height = 124
             Align = alClient
             TabOrder = 3
-            ExplicitTop = 260
-            ExplicitWidth = 417
-            ExplicitHeight = 122
             DesignSize = (
               419
               124)
@@ -1053,7 +1024,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               ParentFont = False
               TabOrder = 3
               OnChange = edIntervaloCrescimentoChange
-              ExplicitWidth = 286
             end
             object edDataPrevistaTermino: TJvDateEdit
               Left = 3
@@ -1085,7 +1055,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               ParentFont = False
               TabOrder = 1
               OnChange = edIntervaloCrescimentoChange
-              ExplicitWidth = 286
             end
             object edDataPrevistaInicio: TJvDateEdit
               Left = 3
@@ -1117,7 +1086,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Style = []
             ParentFont = False
             TabOrder = 4
-            ExplicitWidth = 417
             DesignSize = (
               419
               58)
@@ -1153,7 +1121,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               Font.Style = []
               ParentFont = False
               TabOrder = 1
-              ExplicitWidth = 343
             end
           end
           object gbRecipiente: TGroupBox
@@ -1171,8 +1138,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Style = []
             ParentFont = False
             TabOrder = 5
-            ExplicitLeft = 8
-            ExplicitTop = 312
             DesignSize = (
               419
               58)
@@ -1220,9 +1185,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           Height = 452
           Align = alClient
           TabOrder = 1
-          ExplicitLeft = 426
-          ExplicitWidth = 426
-          ExplicitHeight = 386
           object Label1: TLabel
             AlignWithMargins = True
             Left = 4
@@ -1248,7 +1210,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 0
-            ExplicitWidth = 418
             object edObservacao: TEdit
               AlignWithMargins = True
               Left = 3
@@ -1265,7 +1226,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               MaxLength = 512
               ParentFont = False
               TabOrder = 0
-              ExplicitWidth = 306
             end
             object btObservacao: TBitBtn
               AlignWithMargins = True
@@ -1375,7 +1335,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
                 FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
               TabOrder = 1
               OnClick = btObservacaoClick
-              ExplicitLeft = 315
             end
           end
         end
@@ -1399,8 +1358,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
       TabOrder = 0
       TabStop = True
       Visible = False
-      ExplicitTop = 440
-      ExplicitWidth = 853
       object GridPanel2: TGridPanel
         AlignWithMargins = True
         Left = 4
@@ -1435,7 +1392,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             SizeStyle = ssAuto
           end>
         TabOrder = 0
-        ExplicitWidth = 845
         object Panel4: TPanel
           Left = 424
           Top = 0
@@ -1444,8 +1400,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitLeft = 422
-          ExplicitWidth = 423
           object btCancelar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -1860,7 +1814,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitWidth = 422
           object btGravar: TSpeedButton
             AlignWithMargins = True
             Left = 321

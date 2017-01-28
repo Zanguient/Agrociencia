@@ -47,8 +47,9 @@ type
     edObservacao: TEdit;
     Label1: TLabel;
     cds_PesquisaOBSERVACAO: TStringField;
-    chkEstagioInicial: TCheckBox;
-    cds_PesquisaINICIAL: TBooleanField;
+    cds_PesquisaTIPO: TIntegerField;
+    Label3: TLabel;
+    cbTipo: TComboBox;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -91,12 +92,12 @@ begin
   if Limpar then begin
     edDescricao.Clear;
     edObservacao.Clear;
-    chkEstagioInicial.Checked := False;
+//    chkEstagioInicial.Checked := False;
     btGravar.Tag              := 0;
   end else begin
     edDescricao.Text          := cds_PesquisaDESCRICAO.Value;
     edObservacao.Text         := cds_PesquisaOBSERVACAO.Value;
-    chkEstagioInicial.Checked := cds_PesquisaINICIAL.Value;
+//    chkEstagioInicial.Checked := cds_PesquisaINICIAL.Value;
     btGravar.Tag              := cds_PesquisaID.Value;
   end;
 end;
@@ -188,6 +189,13 @@ begin
         Exit;
       end;
 
+      if cbTipo.ItemIndex < 0 then begin
+        DisplayMsg(MSG_WAR, 'Tipo de Estágio não informado, Verifique!');
+        if cbTipo.CanFocus then
+          cbTipo.SetFocus;
+        Exit;
+      end;
+
       if Length(Trim(edObservacao.Text)) = 0 then begin
         DisplayMsg(MSG_WAR, 'Observação não informada, Verifique!');
         if edObservacao.CanFocus then
@@ -197,7 +205,7 @@ begin
 
       E.DESCRICAO.Value       := edDescricao.Text;
       E.OBSERVACAO.Value      := edObservacao.Text;
-      E.INICIAL.Value         := chkEstagioInicial.Checked;
+      E.TIPO.Value            := cbTipo.ItemIndex;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         E.ID.Value          := (Sender as TSpeedButton).Tag;
@@ -262,7 +270,7 @@ begin
           cds_Pesquisa.Append;
           cds_PesquisaID.Value             := TESTAGIO(E.Itens[I]).ID.Value;
           cds_PesquisaDESCRICAO.Value      := TESTAGIO(E.Itens[I]).DESCRICAO.Value;
-          cds_PesquisaINICIAL.Value        := TESTAGIO(E.Itens[I]).INICIAL.Value;
+          cds_PesquisaTIPO.Value           := TESTAGIO(E.Itens[I]).TIPO.Value;
           cds_PesquisaOBSERVACAO.Value     := TESTAGIO(E.Itens[I]).OBSERVACAO.Value;
           cds_Pesquisa.Post;
         end;

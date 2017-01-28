@@ -46,7 +46,7 @@ type
   public
   end;
 
-  function  DisplayMsg(const MsgTypeNo: eMSG; MsgText: String; Titulo: String = ''; MsgExtendida: String = ''): TForm;
+  function  DisplayMsg(const MsgTypeNo: eMSG; MsgText: String; Titulo: String = ''; MsgExtendida: String = ''; InputDefault : String = ''): TForm;
   Procedure DisplayMsgFinaliza;
 
 var
@@ -63,7 +63,7 @@ implementation
 
 uses uFuncoes, uConstantes;
 
-function DisplayMsg(const MsgTypeNo: eMSG; MsgText: String; Titulo: String = ''; MsgExtendida: String = ''): TForm;
+function DisplayMsg(const MsgTypeNo: eMSG; MsgText: String; Titulo: String = ''; MsgExtendida: String = ''; InputDefault : String = ''): TForm;
 
 begin
   DisplayMsgFinaliza;
@@ -170,6 +170,7 @@ begin
                     frmMensagem.btOk.Cancel           := True;
                     frmMensagem.EdEdit.PasswordChar   := #0;
                     frmMensagem.edEdit.NumbersOnly    := True;
+                    frmMensagem.edEdit.Text           := InputDefault;
       end;
       MSG_INPUT_TEXT,
       MSG_INPUT_CURR

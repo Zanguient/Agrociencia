@@ -264,7 +264,7 @@ begin
               Consulta.SQL.Add('	OPFE.ID AS IDESTAGIO,');
               Consulta.SQL.Add('	OPFE.SEQUENCIA,');
               Consulta.SQL.Add('	P.DESCRICAO,');
-              Consulta.SQL.Add('	E.INICIAL,');
+              Consulta.SQL.Add('	E.TIPO,');
               Consulta.SQL.Add('	COALESCE((SELECT SUM(CEP.QUANTIDADE) FROM CONTROLEESTOQUEPRODUTO CEP WHERE CEP.PRODUTO_ID = PP.ID),0) AS SALDO');
               Consulta.SQL.Add('FROM OPFINAL OPF');
               Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
@@ -295,7 +295,7 @@ begin
                     MULTIPLICACAO.IDESTAGIO       := Consulta.FieldByName('IDESTAGIO').AsInteger;
                     MULTIPLICACAO.DATAHORAI       := Now;
                     MULTIPLICACAO.EMANDAMENTO     := True;
-                    MULTIPLICACAO.INICIAL         := Consulta.FieldByName('INICIAL').AsBoolean;
+                    MULTIPLICACAO.INICIAL         := Consulta.FieldByName('TIPO').AsInteger = 0;
                     MULTIPLICACAO.SALDOMC         := Consulta.FieldByName('SALDO').AsFloat;
 
                     ControleProducao(eIniciar);

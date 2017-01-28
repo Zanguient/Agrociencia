@@ -88,6 +88,7 @@ type
     Label10: TLabel;
     btRelatorio: TSpeedButton;
     SpeedButton2: TSpeedButton;
+    cds_PesquisaENCERRADO: TBooleanField;
     procedure FormShow(Sender: TObject);
     procedure btn_CancelarClick(Sender: TObject);
     procedure cds_PesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
@@ -120,6 +121,7 @@ type
     procedure edtMateriaPrimaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
+    procedure ds_PesquisaDataChange(Sender: TObject; Field: TField);
   private
     { Private declarations }
   public
@@ -293,7 +295,7 @@ begin
   try
     SQL.Close;
     SQL.SQL.Clear;
-    SQL.SQL.Add('SELECT MC.ID, MC.DATAINICIO, MC.DATAFIM, P.ID, P.DESCRICAO FROM ORDEMPRODUCAOMC MC');
+    SQL.SQL.Add('SELECT MC.ID, MC.DATAINICIO, MC.DATAFIM, P.ID, P.DESCRICAO, MC.ENCERRADO FROM ORDEMPRODUCAOMC MC');
     SQL.SQL.Add('INNER JOIN PRODUTO P ON MC.ID_PRODUTO = P.ID');
     SQL.SQL.Add('WHERE 1 = 1');
 
@@ -315,6 +317,7 @@ begin
         cds_PesquisaDATAFINAL.Value      := SQL.Fields[2].AsDateTime;
         cds_PesquisaID_MEIOCULTURA.Value := SQL.Fields[3].Value;
         cds_PesquisaMEIOCULTURA.Value    := SQL.Fields[4].Value;
+        cds_PesquisaENCERRADO.Value      := SQL.Fields[5].Value;
         cds_Pesquisa.Post;
 
         SQL.Next;
@@ -452,6 +455,13 @@ begin
   end;
 end;
 
+procedure TfrmOrdemProducaoMeioCultura.ds_PesquisaDataChange(Sender: TObject;
+  Field: TField);
+begin
+  btAlterar.Enabled := not cds_PesquisaENCERRADO.Value;
+  SpeedButton2.Enabled := not cds_PesquisaENCERRADO.Value;
+end;
+
 procedure TfrmOrdemProducaoMeioCultura.edtMateriaPrimaChange(Sender: TObject);
 begin
   edtNomeMateriaPrima.Clear;
@@ -573,13 +583,13 @@ begin
       end;
       VK_F5 : BuscarDados;
       VK_UP : begin
-        if not cds_Pesquisa.IsEmpty then begin
+        if not ((cds_Pesquisa.IsEmpty) or (gdPesquisa.Focused)) then begin
           if cds_Pesquisa.RecNo > 1 then
             cds_Pesquisa.Prior;
         end;
       end;
       VK_DOWN : begin
-        if not cds_Pesquisa.IsEmpty then begin
+        if not ((cds_Pesquisa.IsEmpty) or (gdPesquisa.Focused)) then begin
           if cds_Pesquisa.RecNo < cds_Pesquisa.RecordCount then
             cds_Pesquisa.Next;
         end;
@@ -710,11 +720,16 @@ begin
     SQL.SQL.Add('OPMC.QUANTRECIPIENTES,');
     SQL.SQL.Add('OPMC.MLRECIPIENTE,');
     SQL.SQL.Add('OPMC.QUANTPRODUTO,');
-    SQL.SQL.Add('OPMC.OBSERVACAO');
+    SQL.SQL.Add('OPMC.OBSERVACAO,');
+    SQL.SQL.Add('OPMC.ID_USUARIOEXECUTAR,');
+    SQL.SQL.Add('U.NOME,');
+    SQL.SQL.Add('OPMC.DATAFIM,');
+    SQL.SQL.Add('OPMC.ENCERRADO');
     SQL.SQL.Add('FROM ORDEMPRODUCAOMC OPMC');
     SQL.SQL.Add('INNER JOIN MEIOCULTURA MC ON OPMC.ID_PRODUTO = MC.ID_PRODUTO');
     SQL.SQL.Add('INNER JOIN ESTERILIZACAO E ON OPMC.ID_ESTERILIZACAO = E.ID');
     SQL.SQL.Add('INNER JOIN PRODUTO PR ON OPMC.ID_RECIPIENTE = PR.ID');
+    SQL.SQL.Add('LEFT JOIN USUARIO U ON OPMC.ID_USUARIOEXECUTAR = U.ID');
     SQL.SQL.Add('WHERE OPMC.ID = :ID');
     SQL.ParamByName('ID').AsInteger := cds_PesquisaID.AsInteger;
     SQL.Prepare;
@@ -797,13 +812,10 @@ end;
 procedure TfrmOrdemProducaoMeioCultura.LimpaEdits;
 begin
   pnDados.Tag := 0;
-//  edt_CodigoFuncionario.Clear;
-//  edt_DescricaoFuncionario.Clear;
-//  edt_PHInicial.Clear;
-//  edt_PHFinal.Clear;
-//  edt_PHRec.Clear;
   edt_DataInicio.Clear;
-//  edt_DataFinal.Clear;
+  edt_CodigoEsterilizacao.Clear;
+  edt_NomeEsterilizacao.Clear;
+  edt_MLPorRecipiente.Clear;
   edt_CodigoMeioCultura.Clear;
   edt_DescricaoMeioCultura.Clear;
   edt_QuantidadeMeioCultura.Clear;

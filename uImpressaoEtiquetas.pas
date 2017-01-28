@@ -29,17 +29,18 @@ type
     Panel4: TPanel;
     Panel5: TPanel;
     btEtiquetas: TBitBtn;
-    DBGrid1: TDBGrid;
     cds_Itens: TClientDataSet;
     ds_Itens: TDataSource;
     cds_ItensID: TIntegerField;
     btFechar: TSpeedButton;
     cds_ItensORDEMPRODUCAO: TIntegerField;
     cds_ItensNOMEPRODUTO: TStringField;
+    edt_Quantidade: TLabeledEdit;
     procedure btFecharClick(Sender: TObject);
     procedure btEtiquetasClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure cds_ItensAfterPost(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -74,6 +75,11 @@ begin
   Close;
 end;
 
+procedure TfrmImpressaoEtiquetas.cds_ItensAfterPost(DataSet: TDataSet);
+begin
+  edt_Quantidade.Text := IntToStr(cds_Itens.RecordCount);
+end;
+
 procedure TfrmImpressaoEtiquetas.ExecutarEvento;
 var
   FWC       : TFWConnection;
@@ -106,13 +112,14 @@ begin
             Consulta.SQL.Add('	OPFE.ID AS IDESTAGIO,');
             Consulta.SQL.Add('	OPFE.SEQUENCIA,');
             Consulta.SQL.Add('	P.DESCRICAO,');
-            Consulta.SQL.Add('	E.INICIAL,');
-            Consulta.SQL.Add('	OPMCE.SALDO');
+            Consulta.SQL.Add('	E.TIPO,');
+            Consulta.SQL.Add('  (COALESCE((SELECT SUM(COALESCE(CEP.QUANTIDADE, 0.00))');
+            Consulta.SQL.Add('	FROM CONTROLEESTOQUE CE INNER JOIN CONTROLEESTOQUEPRODUTO CEP ON (CEP.CONTROLEESTOQUE_ID = CE.ID)');
+            Consulta.SQL.Add('	WHERE CE.CANCELADO = FALSE AND CEP.PRODUTO_ID = P.ID),0.00)) AS SALDO');
             Consulta.SQL.Add('FROM OPFINAL OPF');
             Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
             Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
             Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (OPFE.ESTAGIO_ID = E.ID)');
-            Consulta.SQL.Add('INNER JOIN ORDEMPRODUCAOMC_ESTOQUE OPMCE ON (OPMCE.ID_ORDEMPRODUCAOMC = OPFE.OPMC_ID)');
 
             Consulta.SQL.Add('WHERE 1 = 1');
             Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
@@ -219,6 +226,7 @@ begin
   edNumeroLoteEstagio.Enabled   := False;
   edNomeProduto.Clear;
   cds_Itens.EmptyDataSet;
+  edt_Quantidade.Text := IntToStr(cds_Itens.RecordCount);
 end;
 
 end.

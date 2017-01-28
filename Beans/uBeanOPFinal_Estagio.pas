@@ -25,6 +25,7 @@ type
     FPREVISAOINICIO: TFieldDateTime;
     FMEIOCULTURA_ID: TFieldInteger;
     FRECIPIENTE_ID: TFieldInteger;
+    FULTIMOLOTE: TFieldInteger;
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
@@ -41,6 +42,7 @@ type
     procedure SetPREVISAOTERMINO(const Value: TFieldDateTime);
     procedure SetMEIOCULTURA_ID(const Value: TFieldInteger);
     procedure SetRECIPIENTE_ID(const Value: TFieldInteger);
+    procedure SetULTIMOLOTE(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
@@ -60,6 +62,7 @@ type
     property PREVISAOTERMINO      : TFieldDateTime read FPREVISAOTERMINO write SetPREVISAOTERMINO;
     property OBSERVACAO           : TFieldString read FOBSERVACAO write SetOBSERVACAO;
     property RECIPIENTE_ID        : TFieldInteger read FRECIPIENTE_ID write SetRECIPIENTE_ID;
+    property ULTIMOLOTE           : TFieldInteger read FULTIMOLOTE write SetULTIMOLOTE;
   end;
 
 implementation
@@ -156,6 +159,11 @@ end;
 procedure TOPFINAL_ESTAGIO.SetSEQUENCIA(const Value: TFieldInteger);
 begin
   FSEQUENCIA := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO.SetULTIMOLOTE(const Value: TFieldInteger);
+begin
+  FULTIMOLOTE := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetUSUARIO_ID(const Value: TFieldInteger);

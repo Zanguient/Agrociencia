@@ -3,7 +3,7 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
   Top = 0
   BorderStyle = bsNone
   Caption = 'Impress'#227'o de Etiquetas do Lote'
-  ClientHeight = 430
+  ClientHeight = 229
   ClientWidth = 667
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -35,24 +35,20 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     ParentBackground = False
     ParentFont = False
     TabOrder = 0
-    ExplicitLeft = -56
-    ExplicitWidth = 723
   end
   object pnSuperior: TPanel
     AlignWithMargins = True
     Left = 3
     Top = 51
     Width = 661
-    Height = 117
-    Align = alTop
+    Height = 109
+    Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = -48
-    ExplicitTop = 4
-    ExplicitWidth = 715
+    ExplicitHeight = 117
     DesignSize = (
       661
-      117)
+      109)
     object edNumeroLoteEstagio: TLabeledEdit
       Left = 2
       Top = 76
@@ -122,13 +118,35 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      ExplicitWidth = 547
+    end
+    object edt_Quantidade: TLabeledEdit
+      Left = 159
+      Top = 76
+      Width = 151
+      Height = 27
+      EditLabel.Width = 81
+      EditLabel.Height = 19
+      EditLabel.Caption = 'Quantidade'
+      EditLabel.Font.Charset = DEFAULT_CHARSET
+      EditLabel.Font.Color = clWindowText
+      EditLabel.Font.Height = -16
+      EditLabel.Font.Name = 'Tahoma'
+      EditLabel.Font.Style = []
+      EditLabel.ParentFont = False
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 3
     end
   end
   object pnBotoesEdicao: TPanel
     AlignWithMargins = True
     Left = 3
-    Top = 367
+    Top = 166
     Width = 661
     Height = 60
     Align = alBottom
@@ -143,9 +161,7 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     ParentFont = False
     TabOrder = 2
     TabStop = True
-    ExplicitLeft = -202
-    ExplicitTop = 370
-    ExplicitWidth = 869
+    ExplicitTop = 367
     object GridPanel2: TGridPanel
       AlignWithMargins = True
       Left = 3
@@ -180,7 +196,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
           SizeStyle = ssAuto
         end>
       TabOrder = 0
-      ExplicitWidth = 863
       object Panel4: TPanel
         Left = 327
         Top = 0
@@ -189,8 +204,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitLeft = 431
-        ExplicitWidth = 432
         object btFechar: TSpeedButton
           AlignWithMargins = True
           Left = 3
@@ -273,7 +286,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitWidth = 431
         object btEtiquetas: TBitBtn
           AlignWithMargins = True
           Left = 224
@@ -389,43 +401,16 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
           ParentFont = False
           TabOrder = 0
           OnClick = btEtiquetasClick
-          ExplicitLeft = 209
         end
       end
     end
   end
-  object DBGrid1: TDBGrid
-    AlignWithMargins = True
-    Left = 3
-    Top = 174
-    Width = 661
-    Height = 187
-    Align = alClient
-    DataSource = ds_Itens
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -16
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 3
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -16
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'ID'
-        Visible = True
-      end>
-  end
   object cds_Itens: TClientDataSet
     Aggregates = <>
     Params = <>
-    Left = 560
-    Top = 320
+    AfterPost = cds_ItensAfterPost
+    Left = 504
+    Top = 112
     object cds_ItensID: TIntegerField
       DisplayLabel = 'C'#243'digo de Barras'
       FieldName = 'ID'
@@ -441,6 +426,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
   object ds_Itens: TDataSource
     DataSet = cds_Itens
     Left = 424
-    Top = 240
+    Top = 120
   end
 end

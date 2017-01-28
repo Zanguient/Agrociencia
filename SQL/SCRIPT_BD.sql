@@ -134,7 +134,7 @@ CREATE TABLE if not exists estagio
   id serial NOT NULL,
   descricao character varying(100) NOT NULL,
   observacao character varying(500),
-  inicial boolean,
+  tipo smallint,
   CONSTRAINT pk_estagio PRIMARY KEY (id)
 );
 
@@ -281,6 +281,7 @@ CREATE TABLE opfinal_estagio
   observacao character varying(512),
   meiocultura_id bigint,
   recipiente_id bigint,
+  ultimolote integer DEFAULT 0,
   CONSTRAINT pk_opfinal_estagio PRIMARY KEY (id),
   CONSTRAINT fk_opfinal_estagio_e FOREIGN KEY (estagio_id)
       REFERENCES estagio (id) MATCH SIMPLE

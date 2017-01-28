@@ -183,11 +183,11 @@ begin
         SQL.SQL.Add('	OPF.ID AS IDOPF,');
         SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
         SQL.SQL.Add('	OPFE.MEIOCULTURA_ID,');
-        SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
+        SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOMEIOCULTURA,');
         SQL.SQL.Add('	E.ID AS IDESTAGIO,');
         SQL.SQL.Add('	E.DESCRICAO AS DESCRICAOESTAGIO,');
-        SQL.SQL.Add('	P.ID AS ID_PRODUTO,');
-        SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
+        SQL.SQL.Add('	PR.ID AS ID_PRODUTO,');
+        SQL.SQL.Add('	PR.DESCRICAO AS DESCRICAOPRODUTO,');
         SQL.SQL.Add('	OPFE.INTERVALOCRESCIMENTO,');
         SQL.SQL.Add('	OPFE.OBSERVACAO,');
         SQL.SQL.Add('	OPFE.QUANTIDADEESTIMADA,');
@@ -199,6 +199,7 @@ begin
         SQL.SQL.Add('INNER JOIN OPFINAL OPF ON (OPF.ID = OPFE.OPFINAL_ID)');
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
         SQL.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
+        SQL.SQL.Add('INNER JOIN PRODUTO PR ON (PR.ID = OPF.PRODUTO_ID)');
         SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPFE.MEIOCULTURA_ID)');
         SQL.SQL.Add('INNER JOIN PRODUTO PP ON (PP.ID = OPFE.RECIPIENTE_ID)');
         SQL.SQL.Add('WHERE 1 = 1');
@@ -216,7 +217,7 @@ begin
             edCodigoEstagio.Text        := SQL.FieldByName('IDESTAGIO').AsString;
             edDescEstagio.Text          := SQL.FieldByName('DESCRICAOESTAGIO').AsString;
             edCodigoOPMC.Text           := SQL.FieldByName('MEIOCULTURA_ID').AsString;
-            edDescOPMC.Text             := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
+            edDescOPMC.Text             := SQL.FieldByName('DESCRICAOMEIOCULTURA').AsString;
             edIntervaloCrescimento.Text := SQL.FieldByName('INTERVALOCRESCIMENTO').AsString;
             edObservacao.Text           := SQL.FieldByName('OBSERVACAO').AsString;
             edt_CodigoEspecie.Text      := SQL.FieldByName('ID_PRODUTO').AsString;
@@ -262,6 +263,8 @@ procedure TfrmControleEstagioOPF.btRelatorioClick(Sender: TObject);
 var
   FWC       : TFWConnection;
   Consulta  : TFDQuery;
+  OPFE      : TOPFINAL_ESTAGIO;
+  I: Integer;
 begin
 
   if not cds_Pesquisa.IsEmpty then begin
@@ -286,15 +289,15 @@ begin
             Consulta.SQL.Add('	PF.ID AS CODIGOPRODUTO,');
             Consulta.SQL.Add('	PF.DESCRICAO AS NOMEPRODUTO,');
             Consulta.SQL.Add('	CAST(OPFE.DATAHORA AS DATE) AS DATAGERACAOOPF,');
-            Consulta.SQL.Add('	OPMC.ID AS IDOPMC,');
+            Consulta.SQL.Add('	PMC.ID AS IDOPMC,');
             Consulta.SQL.Add('	CAST(OPFE.DATAHORA AS DATE) AS DATAGERACAOOPMC,');
             Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC,');
-            Consulta.SQL.Add('	OPFE.OBSERVACAO');
+            Consulta.SQL.Add('	OPFE.OBSERVACAO,');
+            Consulta.SQL.Add('	OPFE.ULTIMOLOTE');
             Consulta.SQL.Add('FROM OPFINAL OPF');
             Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
             Consulta.SQL.Add('INNER JOIN PRODUTO PF ON (PF.ID = OPF.PRODUTO_ID)');
-            Consulta.SQL.Add('INNER JOIN ORDEMPRODUCAOMC OPMC ON (OPMC.ID = OPFE.OPMC_ID)');
-            Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPMC.ID_PRODUTO)');
+            Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
             Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
             Consulta.SQL.Add('WHERE 1 = 1');
             Consulta.SQL.Add('AND OPFE.ID = :IDOPFE');
@@ -308,10 +311,11 @@ begin
             if not Consulta.IsEmpty then begin
               Consulta.First;
 
-              DisplayMsg(MSG_INPUT_INT, 'Informe o Numero do Lote (Maior que 0(Zero))!');
+              DisplayMsg(MSG_INPUT_INT, 'Informe o Numero do Lote (Maior que 0(Zero))!', '', '', IntToStr(Consulta.FieldByName('ULTIMOLOTE').AsInteger + 1));
 
               if ResultMsgModal = mrOk then begin
-                if ResultMsgInputInt > 0 then begin
+                for I := Consulta.FieldByName('ULTIMOLOTE').AsInteger + 1 to ResultMsgInputInt do begin
+                  cds_FichadeProducao.EmptyDataSet;
 
                   cds_FichadeProducao.Append;
                   cds_FichadeProducaoIPOPF.Value              := Consulta.FieldByName('IDOPF').AsInteger;
@@ -323,15 +327,21 @@ begin
                   cds_FichadeProducaoDATAGERACAOOPMC.Value    := Consulta.FieldByName('DATAGERACAOOPMC').AsDateTime;
                   cds_FichadeProducaoCODIGOMC.Value           := Consulta.FieldByName('CODIGOMC').AsString;
                   cds_FichadeProducaoOBSERVACAO.Value         := Consulta.FieldByName('OBSERVACAO').AsString;
-                  cds_FichadeProducaoNUMEROLOTE.Value         := ResultMsgInputInt;
+                  cds_FichadeProducaoNUMEROLOTE.Value         := I;
                   cds_FichadeProducaoCODIGOBARRAS.Value       := Consulta.FieldByName('IDOPF').AsString + '*' + Consulta.FieldByName('SEQUENCIA').AsString;
                   cds_FichadeProducao.Post;
 
                   DMUtil.frxDBDataset1.DataSet := cds_FichadeProducao;
                   DMUtil.ImprimirRelatorio('frFichaTecnicadeProducao.fr3');
-                end else begin
-                  DisplayMsg(MSG_WAR, 'Número do Lote precisar ser maior que 0(Zero), Verifique!');
-                  Exit;
+                end;
+                OPFE := TOPFINAL_ESTAGIO.Create(FWC);
+                try
+                  OPFE.ID.Value           := Consulta.FieldByName('IDOPFE').AsInteger;
+                  OPFE.ULTIMOLOTE.Value   := ResultMsgInputInt;
+                  OPFE.Update;
+
+                finally
+                  FreeAndNil(OPFE);
                 end;
               end;
             end;
@@ -403,12 +413,18 @@ begin
         Exit;
       end;
 
-      if Length(Trim(edObservacao.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'Observação não informada, Verifique!');
-        if edObservacao.CanFocus then
-          edObservacao.SetFocus;
+      if Length(Trim(edt_Recipiente.Text)) = 0 then begin
+        DisplayMsg(MSG_WAR, 'Recipiente não informado, Verifique!');
+        if edt_Recipiente.CanFocus then
+          edt_Recipiente.SetFocus;
         Exit;
       end;
+//      if Length(Trim(edObservacao.Text)) = 0 then begin
+//        DisplayMsg(MSG_WAR, 'Observação não informada, Verifique!');
+//        if edObservacao.CanFocus then
+//          edObservacao.SetFocus;
+//        Exit;
+//      end;
 
       ID := (Sender as TSpeedButton).Tag;
 

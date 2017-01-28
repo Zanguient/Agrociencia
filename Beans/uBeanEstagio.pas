@@ -12,17 +12,20 @@ type
     FDESCRICAO: TFieldString;
     FID: TFieldInteger;
     FINICIAL: TFieldBoolean;
+    FTIPO: TFieldInteger;
     procedure SetDESCRICAO(const Value: TFieldString);
     procedure SetID(const Value: TFieldInteger);
     procedure SetOBSERVACAO(const Value: TFieldString);
     procedure SetINICIAL(const Value: TFieldBoolean);
+    procedure SetTIPO(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
     property ID : TFieldInteger read FID write SetID;
     property DESCRICAO : TFieldString read FDESCRICAO write SetDESCRICAO;
     property OBSERVACAO : TFieldString read FOBSERVACAO write SetOBSERVACAO;
-    property INICIAL : TFieldBoolean read FINICIAL write SetINICIAL;
+//    property INICIAL : TFieldBoolean read FINICIAL write SetINICIAL;
+    property TIPO : TFieldInteger read FTIPO write SetTIPO;
   end;
 implementation
 
@@ -61,6 +64,11 @@ end;
 procedure TESTAGIO.SetOBSERVACAO(const Value: TFieldString);
 begin
   FOBSERVACAO := Value;
+end;
+
+procedure TESTAGIO.SetTIPO(const Value: TFieldInteger);
+begin
+  FTIPO := Value;
 end;
 
 end.
