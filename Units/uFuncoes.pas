@@ -696,6 +696,7 @@ begin
       Consulta.SQL.Add('FROM');
       Consulta.SQL.Add('OPFINAL OPF');
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+      Consulta.SQL.Add('INNER JOIN ESTAGIO E ON OPFE.ESTAGIO_ID = E.ID AND E.TIPO = 2');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND OPF.ID = :CODIGOOPF');
       Consulta.SQL.Add('AND OPF.LIMITEMULTIPLICACOES > 0');
