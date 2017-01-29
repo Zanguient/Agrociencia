@@ -97,7 +97,7 @@ begin
   end else begin
     edDescricao.Text          := cds_PesquisaDESCRICAO.Value;
     edObservacao.Text         := cds_PesquisaOBSERVACAO.Value;
-//    chkEstagioInicial.Checked := cds_PesquisaINICIAL.Value;
+    cbTipo.ItemIndex          := cds_PesquisaTIPO.Value;
     btGravar.Tag              := cds_PesquisaID.Value;
   end;
 end;

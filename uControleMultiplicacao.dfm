@@ -420,6 +420,21 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
         DesignSize = (
           715
           117)
+        object lbEstagio: TLabel
+          AlignWithMargins = True
+          Left = 159
+          Top = 76
+          Width = 6
+          Height = 23
+          Color = clBtnFace
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = 8404992
+          Font.Height = -19
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentColor = False
+          ParentFont = False
+        end
         object edNumeroLoteEstagio: TLabeledEdit
           Left = 2
           Top = 76
@@ -677,7 +692,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             DesignSize = (
               352
               46)
-            object Label2: TLabel
+            object lbQuantidade: TLabel
               AlignWithMargins = True
               Left = 31
               Top = 12
@@ -709,6 +724,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
               Font.Height = -24
               Font.Name = 'Tahoma'
               Font.Style = []
+              NumbersOnly = True
               ParentFont = False
               TabOrder = 0
               Text = '0'
@@ -777,7 +793,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
     Left = 264
     Top = 208
     Bitmap = {
-      494C0101030008004C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000800500020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000000000000000DADA

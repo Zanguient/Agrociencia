@@ -325,6 +325,7 @@ CREATE TABLE if not exists opfinal_estagio_lote
   datahorafim timestamp,  
   usuario_id integer NOT NULL,
   observacao character varying(512),
+  quantidade integer,
   CONSTRAINT pk_opfinal_estagio_lote PRIMARY KEY (id),
   CONSTRAINT fk_opfinal_estagio_lote_op FOREIGN KEY (opfinal_estagio_id)
       REFERENCES opfinal_estagio (id) MATCH SIMPLE

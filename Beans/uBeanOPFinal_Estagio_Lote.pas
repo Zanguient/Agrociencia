@@ -16,6 +16,7 @@ type
     FDATAHORAFIM: TFieldDateTime;
     FDATAHORAINICIO: TFieldDateTime;
     FUSUARIO_ID: TFieldInteger;
+    FQUANTIDADE: TFieldInteger;
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
     procedure SetID(const Value: TFieldInteger);
@@ -23,6 +24,7 @@ type
     procedure SetOBSERVACAO(const Value: TFieldString);
     procedure SetOPFINAL_ESTAGIO_ID(const Value: TFieldInteger);
     procedure SetUSUARIO_ID(const Value: TFieldInteger);
+    procedure SetQUANTIDADE(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
@@ -33,6 +35,7 @@ type
     property DATAHORAFIM        : TFieldDateTime read FDATAHORAFIM write SetDATAHORAFIM;
     property USUARIO_ID         : TFieldInteger read FUSUARIO_ID write SetUSUARIO_ID;
     property OBSERVACAO         : TFieldString read FOBSERVACAO write SetOBSERVACAO;
+    property QUANTIDADE         : TFieldInteger read FQUANTIDADE write SetQUANTIDADE;
   end;
 
 implementation
@@ -79,6 +82,11 @@ end;
 procedure TOPFINAL_ESTAGIO_LOTE.SetOPFINAL_ESTAGIO_ID(const Value: TFieldInteger);
 begin
   FOPFINAL_ESTAGIO_ID := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO_LOTE.SetQUANTIDADE(const Value: TFieldInteger);
+begin
+  FQUANTIDADE := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO_LOTE.SetUSUARIO_ID(const Value: TFieldInteger);

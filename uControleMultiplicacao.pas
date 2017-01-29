@@ -33,6 +33,9 @@ type
     DATAHORAI: TDateTime;
     EMANDAMENTO: Boolean;
     INICIAL : Boolean;
+    FIM : Boolean;
+    PREVISTO : Integer;
+    SALDO : Integer;
     SALDOMC : Double;
     INTERVALO: ARRAY OF TIntervalo;
     SAIDAS : ARRAY OF TSaidas;
@@ -66,7 +69,7 @@ type
     Label1: TLabel;
     edQuantidadeEntrada: TEdit;
     Panel5: TPanel;
-    Label2: TLabel;
+    lbQuantidade: TLabel;
     edQuantidadeSaida: TEdit;
     Panel6: TPanel;
     rgEntrada: TRadioGroup;
@@ -77,6 +80,7 @@ type
     ds_Saidas: TDataSource;
     cds_Saidas: TClientDataSet;
     cds_SaidasCODIGOBARRAS: TIntegerField;
+    lbEstagio: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -117,7 +121,7 @@ uses
   uBeanControleEstoque,
   uBeanControleEstoqueProduto,
   uBeanOrdemProducaoMC_Estoque,
-  uBeanOrdemProducaoMC_Estoque_OP, uBeanProdutos;
+  uBeanOrdemProducaoMC_Estoque_OP, uBeanProdutos, uBeanOPFinal;
 
 {$R *.dfm}
 
@@ -156,7 +160,8 @@ begin
 
               GravarLoteEntradas(FWC);
 
-              GravarLoteSaidas(FWC);
+              if NOT MULTIPLICACAO.FIM then
+                GravarLoteSaidas(FWC);
 
               GravarEstoque(FWC);
 
@@ -265,7 +270,11 @@ begin
               Consulta.SQL.Add('	OPFE.SEQUENCIA,');
               Consulta.SQL.Add('	P.DESCRICAO,');
               Consulta.SQL.Add('	E.TIPO,');
-              Consulta.SQL.Add('	COALESCE((SELECT SUM(CEP.QUANTIDADE) FROM CONTROLEESTOQUEPRODUTO CEP WHERE CEP.PRODUTO_ID = PP.ID),0) AS SALDO');
+              Consulta.SQL.Add('	E.DESCRICAO AS DESCRICAOESTAGIO,');
+              Consulta.SQL.Add('	OPFE.QUANTIDADEESTIMADA,');
+              Consulta.SQL.Add('	COALESCE((SELECT SUM(OPL.QUANTIDADE) FROM OPFINAL_ESTAGIO_LOTE OPL WHERE OPL.OPFINAL_ESTAGIO_ID = OPFE.ID),0) AS SALDOESTAGIO,');
+              Consulta.SQL.Add('	COALESCE((SELECT COUNT(OPLS.ID) FROM OPFINAL_ESTAGIO_LOTE OPL INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPLS ON OPL.ID = OPLS.OPFINAL_ESTAGIO_LOTE_ID WHERE OPL.OPFINAL_ESTAGIO_ID = OPFE.ID),0) AS SALDOLOTE,');
+              Consulta.SQL.Add('	COALESCE((SELECT SUM(CEP.QUANTIDADE) FROM CONTROLEESTOQUEPRODUTO CEP WHERE CEP.PRODUTO_ID = PP.ID),0) AS SALDOMC');
               Consulta.SQL.Add('FROM OPFINAL OPF');
               Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
               Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
@@ -296,14 +305,30 @@ begin
                     MULTIPLICACAO.DATAHORAI       := Now;
                     MULTIPLICACAO.EMANDAMENTO     := True;
                     MULTIPLICACAO.INICIAL         := Consulta.FieldByName('TIPO').AsInteger = 0;
-                    MULTIPLICACAO.SALDOMC         := Consulta.FieldByName('SALDO').AsFloat;
+                    MULTIPLICACAO.PREVISTO        := Consulta.FieldByName('QUANTIDADEESTIMADA').AsInteger;
+                    MULTIPLICACAO.FIM             := Consulta.FieldByName('TIPO').AsInteger = 3;
+                    if MULTIPLICACAO.FIM then
+                      MULTIPLICACAO.SALDO         := Consulta.FieldByName('SALDOESTAGIO').AsInteger
+                    else
+                      MULTIPLICACAO.SALDO         := Consulta.FieldByName('SALDOLOTE').AsInteger;
+                    MULTIPLICACAO.SALDOMC         := Consulta.FieldByName('SALDOMC').AsFloat;
 
                     ControleProducao(eIniciar);
 
                     edNumeroLoteEstagio.Enabled   := True;
+                    if MULTIPLICACAO.PREVISTO > 0 then
+                      lbEstagio.Caption           := Consulta.FieldByName('DESCRICAOESTAGIO').AsString + '. Quantidade prevista: ' + IntToStr(MULTIPLICACAO.PREVISTO) + '. Quantidade já produzida: ' + IntToStr(MULTIPLICACAO.SALDO)
+                    else
+                      lbEstagio.Caption           := Consulta.FieldByName('DESCRICAOESTAGIO').AsString;
+                    edQuantidadeSaida.Enabled     := MULTIPLICACAO.FIM;
+                    edCodigoSaida.Enabled         := not MULTIPLICACAO.FIM;
+                    rgSaida.Enabled               := not MULTIPLICACAO.FIM;
+
                     if edNumeroLoteEstagio.CanFocus then
                       edNumeroLoteEstagio.SetFocus;
 
+                    if (MULTIPLICACAO.PREVISTO > 0) and (MULTIPLICACAO.PREVISTO <= MULTIPLICACAO.SALDO) then
+                      DisplayMsg(MSG_INF, 'Quantidade de Potes ou Plantas(' + IntToStr(MULTIPLICACAO.PREVISTO) + ') previsto já foi alcançado!');
                   end;
                 end;
               end;
@@ -323,11 +348,12 @@ begin
       if edNumeroLoteEstagio.Focused then begin
         if StrToIntDef(edNumeroLoteEstagio.Text, 0) > 0 then begin
           edCodigoEntrada.Enabled := True;
-          edCodigoSaida.Enabled   := True;
+          edCodigoSaida.Enabled   := not MULTIPLICACAO.FIM;
           MULTIPLICACAO.NUMEROLOTE:= StrToIntDef(edNumeroLoteEstagio.Text, 0);
           if edCodigoEntrada.CanFocus then
             edCodigoEntrada.SetFocus;
           edNumeroLoteEstagio.Enabled   := False;
+          rgSaida.Enabled               := not MULTIPLICACAO.FIM;
         end;
       end else begin
         if edCodigoEntrada.Focused then begin
@@ -341,6 +367,10 @@ begin
                     Exit;
                   end;
                 end else begin
+                  if cds_Entradas.Locate(cds_EntradasCODIGOBARRAS.FieldName, Codigo, []) then begin
+                    DisplayMsg(MSG_WAR, 'Pote já foi adicionado ao lote atual!');
+                    Exit;
+                  end;
                   FWC     := TFWConnection.Create;
                   BuscaOP := TFDQuery.Create(nil);
                   try
@@ -395,7 +425,7 @@ begin
               0 : begin
                 if Codigo = MULTIPLICACAO.IDESTAGIO then begin
                   if MULTIPLICACAO.SALDOMC <= cds_Saidas.RecordCount + 1 then begin
-                    DisplayMsg(MSG_WAR, 'Acabaram os potes do MC! Verifique com o Administrador!');
+                    DisplayMsg(MSG_WAR, 'Acabaram os potes do Meio de Cultura! Verifique com o Administrador!');
                     Exit;
                   end;
                   cds_Saidas.Insert;
@@ -508,6 +538,7 @@ var
   CE     : TCONTROLEESTOQUE;
   CEP    : TCONTROLEESTOQUEPRODUTO;
   P      : TPRODUTO;
+  OP     : TOPFINAL;
   SQL    : TFDQuery;
 begin
   SQL    := TFDQuery.Create(nil);
@@ -515,6 +546,7 @@ begin
   CEP    := TCONTROLEESTOQUEPRODUTO.Create(FWC);
   E      := TOPFINAL_ESTAGIO.Create(FWC);
   P      := TPRODUTO.Create(FWC);
+  OP     := TOPFINAL.Create(FWC);
   try
     try
       SQL.Connection := FWC.FDConnection;
@@ -553,6 +585,16 @@ begin
           CEP.Insert;
         end;
       end;
+      if MULTIPLICACAO.FIM then begin
+        OP.SelectList('ID = ' + IntToStr(MULTIPLICACAO.CODIGOOP));
+        if OP.Count > 0 then begin
+          CEP.ID.isNull                := True;
+          CEP.CONTROLEESTOQUE_ID.Value := CE.ID.Value;
+          CEP.PRODUTO_ID.Value         := TOPFINAL(OP.Itens[0]).PRODUTO_ID.Value;
+          CEP.QUANTIDADE.Value         := StrToCurr(edQuantidadeSaida.Text);
+          CEP.Insert;
+        end;
+      end;
       if not MULTIPLICACAO.INICIAL then begin
         cds_Entradas.First;
         while not cds_Entradas.Eof do begin
@@ -583,6 +625,7 @@ begin
     FreeAndNil(SQL);
     FreeAndNil(CEP);
     FreeAndNil(CE);
+    FreeAndNil(OP);
     FreeAndNil(E);
     FreeAndNil(P);
     FreeAndNil(SQL);
@@ -607,6 +650,9 @@ begin
         OPFEL.DATAHORAFIM.Value         := Now;
         OPFEL.USUARIO_ID.Value          := USUARIO.CODIGO;
         OPFEL.OBSERVACAO.Value          := '';
+        OPFEL.QUANTIDADE.Value          := 0;
+        if MULTIPLICACAO.FIM then
+          OPFEL.QUANTIDADE.Value        := StrToInt(edQuantidadeSaida.Text);
         OPFEL.Insert;
         MULTIPLICACAO.IDLOTE            := OPFEL.ID.Value;
       end else
@@ -712,6 +758,9 @@ begin
   MULTIPLICACAO.DATAHORAI       := 0;
   MULTIPLICACAO.EMANDAMENTO     := False;
   MULTIPLICACAO.INICIAL         := False;
+  MULTIPLICACAO.PREVISTO        := 0;
+  MULTIPLICACAO.SALDO           := 0;
+  MULTIPLICACAO.FIM             := False;
   SetLength(MULTIPLICACAO.INTERVALO, 0);
   SetLength(MULTIPLICACAO.SAIDAS, 0);
   edCodigoOrdemProducao.Clear;
@@ -726,6 +775,7 @@ begin
   btPausePlay.Visible           := False;
   rgEntrada.ItemIndex           := 0;
   rgSaida.ItemIndex             := 0;
+  lbEstagio.Caption             := '';
   cds_Entradas.EmptyDataSet;
   cds_Saidas.EmptyDataSet;
   if edCodigoOrdemProducao.CanFocus then
