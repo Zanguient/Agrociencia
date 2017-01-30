@@ -36,6 +36,8 @@ type
     EstgiodaProduo1: TMenuItem;
     Multiplicaes1: TMenuItem;
     Etiquetas1: TMenuItem;
+    MotivosdeDescarte1: TMenuItem;
+    ControledeQualidade1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -57,6 +59,8 @@ type
     procedure EstgiodaProduo1Click(Sender: TObject);
     procedure Multiplicaes1Click(Sender: TObject);
     procedure Etiquetas1Click(Sender: TObject);
+    procedure MotivosdeDescarte1Click(Sender: TObject);
+    procedure ControledeQualidade1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -95,7 +99,9 @@ uses
   uEncerramentoOPMC,
   uControleEstagioOPF,
   uControleMultiplicacao,
-  uImpressaoEtiquetas;
+  uImpressaoEtiquetas,
+  uCadastroMotivoDescarte,
+  uControleQualidade;
 
 {$R *.dfm}
 
@@ -254,12 +260,34 @@ begin
   end;
 end;
 
+procedure TfrmPrincipal.ControledeQualidade1Click(Sender: TObject);
+begin
+  if frmControleQualidade = nil then
+    frmControleQualidade := TfrmControleQualidade.Create(Self);
+  try
+    frmControleQualidade.ShowModal;
+  finally
+    FreeAndNil(frmControleQualidade);
+  end;
+end;
+
 procedure TfrmPrincipal.miSairClick(Sender: TObject);
 begin
   DisplayMsg(MSG_CONF, 'Deseja realmente sair do sistema?', 'Sair do Sistema');
 
   if (ResultMsgModal = mrYes) then
     Close;
+end;
+
+procedure TfrmPrincipal.MotivosdeDescarte1Click(Sender: TObject);
+begin
+  if frmCadastroMotivoDescarte = nil then
+    frmCadastroMotivoDescarte := TfrmCadastroMotivoDescarte.Create(nil);
+  try
+    frmCadastroMotivoDescarte.ShowModal;
+  finally
+    FreeAndNil(frmCadastroMotivoDescarte);
+  end;
 end;
 
 procedure TfrmPrincipal.Multiplicaes1Click(Sender: TObject);

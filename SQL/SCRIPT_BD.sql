@@ -370,3 +370,30 @@ CREATE TABLE if not exists opfinal_estagio_lote_intervalo
       REFERENCES opfinal_estagio_lote (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT
 );
+
+CREATE TABLE motivodescarte
+(
+  id serial NOT NULL,
+  descricao character varying(255) NOT NULL,
+  CONSTRAINT pk_motivodescarte PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE opfinal_estagio_lote_s_qualidade
+(
+  id serial NOT NULL,
+  id_opfinal_estagio_lote_s bigint,
+  id_motivodescarte bigint,
+  CONSTRAINT pk_opfinal_estagio_lote_s_qualidade PRIMARY KEY (id),
+  CONSTRAINT fk_opfels_motivo FOREIGN KEY (id_motivodescarte)
+      REFERENCES motivodescarte (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_opfelsq_pote FOREIGN KEY (id_opfinal_estagio_lote_s)
+      REFERENCES opfinal_estagio_lote_s (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT
+)
+WITH (
+  OIDS=FALSE
+);

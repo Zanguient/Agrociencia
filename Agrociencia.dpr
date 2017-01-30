@@ -59,7 +59,11 @@ uses
   uBeanOPFinal_Estagio_Lote_S in 'Beans\uBeanOPFinal_Estagio_Lote_S.pas',
   uBeanOPFinal_Estagio_Lote_Intervalo in 'Beans\uBeanOPFinal_Estagio_Lote_Intervalo.pas',
   uControleMultiplicacao in 'uControleMultiplicacao.pas' {frmControleMultiplicacao},
-  uImpressaoEtiquetas in 'uImpressaoEtiquetas.pas' {frmImpressaoEtiquetas};
+  uImpressaoEtiquetas in 'uImpressaoEtiquetas.pas' {frmImpressaoEtiquetas},
+  uControleQualidade in 'uControleQualidade.pas' {frmControleQualidade},
+  uBeanMotivoDescarte in 'Beans\uBeanMotivoDescarte.pas',
+  uCadastroMotivoDescarte in 'uCadastroMotivoDescarte.pas' {frmCadastroMotivoDescarte},
+  uBeanOPFinal_Estagio_Lote_S_Qualidade in 'Beans\uBeanOPFinal_Estagio_Lote_S_Qualidade.pas';
 
 {$R *.res}
 

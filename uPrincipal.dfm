@@ -67,6 +67,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Composi'#231#227'o de Meios de Cultura'
         OnClick = ComposiodeMeiosdeCultura1Click
       end
+      object MotivosdeDescarte1: TMenuItem
+        Caption = 'Motivos de Descarte'
+        OnClick = MotivosdeDescarte1Click
+      end
     end
     object Movimentao1: TMenuItem
       Caption = 'Movimenta'#231#227'o'
@@ -103,6 +107,10 @@ object frmPrincipal: TfrmPrincipal
       object Etiquetas1: TMenuItem
         Caption = 'Etiquetas'
         OnClick = Etiquetas1Click
+      end
+      object ControledeQualidade1: TMenuItem
+        Caption = 'Controle de Qualidade'
+        OnClick = ControledeQualidade1Click
       end
     end
     object Relatrios1: TMenuItem
