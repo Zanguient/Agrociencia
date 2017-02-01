@@ -63,7 +63,8 @@ uses
   uControleQualidade in 'uControleQualidade.pas' {frmControleQualidade},
   uBeanMotivoDescarte in 'Beans\uBeanMotivoDescarte.pas',
   uCadastroMotivoDescarte in 'uCadastroMotivoDescarte.pas' {frmCadastroMotivoDescarte},
-  uBeanOPFinal_Estagio_Lote_S_Qualidade in 'Beans\uBeanOPFinal_Estagio_Lote_S_Qualidade.pas';
+  uBeanOPFinal_Estagio_Lote_S_Qualidade in 'Beans\uBeanOPFinal_Estagio_Lote_S_Qualidade.pas',
+  uRelAgendaSemanal in 'uRelAgendaSemanal.pas' {frmRelAgendaSemanal};
 
 {$R *.res}
 

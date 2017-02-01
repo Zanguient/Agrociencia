@@ -38,6 +38,7 @@ type
     Etiquetas1: TMenuItem;
     MotivosdeDescarte1: TMenuItem;
     ControledeQualidade1: TMenuItem;
+    AgendaSemanal1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -61,6 +62,7 @@ type
     procedure Etiquetas1Click(Sender: TObject);
     procedure MotivosdeDescarte1Click(Sender: TObject);
     procedure ControledeQualidade1Click(Sender: TObject);
+    procedure AgendaSemanal1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -101,7 +103,8 @@ uses
   uControleMultiplicacao,
   uImpressaoEtiquetas,
   uCadastroMotivoDescarte,
-  uControleQualidade;
+  uControleQualidade,
+  uRelAgendaSemanal;
 
 {$R *.dfm}
 
@@ -204,6 +207,17 @@ begin
   CriarComandoSequenciaMenu(MainMenu1);
 
   Caption := 'Sistema Agrociência - Usuário: ' + IntToStr(USUARIO.CODIGO) + ' - ' + USUARIO.NOME;
+end;
+
+procedure TfrmPrincipal.AgendaSemanal1Click(Sender: TObject);
+begin
+  if not Assigned(frmRelAgendaSemanal) then
+    frmRelAgendaSemanal := TfrmRelAgendaSemanal.Create(nil);
+  try
+    frmRelAgendaSemanal.ShowModal;
+  finally
+    FreeAndNil(frmRelAgendaSemanal);
+  end;
 end;
 
 procedure TfrmPrincipal.BackupdoBancodeDados1Click(Sender: TObject);

@@ -115,6 +115,10 @@ object frmPrincipal: TfrmPrincipal
     end
     object Relatrios1: TMenuItem
       Caption = 'Relat'#243'rios'
+      object AgendaSemanal1: TMenuItem
+        Caption = 'Agenda Semanal'
+        OnClick = AgendaSemanal1Click
+      end
     end
     object Configuraes1: TMenuItem
       Caption = 'Configura'#231#245'es'
