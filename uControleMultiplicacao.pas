@@ -28,6 +28,7 @@ type
     CODIGOOP : Integer;
     SEQUENCIA : Integer;
     NUMEROLOTE : Integer;
+    ESTACAOTRABALHO : string;
     IDESTAGIO : Integer;
     IDLOTE : Integer;
     DATAHORAI: TDateTime;
@@ -81,6 +82,7 @@ type
     cds_Saidas: TClientDataSet;
     cds_SaidasCODIGOBARRAS: TIntegerField;
     lbEstagio: TLabel;
+    edEstacaoTrabalho: TLabeledEdit;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -347,105 +349,116 @@ begin
     end else begin
       if edNumeroLoteEstagio.Focused then begin
         if StrToIntDef(edNumeroLoteEstagio.Text, 0) > 0 then begin
-          edCodigoEntrada.Enabled := True;
-          edCodigoSaida.Enabled   := not MULTIPLICACAO.FIM;
-          MULTIPLICACAO.NUMEROLOTE:= StrToIntDef(edNumeroLoteEstagio.Text, 0);
-          if edCodigoEntrada.CanFocus then
-            edCodigoEntrada.SetFocus;
+          MULTIPLICACAO.NUMEROLOTE      := StrToIntDef(edNumeroLoteEstagio.Text, 0);
           edNumeroLoteEstagio.Enabled   := False;
-          rgSaida.Enabled               := not MULTIPLICACAO.FIM;
+          edEstacaoTrabalho.Enabled     := True;
+          if edEstacaoTrabalho.CanFocus then
+            edEstacaoTrabalho.SetFocus;
         end;
       end else begin
-        if edCodigoEntrada.Focused then begin
-          Codigo := StrToIntDef(edCodigoEntrada.Text,0);
-          case rgEntrada.ItemIndex of
-            0 : begin
-              if Codigo > 0 then begin
-                if MULTIPLICACAO.INICIAL then begin
-                  if Codigo <> MULTIPLICACAO.CODIGOOP then begin
-                    DisplayMsg(MSG_WAR, 'Pote selecionado não pertence a ordem de produção atual!');
-                    Exit;
-                  end;
-                end else begin
-                  if cds_Entradas.Locate(cds_EntradasCODIGOBARRAS.FieldName, Codigo, []) then begin
-                    DisplayMsg(MSG_WAR, 'Pote já foi adicionado ao lote atual!');
-                    Exit;
-                  end;
-                  FWC     := TFWConnection.Create;
-                  BuscaOP := TFDQuery.Create(nil);
-                  try
-                    BuscaOP.Connection := FWC.FDConnection;
-                    BuscaOP.Close;
-                    BuscaOP.SQL.Clear;
-                    BuscaOP.SQL.Add('SELECT OE.OPFINAL_ID AS OP, OELS.BAIXADO FROM OPFINAL_ESTAGIO OE');
-                    BuscaOP.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OEL ON OEL.OPFINAL_ESTAGIO_ID = OE.ID');
-                    BuscaOP.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OELS ON OELS.OPFINAL_ESTAGIO_LOTE_ID = OEL.ID');
-                    BuscaOP.SQL.Add('WHERE OELS.ID = :CODIGOBARRAS');
-                    BuscaOP.ParamByName('CODIGOBARRAS').AsInteger := Codigo;
-                    BuscaOP.Open();
-
-                    if BuscaOP.IsEmpty then begin
-                      DisplayMsg(MSG_WAR, 'Código de barras não encontrado!');
-                      Exit;
-                    end;
-
-                    if BuscaOP.FieldByName('OP').AsInteger <> MULTIPLICACAO.CODIGOOP then begin
-                      DisplayMsg(MSG_WAR, 'Código de barras informado não pertence a Ordem de Produção selecionada!');
-                      Exit;
-                    end;
-
-                    if BuscaOP.FieldByName('BAIXADO').AsBoolean then begin
-                      DisplayMsg(MSG_WAR, 'Código de barras informado já foi baixado anteriormente!');
-                      Exit;
-                    end;
-                  finally
-                    FreeAndNil(BuscaOP);
-                    FreeAndNil(FWC);
-                  end;
-                end;
-                cds_Entradas.Insert;
-                cds_EntradasCODIGOBARRAS.Value  := Codigo;
-                cds_Entradas.Post;
-              end;
-            end;
-            1 : begin
-              if not cds_Entradas.IsEmpty then begin
-                if Codigo > 0 then begin
-                  if cds_Entradas.Locate('CODIGOBARRAS', Codigo,[]) then
-                    cds_Entradas.Delete;
-                end;
-              end;
-            end;
+        if edEstacaoTrabalho.Focused then begin
+          if Length(Trim(edEstacaoTrabalho.Text)) > 0 then begin
+            edCodigoEntrada.Enabled       := True;
+            edCodigoSaida.Enabled         := not MULTIPLICACAO.FIM;
+            MULTIPLICACAO.ESTACAOTRABALHO := edEstacaoTrabalho.Text;
+            if edCodigoEntrada.CanFocus then
+              edCodigoEntrada.SetFocus;
+            edEstacaoTrabalho.Enabled     := False;
+            rgSaida.Enabled               := not MULTIPLICACAO.FIM;
           end;
-          edCodigoEntrada.Clear;
         end else begin
-          if edCodigoSaida.Focused then begin
-            Codigo := StrToIntDef(edCodigoSaida.Text,0);
-            case rgSaida.ItemIndex of
+
+          if edCodigoEntrada.Focused then begin
+            Codigo := StrToIntDef(edCodigoEntrada.Text,0);
+            case rgEntrada.ItemIndex of
               0 : begin
-                if Codigo = MULTIPLICACAO.IDESTAGIO then begin
-                  if MULTIPLICACAO.SALDOMC <= cds_Saidas.RecordCount + 1 then begin
-                    DisplayMsg(MSG_WAR, 'Acabaram os potes do Meio de Cultura! Verifique com o Administrador!');
-                    Exit;
+                if Codigo > 0 then begin
+                  if MULTIPLICACAO.INICIAL then begin
+                    if Codigo <> MULTIPLICACAO.CODIGOOP then begin
+                      DisplayMsg(MSG_WAR, 'Pote selecionado não pertence a ordem de produção atual!');
+                      Exit;
+                    end;
+                  end else begin
+                    if cds_Entradas.Locate(cds_EntradasCODIGOBARRAS.FieldName, Codigo, []) then begin
+                      DisplayMsg(MSG_WAR, 'Pote já foi adicionado ao lote atual!');
+                      Exit;
+                    end;
+                    FWC     := TFWConnection.Create;
+                    BuscaOP := TFDQuery.Create(nil);
+                    try
+                      BuscaOP.Connection := FWC.FDConnection;
+                      BuscaOP.Close;
+                      BuscaOP.SQL.Clear;
+                      BuscaOP.SQL.Add('SELECT OE.OPFINAL_ID AS OP, OELS.BAIXADO FROM OPFINAL_ESTAGIO OE');
+                      BuscaOP.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OEL ON OEL.OPFINAL_ESTAGIO_ID = OE.ID');
+                      BuscaOP.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OELS ON OELS.OPFINAL_ESTAGIO_LOTE_ID = OEL.ID');
+                      BuscaOP.SQL.Add('WHERE OELS.ID = :CODIGOBARRAS');
+                      BuscaOP.ParamByName('CODIGOBARRAS').AsInteger := Codigo;
+                      BuscaOP.Open();
+
+                      if BuscaOP.IsEmpty then begin
+                        DisplayMsg(MSG_WAR, 'Código de barras não encontrado!');
+                        Exit;
+                      end;
+
+                      if BuscaOP.FieldByName('OP').AsInteger <> MULTIPLICACAO.CODIGOOP then begin
+                        DisplayMsg(MSG_WAR, 'Código de barras informado não pertence a Ordem de Produção selecionada!');
+                        Exit;
+                      end;
+
+                      if BuscaOP.FieldByName('BAIXADO').AsBoolean then begin
+                        DisplayMsg(MSG_WAR, 'Código de barras informado já foi baixado anteriormente!');
+                        Exit;
+                      end;
+                    finally
+                      FreeAndNil(BuscaOP);
+                      FreeAndNil(FWC);
+                    end;
                   end;
-                  cds_Saidas.Insert;
-                  cds_SaidasCODIGOBARRAS.Value  := Codigo;
-                  cds_Saidas.Post;
-                end else begin
-                  DisplayMsg(MSG_WAR, 'Código de Barras.: ' + IntToStr(Codigo) + ' não pertence a Ordem de Produção N.º ' + IntToStr(MULTIPLICACAO.CODIGOOP) + ', Verifique!');
-                  Exit;
+                  cds_Entradas.Insert;
+                  cds_EntradasCODIGOBARRAS.Value  := Codigo;
+                  cds_Entradas.Post;
                 end;
               end;
               1 : begin
-                if not cds_Saidas.IsEmpty then begin
+                if not cds_Entradas.IsEmpty then begin
                   if Codigo > 0 then begin
-                    if cds_Saidas.Locate('CODIGOBARRAS', Codigo,[]) then
-                      cds_Saidas.Delete;
+                    if cds_Entradas.Locate('CODIGOBARRAS', Codigo,[]) then
+                      cds_Entradas.Delete;
                   end;
                 end;
               end;
             end;
-            edCodigoSaida.Clear;
+            edCodigoEntrada.Clear;
+          end else begin
+            if edCodigoSaida.Focused then begin
+              Codigo := StrToIntDef(edCodigoSaida.Text,0);
+              case rgSaida.ItemIndex of
+                0 : begin
+                  if Codigo = MULTIPLICACAO.IDESTAGIO then begin
+                    if MULTIPLICACAO.SALDOMC <= cds_Saidas.RecordCount + 1 then begin
+                      DisplayMsg(MSG_WAR, 'Acabaram os potes do Meio de Cultura! Verifique com o Administrador!');
+                      Exit;
+                    end;
+                    cds_Saidas.Insert;
+                    cds_SaidasCODIGOBARRAS.Value  := Codigo;
+                    cds_Saidas.Post;
+                  end else begin
+                    DisplayMsg(MSG_WAR, 'Código de Barras.: ' + IntToStr(Codigo) + ' não pertence a Ordem de Produção N.º ' + IntToStr(MULTIPLICACAO.CODIGOOP) + ', Verifique!');
+                    Exit;
+                  end;
+                end;
+                1 : begin
+                  if not cds_Saidas.IsEmpty then begin
+                    if Codigo > 0 then begin
+                      if cds_Saidas.Locate('CODIGOBARRAS', Codigo,[]) then
+                        cds_Saidas.Delete;
+                    end;
+                  end;
+                end;
+              end;
+              edCodigoSaida.Clear;
+            end;
           end;
         end;
       end;
@@ -651,6 +664,7 @@ begin
         OPFEL.USUARIO_ID.Value          := USUARIO.CODIGO;
         OPFEL.OBSERVACAO.Value          := '';
         OPFEL.QUANTIDADE.Value          := 0;
+        OPFEL.ESTACAOTRABALHO.Value     := MULTIPLICACAO.ESTACAOTRABALHO;
         if MULTIPLICACAO.FIM then
           OPFEL.QUANTIDADE.Value        := StrToInt(edQuantidadeSaida.Text);
         OPFEL.Insert;
@@ -766,7 +780,9 @@ begin
   edCodigoOrdemProducao.Clear;
   edCodigoOrdemProducao.Enabled := True;
   edNumeroLoteEstagio.Clear;
+  edEstacaoTrabalho.Clear;
   edNumeroLoteEstagio.Enabled   := False;
+  edEstacaoTrabalho.Enabled     := False;
   edCodigoEntrada.Clear;
   edCodigoEntrada.Enabled       := False;
   edCodigoSaida.Clear;

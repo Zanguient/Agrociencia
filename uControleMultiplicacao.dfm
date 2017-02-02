@@ -422,7 +422,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           117)
         object lbEstagio: TLabel
           AlignWithMargins = True
-          Left = 159
+          Left = 316
           Top = 76
           Width = 6
           Height = 23
@@ -504,6 +504,29 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Font.Style = []
           ParentFont = False
           TabOrder = 2
+        end
+        object edEstacaoTrabalho: TLabeledEdit
+          Left = 159
+          Top = 76
+          Width = 151
+          Height = 27
+          EditLabel.Width = 53
+          EditLabel.Height = 19
+          EditLabel.Caption = 'Esta'#231#227'o'
+          EditLabel.Font.Charset = DEFAULT_CHARSET
+          EditLabel.Font.Color = clWindowText
+          EditLabel.Font.Height = -16
+          EditLabel.Font.Name = 'Tahoma'
+          EditLabel.Font.Style = []
+          EditLabel.ParentFont = False
+          Enabled = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 3
         end
       end
       object GridPanel1: TGridPanel
@@ -793,7 +816,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
     Left = 264
     Top = 208
     Bitmap = {
-      494C010103000800500020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000800540020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000000000000000DADA
