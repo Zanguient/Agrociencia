@@ -105,14 +105,14 @@ begin
       Consulta.Close;
       Consulta.SQL.Clear;
 
-      Consulta.SQL.Add('SELECT SEMANA, TIPO, ID, CAST(DATAINICIO AS DATE), PRODUTO FROM');
+      Consulta.SQL.Add('SELECT SEMANA, TIPO, ID, CAST(DATAINICIO AS DATE), DESCRICAO FROM');
       Consulta.SQL.Add('(');
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('  DATE_PART(''WEEK'', OPMC.DATAINICIO) AS SEMANA,');
       Consulta.SQL.Add('  ''ORDEM DE PRODUÇÃO DO MEIO DE CULTURA'' AS TIPO,');
       Consulta.SQL.Add('	OPMC.ID,');
       Consulta.SQL.Add('	OPMC.DATAINICIO,');
-      Consulta.SQL.Add('	MC.CODIGO AS PRODUTO');
+      Consulta.SQL.Add('	''Código MC.: '' || MC.CODIGO || ''   Volume Final.: '' || OPMC.QUANTPRODUTO || '' LT'' AS DESCRICAO');
       Consulta.SQL.Add('FROM ORDEMPRODUCAOMC OPMC');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPMC.ID_PRODUTO)');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = P.ID)');
@@ -130,13 +130,16 @@ begin
       Consulta.SQL.Add('UNION ALL');
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	DATE_PART(''WEEK'', OPFE.PREVISAOINICIO) AS SEMANA,');
-      Consulta.SQL.Add('	''ORDEM DE PRODUÇÃO DA MULTIPLICAÇÃO'' AS TIPO,');
+      Consulta.SQL.Add('	''ORDEM DE PRODUÇÃO DA PLANTA'' AS TIPO,');
       Consulta.SQL.Add('	OPFE.ID,');
       Consulta.SQL.Add('	OPFE.PREVISAOINICIO AS DATAINICIO,');
-      Consulta.SQL.Add('	P.DESCRICAO AS PRODUTO');
+      Consulta.SQL.Add('	''Espécie.:   '' || P.DESCRICAO || ''   Estágio.: '' || E.DESCRICAO || ''   Codigo MCP.: '' || MC.CODIGO AS DESCRICAO');
       Consulta.SQL.Add('FROM OPFINAL OPF');
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
+      Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
+      Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
       Consulta.SQL.Add('AND OPFE.PREVISAOINICIO BETWEEN :DATAI AND :DATAF');

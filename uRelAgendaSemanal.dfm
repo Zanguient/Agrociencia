@@ -108,7 +108,6 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
         Value = 100.000000000000000000
       end>
     TabOrder = 2
-    ExplicitTop = 138
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -384,7 +383,6 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       Checked = True
       State = cbChecked
       TabOrder = 0
-      ExplicitHeight = 36
     end
     object cbProdutoFinal: TCheckBox
       AlignWithMargins = True
@@ -397,7 +395,6 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       Checked = True
       State = cbChecked
       TabOrder = 1
-      ExplicitHeight = 36
     end
   end
   object rgStatus: TRadioGroup
@@ -420,9 +417,5 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       'Ambas')
     ParentFont = False
     TabOrder = 3
-    ExplicitLeft = 80
-    ExplicitTop = 160
-    ExplicitWidth = 185
-    ExplicitHeight = 105
   end
 end
