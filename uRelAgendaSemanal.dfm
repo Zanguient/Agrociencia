@@ -4,7 +4,7 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
   ActiveControl = edDataInicial
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio de Agenda Semanal'
-  ClientHeight = 289
+  ClientHeight = 314
   ClientWidth = 349
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -80,7 +80,7 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 226
+    Top = 251
     Width = 343
     Height = 60
     Align = alBottom
@@ -107,7 +107,8 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 2
+    TabOrder = 4
+    ExplicitTop = 226
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -401,7 +402,7 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
     Left = 0
     Top = 132
     Width = 349
-    Height = 91
+    Height = 93
     Align = alClient
     Caption = 'Status'
     Columns = 2
@@ -416,6 +417,26 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       'N'#227'o Encerradas'
       'Ambas')
     ParentFont = False
+    TabOrder = 2
+    ExplicitHeight = 85
+  end
+  object cbExibirSQL: TCheckBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 228
+    Width = 343
+    Height = 17
+    Align = alBottom
+    Caption = 'Exibir SQL'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 3
+    ExplicitLeft = 104
+    ExplicitTop = 240
+    ExplicitWidth = 97
   end
 end

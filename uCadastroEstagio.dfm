@@ -783,6 +783,7 @@ object frmCadastroEstagio: TfrmCadastroEstagio
             Top = 237
             Width = 415
             Height = 27
+            Style = csDropDownList
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
@@ -793,7 +794,7 @@ object frmCadastroEstagio: TfrmCadastroEstagio
             Items.Strings = (
               'Inicial'
               'Normal'
-              'Multiplicacao'
+              'Controlado'
               'Final')
           end
         end

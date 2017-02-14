@@ -22,6 +22,7 @@ type
     cbMeioCultura: TCheckBox;
     cbProdutoFinal: TCheckBox;
     rgStatus: TRadioGroup;
+    cbExibirSQL: TCheckBox;
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
@@ -45,7 +46,8 @@ uses
   uMensagem,
   uFWConnection,
   uBeanUsuario,
-  uDMUtil;
+  uDMUtil,
+  uConstantes;
 
 procedure TfrmRelAgendaSemanal.btRelatorioClick(Sender: TObject);
 begin
@@ -86,6 +88,7 @@ end;
 
 procedure TfrmRelAgendaSemanal.FormShow(Sender: TObject);
 begin
+  cbExibirSQL.Visible := DESIGNREL;
   edDataInicial.Date  := Date;
   edDataFinal.Date    := Date;
 end;
@@ -105,13 +108,13 @@ begin
       Consulta.Close;
       Consulta.SQL.Clear;
 
-      Consulta.SQL.Add('SELECT SEMANA, TIPO, ID, CAST(DATAINICIO AS DATE), DESCRICAO FROM');
+      Consulta.SQL.Add('SELECT SEMANA, TIPO, ID, CAST(DATA AS DATE), DESCRICAO FROM');
       Consulta.SQL.Add('(');
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('  DATE_PART(''WEEK'', OPMC.DATAINICIO) AS SEMANA,');
-      Consulta.SQL.Add('  ''ORDEM DE PRODUÇÃO DO MEIO DE CULTURA'' AS TIPO,');
+      Consulta.SQL.Add('  0 AS TIPO,');
       Consulta.SQL.Add('	OPMC.ID,');
-      Consulta.SQL.Add('	OPMC.DATAINICIO,');
+      Consulta.SQL.Add('	OPMC.DATAINICIO AS DATA,');
       Consulta.SQL.Add('	''Código MC.: '' || MC.CODIGO || ''   Volume Final.: '' || OPMC.QUANTPRODUTO || '' LT'' AS DESCRICAO');
       Consulta.SQL.Add('FROM ORDEMPRODUCAOMC OPMC');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPMC.ID_PRODUTO)');
@@ -130,9 +133,9 @@ begin
       Consulta.SQL.Add('UNION ALL');
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	DATE_PART(''WEEK'', OPFE.PREVISAOINICIO) AS SEMANA,');
-      Consulta.SQL.Add('	''ORDEM DE PRODUÇÃO DA PLANTA'' AS TIPO,');
+      Consulta.SQL.Add('	1 AS TIPO, --Iniciar OP');
       Consulta.SQL.Add('	OPFE.ID,');
-      Consulta.SQL.Add('	OPFE.PREVISAOINICIO AS DATAINICIO,');
+      Consulta.SQL.Add('	OPFE.PREVISAOINICIO AS DATA,');
       Consulta.SQL.Add('	''Espécie.:   '' || P.DESCRICAO || ''   Estágio.: '' || E.DESCRICAO || ''   Codigo MCP.: '' || MC.CODIGO AS DESCRICAO');
       Consulta.SQL.Add('FROM OPFINAL OPF');
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
@@ -143,6 +146,33 @@ begin
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
       Consulta.SQL.Add('AND OPFE.PREVISAOINICIO BETWEEN :DATAI AND :DATAF');
+      Consulta.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
+      Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO_LOTE OPFEL WHERE OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
+
+      if not cbProdutoFinal.Checked then
+        Consulta.SQL.Add('AND 1 = 2');
+
+      case rgStatus.ItemIndex of
+        0 : Consulta.SQL.Add('AND OPFE.DATAHORAFIM IS NOT NULL');
+        1 : Consulta.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
+      end;
+
+      Consulta.SQL.Add('UNION ALL');
+      Consulta.SQL.Add('SELECT');
+      Consulta.SQL.Add('	DATE_PART(''WEEK'', OPFE.PREVISAOTERMINO) AS SEMANA,');
+      Consulta.SQL.Add('	2 AS TIPO, --Gerar OP');
+      Consulta.SQL.Add('	OPFE.ID,');
+      Consulta.SQL.Add('	OPFE.PREVISAOTERMINO AS DATA,');
+      Consulta.SQL.Add('	''Espécie.:   '' || P.DESCRICAO || ''   Estágio.: '' || E.DESCRICAO || ''   Codigo MCP.: '' || MC.CODIGO AS DESCRICAO');
+      Consulta.SQL.Add('FROM OPFINAL OPF');
+      Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+      Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
+      Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
+      Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
+      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
+      Consulta.SQL.Add('AND OPFE.PREVISAOTERMINO BETWEEN :DATAI AND :DATAF');
 
       if not cbProdutoFinal.Checked then
         Consulta.SQL.Add('AND 1 = 2');
@@ -153,7 +183,7 @@ begin
       end;
 
       Consulta.SQL.Add(') AGENDA');
-      Consulta.SQL.Add('ORDER BY SEMANA, TIPO, DATAINICIO');
+      Consulta.SQL.Add('ORDER BY SEMANA, TIPO, DATA');
 
       Consulta.Connection                     := FWC.FDConnection;
 
@@ -161,6 +191,9 @@ begin
       Consulta.ParamByName('DATAF').DataType  := ftDate;
       Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
       Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
+
+      if cbExibirSQL.Checked then
+        ShowMessage('Relatório de Agenda Semanal!' + sLineBreak + sLineBreak + Consulta.SQL.Text);
 
       Consulta.Prepare;
       Consulta.Open;

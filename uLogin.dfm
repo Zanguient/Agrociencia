@@ -4328,7 +4328,6 @@ object frmLogin: TfrmLogin
         Width = 100
         Height = 50
         Caption = 'Entrar'
-        Default = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -4860,7 +4859,6 @@ object frmLogin: TfrmLogin
         Width = 100
         Height = 50
         Caption = 'Cancelar'
-        Default = True
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11

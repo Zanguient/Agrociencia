@@ -128,6 +128,20 @@ end;
 procedure TfrmLogin.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  case Key of
+    VK_ESCAPE : Close;
+    VK_RETURN : begin
+      if edUsuario.Focused then begin
+        if Length(Trim(edUsuario.Text)) > 0 then
+          SelectNext(ActiveControl as TWinControl, True, True);
+      end else begin
+        if edSenha.Focused then begin
+          if Length(Trim(edSenha.Text)) > 0 then
+            EntrarClick(btEntrar);
+        end;
+      end;
+    end;
+  end;
   if ( Key = VK_ESCAPE) then
     Close;
 end;

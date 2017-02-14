@@ -948,7 +948,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Width = 419
             Height = 124
             Align = alClient
-            TabOrder = 3
+            TabOrder = 5
             DesignSize = (
               419
               124)
@@ -1030,6 +1030,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               Top = 72
               Width = 118
               Height = 27
+              Enabled = False
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
               Font.Height = -16
@@ -1085,7 +1086,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            TabOrder = 4
+            TabOrder = 3
             DesignSize = (
               419
               58)
@@ -1137,7 +1138,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            TabOrder = 5
+            TabOrder = 4
             DesignSize = (
               419
               58)

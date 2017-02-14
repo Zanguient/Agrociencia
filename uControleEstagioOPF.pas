@@ -264,7 +264,7 @@ var
   FWC       : TFWConnection;
   Consulta  : TFDQuery;
   OPFE      : TOPFINAL_ESTAGIO;
-  I: Integer;
+  I         : Integer;
 begin
 
   if not cds_Pesquisa.IsEmpty then begin
@@ -274,6 +274,7 @@ begin
 
         FWC       := TFWConnection.Create;
         Consulta  := TFDQuery.Create(nil);
+        OPFE      := TOPFINAL_ESTAGIO.Create(FWC);
 
         try
           try
@@ -311,37 +312,37 @@ begin
             if not Consulta.IsEmpty then begin
               Consulta.First;
 
-              DisplayMsg(MSG_INPUT_INT, 'Informe o Numero do Lote (Maior que 0(Zero))!', '', '', IntToStr(Consulta.FieldByName('ULTIMOLOTE').AsInteger + 1));
+              DisplayMsg(MSG_INPUT_INT, 'Informe a Quantidade de Lotes a Gerar!', '', '', '1');
 
               if ResultMsgModal = mrOk then begin
-                for I := Consulta.FieldByName('ULTIMOLOTE').AsInteger + 1 to ResultMsgInputInt do begin
-                  cds_FichadeProducao.EmptyDataSet;
+                if ResultMsgInputInt > 0 then begin
+                  for I := (Consulta.FieldByName('ULTIMOLOTE').AsInteger + 1) to (Consulta.FieldByName('ULTIMOLOTE').AsInteger + ResultMsgInputInt) do begin
+                    cds_FichadeProducao.EmptyDataSet;
 
-                  cds_FichadeProducao.Append;
-                  cds_FichadeProducaoIPOPF.Value              := Consulta.FieldByName('IDOPF').AsInteger;
-                  cds_FichadeProducaoIPOPFE.Value             := Consulta.FieldByName('IDOPFE').AsInteger;
-                  cds_FichadeProducaoCODIGOPRODUTO.Value      := Consulta.FieldByName('CODIGOPRODUTO').AsInteger;
-                  cds_FichadeProducaoNOMEPRODUTO.Value        := Consulta.FieldByName('NOMEPRODUTO').AsString;
-                  cds_FichadeProducaoDATAGERACAOOPFE.Value    := Consulta.FieldByName('DATAGERACAOOPF').AsDateTime;
-                  cds_FichadeProducaoIDOPMC.Value             := Consulta.FieldByName('IDOPMC').AsInteger;
-                  cds_FichadeProducaoDATAGERACAOOPMC.Value    := Consulta.FieldByName('DATAGERACAOOPMC').AsDateTime;
-                  cds_FichadeProducaoCODIGOMC.Value           := Consulta.FieldByName('CODIGOMC').AsString;
-                  cds_FichadeProducaoOBSERVACAO.Value         := Consulta.FieldByName('OBSERVACAO').AsString;
-                  cds_FichadeProducaoNUMEROLOTE.Value         := I;
-                  cds_FichadeProducaoCODIGOBARRAS.Value       := Consulta.FieldByName('IDOPF').AsString + '*' + Consulta.FieldByName('SEQUENCIA').AsString;
-                  cds_FichadeProducao.Post;
+                    cds_FichadeProducao.Append;
+                    cds_FichadeProducaoIPOPF.Value              := Consulta.FieldByName('IDOPF').AsInteger;
+                    cds_FichadeProducaoIPOPFE.Value             := Consulta.FieldByName('IDOPFE').AsInteger;
+                    cds_FichadeProducaoCODIGOPRODUTO.Value      := Consulta.FieldByName('CODIGOPRODUTO').AsInteger;
+                    cds_FichadeProducaoNOMEPRODUTO.Value        := Consulta.FieldByName('NOMEPRODUTO').AsString;
+                    cds_FichadeProducaoDATAGERACAOOPFE.Value    := Consulta.FieldByName('DATAGERACAOOPF').AsDateTime;
+                    cds_FichadeProducaoIDOPMC.Value             := Consulta.FieldByName('IDOPMC').AsInteger;
+                    cds_FichadeProducaoDATAGERACAOOPMC.Value    := Consulta.FieldByName('DATAGERACAOOPMC').AsDateTime;
+                    cds_FichadeProducaoCODIGOMC.Value           := Consulta.FieldByName('CODIGOMC').AsString;
+                    cds_FichadeProducaoOBSERVACAO.Value         := Consulta.FieldByName('OBSERVACAO').AsString;
+                    cds_FichadeProducaoNUMEROLOTE.Value         := I;
+                    cds_FichadeProducaoCODIGOBARRAS.Value       := Consulta.FieldByName('IDOPF').AsString + '*' + Consulta.FieldByName('SEQUENCIA').AsString;
+                    cds_FichadeProducao.Post;
 
-                  DMUtil.frxDBDataset1.DataSet := cds_FichadeProducao;
-                  DMUtil.ImprimirRelatorio('frFichaTecnicadeProducao.fr3');
-                end;
-                OPFE := TOPFINAL_ESTAGIO.Create(FWC);
-                try
+                    DMUtil.frxDBDataset1.DataSet := cds_FichadeProducao;
+                    DMUtil.ImprimirRelatorio('frFichaTecnicadeProducao.fr3');
+                  end;
+
                   OPFE.ID.Value           := Consulta.FieldByName('IDOPFE').AsInteger;
-                  OPFE.ULTIMOLOTE.Value   := ResultMsgInputInt;
+                  OPFE.ULTIMOLOTE.Value   := (Consulta.FieldByName('ULTIMOLOTE').AsInteger + ResultMsgInputInt);
                   OPFE.Update;
 
-                finally
-                  FreeAndNil(OPFE);
+                  FWC.Commit;
+
                 end;
               end;
             end;
@@ -352,6 +353,7 @@ begin
           end;
         finally
           FreeAndNil(Consulta);
+          FreeAndNil(OPFE);
           FreeAndNil(FWC);
           cds_FichadeProducao.EmptyDataSet;
         end;
@@ -772,14 +774,16 @@ end;
 procedure TfrmControleEstagioOPF.edt_RecipienteRightButtonClick(
   Sender: TObject);
 var
-  FWC : TFWConnection;
-  P   : TPRODUTO;
+  FWC     : TFWConnection;
+  P       : TPRODUTO;
+  Filtro  : string;
 begin
 
   FWC := TFWConnection.Create;
   P   := TPRODUTO.Create(FWC);
   try
-    edt_Recipiente.Text := IntToStr(DMUtil.Selecionar(P, edt_Recipiente.Text));
+    Filtro := 'finalidade = ' + IntToStr(Integer(eRecipiente));
+    edt_Recipiente.Text := IntToStr(DMUtil.Selecionar(P, edt_Recipiente.Text, Filtro));
     P.SelectList('id = ' + edt_Recipiente.Text);
     if P.Count = 1 then
       edt_NomeRecipiente.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
