@@ -65,6 +65,12 @@ type
     edCadProIE: TEdit;
     Label8: TLabel;
     cds_PesquisaCADPROIE: TStringField;
+    edNomeContato: TEdit;
+    Label9: TLabel;
+    edDataNascimento: TJvDateEdit;
+    Label10: TLabel;
+    cds_PesquisaDATANASCIMENTO: TDateField;
+    cds_PesquisaNOMECONTATO: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -113,6 +119,8 @@ begin
     edObservacao.Clear;
     edCodigoExterno.Clear;
     edCadProIE.Clear;
+    edDataNascimento.Clear;
+    edNomeContato.Clear;
     btGravar.Tag  := 0;
   end else begin
     edNome.Text           := cds_PesquisaNOME.Value;
@@ -123,6 +131,8 @@ begin
     edCodigoExterno.Text  := cds_PesquisaCODIGOEXTERNO.Value;
     edObservacao.Text     := cds_PesquisaOBSERVACAO.Value;
     edCadProIE.Text       := cds_PesquisaCADPROIE.Value;
+    edDataNascimento.Date := cds_PesquisaDATANASCIMENTO.AsDateTime;
+    edNomeContato.Text    := cds_PesquisaNOMECONTATO.Value;
     btGravar.Tag          := cds_PesquisaID.Value;
   end;
 end;
@@ -236,6 +246,8 @@ begin
       C.OBSERVACAO.Value      := edObservacao.Text;
       C.CODIGOEXTERNO.Value   := edCodigoExterno.Text;
       C.CADPROIE.Value        := edCadProIE.Text;
+      C.DATANASCIMENTO.Value  := edDataNascimento.Date;
+      C.NOMECONTATO.Value     := edNomeContato.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         C.ID.Value          := (Sender as TSpeedButton).Tag;
@@ -307,6 +319,8 @@ begin
           cds_PesquisaOBSERVACAO.Value    := TCLIENTE(C.Itens[I]).OBSERVACAO.Value;
           cds_PesquisaCODIGOEXTERNO.Value := TCLIENTE(C.Itens[I]).CODIGOEXTERNO.Value;
           cds_PesquisaCADPROIE.Value      := TCLIENTE(C.Itens[I]).CADPROIE.Value;
+          cds_PesquisaDATANASCIMENTO.Value:= TCLIENTE(C.Itens[I]).DATANASCIMENTO.Value;
+          cds_PesquisaNOMECONTATO.Value   := TCLIENTE(C.Itens[I]).NOMECONTATO.Value;
           cds_Pesquisa.Post;
         end;
       end;

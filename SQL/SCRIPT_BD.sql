@@ -49,6 +49,8 @@ CREATE TABLE if not exists cliente
   observacao character varying(512),
   codigoexterno character varying(100),
   cadproie character varying(30),
+  nomecontato character varying(100),
+  datanascimento date,
   CONSTRAINT pk_cliente PRIMARY KEY (id)
 )
 WITH (

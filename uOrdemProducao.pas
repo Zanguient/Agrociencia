@@ -89,6 +89,8 @@ type
     Label14: TLabel;
     cds_Etiqueta1: TClientDataSet;
     cds_Etiqueta1CODIGOOP: TStringField;
+    cds_PesquisaSELECAOPOSITIVA: TStringField;
+    cds_PesquisaCODIGOSELECAOCAMPO: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -550,7 +552,9 @@ begin
       SQL.SQL.Add('	OPF.DATAHORA,');
       SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
       SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
-      SQL.SQL.Add('	OPF.QUANTIDADE');
+      SQL.SQL.Add('	OPF.QUANTIDADE,');
+      SQL.SQL.Add('	OPF.SELECAOPOSITIVA,');
+      SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO');
       SQL.SQL.Add('FROM OPFINAL OPF');
       SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
       SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
@@ -572,11 +576,13 @@ begin
         SQL.First;
         while not SQL.Eof do begin
           cds_Pesquisa.Append;
-          cds_PesquisaID.Value          := SQL.FieldByName('ID').AsInteger;
-          cds_PesquisaDATAHORA.Value    := SQL.FieldByName('DATAHORA').AsDateTime;
-          cds_PesquisaCLIENTE.Value     := SQL.FieldByName('NOMECLIENTE').AsString;
-          cds_PesquisaPRODUTO.Value     := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
-          cds_PesquisaQUANTIDADE.Value  := SQL.FieldByName('QUANTIDADE').AsInteger;
+          cds_PesquisaID.Value                  := SQL.FieldByName('ID').AsInteger;
+          cds_PesquisaDATAHORA.Value            := SQL.FieldByName('DATAHORA').AsDateTime;
+          cds_PesquisaCLIENTE.Value             := SQL.FieldByName('NOMECLIENTE').AsString;
+          cds_PesquisaPRODUTO.Value             := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
+          cds_PesquisaQUANTIDADE.Value          := SQL.FieldByName('QUANTIDADE').AsInteger;
+          cds_PesquisaSELECAOPOSITIVA.Value     := SQL.FieldByName('SELECAOPOSITIVA').AsString;
+          cds_PesquisaCODIGOSELECAOCAMPO.Value  := SQL.FieldByName('CODIGOSELECAOCAMPO').AsString;
           cds_Pesquisa.Post;
           SQL.Next;
         end;

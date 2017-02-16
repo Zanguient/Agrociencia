@@ -206,7 +206,7 @@ begin
 
   CriarComandoSequenciaMenu(MainMenu1);
 
-  Caption := 'Sistema Agrociência - Usuário: ' + IntToStr(USUARIO.CODIGO) + ' - ' + USUARIO.NOME;
+  Caption := 'Sistema Vivetech Agrociências - Usuário: ' + IntToStr(USUARIO.CODIGO) + ' - ' + USUARIO.NOME;
 end;
 
 procedure TfrmPrincipal.AgendaSemanal1Click(Sender: TObject);

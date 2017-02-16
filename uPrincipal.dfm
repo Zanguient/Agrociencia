@@ -90,18 +90,18 @@ object frmPrincipal: TfrmPrincipal
         end
       end
       object OrdemdeProduo1: TMenuItem
-        Caption = 'Produ'#231#227'o (Final)'
+        Caption = 'Cadastro de Produ'#231#227'o'
         object OrdemdeProduo2: TMenuItem
-          Caption = 'Ordem de Produ'#231#227'o'
+          Caption = 'Recebimento de Plantas'
           OnClick = OrdemdeProduo2Click
         end
         object EstgiodaProduo1: TMenuItem
-          Caption = 'Est'#225'gio da Produ'#231#227'o'
+          Caption = 'Gerar Ordem de Produ'#231#227'o'
           OnClick = EstgiodaProduo1Click
         end
       end
       object Multiplicaes1: TMenuItem
-        Caption = 'Multiplica'#231#245'es'
+        Caption = 'Produ'#231#227'o'
         OnClick = Multiplicaes1Click
       end
       object Etiquetas1: TMenuItem

@@ -18,6 +18,8 @@ type
     FCELULAR: TFieldString;
     FOBSERVACAO: TFieldString;
     FCADPROIE: TFieldString;
+    FDATANASCIMENTO: TFieldDate;
+    FNOMECONTATO: TFieldString;
     procedure SetCODIGOEXTERNO(const Value: TFieldString);
     procedure SetCPFCNPJ(const Value: TFieldString);
     procedure SetID(const Value: TFieldInteger);
@@ -27,6 +29,8 @@ type
     procedure SetTELEFONE(const Value: TFieldString);
     procedure SetOBSERVACAO(const Value: TFieldString);
     procedure SetCADPROIE(const Value: TFieldString);
+    procedure SetDATANASCIMENTO(const Value: TFieldDate);
+    procedure SetNOMECONTATO(const Value: TFieldString);
   protected
     procedure InitInstance; override;
   published
@@ -39,6 +43,8 @@ type
     property OBSERVACAO     : TFieldString read FOBSERVACAO write SetOBSERVACAO;
     property CODIGOEXTERNO  : TFieldString read FCODIGOEXTERNO write SetCODIGOEXTERNO;
     property CADPROIE       : TFieldString read FCADPROIE write SetCADPROIE;
+    property NOMECONTATO    : TFieldString read FNOMECONTATO write SetNOMECONTATO;
+    property DATANASCIMENTO : TFieldDate read FDATANASCIMENTO write SetDATANASCIMENTO;
   end;
 
 implementation
@@ -61,6 +67,7 @@ begin
   OBSERVACAO.Size     := 512;
   CODIGOEXTERNO.Size  := 100;
   CADPROIE.Size       := 30;
+  NOMECONTATO.Size    := 100;
 
   NOME.isSearchField  := True;
 
@@ -88,6 +95,11 @@ begin
   FCPFCNPJ := Value;
 end;
 
+procedure TCLIENTE.SetDATANASCIMENTO(const Value: TFieldDate);
+begin
+  FDATANASCIMENTO := Value;
+end;
+
 procedure TCLIENTE.SetEMAIL(const Value: TFieldString);
 begin
   FEMAIL := Value;
@@ -101,6 +113,11 @@ end;
 procedure TCLIENTE.SetNOME(const Value: TFieldString);
 begin
   FNOME := Value;
+end;
+
+procedure TCLIENTE.SetNOMECONTATO(const Value: TFieldString);
+begin
+  FNOMECONTATO := Value;
 end;
 
 procedure TCLIENTE.SetOBSERVACAO(const Value: TFieldString);
