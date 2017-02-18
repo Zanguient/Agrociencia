@@ -400,3 +400,19 @@ CREATE TABLE opfinal_estagio_lote_s_qualidade
 WITH (
   OIDS=FALSE
 );
+
+CREATE TABLE opfinal_estagio_imagens
+(
+  id serial NOT NULL,
+  id_opfinal_estagio bigint,
+  nomeimagem character varying(500),
+  CONSTRAINT pk_opfinal_estagio_imagem PRIMARY KEY (id),
+  CONSTRAINT fk_opf_i_e FOREIGN KEY (id_opfinal_estagio)
+      REFERENCES opfinal_estagio (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE opfinal_estagio_lote_s_qualidade ADD nomeimagem character varying(500);

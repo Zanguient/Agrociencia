@@ -4,7 +4,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
   ActiveControl = edPesquisa
   BorderStyle = bsNone
   Caption = 'Controle de Est'#225'gio'
-  ClientHeight = 570
+  ClientHeight = 639
   ClientWidth = 865
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -23,15 +23,16 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
     Left = 0
     Top = 0
     Width = 865
-    Height = 570
+    Height = 639
     Align = alClient
     TabOrder = 0
+    ExplicitHeight = 570
     object gdPesquisa: TDBGrid
       AlignWithMargins = True
       Left = 4
       Top = 92
       Width = 857
-      Height = 408
+      Height = 477
       Align = alClient
       DataSource = ds_Pesquisa
       DrawingStyle = gdsGradient
@@ -94,13 +95,14 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
     object pnBotoesVisualizacao: TPanel
       AlignWithMargins = True
       Left = 4
-      Top = 506
+      Top = 575
       Width = 857
       Height = 60
       Align = alBottom
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
+      ExplicitTop = 506
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 4
@@ -712,20 +714,22 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
     Left = 0
     Top = 0
     Width = 865
-    Height = 570
+    Height = 639
     Align = alClient
     TabOrder = 1
     Visible = False
+    ExplicitHeight = 570
     object Panel1: TPanel
       Left = 1
       Top = 1
       Width = 863
-      Height = 502
+      Height = 571
       Align = alClient
       BorderStyle = bsSingle
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
+      ExplicitHeight = 502
       object Panel3: TPanel
         Left = 1
         Top = 1
@@ -747,7 +751,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
         Left = 1
         Top = 43
         Width = 857
-        Height = 454
+        Height = 523
         Align = alClient
         ColumnCollection = <
           item
@@ -772,13 +776,15 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Value = 100.000000000000000000
           end>
         TabOrder = 1
+        ExplicitHeight = 454
         object pnUsuarioEsquerda: TPanel
           Left = 1
           Top = 1
           Width = 427
-          Height = 452
+          Height = 521
           Align = alClient
           TabOrder = 0
+          ExplicitHeight = 452
           object gbOPF: TGroupBox
             AlignWithMargins = True
             Left = 4
@@ -946,12 +952,13 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Left = 4
             Top = 324
             Width = 419
-            Height = 124
+            Height = 193
             Align = alClient
             TabOrder = 5
+            ExplicitHeight = 124
             DesignSize = (
               419
-              124)
+              193)
             object Label2: TLabel
               AlignWithMargins = True
               Left = 3
@@ -1183,9 +1190,10 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           Left = 428
           Top = 1
           Width = 428
-          Height = 452
+          Height = 521
           Align = alClient
           TabOrder = 1
+          ExplicitHeight = 452
           object Label1: TLabel
             AlignWithMargins = True
             Left = 4
@@ -1338,13 +1346,57 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               OnClick = btObservacaoClick
             end
           end
+          object pnFotos: TPanel
+            Left = 1
+            Top = 133
+            Width = 426
+            Height = 387
+            Align = alBottom
+            BevelOuter = bvNone
+            TabOrder = 1
+            object Image1: TImage
+              Left = 16
+              Top = 139
+              Width = 105
+              Height = 105
+              Center = True
+              Proportional = True
+            end
+            object btnImagem: TBitBtn
+              Left = 16
+              Top = 250
+              Width = 105
+              Height = 25
+              Caption = 'Buscar Imagem'
+              TabOrder = 0
+              OnClick = btnImagemClick
+            end
+            object ScrollBox1: TScrollBox
+              AlignWithMargins = True
+              Left = 3
+              Top = 3
+              Width = 420
+              Height = 130
+              Align = alTop
+              TabOrder = 1
+            end
+            object btnSalvarImagem: TBitBtn
+              Left = 16
+              Top = 275
+              Width = 105
+              Height = 25
+              Caption = 'Salvar Imagem'
+              TabOrder = 2
+              OnClick = btnSalvarImagemClick
+            end
+          end
         end
       end
     end
     object pnBotoesEdicao: TPanel
       AlignWithMargins = True
       Left = 4
-      Top = 506
+      Top = 575
       Width = 857
       Height = 60
       Align = alBottom
@@ -1359,6 +1411,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
       TabOrder = 0
       TabStop = True
       Visible = False
+      ExplicitTop = 506
       object GridPanel2: TGridPanel
         AlignWithMargins = True
         Left = 4

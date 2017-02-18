@@ -301,10 +301,6 @@ object frmConfiguracoesSistema: TfrmConfiguracoesSistema
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = 4
-      ExplicitTop = 36
-      ExplicitWidth = 871
-      ExplicitHeight = 384
       object Label1: TLabel
         Left = 3
         Top = 243
@@ -432,10 +428,23 @@ object frmConfiguracoesSistema: TfrmConfiguracoesSistema
         ParentFont = False
         OnClick = btConnectionClick
       end
+      object Label2: TLabel
+        Left = 3
+        Top = 300
+        Width = 157
+        Height = 19
+        Caption = 'Diret'#243'rio das Imagens'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+      end
       object edDiretorioRelatorio: TButtonedEdit
         Left = 3
         Top = 268
-        Width = 390
+        Width = 372
         Height = 27
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -610,6 +619,24 @@ object frmConfiguracoesSistema: TfrmConfiguracoesSistema
         ParentFont = False
         TabOrder = 6
         TextHint = 'Ex: 5432'
+      end
+      object edDiretorioImagem: TButtonedEdit
+        Left = 3
+        Top = 325
+        Width = 372
+        Height = 27
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Images = DMUtil.ImageList1
+        ParentFont = False
+        RightButton.ImageIndex = 0
+        RightButton.Visible = True
+        TabOrder = 8
+        Text = 'Diret'#243'rio de Imagens'
+        OnRightButtonClick = edDiretorioImagemRightButtonClick
       end
     end
   end

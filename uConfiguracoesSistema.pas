@@ -25,12 +25,15 @@ type
     edDriverID: TLabeledEdit;
     edPorta: TLabeledEdit;
     btConnection: TSpeedButton;
+    edDiretorioImagem: TButtonedEdit;
+    Label2: TLabel;
     procedure btSairClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure edDiretorioRelatorioRightButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btSalvarClick(Sender: TObject);
     procedure btConnectionClick(Sender: TObject);
+    procedure edDiretorioImagemRightButtonClick(Sender: TObject);
   private
     procedure CarregaConfiguracoes;
     procedure SalvaConfiguracoes;
@@ -99,6 +102,21 @@ begin
   edDriverID.Text           := CONEXAO.DriverID;
   edPorta.Text              := CONEXAO.Port;
   edDiretorioRelatorio.Text := CONFIG_LOCAL.DirRelatorios;
+  edDiretorioImagem.Text    := CONFIG_LOCAL.DirImagens;
+end;
+
+procedure TfrmConfiguracoesSistema.edDiretorioImagemRightButtonClick(
+  Sender: TObject);
+var
+  Pasta : String;
+begin
+  SelectDirectory('Selecione um Diretório!', '', Pasta);
+
+  if (Trim(Pasta) <> '') then begin
+    if (Pasta[Length(Pasta)] <> '\') then
+      Pasta := Pasta + '\';
+    edDiretorioImagem.Text := Pasta;
+  end;
 end;
 
 procedure TfrmConfiguracoesSistema.edDiretorioRelatorioRightButtonClick(
@@ -135,6 +153,7 @@ begin
   try
 
     ArqINI.WriteString('CONFIGURACOES', 'DIR_RELATORIOS', edDiretorioRelatorio.Text);
+    ArqINI.WriteString('CONFIGURACOES', 'DIR_IMAGENS', edDiretorioImagem.Text);
 
     ArqINI.WriteString('CONEXAOBD', 'Database', edDataBase.Text);
     ArqINI.WriteString('CONEXAOBD', 'Server', edServer.Text);

@@ -65,6 +65,7 @@ begin
     LOGIN.LembrarUsuario        := ArqINI.ReadBool('LOGIN', 'LEMBRARUSUARIO', True);
 
     CONFIG_LOCAL.DirRelatorios  := ArqINI.ReadString('CONFIGURACOES', 'DIR_RELATORIOS', 'C:\Agrociencia\Relatorios\');
+    CONFIG_LOCAL.DirImagens     := ArqINI.ReadString('CONFIGURACOES', 'DIR_IMAGENS', 'C:\Agrociencia\Imagens\');
 
   finally
     FreeAndNil(ArqINI);

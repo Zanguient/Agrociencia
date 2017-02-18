@@ -27,6 +27,8 @@ type
     Label8: TLabel;
     Label1: TLabel;
     lbPote: TLabel;
+    btnImagem: TBitBtn;
+    Image1: TImage;
     procedure btFecharClick(Sender: TObject);
     procedure edt_CodigoMotivoRightButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -34,8 +36,10 @@ type
     procedure btDescartarClick(Sender: TObject);
     procedure edt_CodigoMotivoChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnImagemClick(Sender: TObject);
   private
     { Private declarations }
+    NomeImagemAtual : string;
     procedure SelecionaMotivoDescarte;
     procedure SelecionaPote;
     procedure LimparDados;
@@ -59,7 +63,7 @@ uses
   uBeanOPFinal,
   uDMUtil,
   uFWConnection, uBeanOPFinal_Estagio_Lote_S_Qualidade, uBeanControleEstoque,
-  uBeanControleEstoqueProduto;
+  uBeanControleEstoqueProduto, Vcl.Imaging.jpeg, CapturaCam;
 
 {$R *.dfm}
 
@@ -92,6 +96,7 @@ begin
       CQ.ID.isNull := True;
       CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value := StrToInt(edt_CodigoPote.Text);
       CQ.ID_MOTIVODESCARTE.Value         := StrToInt(edt_CodigoMotivo.Text);
+      CQ.NOMEIMAGEM.Value                := NomeImagemAtual;
       CQ.Insert;
 
       OPS.ID.Value := CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value;
@@ -143,6 +148,59 @@ begin
   Close;
 end;
 
+procedure TfrmControleQualidade.btnImagemClick(Sender: TObject);
+var
+  DirNomeFoto: string;
+  NomeFoto: string;
+  procedure ConverteParaJpeg(ACaminhoFoto: string);
+  var
+    cjBmp: TBitmap;
+    cjJpg: TJpegImage;
+    strNomeSemExtensao: string;
+    AFoto: TImage;
+    Nome : string;
+  begin
+    AFoto:= TImage.Create(Self);
+    AFoto.Parent := Self;
+    AFoto.Visible := False;
+    AFoto.Picture.Bitmap.LoadFromFile(ACaminhoFoto + '.bmp');
+
+    cjJpg := TJPegImage.Create;
+    cjBmp := TBitmap.Create;
+
+    cjBmp.Assign(AFoto.Picture.Bitmap);
+    cjJpg.Assign(cjBMP);
+
+    Nome := ExtractFileName(ACaminhoFoto + '.jpg');
+
+    cjJpg.SaveToFile(CONFIG_LOCAL.DirImagens + Nome);
+    DeleteFile(ACaminhoFoto + '.bmp');
+    cjJpg.Free;
+    cjBmp.Free;
+    AFoto.Free;
+  end;
+begin
+  fCaptura := TfCaptura.Create(Self);
+  try
+    DirNomeFoto := ExtractFilePath(Application.ExeName) +
+      FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + edt_CodigoPote.Text +'.bmp';
+
+    NomeFoto := ExtractFilePath(DirNomeFoto) +
+      Copy(ExtractFileName(DirNomeFoto),1, Length(ExtractFileName(DirNomeFoto))-4);
+
+    fCaptura.camCamera.FichierImage := ExtractFileName(DirNomeFoto);
+    if fCaptura.ShowModal = mrOk then begin
+      fCaptura.camCamera.CaptureImageDisque;
+      ConverteParaJpeg(NomeFoto);
+      NomeFoto := CONFIG_LOCAL.DirImagens + ExtractFileName(NomeFoto + '.jpg');
+      Image1.Picture.LoadFromFile(NomeFoto);
+      NomeImagemAtual := NomeFoto;
+    end;
+  finally
+    FreeAndNil(fCaptura);
+  end;
+end;
+
 procedure TfrmControleQualidade.edt_CodigoMotivoChange(Sender: TObject);
 begin
   edt_Motivo.Clear;
@@ -191,6 +249,9 @@ begin
   btCancelar.Enabled := False;
   lbPote.Caption     := '';
   lbPote.Tag := 0;
+  NomeImagemAtual   := '';
+  btnImagem.Enabled := False;
+  Image1.Picture := nil;
 end;
 
 procedure TfrmControleQualidade.SelecionaMotivoDescarte;
@@ -223,6 +284,7 @@ var
   FWC : TFWConnection;
   SQL : TFDQuery;
 begin
+  btnImagem.Enabled := False;
   FWC := TFWConnection.Create;
   SQL := TFDQuery.Create(nil);
   try
@@ -264,7 +326,7 @@ begin
                       ', Recipiente: ' + SQL.FieldByName('RECIPIENTE').AsString;
     lbPote.Tag := SQL.FieldByName('CODRECIPIENTE').AsInteger;
     if edt_CodigoMotivo.CanFocus then edt_CodigoMotivo.SetFocus;
-
+    btnImagem.Enabled := True;
   finally
     FreeAndNil(SQL);
     FreeAndNil(FWC);

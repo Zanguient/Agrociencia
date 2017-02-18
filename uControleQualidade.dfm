@@ -398,8 +398,6 @@ object frmControleQualidade: TfrmControleQualidade
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitWidth = 661
-    ExplicitHeight = 109
     DesignSize = (
       706
       369)
@@ -428,6 +426,15 @@ object frmControleQualidade: TfrmControleQualidade
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+    end
+    object Image1: TImage
+      Left = 14
+      Top = 231
+      Width = 105
+      Height = 105
+      Anchors = [akLeft, akBottom]
+      Center = True
+      Proportional = True
     end
     object edt_CodigoPote: TLabeledEdit
       Left = 2
@@ -484,6 +491,17 @@ object frmControleQualidade: TfrmControleQualidade
       TabOrder = 2
       OnChange = edt_CodigoMotivoChange
       OnRightButtonClick = edt_CodigoMotivoRightButtonClick
+    end
+    object btnImagem: TBitBtn
+      Left = 14
+      Top = 342
+      Width = 105
+      Height = 25
+      Anchors = [akLeft, akBottom]
+      Caption = 'Buscar Imagem'
+      Enabled = False
+      TabOrder = 3
+      OnClick = btnImagemClick
     end
   end
 end

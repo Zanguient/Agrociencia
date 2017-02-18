@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Datasnap.DBClient,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
-  JvToolEdit, JvBaseEdits, FireDAC.Comp.Client, System.Math;
+  JvToolEdit, JvBaseEdits, FireDAC.Comp.Client, System.Math, Vcl.Imaging.jpeg,
+  Vcl.FileCtrl;
 
 type
   TfrmControleEstagioOPF = class(TForm)
@@ -88,6 +89,11 @@ type
     gbRecipiente: TGroupBox;
     edt_Recipiente: TButtonedEdit;
     edt_NomeRecipiente: TEdit;
+    pnFotos: TPanel;
+    Image1: TImage;
+    btnImagem: TBitBtn;
+    ScrollBox1: TScrollBox;
+    btnSalvarImagem: TBitBtn;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -116,15 +122,20 @@ type
     procedure edt_RecipienteChange(Sender: TObject);
     procedure edt_RecipienteKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure btnImagemClick(Sender: TObject);
+    procedure btnSalvarImagemClick(Sender: TObject);
   private
     procedure SelecionarObservacao;
+    procedure Deletar(Sender: TObject);
     { Private declarations }
   public
+    NomeImagemAtual : string;
     procedure CarregaDados;
     procedure InvertePaineis;
     procedure Cancelar;
     procedure Filtrar;
     procedure AtualizarEdits(Limpar : Boolean);
+    procedure BuscarFotos;
   end;
 
 var
@@ -143,7 +154,10 @@ uses
   uDMUtil,
   uBeanOrdemProducaoMC,
   uBeanOPFinal_Estagio,
-  uBeanObservacao, uBeanProdutos;
+  uBeanObservacao,
+  CapturaCam,
+  uBeanProdutos,
+  uBeanOpFinal_Estagio_Imagens;
 
 {$R *.dfm}
 
@@ -229,6 +243,7 @@ begin
             edt_NomeRecipiente.Text     := SQL.FieldByName('RECIPIENTE').AsString;
           end;
         end;
+        BuscarFotos;
       except
         on E : Exception do begin
           DisplayMsg(MSG_ERR, 'Erro ao Carregar os dados para Alteração.', '', E.Message);
@@ -364,6 +379,61 @@ begin
   end;
 end;
 
+procedure TfrmControleEstagioOPF.BuscarFotos;
+var
+  Imagem: TImage;
+  i: integer;
+  espaco: integer;
+  Diretorio : string;
+  NomeArquivo : string;
+  FWC : TFWConnection;
+  OPFEI : TOPFINAL_ESTAGIO_IMAGENS;
+begin
+  try
+    for I := 0 to Pred(ScrollBox1.ControlCount) do begin
+      if Assigned(ScrollBox1.Controls[I]) then begin
+        if ScrollBox1.Controls[I] is TImage then begin
+          ScrollBox1.RemoveControl(ScrollBox1.Controls[I]);
+        end;
+      end;
+    end;
+  except
+
+  end;
+
+  ScrollBox1.HorzScrollBar.Position:=0;
+  Diretorio := CONFIG_LOCAL.DirImagens; //aqui é o caminho da pasta
+  espaco := 10;
+  FWC   := TFWConnection.Create;
+  OPFEI := TOPFINAL_ESTAGIO_IMAGENS.Create(FWC);
+  try
+    OPFEI.SelectList('ID_OPFINAL_ESTAGIO = ' + IntToStr(btGravar.Tag));
+    if OPFEI.Count > 0 then begin
+      for I := 0 to Pred(OPFEI.Count) do begin
+        NomeArquivo := Diretorio + TOPFINAL_ESTAGIO_IMAGENS(OPFEI.Itens[I]).NOMEIMAGEM.asString;
+        if FileExists(NomeArquivo) then begin
+          Imagem := TImage.Create(Self);
+          Imagem.Parent := ScrollBox1;
+          Imagem.Width := 100;
+          Imagem.Height := 95;
+          Imagem.Top := 10;
+          Imagem.Stretch := true;
+          Imagem.Left := espaco;
+          Imagem.OnDblClick := Deletar;
+          Imagem.Tag := TOPFINAL_ESTAGIO_IMAGENS(OPFEI.Itens[I]).ID.Value;
+          Imagem.Picture.LoadFromFile(NomeArquivo);
+          espaco := espaco + Imagem.Height + 10;
+        end else
+          DisplayMsg(MSG_INF, 'Imagem não encontrada!', '', NomeArquivo);
+      end;
+    end;
+    ScrollBox1.Repaint;
+  finally
+    FreeAndNil(OPFEI);
+    FreeAndNil(FWC);
+  end;
+end;
+
 procedure TfrmControleEstagioOPF.btExportarClick(Sender: TObject);
 begin
   if btExportar.Tag = 0 then begin
@@ -485,10 +555,100 @@ begin
   end;
 end;
 
+procedure TfrmControleEstagioOPF.btnImagemClick(Sender: TObject);
+var
+  DirNomeFoto: string;
+  NomeFoto: string;
+  procedure ConverteParaJpeg(ACaminhoFoto: string);
+  var
+    cjBmp: TBitmap;
+    cjJpg: TJpegImage;
+    strNomeSemExtensao: string;
+    AFoto: TImage;
+    Nome : string;
+  begin
+    AFoto:= TImage.Create(Self);
+    AFoto.Parent := Self;
+    AFoto.Visible := False;
+    AFoto.Picture.Bitmap.LoadFromFile(ACaminhoFoto + '.bmp');
+
+    cjJpg := TJPegImage.Create;
+    cjBmp := TBitmap.Create;
+
+    cjBmp.Assign(AFoto.Picture.Bitmap);
+    cjJpg.Assign(cjBMP);
+
+    Nome := ExtractFileName(ACaminhoFoto + '.jpg');
+
+    cjJpg.SaveToFile(CONFIG_LOCAL.DirImagens + Nome);
+    DeleteFile(ACaminhoFoto + '.bmp');
+    cjJpg.Free;
+    cjBmp.Free;
+    AFoto.Free;
+  end;
+begin
+  fCaptura := TfCaptura.Create(Self);
+  try
+    DirNomeFoto := ExtractFilePath(Application.ExeName) +
+      FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + IntToStr(btGravar.Tag) +'.bmp';
+
+    NomeFoto := ExtractFilePath(DirNomeFoto) +
+      Copy(ExtractFileName(DirNomeFoto),1, Length(ExtractFileName(DirNomeFoto))-4);
+
+    fCaptura.camCamera.FichierImage := ExtractFileName(DirNomeFoto);
+    if fCaptura.ShowModal = mrOk then begin
+      fCaptura.camCamera.CaptureImageDisque;
+      ConverteParaJpeg(NomeFoto);
+      NomeFoto := CONFIG_LOCAL.DirImagens + ExtractFileName(NomeFoto + '.jpg');
+      Image1.Picture.LoadFromFile(NomeFoto);
+      NomeImagemAtual := NomeFoto;
+    end;
+  finally
+    FreeAndNil(fCaptura);
+  end;
+end;
+
 procedure TfrmControleEstagioOPF.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
+end;
+
+procedure TfrmControleEstagioOPF.btnSalvarImagemClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  IMG : TOPFINAL_ESTAGIO_IMAGENS;
+begin
+  if Assigned(Image1.Picture) then begin
+    FWC := TFWConnection.Create;
+    IMG := TOPFINAL_ESTAGIO_IMAGENS.Create(FWC);
+    try
+      FWC.StartTransaction;
+      try
+        IMG.ID.isNull := True;
+        IMG.ID_OPFINAL_ESTAGIO.Value := btGravar.Tag;
+        IMG.NOMEIMAGEM.Value := ExtractFileName(NomeImagemAtual);
+        IMG.Insert;
+
+        FWC.Commit;
+
+        Image1.Picture.Bitmap.Assign(Nil);
+        Image1.Parent.Repaint;
+
+        NomeImagemAtual := '';
+
+        BuscarFotos;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_WAR, 'Erro ao gravar imagem!', '', E.Message);
+        end;
+      end;
+    finally
+      FreeAndNil(IMG);
+      FreeAndNil(FWC);
+    end;
+  end;
 end;
 
 procedure TfrmControleEstagioOPF.btObservacaoClick(Sender: TObject);
@@ -601,6 +761,49 @@ begin
         Break;
       end;
     end;
+  end;
+end;
+
+procedure TfrmControleEstagioOPF.Deletar(Sender: TObject);
+var
+  FWC : TFWConnection;
+  IMG : TOPFINAL_ESTAGIO_IMAGENS;
+  NomeImagem : string;
+begin
+  if TImage(Sender).Tag = 0 then Exit;
+  
+  DisplayMsg(MSG_CONF, 'Deseja Excluir a imagem selecionada?');
+  if ResultMsgModal in [mrOk, mrYes] then begin
+     FWC := TFWConnection.Create;
+     IMG := TOPFINAL_ESTAGIO_IMAGENS.Create(FWC);
+     try
+       FWC.StartTransaction;
+       try
+         IMG.ID.Value := TImage(Sender).Tag;
+         IMG.SelectList('ID = ' + IMG.ID.asString);
+         if IMG.Count > 0 then begin
+           NomeImagem := CONFIG_LOCAL.DirImagens + TOPFINAL_ESTAGIO_IMAGENS(IMG.Itens[0]).NOMEIMAGEM.asString;
+           if (FileExists(NomeImagem)) then
+             DeleteFile(NomeImagem);
+         end;
+
+         IMG.Delete;
+
+         FWC.Commit;
+
+         TImage(Sender).Tag := 0;
+
+         BuscarFotos;
+       except
+         on E : Exception do begin
+           FWC.Rollback;
+           DisplayMsg(MSG_WAR, 'Erro ao excluir imagem!', '', E.Message);
+         end;
+       end;
+     finally
+       FreeAndNil(IMG);
+       FreeAndNil(FWC);
+     end;
   end;
 end;
 
