@@ -31,11 +31,12 @@ type
     btEtiquetas: TBitBtn;
     cds_Itens: TClientDataSet;
     ds_Itens: TDataSource;
-    cds_ItensID: TIntegerField;
     btFechar: TSpeedButton;
     cds_ItensORDEMPRODUCAO: TIntegerField;
     cds_ItensNOMEPRODUTO: TStringField;
     edt_Quantidade: TLabeledEdit;
+    cds_ItensCODIGOBARRAS: TStringField;
+    cds_ItensDATALOTE: TDateField;
     procedure btFecharClick(Sender: TObject);
     procedure btEtiquetasClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -176,9 +177,10 @@ begin
             cds_Itens.EmptyDataSet;
             for I := 0 to Pred(LS.Count) do begin
               cds_Itens.Append;
-              cds_ItensID.Value := TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[I]).ID.Value;
-              cds_ItensORDEMPRODUCAO.Value := LOTE.ORDEMPRODUCAO;
-              cds_ItensNOMEPRODUTO.Value := edNomeProduto.Text;
+              cds_ItensCODIGOBARRAS.Value   := StrZero(TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[I]).ID.asString, MinimoCodigoBarras);
+              cds_ItensORDEMPRODUCAO.Value  := LOTE.ORDEMPRODUCAO;
+              cds_ItensNOMEPRODUTO.Value    := edNomeProduto.Text;
+              cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
               cds_Itens.Post;
             end;
           end;

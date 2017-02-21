@@ -75,7 +75,6 @@ type
     edt_CodigoEspecie: TButtonedEdit;
     edt_NomeEspecie: TEdit;
     cds_FichadeProducao: TClientDataSet;
-    cds_FichadeProducaoIPOPFE: TIntegerField;
     cds_FichadeProducaoCODIGOPRODUTO: TIntegerField;
     cds_FichadeProducaoNOMEPRODUTO: TStringField;
     cds_FichadeProducaoDATAGERACAOOPFE: TDateField;
@@ -83,8 +82,7 @@ type
     cds_FichadeProducaoDATAGERACAOOPMC: TDateField;
     cds_FichadeProducaoCODIGOMC: TStringField;
     cds_FichadeProducaoOBSERVACAO: TStringField;
-    cds_FichadeProducaoNUMEROLOTE: TIntegerField;
-    cds_FichadeProducaoIPOPF: TIntegerField;
+    cds_FichadeProducaoIDOPF: TIntegerField;
     cds_FichadeProducaoCODIGOBARRAS: TStringField;
     gbRecipiente: TGroupBox;
     edt_Recipiente: TButtonedEdit;
@@ -94,6 +92,8 @@ type
     btnImagem: TBitBtn;
     ScrollBox1: TScrollBox;
     btnSalvarImagem: TBitBtn;
+    cds_FichadeProducaoIDOPFE: TStringField;
+    cds_FichadeProducaoNUMEROLOTE: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -335,8 +335,8 @@ begin
                     cds_FichadeProducao.EmptyDataSet;
 
                     cds_FichadeProducao.Append;
-                    cds_FichadeProducaoIPOPF.Value              := Consulta.FieldByName('IDOPF').AsInteger;
-                    cds_FichadeProducaoIPOPFE.Value             := Consulta.FieldByName('IDOPFE').AsInteger;
+                    cds_FichadeProducaoIDOPF.Value              := Consulta.FieldByName('IDOPF').AsInteger;
+                    cds_FichadeProducaoIDOPFE.Value             := StrZero(Consulta.FieldByName('IDOPFE').AsString, MinimoCodigoBarras);
                     cds_FichadeProducaoCODIGOPRODUTO.Value      := Consulta.FieldByName('CODIGOPRODUTO').AsInteger;
                     cds_FichadeProducaoNOMEPRODUTO.Value        := Consulta.FieldByName('NOMEPRODUTO').AsString;
                     cds_FichadeProducaoDATAGERACAOOPFE.Value    := Consulta.FieldByName('DATAGERACAOOPF').AsDateTime;
@@ -344,8 +344,8 @@ begin
                     cds_FichadeProducaoDATAGERACAOOPMC.Value    := Consulta.FieldByName('DATAGERACAOOPMC').AsDateTime;
                     cds_FichadeProducaoCODIGOMC.Value           := Consulta.FieldByName('CODIGOMC').AsString;
                     cds_FichadeProducaoOBSERVACAO.Value         := Consulta.FieldByName('OBSERVACAO').AsString;
-                    cds_FichadeProducaoNUMEROLOTE.Value         := I;
-                    cds_FichadeProducaoCODIGOBARRAS.Value       := Consulta.FieldByName('IDOPF').AsString + '*' + Consulta.FieldByName('SEQUENCIA').AsString;
+                    cds_FichadeProducaoNUMEROLOTE.Value         := StrZero(IntToStr(I), MinimoCodigoBarras);
+                    cds_FichadeProducaoCODIGOBARRAS.Value       := StrZero(Consulta.FieldByName('IDOPF').AsString + '*' + Consulta.FieldByName('SEQUENCIA').AsString, MinimoCodigoBarras);
                     cds_FichadeProducao.Post;
 
                     DMUtil.frxDBDataset1.DataSet := cds_FichadeProducao;

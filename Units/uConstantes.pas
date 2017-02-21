@@ -65,6 +65,7 @@ type
 
 Const
   Alfabeto: String = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  MinimoCodigoBarras: Integer = 3; //Definir a quantidade mínima de Caracteres para Código de Barras
 
 Var
   LOGIN           : TDADOSLOGIN;

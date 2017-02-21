@@ -45,7 +45,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitHeight = 117
     DesignSize = (
       661
       109)
@@ -161,7 +160,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     ParentFont = False
     TabOrder = 2
     TabStop = True
-    ExplicitTop = 367
     object GridPanel2: TGridPanel
       AlignWithMargins = True
       Left = 3
@@ -411,9 +409,9 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     AfterPost = cds_ItensAfterPost
     Left = 504
     Top = 112
-    object cds_ItensID: TIntegerField
-      DisplayLabel = 'C'#243'digo de Barras'
-      FieldName = 'ID'
+    object cds_ItensCODIGOBARRAS: TStringField
+      FieldName = 'CODIGOBARRAS'
+      Size = 128
     end
     object cds_ItensORDEMPRODUCAO: TIntegerField
       FieldName = 'ORDEMPRODUCAO'
@@ -421,6 +419,9 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     object cds_ItensNOMEPRODUTO: TStringField
       FieldName = 'NOMEPRODUTO'
       Size = 500
+    end
+    object cds_ItensDATALOTE: TDateField
+      FieldName = 'DATALOTE'
     end
   end
   object ds_Itens: TDataSource
