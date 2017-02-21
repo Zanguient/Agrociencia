@@ -27,6 +27,7 @@ type
     CODIGO : Integer;
     NOME : string;
     EMAIL : string;
+    PERMITEINCLUIRETIQUETAS : Boolean;
   end;
 
   TMENU = record

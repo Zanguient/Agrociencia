@@ -37,11 +37,15 @@ type
     edt_Quantidade: TLabeledEdit;
     cds_ItensCODIGOBARRAS: TStringField;
     cds_ItensDATALOTE: TDateField;
+    btnAdicionar: TBitBtn;
+    btnExcluir: TBitBtn;
     procedure btFecharClick(Sender: TObject);
     procedure btEtiquetasClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure cds_ItensAfterPost(DataSet: TDataSet);
+    procedure btnAdicionarClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -50,6 +54,7 @@ type
     procedure ExecutarEvento;
     procedure ImprimirEtiquetas;
     procedure LimparEdits;
+    procedure CarregaEtiquetas;
   end;
 
 var
@@ -74,6 +79,100 @@ end;
 procedure TfrmImpressaoEtiquetas.btFecharClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfrmImpressaoEtiquetas.btnAdicionarClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  LS  : TOPFINAL_ESTAGIO_LOTE_S;
+begin
+  FWC := TFWConnection.Create;
+  LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
+  try
+    FWC.StartTransaction;
+    try
+      LS.ID.isNull                     := True;
+      LS.OPFINAL_ESTAGIO_LOTE_ID.Value := LOTE.LOTE;
+      LS.DATAHORA.Value                := Now;
+      LS.BAIXADO.Value                 := False;
+      LS.Insert;
+
+      FWC.Commit;
+    except
+      on E : Exception do begin
+        FWC.Rollback;
+        DisplayMsg(MSG_WAR, 'Erro ao Inserir Item!', '', E.Message);
+        Exit;
+      end;
+    end;
+    CarregaEtiquetas;
+  finally
+    FreeAndNil(LS);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmImpressaoEtiquetas.btnExcluirClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  LS  : TOPFINAL_ESTAGIO_LOTE_S;
+begin
+  FWC := TFWConnection.Create;
+  LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
+  try
+    LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.LOTE));
+    if LS.Count > 0 then begin
+      FWC.StartTransaction;
+      try
+        LS.ID.Value := TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[0]).ID.Value;
+        LS.Delete;
+        FWC.Commit;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_WAR, 'Erro ao Inserir Item!', '', E.Message);
+          Exit;
+        end;
+      end;
+    end;
+    CarregaEtiquetas;
+  finally
+    FreeAndNil(LS);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmImpressaoEtiquetas.CarregaEtiquetas;
+var
+  FWC : TFWConnection;
+  LS  : TOPFINAL_ESTAGIO_LOTE_S;
+  L   : TOPFINAL_ESTAGIO_LOTE;
+  I : Integer;
+begin
+  FWC := TFWConnection.Create;
+  L   := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
+  LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
+  try
+    L.SelectList('ID = ' + IntToStr(LOTE.LOTE));
+    if L.Count > 0 then begin
+      LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.LOTE));
+      if LS.Count > 0 then begin
+        cds_Itens.EmptyDataSet;
+        for I := 0 to Pred(LS.Count) do begin
+          cds_Itens.Append;
+          cds_ItensCODIGOBARRAS.Value   := StrZero(TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[I]).ID.asString, MinimoCodigoBarras);
+          cds_ItensORDEMPRODUCAO.Value  := LOTE.ORDEMPRODUCAO;
+          cds_ItensNOMEPRODUTO.Value    := edNomeProduto.Text;
+          cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
+          cds_Itens.Post;
+        end;
+      end;
+    end;
+  finally
+    FreeAndNil(LS);
+    FreeAndNil(L);
+    FreeAndNil(FWC);
+  end;
 end;
 
 procedure TfrmImpressaoEtiquetas.cds_ItensAfterPost(DataSet: TDataSet);
@@ -191,7 +290,11 @@ begin
         FreeAndNil(FWC);
       end;
 
-      edNumeroLoteEstagio.Enabled   := False;
+      edNumeroLoteEstagio.Enabled   := cds_Itens.RecordCount = 0;
+      if USUARIO.PERMITEINCLUIRETIQUETAS then begin
+        btnAdicionar.Visible          := not edNumeroLoteEstagio.Enabled;
+        btnExcluir.Visible            := btnAdicionar.Visible;
+      end;
     end;
   end;
 end;

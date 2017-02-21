@@ -14,6 +14,7 @@ type
     FPERMITIR_CAD_USUARIO: TFieldBoolean;
     FPERMITEPRODUTOALEMCOMPOSICAO: TFieldBoolean;
     FDATANASCIMENTO: TFieldDate;
+    FPERMITEITENSETIQUETA: TFieldBoolean;
     procedure SetEMAIL(const Value: TFieldString);
     procedure SetID(const Value: TFieldInteger);
     procedure SetNOME(const Value: TFieldString);
@@ -21,6 +22,7 @@ type
     procedure SetSENHA(const Value: TFieldString);
     procedure SetPERMITEPRODUTOALEMCOMPOSICAO(const Value: TFieldBoolean);
     procedure SetDATANASCIMENTO(const Value: TFieldDate);
+    procedure SetPERMITEITENSETIQUETA(const Value: TFieldBoolean);
   protected
     procedure InitInstance; override;
   published
@@ -30,6 +32,7 @@ type
     property SENHA                        : TFieldString read FSENHA write SetSENHA;
     property PERMITEPRODUTOALEMCOMPOSICAO : TFieldBoolean read FPERMITEPRODUTOALEMCOMPOSICAO write SetPERMITEPRODUTOALEMCOMPOSICAO;
     property DATANASCIMENTO               : TFieldDate read FDATANASCIMENTO write SetDATANASCIMENTO;
+    property PERMITEITENSETIQUETA         : TFieldBoolean read FPERMITEITENSETIQUETA write SetPERMITEITENSETIQUETA;
   end;
 
 implementation
@@ -70,6 +73,11 @@ end;
 procedure TUSUARIO.SetNOME(const Value: TFieldString);
 begin
   FNOME := Value;
+end;
+
+procedure TUSUARIO.SetPERMITEITENSETIQUETA(const Value: TFieldBoolean);
+begin
+  FPERMITEITENSETIQUETA := Value;
 end;
 
 procedure TUSUARIO.SetPERMITEPRODUTOALEMCOMPOSICAO(const Value: TFieldBoolean);
