@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.DBGrids,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, FireDAC.Comp.Client, Data.DB,
-  Datasnap.DBClient, Vcl.ImgList;
+  Datasnap.DBClient, Vcl.ImgList, Vcl.Mask, JvExMask, JvToolEdit;
 
 type
   TFrmCadastroUsuario = class(TForm)
@@ -53,8 +53,11 @@ type
     csMenusPERMITIR: TBooleanField;
     csMenusMENU: TStringField;
     csMenusCAPTION: TStringField;
-    chk_AdicionaItemForaReceita: TCheckBox;
     csPesquisaPERMITEPRODUTOALEMCOMPOSICAO: TBooleanField;
+    chk_AdicionaItemForaReceita: TCheckBox;
+    edDataNascimento: TJvDateEdit;
+    Label10: TLabel;
+    csPesquisaDATANASCIMENTO: TDateField;
     procedure sbFecharClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btBuscarClick(Sender: TObject);
@@ -106,11 +109,14 @@ begin
   if Limpar then begin
     edNome.Clear;
     edEmail.Clear;
+    chk_AdicionaItemForaReceita.Checked := True;
+    edDataNascimento.Clear;
     btGravar.Tag  := 0;
   end else begin
     edNome.Text                           := csPesquisaNOME.Value;
     edEmail.Text                          := csPesquisaEMAIL.Value;
     chk_AdicionaItemForaReceita.Checked   := csPesquisaPERMITEPRODUTOALEMCOMPOSICAO.Value;
+    edDataNascimento.Date                 := csPesquisaDATANASCIMENTO.Value;
     edSenha.Text                          := Criptografa(csPesquisaSENHA.Value, 'D');
     edConfirmarSenha.Text                 := Criptografa(csPesquisaSENHA.Value, 'D');
     btGravar.Tag                          := csPesquisaCODIGO.Value;
@@ -218,6 +224,7 @@ begin
       USU.NOME.Value                          := edNome.Text;
       USU.EMAIL.Value                         := edEmail.Text;
       USU.PERMITEPRODUTOALEMCOMPOSICAO.Value  := chk_AdicionaItemForaReceita.Checked;
+      USU.DATANASCIMENTO.Value                := edDataNascimento.Date;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         USU.ID.Value                          := (Sender as TSpeedButton).Tag;
@@ -309,6 +316,7 @@ begin
           csPesquisaEMAIL.Value                         := TUSUARIO(USU.Itens[I]).EMAIL.Value;
           csPesquisaSENHA.Value                         := TUSUARIO(USU.Itens[I]).SENHA.Value;
           csPesquisaPERMITEPRODUTOALEMCOMPOSICAO.Value  := TUSUARIO(USU.Itens[I]).PERMITEPRODUTOALEMCOMPOSICAO.Value;
+          csPesquisaDATANASCIMENTO.Value                := TUSUARIO(USU.Itens[I]).DATANASCIMENTO.Value;
           csPesquisa.Post;
         end;
       end;

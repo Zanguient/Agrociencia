@@ -13,12 +13,14 @@ type
     FNOME: TFieldString;
     FPERMITIR_CAD_USUARIO: TFieldBoolean;
     FPERMITEPRODUTOALEMCOMPOSICAO: TFieldBoolean;
+    FDATANASCIMENTO: TFieldDate;
     procedure SetEMAIL(const Value: TFieldString);
     procedure SetID(const Value: TFieldInteger);
     procedure SetNOME(const Value: TFieldString);
     procedure SetPERMITIR_CAD_USUARIO(const Value: TFieldBoolean);
     procedure SetSENHA(const Value: TFieldString);
     procedure SetPERMITEPRODUTOALEMCOMPOSICAO(const Value: TFieldBoolean);
+    procedure SetDATANASCIMENTO(const Value: TFieldDate);
   protected
     procedure InitInstance; override;
   published
@@ -27,6 +29,7 @@ type
     property EMAIL                        : TFieldString read FEMAIL write SetEMAIL;
     property SENHA                        : TFieldString read FSENHA write SetSENHA;
     property PERMITEPRODUTOALEMCOMPOSICAO : TFieldBoolean read FPERMITEPRODUTOALEMCOMPOSICAO write SetPERMITEPRODUTOALEMCOMPOSICAO;
+    property DATANASCIMENTO               : TFieldDate read FDATANASCIMENTO write SetDATANASCIMENTO;
   end;
 
 implementation
@@ -48,6 +51,11 @@ begin
   NOME.isSearchField              := True;
 end;
 
+
+procedure TUSUARIO.SetDATANASCIMENTO(const Value: TFieldDate);
+begin
+  FDATANASCIMENTO := Value;
+end;
 
 procedure TUSUARIO.SetEMAIL(const Value: TFieldString);
 begin
