@@ -393,7 +393,11 @@ begin
     for I := 0 to Pred(ScrollBox1.ControlCount) do begin
       if Assigned(ScrollBox1.Controls[I]) then begin
         if ScrollBox1.Controls[I] is TImage then begin
-          ScrollBox1.RemoveControl(ScrollBox1.Controls[I]);
+          ScrollBox1.Controls[I].Visible := False;
+          TImage(ScrollBox1.Controls[I]).Picture.Assign(nil);
+          TImage(ScrollBox1.Controls[I]).Repaint;
+
+          TImage(ScrollBox1.Controls[I]).Destroy
         end;
       end;
     end;
