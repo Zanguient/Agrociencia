@@ -872,7 +872,7 @@ begin
   try
 
     Filtro := 'DATAENCERRAMENTO IS NULL AND CANCELADO = False';
-    edCodigoOPF.Text := IntToStr(DMUtil.Selecionar(OPF, edCodigoOPF.Text, Filtro));
+    edCodigoOPF.Text := IntToStr(DMUtil.SelecionarCadastroPlantas(edCodigoOPF.Text));
 
     SQL.Close;
     SQL.SQL.Clear;

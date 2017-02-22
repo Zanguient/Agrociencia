@@ -4,8 +4,8 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
   ActiveControl = edDataInicial
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio de Agenda Semanal'
-  ClientHeight = 314
-  ClientWidth = 349
+  ClientHeight = 339
+  ClientWidth = 370
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23,7 +23,7 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 343
+    Width = 364
     Height = 58
     Align = alTop
     Caption = ' Per'#237'odo '
@@ -34,18 +34,20 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
     Font.Style = []
     ParentFont = False
     TabOrder = 0
+    ExplicitWidth = 343
     DesignSize = (
-      343
+      364
       58)
     object Label1: TLabel
       Left = 129
       Top = 26
-      Width = 87
+      Width = 108
       Height = 19
       Alignment = taCenter
       Anchors = [akLeft, akTop, akRight]
       AutoSize = False
       Caption = 'at'#233
+      ExplicitWidth = 87
     end
     object edDataInicial: TJvDateEdit
       Left = 5
@@ -62,7 +64,7 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       TabOrder = 0
     end
     object edDataFinal: TJvDateEdit
-      Left = 222
+      Left = 243
       Top = 23
       Width = 118
       Height = 27
@@ -75,13 +77,14 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       ParentFont = False
       ShowNullDate = False
       TabOrder = 1
+      ExplicitLeft = 222
     end
   end
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 251
-    Width = 343
+    Top = 276
+    Width = 364
     Height = 60
     Align = alBottom
     BevelOuter = bvLowered
@@ -108,17 +111,19 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
         Value = 100.000000000000000000
       end>
     TabOrder = 4
-    ExplicitTop = 226
+    ExplicitTop = 251
+    ExplicitWidth = 343
     object Panel1: TPanel
       Left = 1
       Top = 1
-      Width = 170
+      Width = 181
       Height = 58
       Align = alClient
       TabOrder = 0
+      ExplicitWidth = 170
       object btRelatorio: TSpeedButton
         AlignWithMargins = True
-        Left = 51
+        Left = 62
         Top = 4
         Width = 115
         Height = 50
@@ -234,12 +239,14 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       end
     end
     object Panel2: TPanel
-      Left = 171
+      Left = 182
       Top = 1
-      Width = 171
+      Width = 181
       Height = 58
       Align = alClient
       TabOrder = 1
+      ExplicitLeft = 171
+      ExplicitWidth = 171
       object btFechar: TSpeedButton
         AlignWithMargins = True
         Left = 4
@@ -362,8 +369,8 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
     AlignWithMargins = True
     Left = 3
     Top = 67
-    Width = 343
-    Height = 62
+    Width = 364
+    Height = 89
     Align = alTop
     Caption = ' Op'#231#245'es '
     Font.Charset = DEFAULT_CHARSET
@@ -373,13 +380,16 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
     Font.Style = []
     ParentFont = False
     TabOrder = 1
+    ExplicitWidth = 339
+    DesignSize = (
+      364
+      89)
     object cbMeioCultura: TCheckBox
       AlignWithMargins = True
       Left = 5
-      Top = 24
-      Width = 162
-      Height = 33
-      Align = alLeft
+      Top = 31
+      Width = 136
+      Height = 20
       Caption = 'Meio de Cultura'
       Checked = True
       State = cbChecked
@@ -387,22 +397,34 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
     end
     object cbProdutoFinal: TCheckBox
       AlignWithMargins = True
-      Left = 173
-      Top = 24
-      Width = 165
-      Height = 33
-      Align = alClient
+      Left = 5
+      Top = 57
+      Width = 117
+      Height = 20
       Caption = 'Produto Final'
       Checked = True
       State = cbChecked
       TabOrder = 1
     end
+    object cbRecebimentodePlantas: TCheckBox
+      AlignWithMargins = True
+      Left = 168
+      Top = 31
+      Width = 193
+      Height = 20
+      Anchors = [akTop, akRight]
+      Caption = 'Recebimento de Plantas'
+      Checked = True
+      State = cbChecked
+      TabOrder = 2
+      ExplicitLeft = 143
+    end
   end
   object rgStatus: TRadioGroup
     Left = 0
-    Top = 132
-    Width = 349
-    Height = 93
+    Top = 159
+    Width = 370
+    Height = 91
     Align = alClient
     Caption = 'Status'
     Columns = 2
@@ -418,13 +440,15 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       'Ambas')
     ParentFont = False
     TabOrder = 2
-    ExplicitHeight = 85
+    ExplicitTop = 132
+    ExplicitWidth = 349
+    ExplicitHeight = 93
   end
   object cbExibirSQL: TCheckBox
     AlignWithMargins = True
     Left = 3
-    Top = 228
-    Width = 343
+    Top = 253
+    Width = 364
     Height = 17
     Align = alBottom
     Caption = 'Exibir SQL'
@@ -435,8 +459,7 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
     Font.Style = []
     ParentFont = False
     TabOrder = 3
-    ExplicitLeft = 104
-    ExplicitTop = 240
-    ExplicitWidth = 97
+    ExplicitTop = 228
+    ExplicitWidth = 343
   end
 end

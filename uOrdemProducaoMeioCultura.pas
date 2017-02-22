@@ -708,7 +708,7 @@ begin
     SQL.SQL.Clear;
     SQL.Connection := FW.FDConnection;
     SQL.SQL.Add('SELECT');
-    SQL.SQL.Add('OPMC.ID,');
+    SQL.SQL.Add('Trim(LPAD(cast(OPMC.ID as varchar), 3, ''0'')) as ID,');
     SQL.SQL.Add('MC.CODIGO,');
     SQL.SQL.Add('E.METODO,');
     SQL.SQL.Add('OPMC.ID_RECIPIENTE,');

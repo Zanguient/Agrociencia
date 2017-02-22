@@ -66,7 +66,8 @@ uses
   uBeanOPFinal_Estagio_Lote_S_Qualidade in 'Beans\uBeanOPFinal_Estagio_Lote_S_Qualidade.pas',
   uRelAgendaSemanal in 'uRelAgendaSemanal.pas' {frmRelAgendaSemanal},
   CapturaCam in 'Diversos\CapturaCam.pas' {fCaptura},
-  uBeanOpFinal_Estagio_Imagens in 'Beans\uBeanOpFinal_Estagio_Imagens.pas';
+  uBeanOpFinal_Estagio_Imagens in 'Beans\uBeanOpFinal_Estagio_Imagens.pas',
+  uSelecionaCadastroPlantas in 'uSelecionaCadastroPlantas.pas' {frmSelecionaCadastroPlantas};
 
 {$R *.res}
 
@@ -78,7 +79,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDMUtil, DMUtil);
   Application.CreateForm(TfrmLogin, frmLogin);
-  Application.CreateForm(TfCaptura, fCaptura);
   if FrmLogin.ShowModal = mrOk then begin
     FreeAndNil(FrmLogin);
     Application.CreateForm(TFrmPrincipal, FrmPrincipal);

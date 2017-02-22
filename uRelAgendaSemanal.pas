@@ -23,6 +23,7 @@ type
     cbProdutoFinal: TCheckBox;
     rgStatus: TRadioGroup;
     cbExibirSQL: TCheckBox;
+    cbRecebimentodePlantas: TCheckBox;
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
@@ -180,6 +181,31 @@ begin
       case rgStatus.ItemIndex of
         0 : Consulta.SQL.Add('AND OPFE.DATAHORAFIM IS NOT NULL');
         1 : Consulta.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
+      end;
+
+      Consulta.SQL.Add('UNION ALL');
+      Consulta.SQL.Add('SELECT');
+      Consulta.SQL.Add('	DATE_PART(''WEEK'', OPF.DATAESTIMADAPROCESSAMENTO) AS SEMANA,');
+      Consulta.SQL.Add('	3 AS TIPO, --Recebimento de Plantas');
+      Consulta.SQL.Add('	OPF.ID,');
+      Consulta.SQL.Add('	OPF.DATAESTIMADAPROCESSAMENTO AS DATA,');
+      Consulta.SQL.Add('	''Espécie.:   '' || P.DESCRICAO || ''   Cliente.: '' || C.NOME AS DESCRICAO');
+      Consulta.SQL.Add('FROM OPFINAL OPF');
+      Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      Consulta.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
+      Consulta.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
+      Consulta.SQL.Add('AND OPF.DATAESTIMADAPROCESSAMENTO IS NOT NULL');
+      Consulta.SQL.Add('AND OPF.DATAESTIMADAPROCESSAMENTO BETWEEN :DATAI AND :DATAF');
+      Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO OPFE WHERE OPFE.OPFINAL_ID = OPF.ID)');
+
+      if not cbRecebimentodePlantas.Checked then
+        Consulta.SQL.Add('AND 1 = 2');
+
+      case rgStatus.ItemIndex of
+        0 : Consulta.SQL.Add('AND OPF.DATAENCERRAMENTO IS NOT NULL');
+        1 : Consulta.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
       end;
 
       Consulta.SQL.Add(') AGENDA');

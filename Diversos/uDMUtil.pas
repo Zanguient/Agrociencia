@@ -26,6 +26,7 @@ type
     function Selecionar(Tabela : TFWPersistence; ValorControl : String = ''; Filtro : String = ''; Tabela2 : TFWPersistence = nil) : Integer;
     function SelecionarMeioCultura(Estagio : Integer = 0; Especie : Integer = 0; Valor : String = '') : Integer;
     function SelecionarOrdemProducaoMeioCultura(Estagio : Integer = 0; Especie : Integer = 0; Valor : String = '') : Integer;
+    function SelecionarCadastroPlantas(Valor : String = '') : Integer;
     procedure ImprimirRelatorio(Relatorio : String);
   end;
 
@@ -41,7 +42,7 @@ Uses
   uSeleciona,
   uSelecionaOPMC,
   uSelecionaMeioCultura,
-  uMensagem;
+  uMensagem, uSelecionaCadastroPlantas;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -127,6 +128,25 @@ begin
       frmSeleciona.Filtro     := Filtro;
     if (frmSeleciona.ShowModal = mrOk) or (Control.Text <> '') then
       Result                  := StrToIntDef(Control.Text,0);
+  finally
+    FreeAndNil(Control);
+  end;
+end;
+
+function TDMUtil.SelecionarCadastroPlantas(Valor: String): Integer;
+var
+  Control : TEdit;
+begin
+  Result                      := 0;
+  Control                     := TEdit.Create(nil);
+  try
+    if not Assigned(frmSelecionaCadastroPlantas) then
+      frmSelecionaCadastroPlantas       := TfrmSelecionaCadastroPlantas.Create(nil);
+    if Valor <> EmptyStr then
+      Control.Text                      := Valor;
+    frmSelecionaCadastroPlantas.Retorno := Control;
+    if (frmSelecionaCadastroPlantas.ShowModal = mrOk) or (Control.Text <> '') then
+      Result                            := StrToIntDef(Control.Text,0);
   finally
     FreeAndNil(Control);
   end;
