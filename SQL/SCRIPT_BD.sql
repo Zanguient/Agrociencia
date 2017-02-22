@@ -418,3 +418,5 @@ WITH (
 ALTER TABLE opfinal_estagio_lote_s_qualidade ADD nomeimagem character varying(500);
 
 ALTER TABLE usuario ADD datanascimento date;
+
+ALTER TABLE usuario ADD COLUMN permiteitensetiqueta boolean;
