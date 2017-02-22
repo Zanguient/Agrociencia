@@ -143,9 +143,23 @@ Var
   I   : Integer;
   S   : String;
 begin
-
   if btFinalizar.Tag = 0 then begin
     btFinalizar.Tag := 1;
+    if StrToIntDef(edQuantidadeEntrada.Text, 0) = 0 then begin
+      DisplayMsg(MSG_WAR, 'Informe ao menos um recipiente de entrada para continuar!');
+      if edCodigoEntrada.CanFocus then edCodigoEntrada.SetFocus;
+      Exit;
+    end;
+    if StrToIntDef(edQuantidadeSaida.Text, 0) = 0 then begin
+      DisplayMsg(MSG_WAR, 'Informe ao menos um recipiente de saída para continuar!');
+      if MULTIPLICACAO.FIM then begin
+        if edQuantidadeSaida.CanFocus then edQuantidadeSaida.SetFocus;
+      end
+      else begin
+        if edCodigoSaida.CanFocus then edCodigoSaida.SetFocus;
+      end;
+      Exit;
+    end;
     try
       if not (cds_Entradas.IsEmpty and cds_Saidas.IsEmpty) then begin
         if MULTIPLICACAO.EMANDAMENTO then begin
