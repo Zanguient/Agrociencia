@@ -522,7 +522,7 @@ begin
 	if FFramePreview = 0 then exit;
 	capGrabFrameNOStop(FFramePreview);
  	StrPCopy(achSingleFileName, FFichierImage);
-	capFileSaveDIB(FFramePreview, LongInt(@achSingleFileName));
+	capFileSaveDIB(FFramePreview, LongInt(AnsiString(FFichierImage)));
 end;
 
 procedure TCamera.GrabarImagenPortaPapeles;
