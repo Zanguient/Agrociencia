@@ -119,6 +119,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Agenda Semanal'
         OnClick = AgendaSemanal1Click
       end
+      object Aniversariantes1: TMenuItem
+        Caption = 'Aniversariantes'
+        OnClick = Aniversariantes1Click
+      end
     end
     object Configuraes1: TMenuItem
       Caption = 'Configura'#231#245'es'

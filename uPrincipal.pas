@@ -39,6 +39,7 @@ type
     MotivosdeDescarte1: TMenuItem;
     ControledeQualidade1: TMenuItem;
     AgendaSemanal1: TMenuItem;
+    Aniversariantes1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -63,6 +64,7 @@ type
     procedure MotivosdeDescarte1Click(Sender: TObject);
     procedure ControledeQualidade1Click(Sender: TObject);
     procedure AgendaSemanal1Click(Sender: TObject);
+    procedure Aniversariantes1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -104,7 +106,8 @@ uses
   uImpressaoEtiquetas,
   uCadastroMotivoDescarte,
   uControleQualidade,
-  uRelAgendaSemanal;
+  uRelAgendaSemanal,
+  uRelAniversariantes;
 
 {$R *.dfm}
 
@@ -217,6 +220,17 @@ begin
     frmRelAgendaSemanal.ShowModal;
   finally
     FreeAndNil(frmRelAgendaSemanal);
+  end;
+end;
+
+procedure TfrmPrincipal.Aniversariantes1Click(Sender: TObject);
+begin
+  try
+    if frmRelAniversariantes = nil then
+      frmRelAniversariantes     := TfrmRelAniversariantes.Create(Self);
+    frmRelAniversariantes.ShowModal;
+  finally
+    FreeAndNil(frmRelAniversariantes);
   end;
 end;
 
