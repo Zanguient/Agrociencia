@@ -227,6 +227,9 @@
             <Form>frmSelecionaCadastroPlantas</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Beans\uBeanImagem.pas"/>
+        <DCCReference Include="Beans\uBeanOPFinal_Imagem.pas"/>
+        <DCCReference Include="Beans\uBeanOPFinal_E_L_S_Q_Imagem.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

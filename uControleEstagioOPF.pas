@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
   JvToolEdit, JvBaseEdits, FireDAC.Comp.Client, System.Math, Vcl.Imaging.jpeg,
-  Vcl.FileCtrl;
+  Vcl.FileCtrl, Vcl.ExtDlgs;
 
 type
   TfrmControleEstagioOPF = class(TForm)
@@ -88,12 +88,15 @@ type
     edt_Recipiente: TButtonedEdit;
     edt_NomeRecipiente: TEdit;
     pnFotos: TPanel;
-    Image1: TImage;
-    btnImagem: TBitBtn;
     ScrollBox1: TScrollBox;
-    btnSalvarImagem: TBitBtn;
     cds_FichadeProducaoIDOPFE: TStringField;
     cds_FichadeProducaoNUMEROLOTE: TStringField;
+    pnImagem: TPanel;
+    Image1: TImage;
+    btnImagemWebCam: TBitBtn;
+    btnSalvarImagem: TBitBtn;
+    btnImagemArquivo: TBitBtn;
+    OpenPictureDialog1: TOpenPictureDialog;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -122,8 +125,9 @@ type
     procedure edt_RecipienteChange(Sender: TObject);
     procedure edt_RecipienteKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure btnImagemClick(Sender: TObject);
+    procedure btnImagemWebCamClick(Sender: TObject);
     procedure btnSalvarImagemClick(Sender: TObject);
+    procedure btnImagemArquivoClick(Sender: TObject);
   private
     procedure SelecionarObservacao;
     procedure Deletar(Sender: TObject);
@@ -157,6 +161,7 @@ uses
   uBeanObservacao,
   CapturaCam,
   uBeanProdutos,
+  uBeanImagem,
   uBeanOpFinal_Estagio_Imagens;
 
 {$R *.dfm}
@@ -181,6 +186,7 @@ begin
     edQuantidadeEstimada.Clear;
     edIntervaloCrescimento.Clear;
     btGravar.Tag  := 0;
+    pnFotos.Visible := False;
   end else begin
 
     btGravar.Tag          := cds_PesquisaID.Value;
@@ -241,6 +247,7 @@ begin
             edDataPrevistaTermino.Date  := SQL.FieldByName('PREVISAOTERMINO').AsDateTime;
             edt_Recipiente.Text         := SQL.FieldByName('RECIPIENTE_ID').AsString;
             edt_NomeRecipiente.Text     := SQL.FieldByName('RECIPIENTE').AsString;
+            pnFotos.Visible             := True;
           end;
         end;
         BuscarFotos;
@@ -387,7 +394,7 @@ var
   Diretorio : string;
   NomeArquivo : string;
   FWC : TFWConnection;
-  OPFEI : TOPFINAL_ESTAGIO_IMAGENS;
+  SQL : TFDQuery;
 begin
   try
     for I := 0 to Pred(ScrollBox1.ControlCount) do begin
@@ -409,31 +416,40 @@ begin
   Diretorio := CONFIG_LOCAL.DirImagens; //aqui é o caminho da pasta
   espaco := 10;
   FWC   := TFWConnection.Create;
-  OPFEI := TOPFINAL_ESTAGIO_IMAGENS.Create(FWC);
+  SQL   := TFDQuery.Create(nil);
   try
-    OPFEI.SelectList('ID_OPFINAL_ESTAGIO = ' + IntToStr(btGravar.Tag));
-    if OPFEI.Count > 0 then begin
-      for I := 0 to Pred(OPFEI.Count) do begin
-        NomeArquivo := Diretorio + TOPFINAL_ESTAGIO_IMAGENS(OPFEI.Itens[I]).NOMEIMAGEM.asString;
-        if FileExists(NomeArquivo) then begin
-          Imagem := TImage.Create(Self);
-          Imagem.Parent := ScrollBox1;
-          Imagem.Width := 100;
-          Imagem.Height := 95;
-          Imagem.Top := 10;
-          Imagem.Stretch := true;
-          Imagem.Left := espaco;
-          Imagem.OnDblClick := Deletar;
-          Imagem.Tag := TOPFINAL_ESTAGIO_IMAGENS(OPFEI.Itens[I]).ID.Value;
-          Imagem.Picture.LoadFromFile(NomeArquivo);
-          espaco := espaco + Imagem.Height + 10;
-        end else
-          DisplayMsg(MSG_INF, 'Imagem não encontrada!', '', NomeArquivo);
-      end;
+    SQL.Close;
+    SQL.SQL.Clear;
+    SQL.SQL.Add('SELECT I.ID, I.NOMEIMAGEM');
+    SQL.SQL.Add('FROM OPFINAL_ESTAGIO_IMAGENS OI');
+    SQL.SQL.Add('INNER JOIN IMAGEM I ON OI.ID_IMAGEM = I.ID');
+    SQL.SQL.Add('WHERE OI.ID_OPFINAL_ESTAGIO = :IDESTAGIO');
+    SQL.Connection := FWC.FDConnection;
+    SQL.ParamByName('IDESTAGIO').AsInteger := btGravar.Tag;
+    SQL.Open();
+
+    SQL.First;
+    while not SQL.Eof do begin
+      NomeArquivo := Diretorio + SQL.FieldByName('NOMEIMAGEM').asString;
+      if FileExists(NomeArquivo) then begin
+        Imagem := TImage.Create(Self);
+        Imagem.Parent := ScrollBox1;
+        Imagem.Width := 100;
+        Imagem.Height := 95;
+        Imagem.Top := 10;
+        Imagem.Stretch := true;
+        Imagem.Left := espaco;
+        Imagem.OnDblClick := Deletar;
+        Imagem.Tag := SQL.FieldByName('ID').AsInteger;
+        Imagem.Picture.LoadFromFile(NomeArquivo);
+        espaco := espaco + Imagem.Height + 10;
+      end else
+        DisplayMsg(MSG_INF, 'Imagem não encontrada!', '', NomeArquivo);
+      SQL.Next;
     end;
     ScrollBox1.Repaint;
   finally
-    FreeAndNil(OPFEI);
+    FreeAndNil(SQL);
     FreeAndNil(FWC);
   end;
 end;
@@ -559,7 +575,23 @@ begin
   end;
 end;
 
-procedure TfrmControleEstagioOPF.btnImagemClick(Sender: TObject);
+procedure TfrmControleEstagioOPF.btnImagemArquivoClick(Sender: TObject);
+var
+  DirNomeFoto : string;
+begin
+  if OpenPictureDialog1.Execute() then begin
+    if OpenPictureDialog1.FileName <> '' then begin
+      DirNomeFoto := CONFIG_LOCAL.DirImagens +
+                     FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + IntToStr(btGravar.Tag) +'.jpg';
+
+      Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+      Image1.Picture.SaveToFile(DirNomeFoto);
+      NomeImagemAtual := DirNomeFoto;
+    end;
+  end;
+end;
+
+procedure TfrmControleEstagioOPF.btnImagemWebCamClick(Sender: TObject);
 var
   DirNomeFoto: string;
   NomeFoto: string;
@@ -621,18 +653,25 @@ end;
 procedure TfrmControleEstagioOPF.btnSalvarImagemClick(Sender: TObject);
 var
   FWC : TFWConnection;
-  IMG : TOPFINAL_ESTAGIO_IMAGENS;
+  IMG : TIMAGEM;
+  EIMG : TOPFINAL_ESTAGIO_IMAGENS;
 begin
   if Assigned(Image1.Picture) then begin
-    FWC := TFWConnection.Create;
-    IMG := TOPFINAL_ESTAGIO_IMAGENS.Create(FWC);
+    FWC  := TFWConnection.Create;
+    IMG  := TIMAGEM.Create(FWC);
+    EIMG := TOPFINAL_ESTAGIO_IMAGENS.Create(FWC);
     try
       FWC.StartTransaction;
       try
-        IMG.ID.isNull := True;
-        IMG.ID_OPFINAL_ESTAGIO.Value := btGravar.Tag;
-        IMG.NOMEIMAGEM.Value := ExtractFileName(NomeImagemAtual);
+        IMG.ID.isNull                := True;
+        IMG.ID_USUARIO.Value         := USUARIO.CODIGO;
+        IMG.NOMEIMAGEM.Value         := ExtractFileName(NomeImagemAtual);
         IMG.Insert;
+
+        EIMG.ID.isNull               := True;
+        EIMG.ID_IMAGEM.Value         := IMG.ID.Value;
+        EIMG.ID_OPFINAL_ESTAGIO.Value:= btGravar.Tag;
+        EIMG.Insert;
 
         FWC.Commit;
 
@@ -650,6 +689,7 @@ begin
       end;
     finally
       FreeAndNil(IMG);
+      FreeAndNil(EIMG);
       FreeAndNil(FWC);
     end;
   end;
@@ -770,25 +810,35 @@ end;
 
 procedure TfrmControleEstagioOPF.Deletar(Sender: TObject);
 var
-  FWC : TFWConnection;
-  IMG : TOPFINAL_ESTAGIO_IMAGENS;
+  FWC  : TFWConnection;
+  IMG  : TIMAGEM;
+  EIMG : TOPFINAL_ESTAGIO_IMAGENS;
   NomeImagem : string;
+  I: Integer;
 begin
   if TImage(Sender).Tag = 0 then Exit;
   
   DisplayMsg(MSG_CONF, 'Deseja Excluir a imagem selecionada?');
   if ResultMsgModal in [mrOk, mrYes] then begin
-     FWC := TFWConnection.Create;
-     IMG := TOPFINAL_ESTAGIO_IMAGENS.Create(FWC);
+     FWC  := TFWConnection.Create;
+     IMG  := TIMAGEM.Create(FWC);
+     EIMG := TOPFINAL_ESTAGIO_IMAGENS.Create(FWC);
      try
        FWC.StartTransaction;
        try
          IMG.ID.Value := TImage(Sender).Tag;
          IMG.SelectList('ID = ' + IMG.ID.asString);
          if IMG.Count > 0 then begin
-           NomeImagem := CONFIG_LOCAL.DirImagens + TOPFINAL_ESTAGIO_IMAGENS(IMG.Itens[0]).NOMEIMAGEM.asString;
+           NomeImagem := CONFIG_LOCAL.DirImagens + TIMAGEM(IMG.Itens[0]).NOMEIMAGEM.asString;
            if (FileExists(NomeImagem)) then
              DeleteFile(NomeImagem);
+
+           EIMG.SelectList('ID_IMAGEM = ' + IMG.ID.asString);
+           for I := 0 to EIMG.Count - 1 do begin
+             EIMG.ID.Value := TOPFINAL_ESTAGIO_IMAGENS(EIMG.Itens[I]).ID.Value;
+             EIMG.Delete;
+           end;
+
          end;
 
          IMG.Delete;
@@ -796,6 +846,7 @@ begin
          FWC.Commit;
 
          TImage(Sender).Tag := 0;
+         TImage(Sender).Picture.Assign(nil);
 
          BuscarFotos;
        except
@@ -806,6 +857,7 @@ begin
        end;
      finally
        FreeAndNil(IMG);
+       FreeAndNil(EIMG);
        FreeAndNil(FWC);
      end;
   end;

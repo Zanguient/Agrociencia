@@ -63,7 +63,8 @@ uses
   uBeanOPFinal,
   uDMUtil,
   uFWConnection, uBeanOPFinal_Estagio_Lote_S_Qualidade, uBeanControleEstoque,
-  uBeanControleEstoqueProduto, Vcl.Imaging.jpeg, CapturaCam;
+  uBeanControleEstoqueProduto, Vcl.Imaging.jpeg, CapturaCam, uBeanImagem,
+  uBeanOPFinal_E_L_S_Q_Imagem;
 
 {$R *.dfm}
 
@@ -80,6 +81,8 @@ var
   R   : TPRODUTO;
   CE  : TCONTROLEESTOQUE;
   CEP : TCONTROLEESTOQUEPRODUTO;
+  IMG : TIMAGEM;
+  IMGV: TOPFINAL_E_L_S_Q_IMAGEM;
 begin
   FWC := TFWConnection.Create;
   CQ  := TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE.Create(FWC);
@@ -87,6 +90,8 @@ begin
   R   := TPRODUTO.Create(FWC);
   CE  := TCONTROLEESTOQUE.Create(FWC);
   CEP := TCONTROLEESTOQUEPRODUTO.Create(FWC);
+  IMG := TIMAGEM.Create(FWC);
+  IMGV:= TOPFINAL_E_L_S_Q_IMAGEM.Create(FWC);
   try
 
     DisplayMsg(MSG_WAIT, 'Gravando dados! Aguarde...');
@@ -94,24 +99,34 @@ begin
     try
 
       CQ.ID.isNull := True;
-      CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value := StrToInt(edt_CodigoPote.Text);
-      CQ.ID_MOTIVODESCARTE.Value         := StrToInt(edt_CodigoMotivo.Text);
-      CQ.NOMEIMAGEM.Value                := NomeImagemAtual;
+      CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value               := StrToInt(edt_CodigoPote.Text);
+      CQ.ID_MOTIVODESCARTE.Value                       := StrToInt(edt_CodigoMotivo.Text);
+//      CQ.NOMEIMAGEM.Value                              := NomeImagemAtual;
       CQ.Insert;
 
-      OPS.ID.Value := CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value;
-      OPS.BAIXADO.Value := True;
+      IMG.ID.isNull                                    := True;
+      IMG.ID_USUARIO.Value                             := USUARIO.CODIGO;
+      IMG.NOMEIMAGEM.Value                             := NomeImagemAtual;
+      IMG.Insert;
+
+      IMGV.ID.isNull                                   := True;
+      IMGV.ID_OPFINAL_ESTAGIO_LOTE_S_QUALIDADE.Value   := CQ.ID.Value;
+      IMGV.ID_IMAGEM.Value                             := IMG.ID.Value;
+      IMGV.Insert;
+
+      OPS.ID.Value                                     := CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value;
+      OPS.BAIXADO.Value                                := True;
       OPS.Update;
 
       R.SelectList('ID = ' + IntToStr(lbPote.Tag));
       if R.Count > 0 then begin
         if TPRODUTO(R.Itens[0]).RECIPIENTEREAPROVEITAVEL.Value then begin
-          CE.ID.isNull := True;
-          CE.DATAHORA.Value := Now;
-          CE.USUARIO_ID.Value := USUARIO.CODIGO;
+          CE.ID.isNull              := True;
+          CE.DATAHORA.Value         := Now;
+          CE.USUARIO_ID.Value       := USUARIO.CODIGO;
           CE.TIPOMOVIMENTACAO.Value := 0;
-          CE.CANCELADO.Value  := False;
-          CE.OBSERVACAO.Value := 'Baixa do pote ' + edt_CodigoPote.Text;
+          CE.CANCELADO.Value        := False;
+          CE.OBSERVACAO.Value       := 'Baixa do pote ' + edt_CodigoPote.Text;
           CE.Insert;
 
           CEP.ID.isNull := True;
@@ -138,6 +153,8 @@ begin
     FreeAndNil(R);
     FreeAndNil(CE);
     FreeAndNil(CEP);
+    FreeAndNil(IMG);
+    FreeAndNil(IMGV);
     FreeAndNil(FWC);
   end;
 

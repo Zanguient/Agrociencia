@@ -67,7 +67,10 @@ uses
   uRelAgendaSemanal in 'uRelAgendaSemanal.pas' {frmRelAgendaSemanal},
   CapturaCam in 'Diversos\CapturaCam.pas' {fCaptura},
   uBeanOpFinal_Estagio_Imagens in 'Beans\uBeanOpFinal_Estagio_Imagens.pas',
-  uSelecionaCadastroPlantas in 'uSelecionaCadastroPlantas.pas' {frmSelecionaCadastroPlantas};
+  uSelecionaCadastroPlantas in 'uSelecionaCadastroPlantas.pas' {frmSelecionaCadastroPlantas},
+  uBeanImagem in 'Beans\uBeanImagem.pas',
+  uBeanOPFinal_Imagem in 'Beans\uBeanOPFinal_Imagem.pas',
+  uBeanOPFinal_E_L_S_Q_Imagem in 'Beans\uBeanOPFinal_E_L_S_Q_Imagem.pas';
 
 {$R *.res}
 

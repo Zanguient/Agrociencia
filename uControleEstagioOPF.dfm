@@ -1346,40 +1346,84 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Align = alBottom
             BevelOuter = bvNone
             TabOrder = 1
-            object Image1: TImage
-              Left = 16
-              Top = 139
-              Width = 105
-              Height = 105
-              Center = True
-              Proportional = True
-            end
-            object btnImagem: TBitBtn
-              Left = 16
-              Top = 250
-              Width = 105
-              Height = 25
-              Caption = 'Buscar Imagem'
-              TabOrder = 0
-              OnClick = btnImagemClick
-            end
             object ScrollBox1: TScrollBox
               AlignWithMargins = True
               Left = 3
               Top = 3
               Width = 420
-              Height = 130
+              Height = 102
               Align = alTop
-              TabOrder = 1
+              TabOrder = 0
             end
-            object btnSalvarImagem: TBitBtn
-              Left = 16
-              Top = 275
-              Width = 105
-              Height = 25
-              Caption = 'Salvar Imagem'
-              TabOrder = 2
-              OnClick = btnSalvarImagemClick
+            object pnImagem: TPanel
+              AlignWithMargins = True
+              Left = 3
+              Top = 111
+              Width = 145
+              Height = 273
+              Align = alLeft
+              BevelOuter = bvNone
+              Color = 16250871
+              ParentBackground = False
+              TabOrder = 1
+              ExplicitTop = 137
+              ExplicitHeight = 198
+              object Image1: TImage
+                AlignWithMargins = True
+                Left = 3
+                Top = 3
+                Width = 139
+                Height = 174
+                Align = alClient
+                Center = True
+                Proportional = True
+                ExplicitLeft = 32
+                ExplicitTop = 8
+                ExplicitWidth = 105
+                ExplicitHeight = 105
+              end
+              object btnImagemWebCam: TBitBtn
+                AlignWithMargins = True
+                Left = 3
+                Top = 214
+                Width = 139
+                Height = 25
+                Align = alBottom
+                Caption = 'Buscar WebCam'
+                TabOrder = 0
+                OnClick = btnImagemWebCamClick
+                ExplicitLeft = 16
+                ExplicitTop = 144
+                ExplicitWidth = 105
+              end
+              object btnSalvarImagem: TBitBtn
+                AlignWithMargins = True
+                Left = 3
+                Top = 245
+                Width = 139
+                Height = 25
+                Align = alBottom
+                Caption = 'Salvar Imagem'
+                TabOrder = 1
+                OnClick = btnSalvarImagemClick
+                ExplicitLeft = 24
+                ExplicitTop = 144
+                ExplicitWidth = 105
+              end
+              object btnImagemArquivo: TBitBtn
+                AlignWithMargins = True
+                Left = 3
+                Top = 183
+                Width = 139
+                Height = 25
+                Align = alBottom
+                Caption = 'Buscar Arquivo'
+                TabOrder = 2
+                OnClick = btnImagemArquivoClick
+                ExplicitLeft = 16
+                ExplicitTop = 144
+                ExplicitWidth = 105
+              end
             end
           end
         end
@@ -2107,5 +2151,9 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
     object cds_FichadeProducaoCODIGOBARRAS: TStringField
       FieldName = 'CODIGOBARRAS'
     end
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    Left = 663
+    Top = 330
   end
 end

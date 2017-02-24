@@ -401,12 +401,50 @@ WITH (
   OIDS=FALSE
 );
 
+ALTER TABLE usuario ADD datanascimento date;
+
+ALTER TABLE usuario ADD COLUMN permiteitensetiqueta boolean;
+
+CREATE TABLE imagem
+(
+  id serial NOT NULL,
+  id_usuario bigint,
+  nomeimagem character varying(255),
+  CONSTRAINT pk_imagem PRIMARY KEY (id),
+  CONSTRAINT fk_imagem_usuario FOREIGN KEY (id_usuario)
+      REFERENCES usuario (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE opfinal_e_l_s_q_imagem
+(
+  id serial NOT NULL,
+  id_opfinal_estagio_lote_s_qualidade bigint,
+  id_imagem bigint,
+  CONSTRAINT pk_opf_e_l_s_q_imagem PRIMARY KEY (id),
+  CONSTRAINT fk_opf_e_l_s_q_imagem FOREIGN KEY (id_opfinal_estagio_lote_s_qualidade)
+      REFERENCES opfinal_estagio_lote_s_qualidade (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_opf_i_imagem FOREIGN KEY (id_imagem)
+      REFERENCES imagem (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+
 CREATE TABLE opfinal_estagio_imagens
 (
   id serial NOT NULL,
   id_opfinal_estagio bigint,
-  nomeimagem character varying(500),
+  id_imagem bigint,
   CONSTRAINT pk_opfinal_estagio_imagem PRIMARY KEY (id),
+  CONSTRAINT fk_opf_e_f_imagem FOREIGN KEY (id_imagem)
+      REFERENCES imagem (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_opf_i_e FOREIGN KEY (id_opfinal_estagio)
       REFERENCES opfinal_estagio (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE CASCADE
@@ -415,8 +453,19 @@ WITH (
   OIDS=FALSE
 );
 
-ALTER TABLE opfinal_estagio_lote_s_qualidade ADD nomeimagem character varying(500);
-
-ALTER TABLE usuario ADD datanascimento date;
-
-ALTER TABLE usuario ADD COLUMN permiteitensetiqueta boolean;
+CREATE TABLE opfinal_imagem
+(
+  id serial NOT NULL,
+  id_opfinal bigint,
+  id_imagem bigint,
+  CONSTRAINT pk_opfinal_imagem PRIMARY KEY (id),
+  CONSTRAINT fk_opfi_imagem FOREIGN KEY (id_imagem)
+      REFERENCES imagem (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_opfi_opfinal FOREIGN KEY (id_opfinal)
+      REFERENCES opfinal (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
