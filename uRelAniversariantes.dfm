@@ -49,8 +49,6 @@ object frmRelAniversariantes: TfrmRelAniversariantes
         Value = 100.000000000000000000
       end>
     TabOrder = 1
-    ExplicitTop = 276
-    ExplicitWidth = 364
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -58,7 +56,6 @@ object frmRelAniversariantes: TfrmRelAniversariantes
       Height = 58
       Align = alClient
       TabOrder = 0
-      ExplicitWidth = 181
       object btRelatorio: TSpeedButton
         AlignWithMargins = True
         Left = 64
@@ -183,8 +180,6 @@ object frmRelAniversariantes: TfrmRelAniversariantes
       Height = 58
       Align = alClient
       TabOrder = 1
-      ExplicitLeft = 182
-      ExplicitWidth = 181
       object btFechar: TSpeedButton
         AlignWithMargins = True
         Left = 4
@@ -318,8 +313,6 @@ object frmRelAniversariantes: TfrmRelAniversariantes
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    ExplicitTop = 253
-    ExplicitWidth = 364
   end
   object chklistMes: TCheckListBox
     AlignWithMargins = True

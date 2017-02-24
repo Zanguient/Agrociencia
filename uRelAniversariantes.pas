@@ -88,7 +88,21 @@ procedure TfrmRelAniversariantes.Visualizar;
 var
   FWC       : TFWConnection;
   Consulta  : TFDQuery;
+  I         : Integer;
+  Meses     : String;
 begin
+
+  for I := 0 to chklistMes.Items.Count - 1 do begin
+    if chklistMes.Checked[I] then begin
+      if Length(Trim(Meses)) = 0 then
+        Meses := IntToStr(I + 1)
+      else
+        Meses := Meses + ',' + IntToStr(I + 1);
+    end;
+  end;
+
+  if Meses = EmptyStr then
+    Exit;
 
   FWC       := TFWConnection.Create;
   Consulta  := TFDQuery.Create(nil);
@@ -138,12 +152,11 @@ begin
       Consulta.SQL.Add('	C.EMAIL');
       Consulta.SQL.Add('FROM CLIENTE C');
       Consulta.SQL.Add(') AS ANIVERSARIANTES');
+      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND MES IN (' + Meses + ')');
       Consulta.SQL.Add('ORDER BY MES, DIA, TIPOCLIENTE, NOME');
 
       Consulta.Connection                     := FWC.FDConnection;
-
-      //Consulta.ParamByName('DATAI').DataType  := ftDate;
-      //Consulta.ParamByName('DATAF').DataType  := ftDate;
 
       if cbExibirSQL.Checked then
         ShowMessage('Relatório de Aniversariantes!' + sLineBreak + sLineBreak + Consulta.SQL.Text);
