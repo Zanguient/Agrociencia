@@ -123,6 +123,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Aniversariantes'
         OnClick = Aniversariantes1Click
       end
+      object CadastrodePlantas1: TMenuItem
+        Caption = 'Cadastro de Plantas'
+        OnClick = CadastrodePlantas1Click
+      end
     end
     object Configuraes1: TMenuItem
       Caption = 'Configura'#231#245'es'

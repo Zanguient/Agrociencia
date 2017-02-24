@@ -40,6 +40,7 @@ type
     ControledeQualidade1: TMenuItem;
     AgendaSemanal1: TMenuItem;
     Aniversariantes1: TMenuItem;
+    CadastrodePlantas1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -65,6 +66,7 @@ type
     procedure ControledeQualidade1Click(Sender: TObject);
     procedure AgendaSemanal1Click(Sender: TObject);
     procedure Aniversariantes1Click(Sender: TObject);
+    procedure CadastrodePlantas1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -107,7 +109,8 @@ uses
   uCadastroMotivoDescarte,
   uControleQualidade,
   uRelAgendaSemanal,
-  uRelAniversariantes;
+  uRelAniversariantes,
+  uRelCadastrodePlantas;
 
 {$R *.dfm}
 
@@ -253,6 +256,17 @@ begin
  ShellExecute(0, 'OPEN', pchar( ExtractFilePath(Application.ExeName) + 'pg_dump.exe'), pchar(' --host ' + CONEXAO.Server + ' --port 5432 --username ' + CONEXAO.User_Name + ' --format custom --file "' + CONEXAO.Database + '_' + FormatDateTime('yyyymmdd_hhmm', Now) + '.backup" ' + CONEXAO.Database), pchar(DirBkp), SW_SHOWNORMAL);
 
  DisplayMsgFinaliza;
+end;
+
+procedure TfrmPrincipal.CadastrodePlantas1Click(Sender: TObject);
+begin
+  try
+    if frmRelCadastrodePlantas = nil then
+      frmRelCadastrodePlantas := TfrmRelCadastrodePlantas.Create(Self);
+    frmRelCadastrodePlantas.ShowModal;
+  finally
+    FreeAndNil(frmRelCadastrodePlantas);
+  end;
 end;
 
 procedure TfrmPrincipal.Cliente1Click(Sender: TObject);
