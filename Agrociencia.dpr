@@ -70,7 +70,8 @@ uses
   uSelecionaCadastroPlantas in 'uSelecionaCadastroPlantas.pas' {frmSelecionaCadastroPlantas},
   uBeanImagem in 'Beans\uBeanImagem.pas',
   uBeanOPFinal_Imagem in 'Beans\uBeanOPFinal_Imagem.pas',
-  uBeanOPFinal_E_L_S_Q_Imagem in 'Beans\uBeanOPFinal_E_L_S_Q_Imagem.pas';
+  uBeanOPFinal_E_L_S_Q_Imagem in 'Beans\uBeanOPFinal_E_L_S_Q_Imagem.pas',
+  uRelAniversariantes in 'uRelAniversariantes.pas' {frmRelAniversariantes};
 
 {$R *.res}
 
@@ -82,6 +83,7 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDMUtil, DMUtil);
   Application.CreateForm(TfrmLogin, frmLogin);
+  Application.CreateForm(TfrmRelAniversariantes, frmRelAniversariantes);
   if FrmLogin.ShowModal = mrOk then begin
     FreeAndNil(FrmLogin);
     Application.CreateForm(TFrmPrincipal, FrmPrincipal);
