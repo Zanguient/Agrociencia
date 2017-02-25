@@ -469,3 +469,22 @@ CREATE TABLE opfinal_imagem
 WITH (
   OIDS=FALSE
 );
+
+CREATE TABLE opfinal_estagio_lote_s_positivo
+(
+  id serial NOT NULL,
+  id_opfinal_estagio_lote_s bigint,
+  id_imagem bigint,
+  localizacao character varying(100),
+  observacao character varying(500),
+  CONSTRAINT pk_opfinal_estagio_lote_s_positivo PRIMARY KEY (id),
+  CONSTRAINT fk_positivo_imagem FOREIGN KEY (id_imagem)
+      REFERENCES imagem (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_positivo_opf_e_l_s FOREIGN KEY (id_opfinal_estagio_lote_s)
+      REFERENCES opfinal_estagio_lote_s (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);

@@ -106,7 +106,7 @@ begin
 
       IMG.ID.isNull                                    := True;
       IMG.ID_USUARIO.Value                             := USUARIO.CODIGO;
-      IMG.NOMEIMAGEM.Value                             := NomeImagemAtual;
+      IMG.NOMEIMAGEM.Value                             := ExtractFileName(NomeImagemAtual);
       IMG.Insert;
 
       IMGV.ID.isNull                                   := True;

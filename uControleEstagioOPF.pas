@@ -434,8 +434,8 @@ begin
       if FileExists(NomeArquivo) then begin
         Imagem := TImage.Create(Self);
         Imagem.Parent := ScrollBox1;
-        Imagem.Width := 100;
-        Imagem.Height := 95;
+        Imagem.Width := 50;
+        Imagem.Height := 50;
         Imagem.Top := 10;
         Imagem.Stretch := true;
         Imagem.Left := espaco;

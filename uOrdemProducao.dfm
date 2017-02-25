@@ -4,8 +4,8 @@ object frmOrdemProducao: TfrmOrdemProducao
   ActiveControl = edPesquisa
   BorderStyle = bsNone
   Caption = 'Ordem de Produ'#231#227'o'
-  ClientHeight = 644
-  ClientWidth = 868
+  ClientHeight = 714
+  ClientWidth = 897
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,17 +22,18 @@ object frmOrdemProducao: TfrmOrdemProducao
   object pnVisualizacao: TPanel
     Left = 0
     Top = 0
-    Width = 868
-    Height = 644
+    Width = 897
+    Height = 714
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 531
+    ExplicitWidth = 868
+    ExplicitHeight = 644
     object gdPesquisa: TDBGrid
       AlignWithMargins = True
       Left = 4
       Top = 92
-      Width = 860
-      Height = 482
+      Width = 889
+      Height = 552
       Align = alClient
       DataSource = ds_Pesquisa
       DrawingStyle = gdsGradient
@@ -101,19 +102,20 @@ object frmOrdemProducao: TfrmOrdemProducao
     object pnBotoesVisualizacao: TPanel
       AlignWithMargins = True
       Left = 4
-      Top = 580
-      Width = 860
+      Top = 650
+      Width = 889
       Height = 60
       Align = alBottom
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitTop = 467
+      ExplicitTop = 580
+      ExplicitWidth = 860
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 852
+        Width = 881
         Height = 52
         Align = alClient
         BevelOuter = bvNone
@@ -140,17 +142,19 @@ object frmOrdemProducao: TfrmOrdemProducao
             Value = 100.000000000000000000
           end>
         TabOrder = 0
+        ExplicitWidth = 852
         object Panel8: TPanel
           Left = 0
           Top = 0
-          Width = 426
+          Width = 440
           Height = 52
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
+          ExplicitWidth = 426
           object btAlterar: TSpeedButton
             AlignWithMargins = True
-            Left = 323
+            Left = 337
             Top = 3
             Width = 100
             Height = 46
@@ -220,7 +224,7 @@ object frmOrdemProducao: TfrmOrdemProducao
           end
           object btNovo: TSpeedButton
             AlignWithMargins = True
-            Left = 217
+            Left = 231
             Top = 3
             Width = 100
             Height = 46
@@ -399,13 +403,15 @@ object frmOrdemProducao: TfrmOrdemProducao
           end
         end
         object Panel9: TPanel
-          Left = 426
+          Left = 440
           Top = 0
-          Width = 426
+          Width = 441
           Height = 52
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
+          ExplicitLeft = 426
+          ExplicitWidth = 426
           object btFechar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -478,7 +484,7 @@ object frmOrdemProducao: TfrmOrdemProducao
           end
           object btExportar: TSpeedButton
             AlignWithMargins = True
-            Left = 323
+            Left = 338
             Top = 3
             Width = 100
             Height = 46
@@ -594,7 +600,7 @@ object frmOrdemProducao: TfrmOrdemProducao
     object pnPequisa: TPanel
       Left = 1
       Top = 49
-      Width = 866
+      Width = 895
       Height = 40
       Align = alTop
       BevelOuter = bvNone
@@ -607,9 +613,10 @@ object frmOrdemProducao: TfrmOrdemProducao
       ParentBackground = False
       ParentFont = False
       TabOrder = 2
+      ExplicitWidth = 866
       object btPesquisar: TSpeedButton
         AlignWithMargins = True
-        Left = 763
+        Left = 792
         Top = 3
         Width = 100
         Height = 34
@@ -679,7 +686,7 @@ object frmOrdemProducao: TfrmOrdemProducao
         AlignWithMargins = True
         Left = 3
         Top = 3
-        Width = 591
+        Width = 620
         Height = 34
         Align = alClient
         AutoSize = False
@@ -692,10 +699,11 @@ object frmOrdemProducao: TfrmOrdemProducao
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
+        ExplicitWidth = 591
       end
       object cbStatus: TComboBox
         AlignWithMargins = True
-        Left = 600
+        Left = 629
         Top = 3
         Width = 157
         Height = 31
@@ -716,13 +724,14 @@ object frmOrdemProducao: TfrmOrdemProducao
           'Encerradas'
           'Canceladas'
           'Ambas')
+        ExplicitLeft = 600
       end
     end
     object Panel2: TPanel
       AlignWithMargins = True
       Left = 4
       Top = 4
-      Width = 860
+      Width = 889
       Height = 42
       Align = alTop
       BevelOuter = bvNone
@@ -736,22 +745,24 @@ object frmOrdemProducao: TfrmOrdemProducao
       ParentBackground = False
       ParentFont = False
       TabOrder = 3
+      ExplicitWidth = 860
     end
   end
   object pnEdicao: TPanel
     Left = 0
     Top = 0
-    Width = 868
-    Height = 644
+    Width = 897
+    Height = 714
     Align = alClient
     TabOrder = 1
     Visible = False
-    ExplicitHeight = 531
+    ExplicitWidth = 868
+    ExplicitHeight = 644
     object pnBotoesEdicao: TPanel
       AlignWithMargins = True
       Left = 4
-      Top = 580
-      Width = 860
+      Top = 650
+      Width = 889
       Height = 60
       Align = alBottom
       Color = clWhite
@@ -765,12 +776,13 @@ object frmOrdemProducao: TfrmOrdemProducao
       TabOrder = 0
       TabStop = True
       Visible = False
-      ExplicitTop = 467
+      ExplicitTop = 580
+      ExplicitWidth = 860
       object GridPanel2: TGridPanel
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 852
+        Width = 881
         Height = 52
         Align = alClient
         BevelOuter = bvNone
@@ -800,14 +812,17 @@ object frmOrdemProducao: TfrmOrdemProducao
             SizeStyle = ssAuto
           end>
         TabOrder = 0
+        ExplicitWidth = 852
         object Panel4: TPanel
-          Left = 426
+          Left = 440
           Top = 0
-          Width = 426
+          Width = 441
           Height = 52
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
+          ExplicitLeft = 426
+          ExplicitWidth = 426
           object btCancelar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -1217,14 +1232,15 @@ object frmOrdemProducao: TfrmOrdemProducao
         object Panel5: TPanel
           Left = 0
           Top = 0
-          Width = 426
+          Width = 440
           Height = 52
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
+          ExplicitWidth = 426
           object btGravar: TSpeedButton
             AlignWithMargins = True
-            Left = 323
+            Left = 337
             Top = 3
             Width = 100
             Height = 46
@@ -1378,18 +1394,19 @@ object frmOrdemProducao: TfrmOrdemProducao
     object Panel1: TPanel
       Left = 1
       Top = 1
-      Width = 866
-      Height = 576
+      Width = 895
+      Height = 646
       Align = alClient
       BorderStyle = bsSingle
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitHeight = 463
+      ExplicitWidth = 866
+      ExplicitHeight = 576
       object Panel3: TPanel
         Left = 1
         Top = 1
-        Width = 860
+        Width = 889
         Height = 42
         Align = alTop
         Caption = 'CADASTRO DE RECEBIMENTO E PRODU'#199#195'O DE PLANTAS'
@@ -1402,12 +1419,13 @@ object frmOrdemProducao: TfrmOrdemProducao
         ParentBackground = False
         ParentFont = False
         TabOrder = 0
+        ExplicitWidth = 860
       end
       object GridPanel1: TGridPanel
         Left = 1
         Top = 43
-        Width = 860
-        Height = 528
+        Width = 889
+        Height = 598
         Align = alClient
         ColumnCollection = <
           item
@@ -1432,20 +1450,22 @@ object frmOrdemProducao: TfrmOrdemProducao
             Value = 100.000000000000000000
           end>
         TabOrder = 1
-        ExplicitHeight = 415
+        ExplicitWidth = 860
+        ExplicitHeight = 528
         object pnUsuarioEsquerda: TPanel
           Left = 1
           Top = 1
-          Width = 429
-          Height = 526
+          Width = 443
+          Height = 596
           Align = alClient
           TabOrder = 0
-          ExplicitHeight = 413
+          ExplicitWidth = 429
+          ExplicitHeight = 526
           object Label2: TLabel
             AlignWithMargins = True
             Left = 4
             Top = 4
-            Width = 421
+            Width = 435
             Height = 19
             Align = alTop
             Caption = 'Quantidade estimada de Produ'#231#227'o:'
@@ -1461,7 +1481,7 @@ object frmOrdemProducao: TfrmOrdemProducao
             AlignWithMargins = True
             Left = 4
             Top = 248
-            Width = 421
+            Width = 435
             Height = 19
             Align = alTop
             Caption = 'Observa'#231#227'o:'
@@ -1477,7 +1497,7 @@ object frmOrdemProducao: TfrmOrdemProducao
             AlignWithMargins = True
             Left = 4
             Top = 62
-            Width = 421
+            Width = 435
             Height = 19
             Align = alTop
             Caption = 'Limite de Multiplica'#231#245'es'
@@ -1493,7 +1513,7 @@ object frmOrdemProducao: TfrmOrdemProducao
             AlignWithMargins = True
             Left = 4
             Top = 29
-            Width = 421
+            Width = 435
             Height = 27
             Align = alTop
             Font.Charset = DEFAULT_CHARSET
@@ -1504,12 +1524,13 @@ object frmOrdemProducao: TfrmOrdemProducao
             NumbersOnly = True
             ParentFont = False
             TabOrder = 0
+            ExplicitWidth = 421
           end
           object gbProduto: TGroupBox
             AlignWithMargins = True
             Left = 4
             Top = 184
-            Width = 421
+            Width = 435
             Height = 58
             Align = alTop
             Caption = ' Produto '
@@ -1520,8 +1541,9 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Style = []
             ParentFont = False
             TabOrder = 3
+            ExplicitWidth = 421
             DesignSize = (
-              421
+              435
               58)
             object edCodigoProduto: TButtonedEdit
               AlignWithMargins = True
@@ -1546,7 +1568,7 @@ object frmOrdemProducao: TfrmOrdemProducao
             object edNomeProduto: TEdit
               Left = 66
               Top = 24
-              Width = 347
+              Width = 361
               Height = 27
               Anchors = [akLeft, akTop, akRight]
               Enabled = False
@@ -1557,13 +1579,14 @@ object frmOrdemProducao: TfrmOrdemProducao
               Font.Style = []
               ParentFont = False
               TabOrder = 1
+              ExplicitWidth = 347
             end
           end
           object gbCliente: TGroupBox
             AlignWithMargins = True
             Left = 4
             Top = 120
-            Width = 421
+            Width = 435
             Height = 58
             Align = alTop
             Caption = ' Cliente '
@@ -1574,8 +1597,9 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Style = []
             ParentFont = False
             TabOrder = 2
+            ExplicitWidth = 421
             DesignSize = (
-              421
+              435
               58)
             object edCodigoCliente: TButtonedEdit
               AlignWithMargins = True
@@ -1600,7 +1624,7 @@ object frmOrdemProducao: TfrmOrdemProducao
             object edNomeCliente: TEdit
               Left = 66
               Top = 24
-              Width = 347
+              Width = 361
               Height = 27
               Anchors = [akLeft, akTop, akRight]
               Enabled = False
@@ -1611,22 +1635,24 @@ object frmOrdemProducao: TfrmOrdemProducao
               Font.Style = []
               ParentFont = False
               TabOrder = 1
+              ExplicitWidth = 347
             end
           end
           object pnObservacao: TPanel
             AlignWithMargins = True
             Left = 4
             Top = 273
-            Width = 421
+            Width = 435
             Height = 98
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 4
+            ExplicitWidth = 421
             object edObservacao: TEdit
               AlignWithMargins = True
               Left = 3
               Top = 3
-              Width = 309
+              Width = 323
               Height = 92
               Align = alClient
               AutoSize = False
@@ -1638,10 +1664,11 @@ object frmOrdemProducao: TfrmOrdemProducao
               MaxLength = 512
               ParentFont = False
               TabOrder = 0
+              ExplicitWidth = 309
             end
             object btObservacao: TBitBtn
               AlignWithMargins = True
-              Left = 318
+              Left = 332
               Top = 3
               Width = 100
               Height = 92
@@ -1747,13 +1774,14 @@ object frmOrdemProducao: TfrmOrdemProducao
                 FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
               TabOrder = 1
               OnClick = btObservacaoClick
+              ExplicitLeft = 318
             end
           end
           object edLimiteMultiplicacao: TEdit
             AlignWithMargins = True
             Left = 4
             Top = 87
-            Width = 421
+            Width = 435
             Height = 27
             Align = alTop
             Font.Charset = DEFAULT_CHARSET
@@ -1764,338 +1792,455 @@ object frmOrdemProducao: TfrmOrdemProducao
             NumbersOnly = True
             ParentFont = False
             TabOrder = 1
+            ExplicitWidth = 421
+          end
+          object Panel6: TPanel
+            Left = 1
+            Top = 374
+            Width = 441
+            Height = 221
+            Align = alClient
+            BevelOuter = bvLowered
+            Caption = 'Panel6'
+            TabOrder = 5
+            ExplicitLeft = 176
+            ExplicitTop = 496
+            ExplicitWidth = 185
+            ExplicitHeight = 41
+            DesignSize = (
+              441
+              221)
+            object Label6: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 5
+              Width = 118
+              Height = 19
+              Caption = 'Sele'#231#227'o Positiva:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label8: TLabel
+              AlignWithMargins = True
+              Left = 130
+              Top = 5
+              Width = 214
+              Height = 19
+              Caption = 'C'#243'digo da Sele'#231#227'o no Campo:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label7: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 63
+              Width = 142
+              Height = 19
+              Caption = 'Origem do Material:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object cbSelecaoPositiva: TComboBox
+              Left = 6
+              Top = 29
+              Width = 118
+              Height = 27
+              Style = csDropDownList
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ItemIndex = 0
+              ParentFont = False
+              TabOrder = 0
+              Text = 'Sim'
+              Items.Strings = (
+                'Sim'
+                'N'#227'o')
+            end
+            object edCodSelecaoCampo: TEdit
+              AlignWithMargins = True
+              Left = 130
+              Top = 30
+              Width = 310
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 1
+              ExplicitWidth = 295
+            end
+            object edOrigemMaterial: TEdit
+              AlignWithMargins = True
+              Left = 6
+              Top = 86
+              Width = 434
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 2
+              ExplicitWidth = 419
+            end
           end
         end
         object pnUsuarioDireita: TPanel
-          Left = 430
+          Left = 444
           Top = 1
-          Width = 429
-          Height = 526
+          Width = 444
+          Height = 596
           Align = alClient
           TabOrder = 1
-          ExplicitHeight = 413
-          DesignSize = (
-            429
-            526)
-          object Label4: TLabel
-            AlignWithMargins = True
-            Left = 6
-            Top = 177
-            Width = 153
-            Height = 19
-            Caption = 'Fazenda/'#225'rea/Talh'#227'o:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label5: TLabel
-            AlignWithMargins = True
-            Left = 130
-            Top = 119
-            Width = 97
-            Height = 19
-            Caption = 'Coletado por:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label7: TLabel
-            AlignWithMargins = True
-            Left = 6
-            Top = 63
-            Width = 142
-            Height = 19
-            Caption = 'Origem do Material:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label8: TLabel
-            AlignWithMargins = True
-            Left = 130
-            Top = 5
-            Width = 214
-            Height = 19
-            Caption = 'C'#243'digo da Sele'#231#227'o no Campo:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label6: TLabel
-            AlignWithMargins = True
-            Left = 6
-            Top = 5
-            Width = 118
-            Height = 19
-            Caption = 'Sele'#231#227'o Positiva:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label9: TLabel
-            AlignWithMargins = True
-            Left = 6
-            Top = 119
-            Width = 109
-            Height = 19
-            Caption = 'Data de Coleta:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label1: TLabel
-            AlignWithMargins = True
-            Left = 6
-            Top = 235
-            Width = 85
-            Height = 19
-            Caption = 'Localizador:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label10: TLabel
-            AlignWithMargins = True
-            Left = 6
-            Top = 293
-            Width = 114
-            Height = 19
-            Caption = 'Quant. Material:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label11: TLabel
-            AlignWithMargins = True
-            Left = 130
-            Top = 293
-            Width = 115
-            Height = 19
-            Caption = 'Transportadora:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label12: TLabel
-            AlignWithMargins = True
-            Left = 6
-            Top = 351
-            Width = 112
-            Height = 19
-            Caption = 'Data de Receb.:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label13: TLabel
-            AlignWithMargins = True
-            Left = 130
-            Top = 351
-            Width = 107
-            Height = 19
-            Caption = 'Data Estimada:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object edFazendaAreaTalhao: TEdit
-            AlignWithMargins = True
-            Left = 6
-            Top = 202
-            Width = 419
-            Height = 27
-            Anchors = [akLeft, akTop, akRight]
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 5
-          end
-          object edColetadoPor: TEdit
-            AlignWithMargins = True
-            Left = 130
-            Top = 144
-            Width = 295
-            Height = 27
-            Anchors = [akLeft, akTop, akRight]
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 4
-          end
-          object edOrigemMaterial: TEdit
-            AlignWithMargins = True
-            Left = 6
-            Top = 86
-            Width = 419
-            Height = 27
-            Anchors = [akLeft, akTop, akRight]
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 2
-          end
-          object edCodSelecaoCampo: TEdit
-            AlignWithMargins = True
-            Left = 130
-            Top = 30
-            Width = 295
-            Height = 27
-            Anchors = [akLeft, akTop, akRight]
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 1
-          end
-          object cbSelecaoPositiva: TComboBox
-            Left = 6
-            Top = 29
-            Width = 118
-            Height = 27
-            Style = csDropDownList
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ItemIndex = 0
-            ParentFont = False
+          ExplicitLeft = 430
+          ExplicitWidth = 429
+          ExplicitHeight = 526
+          object Panel7: TPanel
+            Left = 1
+            Top = 1
+            Width = 442
+            Height = 295
+            Align = alTop
+            BevelOuter = bvLowered
             TabOrder = 0
-            Text = 'Sim'
-            Items.Strings = (
-              'Sim'
-              'N'#227'o')
+            ExplicitTop = 300
+            DesignSize = (
+              442
+              295)
+            object Label4: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 63
+              Width = 153
+              Height = 19
+              Caption = 'Fazenda/'#225'rea/Talh'#227'o:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label5: TLabel
+              AlignWithMargins = True
+              Left = 130
+              Top = 5
+              Width = 97
+              Height = 19
+              Caption = 'Coletado por:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label9: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 5
+              Width = 109
+              Height = 19
+              Caption = 'Data de Coleta:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label1: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 126
+              Width = 85
+              Height = 19
+              Caption = 'Localizador:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label10: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 184
+              Width = 114
+              Height = 19
+              Caption = 'Quant. Material:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label11: TLabel
+              AlignWithMargins = True
+              Left = 130
+              Top = 184
+              Width = 115
+              Height = 19
+              Caption = 'Transportadora:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label12: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 242
+              Width = 112
+              Height = 19
+              Caption = 'Data de Receb.:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label13: TLabel
+              AlignWithMargins = True
+              Left = 130
+              Top = 242
+              Width = 107
+              Height = 19
+              Caption = 'Data Estimada:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object edFazendaAreaTalhao: TEdit
+              AlignWithMargins = True
+              Left = 6
+              Top = 88
+              Width = 434
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 0
+            end
+            object edDataColeta: TJvDateEdit
+              Left = 6
+              Top = 30
+              Width = 118
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ShowNullDate = False
+              TabOrder = 1
+            end
+            object edColetadoPor: TEdit
+              AlignWithMargins = True
+              Left = 130
+              Top = 30
+              Width = 310
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 2
+            end
+            object edLocalizador: TEdit
+              AlignWithMargins = True
+              Left = 6
+              Top = 151
+              Width = 434
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 3
+            end
+            object edQuantidadeMaterial: TEdit
+              AlignWithMargins = True
+              Left = 6
+              Top = 209
+              Width = 118
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              NumbersOnly = True
+              ParentFont = False
+              TabOrder = 4
+            end
+            object edTransportadora: TEdit
+              AlignWithMargins = True
+              Left = 130
+              Top = 209
+              Width = 310
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 5
+            end
+            object edDataRecebimento: TJvDateEdit
+              Left = 6
+              Top = 267
+              Width = 118
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ShowNullDate = False
+              TabOrder = 6
+            end
+            object edDataEstimada: TJvDateEdit
+              Left = 130
+              Top = 267
+              Width = 118
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ShowNullDate = False
+              TabOrder = 7
+            end
           end
-          object edDataColeta: TJvDateEdit
-            Left = 6
-            Top = 144
-            Width = 118
-            Height = 27
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            ShowNullDate = False
-            TabOrder = 3
-          end
-          object edLocalizador: TEdit
-            AlignWithMargins = True
-            Left = 6
-            Top = 260
-            Width = 419
-            Height = 27
-            Anchors = [akLeft, akTop, akRight]
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 6
-          end
-          object edQuantidadeMaterial: TEdit
-            AlignWithMargins = True
-            Left = 6
-            Top = 318
-            Width = 118
-            Height = 27
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            NumbersOnly = True
-            ParentFont = False
-            TabOrder = 7
-          end
-          object edTransportadora: TEdit
-            AlignWithMargins = True
-            Left = 130
-            Top = 318
-            Width = 295
-            Height = 27
-            Anchors = [akLeft, akTop, akRight]
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 8
-          end
-          object edDataRecebimento: TJvDateEdit
-            Left = 6
-            Top = 376
-            Width = 118
-            Height = 27
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            ShowNullDate = False
-            TabOrder = 9
-          end
-          object edDataEstimada: TJvDateEdit
-            Left = 130
-            Top = 376
-            Width = 118
-            Height = 27
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            ShowNullDate = False
-            TabOrder = 10
+          object pnFotos: TPanel
+            Left = 1
+            Top = 296
+            Width = 442
+            Height = 299
+            Align = alClient
+            BevelOuter = bvNone
+            TabOrder = 1
+            Visible = False
+            ExplicitTop = 344
+            ExplicitHeight = 251
+            object ScrollBox1: TScrollBox
+              AlignWithMargins = True
+              Left = 3
+              Top = 3
+              Width = 436
+              Height = 69
+              Align = alTop
+              TabOrder = 0
+            end
+            object pnImagem: TPanel
+              AlignWithMargins = True
+              Left = 3
+              Top = 78
+              Width = 145
+              Height = 218
+              Align = alLeft
+              BevelOuter = bvNone
+              Color = 16250871
+              ParentBackground = False
+              TabOrder = 1
+              ExplicitTop = 111
+              ExplicitHeight = 273
+              object Image1: TImage
+                AlignWithMargins = True
+                Left = 3
+                Top = 3
+                Width = 139
+                Height = 119
+                Align = alClient
+                Center = True
+                Proportional = True
+                ExplicitLeft = 32
+                ExplicitTop = 8
+                ExplicitWidth = 105
+                ExplicitHeight = 105
+              end
+              object btnImagemWebCam: TBitBtn
+                AlignWithMargins = True
+                Left = 3
+                Top = 159
+                Width = 139
+                Height = 25
+                Align = alBottom
+                Caption = 'Buscar WebCam'
+                TabOrder = 0
+                OnClick = btnImagemWebCamClick
+                ExplicitTop = 214
+              end
+              object btnSalvarImagem: TBitBtn
+                AlignWithMargins = True
+                Left = 3
+                Top = 190
+                Width = 139
+                Height = 25
+                Align = alBottom
+                Caption = 'Salvar Imagem'
+                TabOrder = 1
+                OnClick = btnSalvarImagemClick
+                ExplicitTop = 245
+              end
+              object btnImagemArquivo: TBitBtn
+                AlignWithMargins = True
+                Left = 3
+                Top = 128
+                Width = 139
+                Height = 25
+                Align = alBottom
+                Caption = 'Buscar Arquivo'
+                TabOrder = 2
+                OnClick = btnImagemArquivoClick
+                ExplicitTop = 183
+              end
+            end
           end
         end
       end
@@ -2171,7 +2316,7 @@ object frmOrdemProducao: TfrmOrdemProducao
     Left = 360
     Top = 304
     Bitmap = {
-      494C010103001400580020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101030014005C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2716,5 +2861,9 @@ object frmOrdemProducao: TfrmOrdemProducao
       FieldName = 'CODIGOOP'
       Size = 13
     end
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    Left = 663
+    Top = 330
   end
 end

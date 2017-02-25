@@ -1351,29 +1351,29 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               Left = 3
               Top = 3
               Width = 420
-              Height = 102
+              Height = 69
               Align = alTop
               TabOrder = 0
             end
             object pnImagem: TPanel
               AlignWithMargins = True
               Left = 3
-              Top = 111
+              Top = 78
               Width = 145
-              Height = 273
+              Height = 306
               Align = alLeft
               BevelOuter = bvNone
               Color = 16250871
               ParentBackground = False
               TabOrder = 1
-              ExplicitTop = 137
-              ExplicitHeight = 198
+              ExplicitTop = 111
+              ExplicitHeight = 273
               object Image1: TImage
                 AlignWithMargins = True
                 Left = 3
                 Top = 3
                 Width = 139
-                Height = 174
+                Height = 207
                 Align = alClient
                 Center = True
                 Proportional = True
@@ -1385,44 +1385,38 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               object btnImagemWebCam: TBitBtn
                 AlignWithMargins = True
                 Left = 3
-                Top = 214
+                Top = 247
                 Width = 139
                 Height = 25
                 Align = alBottom
                 Caption = 'Buscar WebCam'
                 TabOrder = 0
                 OnClick = btnImagemWebCamClick
-                ExplicitLeft = 16
-                ExplicitTop = 144
-                ExplicitWidth = 105
+                ExplicitTop = 214
               end
               object btnSalvarImagem: TBitBtn
                 AlignWithMargins = True
                 Left = 3
-                Top = 245
+                Top = 278
                 Width = 139
                 Height = 25
                 Align = alBottom
                 Caption = 'Salvar Imagem'
                 TabOrder = 1
                 OnClick = btnSalvarImagemClick
-                ExplicitLeft = 24
-                ExplicitTop = 144
-                ExplicitWidth = 105
+                ExplicitTop = 245
               end
               object btnImagemArquivo: TBitBtn
                 AlignWithMargins = True
                 Left = 3
-                Top = 183
+                Top = 216
                 Width = 139
                 Height = 25
                 Align = alBottom
                 Caption = 'Buscar Arquivo'
                 TabOrder = 2
                 OnClick = btnImagemArquivoClick
-                ExplicitLeft = 16
-                ExplicitTop = 144
-                ExplicitWidth = 105
+                ExplicitTop = 183
               end
             end
           end

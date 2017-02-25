@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Datasnap.DBClient,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
-  JvToolEdit, JvBaseEdits, FireDAC.Comp.Client, Vcl.ImgList, Vcl.Menus;
+  JvToolEdit, JvBaseEdits, FireDAC.Comp.Client, Vcl.ImgList, Vcl.Menus,
+  Vcl.Imaging.jpeg, CapturaCam, Vcl.ExtDlgs;
 
 type
   TfrmOrdemProducao = class(TForm)
@@ -56,28 +57,6 @@ type
     pnObservacao: TPanel;
     edObservacao: TEdit;
     btObservacao: TBitBtn;
-    edFazendaAreaTalhao: TEdit;
-    Label4: TLabel;
-    edColetadoPor: TEdit;
-    Label5: TLabel;
-    edOrigemMaterial: TEdit;
-    Label7: TLabel;
-    edCodSelecaoCampo: TEdit;
-    Label8: TLabel;
-    Label6: TLabel;
-    cbSelecaoPositiva: TComboBox;
-    edDataColeta: TJvDateEdit;
-    Label9: TLabel;
-    Label1: TLabel;
-    edLocalizador: TEdit;
-    Label10: TLabel;
-    edQuantidadeMaterial: TEdit;
-    Label11: TLabel;
-    edTransportadora: TEdit;
-    edDataRecebimento: TJvDateEdit;
-    Label12: TLabel;
-    Label13: TLabel;
-    edDataEstimada: TJvDateEdit;
     btMenu: TSpeedButton;
     cbStatus: TComboBox;
     PopupMenu: TPopupMenu;
@@ -91,6 +70,38 @@ type
     cds_Etiqueta1CODIGOOP: TStringField;
     cds_PesquisaSELECAOPOSITIVA: TStringField;
     cds_PesquisaCODIGOSELECAOCAMPO: TStringField;
+    Panel6: TPanel;
+    Label6: TLabel;
+    Label8: TLabel;
+    cbSelecaoPositiva: TComboBox;
+    edCodSelecaoCampo: TEdit;
+    Label7: TLabel;
+    edOrigemMaterial: TEdit;
+    Panel7: TPanel;
+    edFazendaAreaTalhao: TEdit;
+    Label4: TLabel;
+    edDataColeta: TJvDateEdit;
+    edColetadoPor: TEdit;
+    Label5: TLabel;
+    Label9: TLabel;
+    Label1: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    edLocalizador: TEdit;
+    edQuantidadeMaterial: TEdit;
+    edTransportadora: TEdit;
+    edDataRecebimento: TJvDateEdit;
+    edDataEstimada: TJvDateEdit;
+    pnFotos: TPanel;
+    ScrollBox1: TScrollBox;
+    pnImagem: TPanel;
+    Image1: TImage;
+    btnImagemWebCam: TBitBtn;
+    btnSalvarImagem: TBitBtn;
+    btnImagemArquivo: TBitBtn;
+    OpenPictureDialog1: TOpenPictureDialog;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -117,16 +128,22 @@ type
     procedure Cancelar1Click(Sender: TObject);
     procedure btPesquisarClick(Sender: TObject);
     procedure IMPRIMIRETIQUETAS1Click(Sender: TObject);
+    procedure btnImagemWebCamClick(Sender: TObject);
+    procedure btnImagemArquivoClick(Sender: TObject);
+    procedure btnSalvarImagemClick(Sender: TObject);
   private
     procedure SelecionarObservacao;
     procedure EncerrarOPF;
+    procedure Deletar(Sender: TObject);
     { Private declarations }
   public
+    NomeImagemAtual: string;
     procedure CarregaDados;
     procedure InvertePaineis;
     procedure Cancelar;
     procedure Filtrar;
     procedure AtualizarEdits(Limpar : Boolean);
+    procedure BuscarFotos;
   end;
 
 var
@@ -146,7 +163,9 @@ uses
   uBeanCliente,
   uBeanProdutos,
   uBeanEstagio,
-  uBeanOPFinal_Estagio;
+  uBeanOPFinal_Estagio,
+  uBeanImagem,
+  uBeanOPFinal_Imagem;
 
 {$R *.dfm}
 
@@ -176,6 +195,7 @@ begin
     edDataRecebimento.Clear;
     edDataEstimada.Clear;
     btGravar.Tag  := 0;
+    pnFotos.Visible := False;
   end else begin
 
     btGravar.Tag  := cds_PesquisaID.Value;
@@ -246,6 +266,8 @@ begin
             edDataRecebimento.Date      := SQL.FieldByName('DATADERECEBIMENTO').AsDateTime;
             edDataEstimada.Date         := SQL.FieldByName('DATAESTIMADAPROCESSAMENTO').AsDateTime;
           end;
+          pnFotos.Visible               := True;
+          BuscarFotos;
         end;
       except
         on E : Exception do begin
@@ -437,10 +459,124 @@ begin
   PopupMenu.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
 end;
 
+procedure TfrmOrdemProducao.btnImagemArquivoClick(Sender: TObject);
+var
+  DirNomeFoto : string;
+begin
+  if OpenPictureDialog1.Execute() then begin
+    if OpenPictureDialog1.FileName <> '' then begin
+      DirNomeFoto := CONFIG_LOCAL.DirImagens +
+                     FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + IntToStr(btGravar.Tag) +'.jpg';
+
+      Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+      Image1.Picture.SaveToFile(DirNomeFoto);
+      NomeImagemAtual := DirNomeFoto;
+    end;
+  end;
+end;
+
+procedure TfrmOrdemProducao.btnImagemWebCamClick(Sender: TObject);
+var
+  DirNomeFoto: string;
+  NomeFoto: string;
+  procedure ConverteParaJpeg(ACaminhoFoto: string);
+  var
+    cjBmp: TBitmap;
+    cjJpg: TJpegImage;
+    strNomeSemExtensao: string;
+    AFoto: TImage;
+    Nome : string;
+  begin
+    AFoto:= TImage.Create(Self);
+    AFoto.Parent := Self;
+    AFoto.Visible := False;
+    AFoto.Picture.Bitmap.LoadFromFile(ACaminhoFoto + '.bmp');
+
+    cjJpg := TJPegImage.Create;
+    cjBmp := TBitmap.Create;
+
+    cjBmp.Assign(AFoto.Picture.Bitmap);
+    cjJpg.Assign(cjBMP);
+
+    Nome := ExtractFileName(ACaminhoFoto + '.jpg');
+
+    cjJpg.SaveToFile(CONFIG_LOCAL.DirImagens + Nome);
+    DeleteFile(ACaminhoFoto + '.bmp');
+    cjJpg.Free;
+    cjBmp.Free;
+    AFoto.Free;
+  end;
+begin
+  fCaptura := TfCaptura.Create(Self);
+  try
+    DirNomeFoto := ExtractFilePath(Application.ExeName) +
+      FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + IntToStr(btGravar.Tag) +'.bmp';
+
+    NomeFoto := ExtractFilePath(DirNomeFoto) +
+      Copy(ExtractFileName(DirNomeFoto),1, Length(ExtractFileName(DirNomeFoto))-4);
+
+    fCaptura.camCamera.FichierImage := ExtractFileName(DirNomeFoto);
+    if fCaptura.ShowModal = mrOk then begin
+      fCaptura.camCamera.CaptureImageDisque;
+      ConverteParaJpeg(NomeFoto);
+      NomeFoto := CONFIG_LOCAL.DirImagens + ExtractFileName(NomeFoto + '.jpg');
+      Image1.Picture.LoadFromFile(NomeFoto);
+      NomeImagemAtual := NomeFoto;
+    end;
+  finally
+    FreeAndNil(fCaptura);
+  end;
+end;
+
 procedure TfrmOrdemProducao.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
+end;
+
+procedure TfrmOrdemProducao.btnSalvarImagemClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  IMG : TIMAGEM;
+  EIMG : TOPFINAL_IMAGEM;
+begin
+  if Assigned(Image1.Picture) then begin
+    FWC  := TFWConnection.Create;
+    IMG  := TIMAGEM.Create(FWC);
+    EIMG := TOPFINAL_IMAGEM.Create(FWC);
+    try
+      FWC.StartTransaction;
+      try
+        IMG.ID.isNull                := True;
+        IMG.ID_USUARIO.Value         := USUARIO.CODIGO;
+        IMG.NOMEIMAGEM.Value         := ExtractFileName(NomeImagemAtual);
+        IMG.Insert;
+
+        EIMG.ID.isNull               := True;
+        EIMG.ID_IMAGEM.Value         := IMG.ID.Value;
+        EIMG.ID_OPFINAL.Value        := btGravar.Tag;
+        EIMG.Insert;
+
+        FWC.Commit;
+
+        Image1.Picture.Bitmap.Assign(Nil);
+        Image1.Parent.Repaint;
+
+        NomeImagemAtual := '';
+
+        BuscarFotos;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_WAR, 'Erro ao gravar imagem!', '', E.Message);
+        end;
+      end;
+    finally
+      FreeAndNil(IMG);
+      FreeAndNil(EIMG);
+      FreeAndNil(FWC);
+    end;
+  end;
 end;
 
 procedure TfrmOrdemProducao.btObservacaoClick(Sender: TObject);
@@ -464,6 +600,74 @@ begin
     finally
       btPesquisar.Tag := 0;
     end;
+  end;
+end;
+
+procedure TfrmOrdemProducao.BuscarFotos;
+var
+  Imagem: TImage;
+  i: integer;
+  espaco: integer;
+  Diretorio : string;
+  NomeArquivo : string;
+  FWC : TFWConnection;
+  SQL : TFDQuery;
+begin
+  try
+    for I := 0 to Pred(ScrollBox1.ControlCount) do begin
+      if Assigned(ScrollBox1.Controls[I]) then begin
+        if ScrollBox1.Controls[I] is TImage then begin
+          ScrollBox1.Controls[I].Visible := False;
+          TImage(ScrollBox1.Controls[I]).Picture.Assign(nil);
+          TImage(ScrollBox1.Controls[I]).Repaint;
+
+          TImage(ScrollBox1.Controls[I]).Destroy
+        end;
+      end;
+    end;
+  except
+
+  end;
+
+  ScrollBox1.HorzScrollBar.Position:=0;
+  Diretorio := CONFIG_LOCAL.DirImagens; //aqui é o caminho da pasta
+  espaco := 10;
+  FWC   := TFWConnection.Create;
+  SQL   := TFDQuery.Create(nil);
+  try
+    SQL.Close;
+    SQL.SQL.Clear;
+    SQL.SQL.Add('SELECT I.ID, I.NOMEIMAGEM');
+    SQL.SQL.Add('FROM OPFINAL_IMAGEM OI');
+    SQL.SQL.Add('INNER JOIN IMAGEM I ON OI.ID_IMAGEM = I.ID');
+    SQL.SQL.Add('WHERE OI.ID_OPFINAL = :IDOPFINAL');
+    SQL.Connection := FWC.FDConnection;
+    SQL.ParamByName('IDOPFINAL').AsInteger := btGravar.Tag;
+    SQL.Open();
+
+    SQL.First;
+    while not SQL.Eof do begin
+      NomeArquivo := Diretorio + SQL.FieldByName('NOMEIMAGEM').asString;
+      if FileExists(NomeArquivo) then begin
+        Imagem := TImage.Create(Self);
+        Imagem.Parent := ScrollBox1;
+        Imagem.Width := 50;
+        Imagem.Height := 50;
+        Imagem.Top := 10;
+        Imagem.Stretch := true;
+        Imagem.Left := espaco;
+        Imagem.OnDblClick := Deletar;
+        Imagem.Tag := SQL.FieldByName('ID').AsInteger;
+        Imagem.Picture.LoadFromFile(NomeArquivo);
+        espaco := espaco + Imagem.Height + 10;
+      end else
+        DisplayMsg(MSG_INF, 'Imagem não encontrada!', '', NomeArquivo);
+      SQL.Next;
+    end;
+    ScrollBox1.Repaint;
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(FWC);
   end;
 end;
 
@@ -622,6 +826,61 @@ begin
         Break;
       end;
     end;
+  end;
+end;
+
+procedure TfrmOrdemProducao.Deletar(Sender: TObject);
+var
+  FWC  : TFWConnection;
+  IMG  : TIMAGEM;
+  EIMG : TOPFINAL_IMAGEM;
+  NomeImagem : string;
+  I: Integer;
+begin
+  if TImage(Sender).Tag = 0 then Exit;
+
+  DisplayMsg(MSG_CONF, 'Deseja Excluir a imagem selecionada?');
+  if ResultMsgModal in [mrOk, mrYes] then begin
+     FWC  := TFWConnection.Create;
+     IMG  := TIMAGEM.Create(FWC);
+     EIMG := TOPFINAL_IMAGEM.Create(FWC);
+     try
+       FWC.StartTransaction;
+       try
+         IMG.ID.Value := TImage(Sender).Tag;
+         IMG.SelectList('ID = ' + IMG.ID.asString);
+         if IMG.Count > 0 then begin
+           NomeImagem := CONFIG_LOCAL.DirImagens + TIMAGEM(IMG.Itens[0]).NOMEIMAGEM.asString;
+           if (FileExists(NomeImagem)) then
+             DeleteFile(NomeImagem);
+
+           EIMG.SelectList('ID_IMAGEM = ' + IMG.ID.asString);
+           for I := 0 to EIMG.Count - 1 do begin
+             EIMG.ID.Value := TOPFINAL_IMAGEM(EIMG.Itens[I]).ID.Value;
+             EIMG.Delete;
+           end;
+
+         end;
+
+         IMG.Delete;
+
+         FWC.Commit;
+
+         TImage(Sender).Tag := 0;
+         TImage(Sender).Picture.Assign(nil);
+
+         BuscarFotos;
+       except
+         on E : Exception do begin
+           FWC.Rollback;
+           DisplayMsg(MSG_WAR, 'Erro ao excluir imagem!', '', E.Message);
+         end;
+       end;
+     finally
+       FreeAndNil(IMG);
+       FreeAndNil(EIMG);
+       FreeAndNil(FWC);
+     end;
   end;
 end;
 
