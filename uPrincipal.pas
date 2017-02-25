@@ -41,6 +41,7 @@ type
     AgendaSemanal1: TMenuItem;
     Aniversariantes1: TMenuItem;
     CadastrodePlantas1: TMenuItem;
+    ControledeQualidadePositivo1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -67,6 +68,7 @@ type
     procedure AgendaSemanal1Click(Sender: TObject);
     procedure Aniversariantes1Click(Sender: TObject);
     procedure CadastrodePlantas1Click(Sender: TObject);
+    procedure ControledeQualidadePositivo1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -110,7 +112,7 @@ uses
   uControleQualidade,
   uRelAgendaSemanal,
   uRelAniversariantes,
-  uRelCadastrodePlantas;
+  uRelCadastrodePlantas, uControleQualidadePositivo;
 
 {$R *.dfm}
 
@@ -310,6 +312,17 @@ begin
     frmControleQualidade.ShowModal;
   finally
     FreeAndNil(frmControleQualidade);
+  end;
+end;
+
+procedure TfrmPrincipal.ControledeQualidadePositivo1Click(Sender: TObject);
+begin
+  if not Assigned(frmControleQualidadePositivo) then
+    frmControleQualidadePositivo := TfrmControleQualidadePositivo.Create(nil);
+  try
+    frmControleQualidadePositivo.ShowModal;
+  finally
+    FreeAndNil(frmControleQualidadePositivo);
   end;
 end;
 

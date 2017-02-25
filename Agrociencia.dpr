@@ -72,7 +72,9 @@ uses
   uBeanOPFinal_Imagem in 'Beans\uBeanOPFinal_Imagem.pas',
   uBeanOPFinal_E_L_S_Q_Imagem in 'Beans\uBeanOPFinal_E_L_S_Q_Imagem.pas',
   uRelAniversariantes in 'uRelAniversariantes.pas' {frmRelAniversariantes},
-  uRelCadastrodePlantas in 'uRelCadastrodePlantas.pas' {frmRelCadastrodePlantas};
+  uRelCadastrodePlantas in 'uRelCadastrodePlantas.pas' {frmRelCadastrodePlantas},
+  uBeanOPFinal_Estagio_Lote_S_Positivo in 'Beans\uBeanOPFinal_Estagio_Lote_S_Positivo.pas',
+  uControleQualidadePositivo in 'uControleQualidadePositivo.pas' {frmControleQualidadePositivo};
 
 {$R *.res}
 

@@ -8,7 +8,7 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client;
+  FireDAC.Comp.Client, Vcl.ExtDlgs;
 
 type
   TfrmControleQualidade = class(TForm)
@@ -27,8 +27,11 @@ type
     Label8: TLabel;
     Label1: TLabel;
     lbPote: TLabel;
-    btnImagem: TBitBtn;
+    pnImagem: TPanel;
     Image1: TImage;
+    btnImagemWebCam: TBitBtn;
+    btnImagemArquivo: TBitBtn;
+    OpenPictureDialog1: TOpenPictureDialog;
     procedure btFecharClick(Sender: TObject);
     procedure edt_CodigoMotivoRightButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -37,6 +40,7 @@ type
     procedure edt_CodigoMotivoChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnImagemClick(Sender: TObject);
+    procedure btnImagemArquivoClick(Sender: TObject);
   private
     { Private declarations }
     NomeImagemAtual : string;
@@ -165,6 +169,22 @@ begin
   Close;
 end;
 
+procedure TfrmControleQualidade.btnImagemArquivoClick(Sender: TObject);
+var
+  DirNomeFoto : string;
+begin
+  if OpenPictureDialog1.Execute() then begin
+    if OpenPictureDialog1.FileName <> '' then begin
+      DirNomeFoto := CONFIG_LOCAL.DirImagens +
+                     FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + IntToStr(lbPote.Tag) +'.jpg';
+
+      Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+      Image1.Picture.SaveToFile(DirNomeFoto);
+      NomeImagemAtual := DirNomeFoto;
+    end;
+  end;
+end;
+
 procedure TfrmControleQualidade.btnImagemClick(Sender: TObject);
 var
   DirNomeFoto: string;
@@ -267,7 +287,7 @@ begin
   lbPote.Caption     := '';
   lbPote.Tag := 0;
   NomeImagemAtual   := '';
-  btnImagem.Enabled := False;
+  pnImagem.Visible := False;
   Image1.Picture := nil;
 end;
 
@@ -301,7 +321,7 @@ var
   FWC : TFWConnection;
   SQL : TFDQuery;
 begin
-  btnImagem.Enabled := False;
+  pnImagem.Visible := False;
   FWC := TFWConnection.Create;
   SQL := TFDQuery.Create(nil);
   try
@@ -343,7 +363,7 @@ begin
                       ', Recipiente: ' + SQL.FieldByName('RECIPIENTE').AsString;
     lbPote.Tag := SQL.FieldByName('CODRECIPIENTE').AsInteger;
     if edt_CodigoMotivo.CanFocus then edt_CodigoMotivo.SetFocus;
-    btnImagem.Enabled := True;
+    pnImagem.Visible := True;
   finally
     FreeAndNil(SQL);
     FreeAndNil(FWC);

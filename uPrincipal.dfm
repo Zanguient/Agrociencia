@@ -112,6 +112,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Controle de Qualidade'
         OnClick = ControledeQualidade1Click
       end
+      object ControledeQualidadePositivo1: TMenuItem
+        Caption = 'Controle de Qualidade Positivo'
+        OnClick = ControledeQualidadePositivo1Click
+      end
     end
     object Relatrios1: TMenuItem
       Caption = 'Relat'#243'rios'
