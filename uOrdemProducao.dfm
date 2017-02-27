@@ -26,8 +26,6 @@ object frmOrdemProducao: TfrmOrdemProducao
     Height = 714
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 868
-    ExplicitHeight = 644
     object gdPesquisa: TDBGrid
       AlignWithMargins = True
       Left = 4
@@ -109,8 +107,6 @@ object frmOrdemProducao: TfrmOrdemProducao
       Color = clWhite
       ParentBackground = False
       TabOrder = 1
-      ExplicitTop = 580
-      ExplicitWidth = 860
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 4
@@ -142,7 +138,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Value = 100.000000000000000000
           end>
         TabOrder = 0
-        ExplicitWidth = 852
         object Panel8: TPanel
           Left = 0
           Top = 0
@@ -151,7 +146,6 @@ object frmOrdemProducao: TfrmOrdemProducao
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitWidth = 426
           object btAlterar: TSpeedButton
             AlignWithMargins = True
             Left = 337
@@ -410,8 +404,6 @@ object frmOrdemProducao: TfrmOrdemProducao
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitLeft = 426
-          ExplicitWidth = 426
           object btFechar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -613,7 +605,6 @@ object frmOrdemProducao: TfrmOrdemProducao
       ParentBackground = False
       ParentFont = False
       TabOrder = 2
-      ExplicitWidth = 866
       object btPesquisar: TSpeedButton
         AlignWithMargins = True
         Left = 792
@@ -699,7 +690,6 @@ object frmOrdemProducao: TfrmOrdemProducao
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
-        ExplicitWidth = 591
       end
       object cbStatus: TComboBox
         AlignWithMargins = True
@@ -724,7 +714,6 @@ object frmOrdemProducao: TfrmOrdemProducao
           'Encerradas'
           'Canceladas'
           'Ambas')
-        ExplicitLeft = 600
       end
     end
     object Panel2: TPanel
@@ -735,7 +724,7 @@ object frmOrdemProducao: TfrmOrdemProducao
       Height = 42
       Align = alTop
       BevelOuter = bvNone
-      Caption = 'Ordens de Produ'#231#227'o (Final)'
+      Caption = 'Cadastro de Recebimento de Plantas'
       Color = clSkyBlue
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -745,7 +734,6 @@ object frmOrdemProducao: TfrmOrdemProducao
       ParentBackground = False
       ParentFont = False
       TabOrder = 3
-      ExplicitWidth = 860
     end
   end
   object pnEdicao: TPanel
@@ -756,8 +744,826 @@ object frmOrdemProducao: TfrmOrdemProducao
     Align = alClient
     TabOrder = 1
     Visible = False
-    ExplicitWidth = 868
-    ExplicitHeight = 644
+    object Panel1: TPanel
+      Left = 1
+      Top = 1
+      Width = 895
+      Height = 646
+      Align = alClient
+      BorderStyle = bsSingle
+      Color = clWhite
+      ParentBackground = False
+      TabOrder = 1
+      object GridPanel1: TGridPanel
+        Left = 1
+        Top = 43
+        Width = 889
+        Height = 598
+        Align = alClient
+        ColumnCollection = <
+          item
+            Value = 50.000000000000000000
+          end
+          item
+            Value = 50.000000000000000000
+          end>
+        ControlCollection = <
+          item
+            Column = 0
+            Control = pnUsuarioEsquerda
+            Row = 0
+          end
+          item
+            Column = 1
+            Control = pnUsuarioDireita
+            Row = 0
+          end>
+        RowCollection = <
+          item
+            Value = 100.000000000000000000
+          end>
+        TabOrder = 1
+        object pnUsuarioEsquerda: TPanel
+          Left = 1
+          Top = 1
+          Width = 443
+          Height = 596
+          Align = alClient
+          TabOrder = 0
+          object Label2: TLabel
+            AlignWithMargins = True
+            Left = 4
+            Top = 132
+            Width = 435
+            Height = 19
+            Align = alTop
+            Caption = 'Quantidade estimada de Produ'#231#227'o:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            ExplicitWidth = 248
+          end
+          object Label3: TLabel
+            AlignWithMargins = True
+            Left = 4
+            Top = 248
+            Width = 435
+            Height = 19
+            Align = alTop
+            Caption = 'Observa'#231#227'o:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            ExplicitWidth = 88
+          end
+          object Label14: TLabel
+            AlignWithMargins = True
+            Left = 4
+            Top = 190
+            Width = 435
+            Height = 19
+            Align = alTop
+            Caption = 'Limite de Multiplica'#231#245'es'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            ExplicitWidth = 167
+          end
+          object edQuantidade: TEdit
+            AlignWithMargins = True
+            Left = 4
+            Top = 157
+            Width = 435
+            Height = 27
+            Align = alTop
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            NumbersOnly = True
+            ParentFont = False
+            TabOrder = 2
+          end
+          object gbProduto: TGroupBox
+            AlignWithMargins = True
+            Left = 4
+            Top = 68
+            Width = 435
+            Height = 58
+            Align = alTop
+            Caption = ' Produto '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 1
+            DesignSize = (
+              435
+              58)
+            object edCodigoProduto: TButtonedEdit
+              AlignWithMargins = True
+              Left = 4
+              Top = 24
+              Width = 56
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              Images = DMUtil.ImageList1
+              ParentFont = False
+              RightButton.ImageIndex = 0
+              RightButton.Visible = True
+              TabOrder = 0
+              OnChange = edCodigoProdutoChange
+              OnKeyDown = edCodigoProdutoKeyDown
+              OnRightButtonClick = edCodigoProdutoRightButtonClick
+            end
+            object edNomeProduto: TEdit
+              Left = 66
+              Top = 24
+              Width = 361
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Enabled = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 1
+            end
+          end
+          object gbCliente: TGroupBox
+            AlignWithMargins = True
+            Left = 4
+            Top = 4
+            Width = 435
+            Height = 58
+            Align = alTop
+            Caption = ' Cliente '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 0
+            DesignSize = (
+              435
+              58)
+            object edCodigoCliente: TButtonedEdit
+              AlignWithMargins = True
+              Left = 4
+              Top = 24
+              Width = 56
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              Images = DMUtil.ImageList1
+              ParentFont = False
+              RightButton.ImageIndex = 0
+              RightButton.Visible = True
+              TabOrder = 0
+              OnChange = edCodigoClienteChange
+              OnKeyDown = edCodigoClienteKeyDown
+              OnRightButtonClick = edCodigoClienteRightButtonClick
+            end
+            object edNomeCliente: TEdit
+              Left = 66
+              Top = 24
+              Width = 361
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Enabled = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 1
+            end
+          end
+          object pnObservacao: TPanel
+            AlignWithMargins = True
+            Left = 4
+            Top = 273
+            Width = 435
+            Height = 98
+            Align = alTop
+            BevelOuter = bvNone
+            TabOrder = 4
+            object edObservacao: TEdit
+              AlignWithMargins = True
+              Left = 3
+              Top = 3
+              Width = 323
+              Height = 92
+              Align = alClient
+              AutoSize = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              MaxLength = 512
+              ParentFont = False
+              TabOrder = 0
+            end
+            object btObservacao: TBitBtn
+              AlignWithMargins = True
+              Left = 332
+              Top = 3
+              Width = 100
+              Height = 92
+              Align = alRight
+              Glyph.Data = {
+                360C0000424D360C000000000000360000002800000020000000200000000100
+                180000000000000C0000C40E0000C40E00000000000000000000FFFFFFFFFFFF
+                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFEFDFDFDFDFDFCFCFCFCFCFCFBFB
+                FBFBFBFBFBFAFAFBFAFAFBFAFAFBFAFAFBFBFBFBFBFBFCFCFCFCFCFCFDFDFDFD
+                FDFDFEFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                FEFDFDFCFCFCFAFAFAF8F8F8F6F6F6F4F4F4F2F2F2F0F0EFEFEEEEEDEDECECEB
+                EBEBEAEAEAEAEAEAE9E9EAE9E9EAEAE9EBEAEAECEBEBEDECECEEEEEEF0F0EFF2
+                F1F1F4F3F3F6F6F5F8F7F7FAF9F9FCFCFBFDFDFDFEFEFEFFFFFFFDFDFDFBFBFB
+                F9F9F8F6F6F6F4F3F3F1F0F0EEEEEDEBEBEAE9E8E8E6E5E5E4E3E3E2E1E1E1E0
+                E0E0DFDFE0DFDFE0DFDFE0DFDFE0DFDFE0DFDFE1E0E0E2E1E1E4E3E2E6E5E4E8
+                E7E7EBEAEAEDEDECF0EFEFF3F2F2F6F5F5F8F8F8FBFAFAFDFDFDFEFEFEFCFCFC
+                CDC8C2A0988CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA098
+                8CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA0
+                988CA0988CC7C3BDF1F1F0F4F4F3F7F6F6F9F9F9FBFBFBFEFEFEFFFFFFFFFFFF
+                A0988CD4CEC6ECE8E0EDE9E1EDEAE3EFEBE5F0EDE6F1EEE8F2EFEAF3F0EBF4F2
+                EDF5F3EFF6F4F0F7F5F2F8F7F4F9F8F5FAF9F7FBFAF9FCFBFAFCFCFBFDFDFCF9
+                F8F7DDD9D5A0988CFAFAFAFCFCFCFDFDFDFEFEFEFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE3DED3E2DCD0E3DED3E5E0D5E6E2D8E8E4DAEAE6DDEBE8DFEDEAE2EEEB
+                E5EAE7E1F2EFEAF3F1ECF5F3EFF6F5F1F8F7F4F9F8F6FBFAF9FCFCFBFDFDFCFD
+                FDFCFCFBFAA0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE0DACEE2DCD0D2CCC1D4CEC3D5CFC5D6D1C6D7D2C8D8D4CADAD5CCDAD6
+                CEBAB6B19A9794AEABA6D5D5D1E0DDD8E2DFDAE3E0DBE4E1DDE5E3DFE6E4E1FD
+                FDFCFBFBFAA0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE0DACDE2DCD0E3DED2E5E0D5E6E2D8E8E4DAEAE6DDEBE7DFEDE9E2EEEB
+                E4E3E1DB94918E979D9F91A6B1B0BEC3E8EAE9F9F8F6FBFAF8FCFBFAFCFCFBFC
+                FCFAFBFAF9A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE0DACDE1DCD0E3DED2E5E0D5E6E2D7E8E3DAE9E5DCEBE7DFECE9E1EEEB
+                E4F0EDE6B3BBBCA7C0CDB7CFDB96ACB7839AA5A9B7BDF1F2F0FAFAF8FBFAF9FB
+                FAF8FAF9F7A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE0DACDE1DCCFD2CCC0D3CDC2D4CFC4D5D0C6D7D1C8D8D3C9D9D4CBDAD5
+                CDDBD7CFC8CCCC90AEBEBBD6E5C5DFEC9DB4C0839AA5878649DBD8CDE3E0DBF9
+                F8F6F9F7F5A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE0DACDE1DBCFE2DDD1E4DFD4E6E1D6E7E2D9E9E4DBEAE6DDECE8E0EDEA
+                E2EEEBE5F0EDE7A2BBC899B9CAB5D0DF9EB2BD9AA07C7F7311898232EFEDE4F8
+                F6F3F7F6F2A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE0DACDE0DBCEE2DCD1E4DED3E5E0D5E7E2D8E8E4DAE9E5DCEBE7DFECE9
+                E1EEEAE4EFECE6D6DCDD88AABD90AEBEACB08AC0A835A895247F7311898232ED
+                EBE2F6F4F0A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE0DACDE0DACDD1CBBFD2CCC0D3CDC2D4CFC4D5D0C6D7D1C8D7D2C9D9D4
+                CBDAD5CCDAD6CEDBD7CFA8B8B88F8F52B6980FC5A92EC0A835A895247F731189
+                8231ECE9DFA0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE0DACDE0DACDE1DBCFE2DDD1E4DFD3E5E0D6E7E2D8E8E4DAE9E5DCEBE7
+                DEECE8E1EDEAE3EEEBE4EFEDE6B6A556967C00B6980FC5A92EC0A835A895247F
+                73118881309C9483FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE0DACDE0DACDE0DACEE2DCD0E3DED2E4DFD4E6E1D7E7E3D9E8E4DBEAE6
+                DDEBE7DFECE9E1EDEAE2EEEBE4EFECE6B6A556967C00B6980FC5A92EC0A835A8
+                95247F731179711EF6F6F0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE6E1D6E2DDD1D0C9BDD1CABED1CBC0D3CCC1D4CEC3D4CFC4D6D0C6D6D1
+                C7D7D2C9D8D3CAD9D4CBDAD5CCDAD5CDDAD6CEAE9C4D967C00B6980FC5A92EC0
+                A835A895247F73118E884BF7F7F7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE8E3DAE8E3DAE7E2D8E5E0D5E2DDD1E3DDD2E4DFD4E5E0D6E6E2D8E8E3
+                DAE9E4DBEAE6DDEBE7DEEBE8E0ECE9E1EDEAE2EDEAE3B5A455967C00B6980FC5
+                A92EC0A835A6973C9390899A9897F7F7F7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CE9E4DBE9E4DBE9E4DBE9E4DBE9E5DCE9E5DCE8E3DAE7E3D9E7E2D8E6E2
+                D8E7E3D9E8E4DBE9E5DCEAE6DEEBE7DFEBE8E0ECE8E1ECE9E1B5A354967C00B6
+                980FC3AD48B8B6AFAFAEAD9795949A9897F6F7FAFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CEAE5DDEAE5DDDFDAD2DFDAD2DFDAD2DFDBD3E0DCD4E1DCD4E1DDD5E2DD
+                D6E0DCD5E0DBD3E0DCD4E0DCD5E1DCD5E1DDD6E1DDD6E2DDD7E2DED7B2A0529A
+                841FB2AFA5C5C4C3D2D1D0A7A6A5878B9D8190BAF6F7FAFFFFFFFFFFFFFFFFFF
+                A0988CEAE7DEEAE7DEEAE7DEEAE7DEEAE7DEEAE7DFEBE8E0ECE8E1EDE9E2EEEA
+                E3EEEAE4EFEBE5EFECE6F0EDE6F0EDE7F0EEE8F1EEE8F1EFE8F1EFE9F1EFE9C2
+                BFB4A9A8A6C5C4C3BCBBBBB3B8CB97A8DC7282B3B3BCD5FFFFFFFFFFFFFFFFFF
+                A0988CECE8E0ECE8E0ECE8E0ECE8E0ECE8E0ECE8E0ECE8E0ECE9E1EDEAE2EDEA
+                E3EEEBE4EFEBE5EFECE5F0ECE6F0EDE6F1EDE7F1EDE7F1EEE8F1EEE8F1EEE8F1
+                EEE8C4C2BEA9A8A6AAB0C1AEBDEDA4B3E37F8DBAC2C9DDFFFFFFFFFFFFFFFFFF
+                A0988CEDE9E2EDE9E2EDE9E2EDE9E2EDE9E2EDE9E2EDE9E2EDE9E2EEE9E2EEEA
+                E3EEEBE4EFEBE5EFECE5EFEDE6F0EDE7F0EDE7F0EEE8F0EEE8F0EEE8F0EEE8F0
+                EEE8F0EEE89A9B9F808EB696A5D28D99C09EA9C9F7F8FBFFFFFFFFFFFFFFFFFF
+                A0988CEEEAE3E6E3DCD8D5CED7D3CDD8D5CEE8E5DDE6E3DCD8D5CED7D3CDD8D5
+                CFE9E5DFE8E4DED9D6D0D8D5CFD9D7D1EAE7E1E9E6E0DAD8D2D9D7D0DAD8D2EB
+                E8E2F0EEE7A0988CB3BBD17E8CB3B3BAD3F8F9FBFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CEEECE5D9D6D0AAA398A0988CAAA398D9D6D0D9D6D0AAA398A0988CAAA3
+                98D9D6D0D9D6D0AAA398A0988CAAA398DAD8D1DAD8D2AAA398A0988CAAA398DA
+                D8D2F1EEE8A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CF0EDE6D8D6CFA0988CC8C1B4A0988CD8D6CFD8D6CFA0988CC8C1B4A098
+                8CD8D6CFD8D6CFA0988CC8C1B4A0988CD8D6D0D9D6D1A0988CC8C1B4A0988CD9
+                D7D1F1EEE8A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                A0988CF1EEE8DBD8D2A0988CE0DACDA0988CDBD8D2DBD8D2A0988CE0DACDA098
+                8CDBD8D2DBD8D2A0988CE0DACDA0988CDBD8D2DBD8D2A0988CE0DACDA0988CDB
+                D9D3F1EEE8A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9F9F8
+                A0988CF2EFEAEAE8E2A0988CE2DDD1A0988CECE9E4EAE8E2A0988CE2DDD1A098
+                8CECE9E4EAE8E2A0988CE2DDD1A0988CECE9E4EAE8E2A0988CE2DDD1A0988CEC
+                E9E4F0EEE8A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9F9F8
+                A0988CE3E0DAEDEAE5A0988CF3F0EBA0988CEDEAE5EDEAE5A0988CF3F0EBA098
+                8CEDEAE5EDEAE5A0988CF3F0EBA0988CEDEAE5EDEAE5A0988CF3F0EBA0988CED
+                EAE5E3E0DAA0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                D0CCC6A0988CA0988CA0988CF3F0EBA0988CA0988CA0988CA0988CF3F0EBA098
+                8CA0988CA0988CA0988CF3F0EBA0988CA0988CA0988CA0988CF3F0EBA0988CA0
+                988CA0988CD0CCC6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                FFFFFFFFFFFFF3F2F1A0988CC6C0B4A0988CFFFFFFF3F2F1A0988CC6C0B4A098
+                8CFFFFFFF3F2F1A0988CC6C0B4A0988CFFFFFFF3F2F1A0988CC6C0B4A0988CFF
+                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                FFFFFFFFFFFFFFFFFFB2ABA2A0988CB2ABA2FFFFFFFFFFFFB2ABA2A0988CB2AB
+                A2FFFFFFFFFFFFB2ABA2A0988CB2ABA2FFFFFFFFFFFFB2ABA2A0988CB2ABA2FF
+                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+              TabOrder = 1
+              OnClick = btObservacaoClick
+            end
+          end
+          object edLimiteMultiplicacao: TEdit
+            AlignWithMargins = True
+            Left = 4
+            Top = 215
+            Width = 435
+            Height = 27
+            Align = alTop
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            NumbersOnly = True
+            ParentFont = False
+            TabOrder = 3
+          end
+          object Panel6: TPanel
+            Left = 1
+            Top = 374
+            Width = 441
+            Height = 221
+            Align = alClient
+            BevelOuter = bvLowered
+            TabOrder = 5
+            DesignSize = (
+              441
+              221)
+            object Label6: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 5
+              Width = 118
+              Height = 19
+              Caption = 'Sele'#231#227'o Positiva:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label8: TLabel
+              AlignWithMargins = True
+              Left = 130
+              Top = 5
+              Width = 214
+              Height = 19
+              Caption = 'C'#243'digo da Sele'#231#227'o no Campo:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label7: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 63
+              Width = 142
+              Height = 19
+              Caption = 'Origem do Material:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object cbSelecaoPositiva: TComboBox
+              Left = 6
+              Top = 29
+              Width = 118
+              Height = 27
+              Style = csDropDownList
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ItemIndex = 0
+              ParentFont = False
+              TabOrder = 0
+              Text = 'Sim'
+              Items.Strings = (
+                'Sim'
+                'N'#227'o')
+            end
+            object edCodSelecaoCampo: TEdit
+              AlignWithMargins = True
+              Left = 130
+              Top = 30
+              Width = 310
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 1
+            end
+            object edOrigemMaterial: TEdit
+              AlignWithMargins = True
+              Left = 6
+              Top = 86
+              Width = 434
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 2
+            end
+          end
+        end
+        object pnUsuarioDireita: TPanel
+          Left = 444
+          Top = 1
+          Width = 444
+          Height = 596
+          Align = alClient
+          TabOrder = 1
+          object Panel7: TPanel
+            Left = 1
+            Top = 1
+            Width = 442
+            Height = 295
+            Align = alTop
+            BevelOuter = bvLowered
+            TabOrder = 0
+            DesignSize = (
+              442
+              295)
+            object Label4: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 63
+              Width = 153
+              Height = 19
+              Caption = 'Fazenda/'#225'rea/Talh'#227'o:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label5: TLabel
+              AlignWithMargins = True
+              Left = 130
+              Top = 5
+              Width = 97
+              Height = 19
+              Caption = 'Coletado por:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label9: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 5
+              Width = 109
+              Height = 19
+              Caption = 'Data de Coleta:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label1: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 126
+              Width = 85
+              Height = 19
+              Caption = 'Localizador:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label10: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 184
+              Width = 114
+              Height = 19
+              Caption = 'Quant. Material:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label11: TLabel
+              AlignWithMargins = True
+              Left = 130
+              Top = 184
+              Width = 115
+              Height = 19
+              Caption = 'Transportadora:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label12: TLabel
+              AlignWithMargins = True
+              Left = 6
+              Top = 242
+              Width = 112
+              Height = 19
+              Caption = 'Data de Receb.:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label13: TLabel
+              AlignWithMargins = True
+              Left = 130
+              Top = 242
+              Width = 107
+              Height = 19
+              Caption = 'Data Estimada:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object edFazendaAreaTalhao: TEdit
+              AlignWithMargins = True
+              Left = 6
+              Top = 88
+              Width = 434
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 0
+            end
+            object edDataColeta: TJvDateEdit
+              Left = 6
+              Top = 30
+              Width = 118
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ShowNullDate = False
+              TabOrder = 1
+            end
+            object edColetadoPor: TEdit
+              AlignWithMargins = True
+              Left = 130
+              Top = 30
+              Width = 310
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 2
+            end
+            object edLocalizador: TEdit
+              AlignWithMargins = True
+              Left = 6
+              Top = 151
+              Width = 434
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 3
+            end
+            object edQuantidadeMaterial: TEdit
+              AlignWithMargins = True
+              Left = 6
+              Top = 209
+              Width = 118
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              NumbersOnly = True
+              ParentFont = False
+              TabOrder = 4
+            end
+            object edTransportadora: TEdit
+              AlignWithMargins = True
+              Left = 130
+              Top = 209
+              Width = 310
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 5
+            end
+            object edDataRecebimento: TJvDateEdit
+              Left = 6
+              Top = 267
+              Width = 118
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ShowNullDate = False
+              TabOrder = 6
+            end
+            object edDataEstimada: TJvDateEdit
+              Left = 130
+              Top = 267
+              Width = 118
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              ShowNullDate = False
+              TabOrder = 7
+            end
+          end
+          object pnFotos: TPanel
+            Left = 1
+            Top = 296
+            Width = 442
+            Height = 299
+            Align = alClient
+            BevelOuter = bvNone
+            TabOrder = 1
+            Visible = False
+            object ScrollBox1: TScrollBox
+              AlignWithMargins = True
+              Left = 3
+              Top = 3
+              Width = 436
+              Height = 69
+              Align = alTop
+              TabOrder = 0
+            end
+            object pnImagem: TPanel
+              AlignWithMargins = True
+              Left = 3
+              Top = 78
+              Width = 145
+              Height = 218
+              Align = alLeft
+              BevelOuter = bvNone
+              Color = 16250871
+              ParentBackground = False
+              TabOrder = 1
+              object Image1: TImage
+                AlignWithMargins = True
+                Left = 3
+                Top = 3
+                Width = 139
+                Height = 119
+                Align = alClient
+                Center = True
+                Proportional = True
+                ExplicitLeft = 32
+                ExplicitTop = 8
+                ExplicitWidth = 105
+                ExplicitHeight = 105
+              end
+              object btnImagemWebCam: TBitBtn
+                AlignWithMargins = True
+                Left = 3
+                Top = 159
+                Width = 139
+                Height = 25
+                Align = alBottom
+                Caption = 'Buscar WebCam'
+                TabOrder = 0
+                OnClick = btnImagemWebCamClick
+              end
+              object btnSalvarImagem: TBitBtn
+                AlignWithMargins = True
+                Left = 3
+                Top = 190
+                Width = 139
+                Height = 25
+                Align = alBottom
+                Caption = 'Salvar Imagem'
+                TabOrder = 1
+                OnClick = btnSalvarImagemClick
+              end
+              object btnImagemArquivo: TBitBtn
+                AlignWithMargins = True
+                Left = 3
+                Top = 128
+                Width = 139
+                Height = 25
+                Align = alBottom
+                Caption = 'Buscar Arquivo'
+                TabOrder = 2
+                OnClick = btnImagemArquivoClick
+              end
+            end
+          end
+        end
+      end
+      object Panel3: TPanel
+        Left = 1
+        Top = 1
+        Width = 889
+        Height = 42
+        Align = alTop
+        Caption = 'Cadastro de Recebimento de Plantas'
+        Color = clSkyBlue
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -21
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+      end
+    end
     object pnBotoesEdicao: TPanel
       AlignWithMargins = True
       Left = 4
@@ -776,8 +1582,6 @@ object frmOrdemProducao: TfrmOrdemProducao
       TabOrder = 0
       TabStop = True
       Visible = False
-      ExplicitTop = 580
-      ExplicitWidth = 860
       object GridPanel2: TGridPanel
         AlignWithMargins = True
         Left = 4
@@ -812,7 +1616,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             SizeStyle = ssAuto
           end>
         TabOrder = 0
-        ExplicitWidth = 852
         object Panel4: TPanel
           Left = 440
           Top = 0
@@ -821,8 +1624,6 @@ object frmOrdemProducao: TfrmOrdemProducao
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitLeft = 426
-          ExplicitWidth = 426
           object btCancelar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -1237,7 +2038,6 @@ object frmOrdemProducao: TfrmOrdemProducao
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitWidth = 426
           object btGravar: TSpeedButton
             AlignWithMargins = True
             Left = 337
@@ -1391,860 +2191,6 @@ object frmOrdemProducao: TfrmOrdemProducao
         end
       end
     end
-    object Panel1: TPanel
-      Left = 1
-      Top = 1
-      Width = 895
-      Height = 646
-      Align = alClient
-      BorderStyle = bsSingle
-      Color = clWhite
-      ParentBackground = False
-      TabOrder = 1
-      ExplicitWidth = 866
-      ExplicitHeight = 576
-      object Panel3: TPanel
-        Left = 1
-        Top = 1
-        Width = 889
-        Height = 42
-        Align = alTop
-        Caption = 'CADASTRO DE RECEBIMENTO E PRODU'#199#195'O DE PLANTAS'
-        Color = clSkyBlue
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -21
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentBackground = False
-        ParentFont = False
-        TabOrder = 0
-        ExplicitWidth = 860
-      end
-      object GridPanel1: TGridPanel
-        Left = 1
-        Top = 43
-        Width = 889
-        Height = 598
-        Align = alClient
-        ColumnCollection = <
-          item
-            Value = 50.000000000000000000
-          end
-          item
-            Value = 50.000000000000000000
-          end>
-        ControlCollection = <
-          item
-            Column = 0
-            Control = pnUsuarioEsquerda
-            Row = 0
-          end
-          item
-            Column = 1
-            Control = pnUsuarioDireita
-            Row = 0
-          end>
-        RowCollection = <
-          item
-            Value = 100.000000000000000000
-          end>
-        TabOrder = 1
-        ExplicitWidth = 860
-        ExplicitHeight = 528
-        object pnUsuarioEsquerda: TPanel
-          Left = 1
-          Top = 1
-          Width = 443
-          Height = 596
-          Align = alClient
-          TabOrder = 0
-          ExplicitWidth = 429
-          ExplicitHeight = 526
-          object Label2: TLabel
-            AlignWithMargins = True
-            Left = 4
-            Top = 4
-            Width = 435
-            Height = 19
-            Align = alTop
-            Caption = 'Quantidade estimada de Produ'#231#227'o:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            ExplicitWidth = 248
-          end
-          object Label3: TLabel
-            AlignWithMargins = True
-            Left = 4
-            Top = 248
-            Width = 435
-            Height = 19
-            Align = alTop
-            Caption = 'Observa'#231#227'o:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            ExplicitWidth = 88
-          end
-          object Label14: TLabel
-            AlignWithMargins = True
-            Left = 4
-            Top = 62
-            Width = 435
-            Height = 19
-            Align = alTop
-            Caption = 'Limite de Multiplica'#231#245'es'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            ExplicitWidth = 167
-          end
-          object edQuantidade: TEdit
-            AlignWithMargins = True
-            Left = 4
-            Top = 29
-            Width = 435
-            Height = 27
-            Align = alTop
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            NumbersOnly = True
-            ParentFont = False
-            TabOrder = 0
-            ExplicitWidth = 421
-          end
-          object gbProduto: TGroupBox
-            AlignWithMargins = True
-            Left = 4
-            Top = 184
-            Width = 435
-            Height = 58
-            Align = alTop
-            Caption = ' Produto '
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 3
-            ExplicitWidth = 421
-            DesignSize = (
-              435
-              58)
-            object edCodigoProduto: TButtonedEdit
-              AlignWithMargins = True
-              Left = 4
-              Top = 24
-              Width = 56
-              Height = 27
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              Images = DMUtil.ImageList1
-              ParentFont = False
-              RightButton.ImageIndex = 0
-              RightButton.Visible = True
-              TabOrder = 0
-              OnChange = edCodigoProdutoChange
-              OnKeyDown = edCodigoProdutoKeyDown
-              OnRightButtonClick = edCodigoProdutoRightButtonClick
-            end
-            object edNomeProduto: TEdit
-              Left = 66
-              Top = 24
-              Width = 361
-              Height = 27
-              Anchors = [akLeft, akTop, akRight]
-              Enabled = False
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 1
-              ExplicitWidth = 347
-            end
-          end
-          object gbCliente: TGroupBox
-            AlignWithMargins = True
-            Left = 4
-            Top = 120
-            Width = 435
-            Height = 58
-            Align = alTop
-            Caption = ' Cliente '
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 2
-            ExplicitWidth = 421
-            DesignSize = (
-              435
-              58)
-            object edCodigoCliente: TButtonedEdit
-              AlignWithMargins = True
-              Left = 4
-              Top = 24
-              Width = 56
-              Height = 27
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              Images = DMUtil.ImageList1
-              ParentFont = False
-              RightButton.ImageIndex = 0
-              RightButton.Visible = True
-              TabOrder = 0
-              OnChange = edCodigoClienteChange
-              OnKeyDown = edCodigoClienteKeyDown
-              OnRightButtonClick = edCodigoClienteRightButtonClick
-            end
-            object edNomeCliente: TEdit
-              Left = 66
-              Top = 24
-              Width = 361
-              Height = 27
-              Anchors = [akLeft, akTop, akRight]
-              Enabled = False
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 1
-              ExplicitWidth = 347
-            end
-          end
-          object pnObservacao: TPanel
-            AlignWithMargins = True
-            Left = 4
-            Top = 273
-            Width = 435
-            Height = 98
-            Align = alTop
-            BevelOuter = bvNone
-            TabOrder = 4
-            ExplicitWidth = 421
-            object edObservacao: TEdit
-              AlignWithMargins = True
-              Left = 3
-              Top = 3
-              Width = 323
-              Height = 92
-              Align = alClient
-              AutoSize = False
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              MaxLength = 512
-              ParentFont = False
-              TabOrder = 0
-              ExplicitWidth = 309
-            end
-            object btObservacao: TBitBtn
-              AlignWithMargins = True
-              Left = 332
-              Top = 3
-              Width = 100
-              Height = 92
-              Align = alRight
-              Glyph.Data = {
-                360C0000424D360C000000000000360000002800000020000000200000000100
-                180000000000000C0000C40E0000C40E00000000000000000000FFFFFFFFFFFF
-                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFEFEFEFDFDFDFDFDFCFCFCFCFCFCFBFB
-                FBFBFBFBFBFAFAFBFAFAFBFAFAFBFAFAFBFBFBFBFBFBFCFCFCFCFCFCFDFDFDFD
-                FDFDFEFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                FEFDFDFCFCFCFAFAFAF8F8F8F6F6F6F4F4F4F2F2F2F0F0EFEFEEEEEDEDECECEB
-                EBEBEAEAEAEAEAEAE9E9EAE9E9EAEAE9EBEAEAECEBEBEDECECEEEEEEF0F0EFF2
-                F1F1F4F3F3F6F6F5F8F7F7FAF9F9FCFCFBFDFDFDFEFEFEFFFFFFFDFDFDFBFBFB
-                F9F9F8F6F6F6F4F3F3F1F0F0EEEEEDEBEBEAE9E8E8E6E5E5E4E3E3E2E1E1E1E0
-                E0E0DFDFE0DFDFE0DFDFE0DFDFE0DFDFE0DFDFE1E0E0E2E1E1E4E3E2E6E5E4E8
-                E7E7EBEAEAEDEDECF0EFEFF3F2F2F6F5F5F8F8F8FBFAFAFDFDFDFEFEFEFCFCFC
-                CDC8C2A0988CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA098
-                8CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA0988CA0
-                988CA0988CC7C3BDF1F1F0F4F4F3F7F6F6F9F9F9FBFBFBFEFEFEFFFFFFFFFFFF
-                A0988CD4CEC6ECE8E0EDE9E1EDEAE3EFEBE5F0EDE6F1EEE8F2EFEAF3F0EBF4F2
-                EDF5F3EFF6F4F0F7F5F2F8F7F4F9F8F5FAF9F7FBFAF9FCFBFAFCFCFBFDFDFCF9
-                F8F7DDD9D5A0988CFAFAFAFCFCFCFDFDFDFEFEFEFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE3DED3E2DCD0E3DED3E5E0D5E6E2D8E8E4DAEAE6DDEBE8DFEDEAE2EEEB
-                E5EAE7E1F2EFEAF3F1ECF5F3EFF6F5F1F8F7F4F9F8F6FBFAF9FCFCFBFDFDFCFD
-                FDFCFCFBFAA0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE0DACEE2DCD0D2CCC1D4CEC3D5CFC5D6D1C6D7D2C8D8D4CADAD5CCDAD6
-                CEBAB6B19A9794AEABA6D5D5D1E0DDD8E2DFDAE3E0DBE4E1DDE5E3DFE6E4E1FD
-                FDFCFBFBFAA0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE0DACDE2DCD0E3DED2E5E0D5E6E2D8E8E4DAEAE6DDEBE7DFEDE9E2EEEB
-                E4E3E1DB94918E979D9F91A6B1B0BEC3E8EAE9F9F8F6FBFAF8FCFBFAFCFCFBFC
-                FCFAFBFAF9A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE0DACDE1DCD0E3DED2E5E0D5E6E2D7E8E3DAE9E5DCEBE7DFECE9E1EEEB
-                E4F0EDE6B3BBBCA7C0CDB7CFDB96ACB7839AA5A9B7BDF1F2F0FAFAF8FBFAF9FB
-                FAF8FAF9F7A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE0DACDE1DCCFD2CCC0D3CDC2D4CFC4D5D0C6D7D1C8D8D3C9D9D4CBDAD5
-                CDDBD7CFC8CCCC90AEBEBBD6E5C5DFEC9DB4C0839AA5878649DBD8CDE3E0DBF9
-                F8F6F9F7F5A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE0DACDE1DBCFE2DDD1E4DFD4E6E1D6E7E2D9E9E4DBEAE6DDECE8E0EDEA
-                E2EEEBE5F0EDE7A2BBC899B9CAB5D0DF9EB2BD9AA07C7F7311898232EFEDE4F8
-                F6F3F7F6F2A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE0DACDE0DBCEE2DCD1E4DED3E5E0D5E7E2D8E8E4DAE9E5DCEBE7DFECE9
-                E1EEEAE4EFECE6D6DCDD88AABD90AEBEACB08AC0A835A895247F7311898232ED
-                EBE2F6F4F0A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE0DACDE0DACDD1CBBFD2CCC0D3CDC2D4CFC4D5D0C6D7D1C8D7D2C9D9D4
-                CBDAD5CCDAD6CEDBD7CFA8B8B88F8F52B6980FC5A92EC0A835A895247F731189
-                8231ECE9DFA0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE0DACDE0DACDE1DBCFE2DDD1E4DFD3E5E0D6E7E2D8E8E4DAE9E5DCEBE7
-                DEECE8E1EDEAE3EEEBE4EFEDE6B6A556967C00B6980FC5A92EC0A835A895247F
-                73118881309C9483FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE0DACDE0DACDE0DACEE2DCD0E3DED2E4DFD4E6E1D7E7E3D9E8E4DBEAE6
-                DDEBE7DFECE9E1EDEAE2EEEBE4EFECE6B6A556967C00B6980FC5A92EC0A835A8
-                95247F731179711EF6F6F0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE6E1D6E2DDD1D0C9BDD1CABED1CBC0D3CCC1D4CEC3D4CFC4D6D0C6D6D1
-                C7D7D2C9D8D3CAD9D4CBDAD5CCDAD5CDDAD6CEAE9C4D967C00B6980FC5A92EC0
-                A835A895247F73118E884BF7F7F7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE8E3DAE8E3DAE7E2D8E5E0D5E2DDD1E3DDD2E4DFD4E5E0D6E6E2D8E8E3
-                DAE9E4DBEAE6DDEBE7DEEBE8E0ECE9E1EDEAE2EDEAE3B5A455967C00B6980FC5
-                A92EC0A835A6973C9390899A9897F7F7F7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CE9E4DBE9E4DBE9E4DBE9E4DBE9E5DCE9E5DCE8E3DAE7E3D9E7E2D8E6E2
-                D8E7E3D9E8E4DBE9E5DCEAE6DEEBE7DFEBE8E0ECE8E1ECE9E1B5A354967C00B6
-                980FC3AD48B8B6AFAFAEAD9795949A9897F6F7FAFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CEAE5DDEAE5DDDFDAD2DFDAD2DFDAD2DFDBD3E0DCD4E1DCD4E1DDD5E2DD
-                D6E0DCD5E0DBD3E0DCD4E0DCD5E1DCD5E1DDD6E1DDD6E2DDD7E2DED7B2A0529A
-                841FB2AFA5C5C4C3D2D1D0A7A6A5878B9D8190BAF6F7FAFFFFFFFFFFFFFFFFFF
-                A0988CEAE7DEEAE7DEEAE7DEEAE7DEEAE7DEEAE7DFEBE8E0ECE8E1EDE9E2EEEA
-                E3EEEAE4EFEBE5EFECE6F0EDE6F0EDE7F0EEE8F1EEE8F1EFE8F1EFE9F1EFE9C2
-                BFB4A9A8A6C5C4C3BCBBBBB3B8CB97A8DC7282B3B3BCD5FFFFFFFFFFFFFFFFFF
-                A0988CECE8E0ECE8E0ECE8E0ECE8E0ECE8E0ECE8E0ECE8E0ECE9E1EDEAE2EDEA
-                E3EEEBE4EFEBE5EFECE5F0ECE6F0EDE6F1EDE7F1EDE7F1EEE8F1EEE8F1EEE8F1
-                EEE8C4C2BEA9A8A6AAB0C1AEBDEDA4B3E37F8DBAC2C9DDFFFFFFFFFFFFFFFFFF
-                A0988CEDE9E2EDE9E2EDE9E2EDE9E2EDE9E2EDE9E2EDE9E2EDE9E2EEE9E2EEEA
-                E3EEEBE4EFEBE5EFECE5EFEDE6F0EDE7F0EDE7F0EEE8F0EEE8F0EEE8F0EEE8F0
-                EEE8F0EEE89A9B9F808EB696A5D28D99C09EA9C9F7F8FBFFFFFFFFFFFFFFFFFF
-                A0988CEEEAE3E6E3DCD8D5CED7D3CDD8D5CEE8E5DDE6E3DCD8D5CED7D3CDD8D5
-                CFE9E5DFE8E4DED9D6D0D8D5CFD9D7D1EAE7E1E9E6E0DAD8D2D9D7D0DAD8D2EB
-                E8E2F0EEE7A0988CB3BBD17E8CB3B3BAD3F8F9FBFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CEEECE5D9D6D0AAA398A0988CAAA398D9D6D0D9D6D0AAA398A0988CAAA3
-                98D9D6D0D9D6D0AAA398A0988CAAA398DAD8D1DAD8D2AAA398A0988CAAA398DA
-                D8D2F1EEE8A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CF0EDE6D8D6CFA0988CC8C1B4A0988CD8D6CFD8D6CFA0988CC8C1B4A098
-                8CD8D6CFD8D6CFA0988CC8C1B4A0988CD8D6D0D9D6D1A0988CC8C1B4A0988CD9
-                D7D1F1EEE8A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                A0988CF1EEE8DBD8D2A0988CE0DACDA0988CDBD8D2DBD8D2A0988CE0DACDA098
-                8CDBD8D2DBD8D2A0988CE0DACDA0988CDBD8D2DBD8D2A0988CE0DACDA0988CDB
-                D9D3F1EEE8A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9F9F8
-                A0988CF2EFEAEAE8E2A0988CE2DDD1A0988CECE9E4EAE8E2A0988CE2DDD1A098
-                8CECE9E4EAE8E2A0988CE2DDD1A0988CECE9E4EAE8E2A0988CE2DDD1A0988CEC
-                E9E4F0EEE8A0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF9F9F8
-                A0988CE3E0DAEDEAE5A0988CF3F0EBA0988CEDEAE5EDEAE5A0988CF3F0EBA098
-                8CEDEAE5EDEAE5A0988CF3F0EBA0988CEDEAE5EDEAE5A0988CF3F0EBA0988CED
-                EAE5E3E0DAA0988CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                D0CCC6A0988CA0988CA0988CF3F0EBA0988CA0988CA0988CA0988CF3F0EBA098
-                8CA0988CA0988CA0988CF3F0EBA0988CA0988CA0988CA0988CF3F0EBA0988CA0
-                988CA0988CD0CCC6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                FFFFFFFFFFFFF3F2F1A0988CC6C0B4A0988CFFFFFFF3F2F1A0988CC6C0B4A098
-                8CFFFFFFF3F2F1A0988CC6C0B4A0988CFFFFFFF3F2F1A0988CC6C0B4A0988CFF
-                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                FFFFFFFFFFFFFFFFFFB2ABA2A0988CB2ABA2FFFFFFFFFFFFB2ABA2A0988CB2AB
-                A2FFFFFFFFFFFFB2ABA2A0988CB2ABA2FFFFFFFFFFFFB2ABA2A0988CB2ABA2FF
-                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-                FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
-              TabOrder = 1
-              OnClick = btObservacaoClick
-              ExplicitLeft = 318
-            end
-          end
-          object edLimiteMultiplicacao: TEdit
-            AlignWithMargins = True
-            Left = 4
-            Top = 87
-            Width = 435
-            Height = 27
-            Align = alTop
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            NumbersOnly = True
-            ParentFont = False
-            TabOrder = 1
-            ExplicitWidth = 421
-          end
-          object Panel6: TPanel
-            Left = 1
-            Top = 374
-            Width = 441
-            Height = 221
-            Align = alClient
-            BevelOuter = bvLowered
-            Caption = 'Panel6'
-            TabOrder = 5
-            ExplicitLeft = 176
-            ExplicitTop = 496
-            ExplicitWidth = 185
-            ExplicitHeight = 41
-            DesignSize = (
-              441
-              221)
-            object Label6: TLabel
-              AlignWithMargins = True
-              Left = 6
-              Top = 5
-              Width = 118
-              Height = 19
-              Caption = 'Sele'#231#227'o Positiva:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object Label8: TLabel
-              AlignWithMargins = True
-              Left = 130
-              Top = 5
-              Width = 214
-              Height = 19
-              Caption = 'C'#243'digo da Sele'#231#227'o no Campo:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object Label7: TLabel
-              AlignWithMargins = True
-              Left = 6
-              Top = 63
-              Width = 142
-              Height = 19
-              Caption = 'Origem do Material:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object cbSelecaoPositiva: TComboBox
-              Left = 6
-              Top = 29
-              Width = 118
-              Height = 27
-              Style = csDropDownList
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ItemIndex = 0
-              ParentFont = False
-              TabOrder = 0
-              Text = 'Sim'
-              Items.Strings = (
-                'Sim'
-                'N'#227'o')
-            end
-            object edCodSelecaoCampo: TEdit
-              AlignWithMargins = True
-              Left = 130
-              Top = 30
-              Width = 310
-              Height = 27
-              Anchors = [akLeft, akTop, akRight]
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 1
-              ExplicitWidth = 295
-            end
-            object edOrigemMaterial: TEdit
-              AlignWithMargins = True
-              Left = 6
-              Top = 86
-              Width = 434
-              Height = 27
-              Anchors = [akLeft, akTop, akRight]
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 2
-              ExplicitWidth = 419
-            end
-          end
-        end
-        object pnUsuarioDireita: TPanel
-          Left = 444
-          Top = 1
-          Width = 444
-          Height = 596
-          Align = alClient
-          TabOrder = 1
-          ExplicitLeft = 430
-          ExplicitWidth = 429
-          ExplicitHeight = 526
-          object Panel7: TPanel
-            Left = 1
-            Top = 1
-            Width = 442
-            Height = 295
-            Align = alTop
-            BevelOuter = bvLowered
-            TabOrder = 0
-            ExplicitTop = 300
-            DesignSize = (
-              442
-              295)
-            object Label4: TLabel
-              AlignWithMargins = True
-              Left = 6
-              Top = 63
-              Width = 153
-              Height = 19
-              Caption = 'Fazenda/'#225'rea/Talh'#227'o:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object Label5: TLabel
-              AlignWithMargins = True
-              Left = 130
-              Top = 5
-              Width = 97
-              Height = 19
-              Caption = 'Coletado por:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object Label9: TLabel
-              AlignWithMargins = True
-              Left = 6
-              Top = 5
-              Width = 109
-              Height = 19
-              Caption = 'Data de Coleta:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object Label1: TLabel
-              AlignWithMargins = True
-              Left = 6
-              Top = 126
-              Width = 85
-              Height = 19
-              Caption = 'Localizador:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object Label10: TLabel
-              AlignWithMargins = True
-              Left = 6
-              Top = 184
-              Width = 114
-              Height = 19
-              Caption = 'Quant. Material:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object Label11: TLabel
-              AlignWithMargins = True
-              Left = 130
-              Top = 184
-              Width = 115
-              Height = 19
-              Caption = 'Transportadora:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object Label12: TLabel
-              AlignWithMargins = True
-              Left = 6
-              Top = 242
-              Width = 112
-              Height = 19
-              Caption = 'Data de Receb.:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object Label13: TLabel
-              AlignWithMargins = True
-              Left = 130
-              Top = 242
-              Width = 107
-              Height = 19
-              Caption = 'Data Estimada:'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-            end
-            object edFazendaAreaTalhao: TEdit
-              AlignWithMargins = True
-              Left = 6
-              Top = 88
-              Width = 434
-              Height = 27
-              Anchors = [akLeft, akTop, akRight]
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 0
-            end
-            object edDataColeta: TJvDateEdit
-              Left = 6
-              Top = 30
-              Width = 118
-              Height = 27
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              ShowNullDate = False
-              TabOrder = 1
-            end
-            object edColetadoPor: TEdit
-              AlignWithMargins = True
-              Left = 130
-              Top = 30
-              Width = 310
-              Height = 27
-              Anchors = [akLeft, akTop, akRight]
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 2
-            end
-            object edLocalizador: TEdit
-              AlignWithMargins = True
-              Left = 6
-              Top = 151
-              Width = 434
-              Height = 27
-              Anchors = [akLeft, akTop, akRight]
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 3
-            end
-            object edQuantidadeMaterial: TEdit
-              AlignWithMargins = True
-              Left = 6
-              Top = 209
-              Width = 118
-              Height = 27
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              NumbersOnly = True
-              ParentFont = False
-              TabOrder = 4
-            end
-            object edTransportadora: TEdit
-              AlignWithMargins = True
-              Left = 130
-              Top = 209
-              Width = 310
-              Height = 27
-              Anchors = [akLeft, akTop, akRight]
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 5
-            end
-            object edDataRecebimento: TJvDateEdit
-              Left = 6
-              Top = 267
-              Width = 118
-              Height = 27
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              ShowNullDate = False
-              TabOrder = 6
-            end
-            object edDataEstimada: TJvDateEdit
-              Left = 130
-              Top = 267
-              Width = 118
-              Height = 27
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              ShowNullDate = False
-              TabOrder = 7
-            end
-          end
-          object pnFotos: TPanel
-            Left = 1
-            Top = 296
-            Width = 442
-            Height = 299
-            Align = alClient
-            BevelOuter = bvNone
-            TabOrder = 1
-            Visible = False
-            ExplicitTop = 344
-            ExplicitHeight = 251
-            object ScrollBox1: TScrollBox
-              AlignWithMargins = True
-              Left = 3
-              Top = 3
-              Width = 436
-              Height = 69
-              Align = alTop
-              TabOrder = 0
-            end
-            object pnImagem: TPanel
-              AlignWithMargins = True
-              Left = 3
-              Top = 78
-              Width = 145
-              Height = 218
-              Align = alLeft
-              BevelOuter = bvNone
-              Color = 16250871
-              ParentBackground = False
-              TabOrder = 1
-              ExplicitTop = 111
-              ExplicitHeight = 273
-              object Image1: TImage
-                AlignWithMargins = True
-                Left = 3
-                Top = 3
-                Width = 139
-                Height = 119
-                Align = alClient
-                Center = True
-                Proportional = True
-                ExplicitLeft = 32
-                ExplicitTop = 8
-                ExplicitWidth = 105
-                ExplicitHeight = 105
-              end
-              object btnImagemWebCam: TBitBtn
-                AlignWithMargins = True
-                Left = 3
-                Top = 159
-                Width = 139
-                Height = 25
-                Align = alBottom
-                Caption = 'Buscar WebCam'
-                TabOrder = 0
-                OnClick = btnImagemWebCamClick
-                ExplicitTop = 214
-              end
-              object btnSalvarImagem: TBitBtn
-                AlignWithMargins = True
-                Left = 3
-                Top = 190
-                Width = 139
-                Height = 25
-                Align = alBottom
-                Caption = 'Salvar Imagem'
-                TabOrder = 1
-                OnClick = btnSalvarImagemClick
-                ExplicitTop = 245
-              end
-              object btnImagemArquivo: TBitBtn
-                AlignWithMargins = True
-                Left = 3
-                Top = 128
-                Width = 139
-                Height = 25
-                Align = alBottom
-                Caption = 'Buscar Arquivo'
-                TabOrder = 2
-                OnClick = btnImagemArquivoClick
-                ExplicitTop = 183
-              end
-            end
-          end
-        end
-      end
-    end
   end
   object ds_Pesquisa: TDataSource
     DataSet = cds_Pesquisa
@@ -2316,7 +2262,7 @@ object frmOrdemProducao: TfrmOrdemProducao
     Left = 360
     Top = 304
     Bitmap = {
-      494C0101030014005C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101030014006C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2863,6 +2809,14 @@ object frmOrdemProducao: TfrmOrdemProducao
     end
   end
   object OpenPictureDialog1: TOpenPictureDialog
+    Filter = 
+      'All (*.gif;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.ico;*.emf;*.w' +
+      'mf)|*.gif;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.ico;*.emf;*.wm' +
+      'f|GIF Image (*.gif)|*.gif|JPEG Image File (*.jpg)|*.jpg|JPEG Ima' +
+      'ge File (*.jpeg)|*.jpeg|Portable Network Graphics (*.png)|*.png|' +
+      'Bitmaps (*.bmp)|*.bmp|TIFF Images (*.tif)|*.tif|TIFF Images (*.t' +
+      'iff)|*.tiff|Icons (*.ico)|*.ico|Enhanced Metafiles (*.emf)|*.emf' +
+      '|Metafiles (*.wmf)|*.wmf'
     Left = 663
     Top = 330
   end

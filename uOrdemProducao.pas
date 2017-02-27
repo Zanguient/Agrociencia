@@ -138,11 +138,11 @@ type
     { Private declarations }
   public
     NomeImagemAtual: string;
+    function AtualizarEdits(Limpar : Boolean) : Boolean;
     procedure CarregaDados;
     procedure InvertePaineis;
     procedure Cancelar;
     procedure Filtrar;
-    procedure AtualizarEdits(Limpar : Boolean);
     procedure BuscarFotos;
   end;
 
@@ -169,12 +169,15 @@ uses
 
 {$R *.dfm}
 
-procedure TfrmOrdemProducao.AtualizarEdits(Limpar: Boolean);
+function TfrmOrdemProducao.AtualizarEdits(Limpar : Boolean) : Boolean;
 Var
   FWC : TFWConnection;
   SQL : TFDQuery;
   I   : Integer;
 begin
+
+  Result := False;
+
   if Limpar then begin
     edQuantidade.Clear;
     edCodigoCliente.Clear;
@@ -196,6 +199,7 @@ begin
     edDataEstimada.Clear;
     btGravar.Tag  := 0;
     pnFotos.Visible := False;
+    Result := True;
   end else begin
 
     btGravar.Tag  := cds_PesquisaID.Value;
@@ -269,6 +273,9 @@ begin
           pnFotos.Visible               := True;
           BuscarFotos;
         end;
+
+        Result := True;
+
       except
         on E : Exception do begin
           DisplayMsg(MSG_ERR, 'Erro ao Carregar os dados para Alteração.', '', E.Message);
@@ -311,8 +318,8 @@ begin
       FreeAndNil(FWC);
     end;
 
-    AtualizarEdits(False);
-    InvertePaineis;
+    if AtualizarEdits(False) then //Se Conseguiu Carregar os Dados Inverte os Painéis
+      InvertePaineis;
   end;
 end;
 
@@ -479,33 +486,6 @@ procedure TfrmOrdemProducao.btnImagemWebCamClick(Sender: TObject);
 var
   DirNomeFoto: string;
   NomeFoto: string;
-  procedure ConverteParaJpeg(ACaminhoFoto: string);
-  var
-    cjBmp: TBitmap;
-    cjJpg: TJpegImage;
-    strNomeSemExtensao: string;
-    AFoto: TImage;
-    Nome : string;
-  begin
-    AFoto:= TImage.Create(Self);
-    AFoto.Parent := Self;
-    AFoto.Visible := False;
-    AFoto.Picture.Bitmap.LoadFromFile(ACaminhoFoto + '.bmp');
-
-    cjJpg := TJPegImage.Create;
-    cjBmp := TBitmap.Create;
-
-    cjBmp.Assign(AFoto.Picture.Bitmap);
-    cjJpg.Assign(cjBMP);
-
-    Nome := ExtractFileName(ACaminhoFoto + '.jpg');
-
-    cjJpg.SaveToFile(CONFIG_LOCAL.DirImagens + Nome);
-    DeleteFile(ACaminhoFoto + '.bmp');
-    cjJpg.Free;
-    cjBmp.Free;
-    AFoto.Free;
-  end;
 begin
   fCaptura := TfCaptura.Create(Self);
   try
@@ -518,7 +498,7 @@ begin
     fCaptura.camCamera.FichierImage := ExtractFileName(DirNomeFoto);
     if fCaptura.ShowModal = mrOk then begin
       fCaptura.camCamera.CaptureImageDisque;
-      ConverteParaJpeg(NomeFoto);
+      ConverterBMPtoJPEG(NomeFoto);
       NomeFoto := CONFIG_LOCAL.DirImagens + ExtractFileName(NomeFoto + '.jpg');
       Image1.Picture.LoadFromFile(NomeFoto);
       NomeImagemAtual := NomeFoto;
@@ -530,8 +510,8 @@ end;
 
 procedure TfrmOrdemProducao.btNovoClick(Sender: TObject);
 begin
-  AtualizarEdits(True);
-  InvertePaineis;
+  if AtualizarEdits(True) then //Se Conseguiu Carregar os Dados Inverte os Painéis
+    InvertePaineis;
 end;
 
 procedure TfrmOrdemProducao.btnSalvarImagemClick(Sender: TObject);
@@ -962,12 +942,16 @@ procedure TfrmOrdemProducao.EncerrarOPF;
 Var
   FWC : TFWConnection;
   OPF : TOPFINAL;
+  OPFE: TOPFINAL_ESTAGIO;
+  I   : Integer;
 begin
 
   if not cds_Pesquisa.IsEmpty then begin
 
     FWC := TFWConnection.Create;
     OPF := TOPFINAL.Create(FWC);
+    OPFE:= TOPFINAL_ESTAGIO.Create(FWC);
+
     try
       try
         OPF.SelectList('ID = ' + cds_PesquisaID.AsString);
@@ -985,6 +969,15 @@ begin
             OPF.QUANTIDADEPRODUZIDA.Value := ResultMsgInputInt;
             OPF.Update;
 
+            OPFE.SelectList('OPFINAL_ID = ' + cds_PesquisaID.AsString);
+            if OPFE.Count > 0 then begin
+              for I := 0 to OPFE.Count - 1 do begin
+                OPFE.ID.Value           := TOPFINAL_ESTAGIO(OPFE.Itens[I]).ID.Value;
+                OPFE.DATAHORAFIM.Value  := OPF.DATAENCERRAMENTO.Value;
+                OPFE.Update;
+              end;
+            end;
+
             FWC.Commit;
 
             DisplayMsg(MSG_OK, 'Ordem de Produção Nº ' + TOPFINAL(OPF.Itens[0]).ID.asString + ' Encerrada com Sucesso!');
@@ -999,6 +992,7 @@ begin
         end;
       end;
     finally
+      FreeAndNil(OPFE);
       FreeAndNil(OPF);
       FreeAndNil(FWC);
     end;
@@ -1109,8 +1103,8 @@ begin
   pnEdicao.Visible              := not pnEdicao.Visible;
   pnBotoesEdicao.Visible        := pnEdicao.Visible;
   if pnEdicao.Visible then begin
-    if edQuantidade.CanFocus then
-      edQuantidade.SetFocus;
+    if edCodigoCliente.CanFocus then
+      edCodigoCliente.SetFocus;
   end;
 end;
 

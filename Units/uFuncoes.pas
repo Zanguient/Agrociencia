@@ -17,7 +17,7 @@ uses
   Data.DB,
   Vcl.Graphics,
   System.Win.ComObj,
-  FireDAC.Comp.Client;
+  FireDAC.Comp.Client, Vcl.ExtCtrls, Vcl.Imaging.jpeg;
 
   procedure CarregarConfigLocal;
   procedure CarregaArrayMenus(Menu : TMainMenu);
@@ -28,6 +28,7 @@ uses
   procedure OrdenarGrid(Column: TColumn);
   procedure ExpXLS(DataSet: TDataSet; NomeArq: string);
   procedure DeletarArquivosPasta(Diretorio : String);
+  procedure ConverterBMPtoJPEG(ACaminhoFoto: string);
   function ValidaUsuario(Email, Senha : String) : Boolean;
   function MD5(Texto : String): String;
   function Criptografa(Texto : String; Tipo : String) : String;
@@ -274,6 +275,36 @@ begin
       I := FindNext(SR);
     end;
   except
+  end;
+end;
+
+procedure ConverterBMPtoJPEG(ACaminhoFoto: string);
+var
+  cjBmp : TBitmap;
+  cjJpg : TJpegImage;
+  strNomeSemExtensao: string;
+  AFoto : TImage;
+  Nome : string;
+begin
+  AFoto := TImage.Create(nil);
+  cjJpg := TJPegImage.Create;
+  cjBmp := TBitmap.Create;
+
+  try
+
+    AFoto.Picture.Bitmap.LoadFromFile(ACaminhoFoto + '.bmp');
+    cjBmp.Assign(AFoto.Picture.Bitmap);
+    cjJpg.Assign(cjBMP);
+
+    Nome := ExtractFileName(ACaminhoFoto + '.jpg');
+
+    cjJpg.SaveToFile(CONFIG_LOCAL.DirImagens + Nome);
+    DeleteFile(PWideChar(ACaminhoFoto + '.bmp'));
+
+  finally
+    FreeAndNil(cjJpg);
+    FreeAndNil(cjBmp);
+    FreeAndNil(AFoto);
   end;
 end;
 

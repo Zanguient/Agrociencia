@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask,
-  JvExMask, JvToolEdit, Vcl.StdCtrls, FireDAC.Comp.Client, Data.DB, Vcl.CheckLst;
+  JvExMask, JvToolEdit, Vcl.StdCtrls, FireDAC.Comp.Client, Data.DB, Vcl.CheckLst,
+  frxDBSet;
 
 type
   TfrmRelCadastrodePlantas = class(TForm)
@@ -49,6 +50,14 @@ procedure TfrmRelCadastrodePlantas.btRelatorioClick(Sender: TObject);
 begin
   if btRelatorio.Tag = 0 then begin
     btRelatorio.Tag := 1;
+
+    if edDataFinal.Date < edDataInicial.Date then begin
+      DisplayMsg(MSG_WAR, 'Data Final não pode ser Menor que a Inicial, Verifique!');
+      if edDataInicial.CanFocus then
+        edDataInicial.SetFocus;
+      Exit;
+    end;
+
     btRelatorio.Caption := 'Gerando...';
     Application.ProcessMessages;
     try
@@ -85,16 +94,23 @@ end;
 procedure TfrmRelCadastrodePlantas.FormShow(Sender: TObject);
 begin
   cbExibirSQL.Visible := DESIGNREL;
+
+  edDataInicial.Date  := Date;
+  edDataFinal.Date    := Date + 7;
 end;
 
 procedure TfrmRelCadastrodePlantas.Visualizar;
 var
   FWC       : TFWConnection;
   Consulta  : TFDQuery;
+  ConsultaI : TFDQuery;
+  FR        : TfrxDBDataset;
 begin
 
   FWC       := TFWConnection.Create;
   Consulta  := TFDQuery.Create(nil);
+  ConsultaI := TFDQuery.Create(nil);
+  FR        := TfrxDBDataset.Create(nil);
 
   try
     try
@@ -140,7 +156,34 @@ begin
       Consulta.FetchAll;
 
       if not Consulta.IsEmpty then begin
-        DMUtil.frxDBDataset1.DataSet := Consulta;
+
+        ConsultaI.Close;
+        ConsultaI.SQL.Clear;
+        ConsultaI.SQL.Add('SELECT');
+        ConsultaI.SQL.Add(' OPF.ID AS ID_OPFINAL,');
+        ConsultaI.SQL.Add(' :DIRIMAGENS || I.NOMEIMAGEM AS IMAGEM ');
+        ConsultaI.SQL.Add('FROM OPFINAL OPF');
+        ConsultaI.SQL.Add('INNER JOIN OPFINAL_IMAGEM OPFI ON (OPFI.ID_OPFINAL = OPF.ID)');
+        ConsultaI.SQL.Add('INNER JOIN IMAGEM I ON (I.ID = OPFI.ID_IMAGEM)');
+        ConsultaI.SQL.Add('WHERE 1 = 1');
+        ConsultaI.SQL.Add('AND CAST(OPF.DATAHORA AS DATE) BETWEEN :DATAI AND :DATAF');
+
+        ConsultaI.Connection                     := FWC.FDConnection;
+
+        ConsultaI.ParamByName('DIRIMAGENS').DataType  := ftString;
+        ConsultaI.ParamByName('DATAI').DataType       := ftDate;
+        ConsultaI.ParamByName('DATAF').DataType       := ftDate;
+        ConsultaI.ParamByName('DIRIMAGENS').Value     := CONFIG_LOCAL.DirImagens;
+        ConsultaI.ParamByName('DATAI').Value          := edDataInicial.Date;
+        ConsultaI.ParamByName('DATAF').Value          := edDataFinal.Date;
+
+        ConsultaI.Prepare;
+        ConsultaI.Open;
+        ConsultaI.FetchAll;
+
+        DMUtil.frxDBDataset1.DataSet  := Consulta;
+        FR.UserName                   := 'OPFINAL_IMAGENS';
+        FR.DataSet                    := ConsultaI;
         DMUtil.ImprimirRelatorio('frCadastrodePlantas.fr3');
       end else begin
         DisplayMsg(MSG_WAR, 'Não há dados para Exibir, Verifique os Filtros!');
@@ -153,7 +196,9 @@ begin
       end;
     end;
   finally
+    FreeAndNil(ConsultaI);
     FreeAndNil(Consulta);
+    FreeAndNil(FR);
     FreeAndNil(FWC);
   end;
 end;

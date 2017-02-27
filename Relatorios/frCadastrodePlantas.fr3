@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<TfrxReport Version="5.2.3" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="42396,5981039468" ReportOptions.Description.Text="" ReportOptions.LastChange="42789,9971735069" ScriptLanguage="PascalScript" ScriptText.Text="&#13;&#10;begin&#13;&#10;&#13;&#10;end.">
+<TfrxReport Version="5.2.3" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="42396,5981039468" ReportOptions.Description.Text="" ReportOptions.LastChange="42792,8055435069" ScriptLanguage="PascalScript" ScriptText.Text="&#13;&#10;procedure DetailData1OnBeforePrint(Sender: TfrxComponent);&#13;&#10;begin&#13;&#10;  Picture4.FileLink := &#60;OPFINAL_IMAGENS.&#34;imagem&#34;&#62;;                                                                          &#13;&#10;end;&#13;&#10;&#13;&#10;begin&#13;&#10;&#13;&#10;end.">
   <Datasets>
     <item DataSet="frxDBDataset1" DataSetName="frxDBDataset1"/>
+    <item DataSetName="OPFINAL_IMAGENS"/>
   </Datasets>
   <Variables>
-    <item Name="Usuario" Value="'Sergio Jonas Schulz'"/>
+    <item Name="Usuario" Value="'SERGIO JONAS SCHULZ'"/>
     <item Name="UserLogin" Value="user"/>
     <item Name="Login" Value="'Sergio Jonas NetSchulz'"/>
   </Variables>
@@ -22,10 +23,10 @@
         </Formats>
       </TfrxMemoView>
     </TfrxReportTitle>
-    <TfrxPageFooter Name="PageFooter1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="22,67718" Left="0" Top="823,93754" Width="718,1107">
+    <TfrxPageFooter Name="PageFooter1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="22,67718" Left="0" Top="812,59895" Width="718,1107">
       <TfrxMemoView Name="Memo1" Align="baWidth" Left="0" Top="0" Width="718,1107" Height="18,89765" HAlign="haRight" Text="Página [Page#] de [TotalPages#]"/>
     </TfrxPageFooter>
-    <TfrxMasterData Name="MasterData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="257,00804" Left="0" Top="211,65368" Width="718,1107" ColumnWidth="0" ColumnGap="0" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" RowCount="0" Stretched="True">
+    <TfrxMasterData Name="MasterData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="257,00804" Left="0" Top="211,65368" Width="718,1107" ColumnWidth="0" ColumnGap="0" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" PrintIfDetailEmpty="True" RowCount="0" StartNewPage="True" Stretched="True">
       <TfrxMemoView Name="Memo7" Align="baWidth" Left="132,28355" Top="40" Width="585,82715" Height="18,89765" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[frxDBDataset1.&#34;nomecliente&#34;]"/>
       <TfrxMemoView Name="frxDBDataset1descricaoproduto" Align="baWidth" Left="132,28355" Top="58,89765" Width="585,82715" Height="18,89765" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[frxDBDataset1.&#34;descricaoproduto&#34;]"/>
       <TfrxMemoView Name="frxDBDataset1quantidade" Align="baWidth" Left="132,28355" Top="77,7953" Width="585,82715" Height="18,89765" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[frxDBDataset1.&#34;quantidade&#34;]"/>
@@ -61,9 +62,8 @@
     <TfrxHeader Name="Header1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="49,13389" Left="0" Top="139,84261" Width="718,1107">
       <TfrxMemoView Name="Memo6" Align="baWidth" Left="0" Top="18,8976378" Width="718,1107" Height="22,6771678" Font.Charset="1" Font.Color="-16777208" Font.Height="-19" Font.Name="Arial" Font.Style="1" Frame.Typ="8" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Relatório de Recebimento e Cadastro de Plantas"/>
     </TfrxHeader>
-    <TfrxMasterData Name="MasterData2" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="272,12616" Left="0" Top="491,3389" Width="718,1107" Columns="2" ColumnWidth="359,055118110236" ColumnGap="0" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" RowCount="0">
-      <TfrxPictureView Name="Picture2" Left="3,77953" Top="3,77953" Width="347,71676" Height="257,00804" Center="True" FileLink="C:\Agrociencia\Imagens\Logo.bmp" HightQuality="False" Transparent="False" TransparentColor="16777215"/>
-      <TfrxPictureView Name="Picture3" Left="362,83488" Top="3,77953" Width="347,71676" Height="257,00804" Center="True" FileLink="C:\Agrociencia\Imagens\Logo.bmp" HightQuality="False" Transparent="False" TransparentColor="16777215"/>
-    </TfrxMasterData>
+    <TfrxDetailData Name="DetailData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="260,78757" Left="0" Top="491,3389" Width="718,1107" OnBeforePrint="DetailData1OnBeforePrint" Columns="2" ColumnWidth="359,055118110236" ColumnGap="0" DataSetName="OPFINAL_IMAGENS" Filter="&#60;OPFINAL_IMAGENS.&#34;id_opfinal&#34;&#62; = &#60;frxDBDataset1.&#34;id&#34;&#62;" RowCount="0">
+      <TfrxPictureView Name="Picture4" Left="3,77953" Top="3,77953" Width="347,71676" Height="257,00804" Center="True" HightQuality="False" Transparent="False" TransparentColor="16777215"/>
+    </TfrxDetailData>
   </TfrxReportPage>
 </TfrxReport>

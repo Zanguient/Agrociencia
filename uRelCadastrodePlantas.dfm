@@ -1,10 +1,11 @@
 object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   Left = 0
   Top = 0
+  ActiveControl = edDataInicial
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio de Cadastro de Plantas'
   ClientHeight = 176
-  ClientWidth = 374
+  ClientWidth = 333
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,7 +23,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     AlignWithMargins = True
     Left = 3
     Top = 113
-    Width = 368
+    Width = 327
     Height = 60
     Align = alBottom
     BevelOuter = bvLowered
@@ -49,16 +50,18 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
         Value = 100.000000000000000000
       end>
     TabOrder = 1
+    ExplicitWidth = 368
     object Panel1: TPanel
       Left = 1
       Top = 1
-      Width = 183
+      Width = 162
       Height = 58
       Align = alClient
       TabOrder = 0
+      ExplicitWidth = 183
       object btRelatorio: TSpeedButton
         AlignWithMargins = True
-        Left = 64
+        Left = 43
         Top = 4
         Width = 115
         Height = 50
@@ -174,12 +177,14 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       end
     end
     object Panel2: TPanel
-      Left = 184
+      Left = 163
       Top = 1
-      Width = 183
+      Width = 163
       Height = 58
       Align = alClient
       TabOrder = 1
+      ExplicitLeft = 184
+      ExplicitWidth = 183
       object btFechar: TSpeedButton
         AlignWithMargins = True
         Left = 4
@@ -302,7 +307,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     AlignWithMargins = True
     Left = 3
     Top = 90
-    Width = 368
+    Width = 327
     Height = 17
     Align = alBottom
     Caption = 'Exibir SQL'
@@ -313,15 +318,16 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Style = []
     ParentFont = False
     TabOrder = 0
+    ExplicitWidth = 368
   end
   object gbPeriodo: TGroupBox
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 368
+    Width = 327
     Height = 78
     Align = alTop
-    Caption = ' Per'#237'odo de Recebimento das Plantas '
+    Caption = ' Per'#237'odo de Recebimento '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -16
@@ -329,18 +335,20 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Style = []
     ParentFont = False
     TabOrder = 2
+    ExplicitWidth = 368
     DesignSize = (
-      368
+      327
       78)
     object Label1: TLabel
       Left = 129
       Top = 36
-      Width = 112
+      Width = 71
       Height = 19
       Alignment = taCenter
       Anchors = [akLeft, akTop, akRight]
       AutoSize = False
       Caption = 'at'#233
+      ExplicitWidth = 112
     end
     object edDataInicial: TJvDateEdit
       Left = 5
@@ -357,7 +365,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       TabOrder = 0
     end
     object edDataFinal: TJvDateEdit
-      Left = 247
+      Left = 206
       Top = 33
       Width = 118
       Height = 27
@@ -370,6 +378,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       ParentFont = False
       ShowNullDate = False
       TabOrder = 1
+      ExplicitLeft = 247
     end
   end
 end

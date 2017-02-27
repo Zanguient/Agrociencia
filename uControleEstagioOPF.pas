@@ -134,11 +134,11 @@ type
     { Private declarations }
   public
     NomeImagemAtual : string;
+    function AtualizarEdits(Limpar : Boolean) : Boolean;
     procedure CarregaDados;
     procedure InvertePaineis;
     procedure Cancelar;
     procedure Filtrar;
-    procedure AtualizarEdits(Limpar : Boolean);
     procedure BuscarFotos;
   end;
 
@@ -166,11 +166,14 @@ uses
 
 {$R *.dfm}
 
-procedure TfrmControleEstagioOPF.AtualizarEdits(Limpar: Boolean);
+function TfrmControleEstagioOPF.AtualizarEdits(Limpar: Boolean) : Boolean;
 Var
   FWC : TFWConnection;
   SQL : TFDQuery;
 begin
+
+  Result := False;
+
   if Limpar then begin
     edCodigoOPF.Clear;
     edDescOPF.Clear;
@@ -187,6 +190,8 @@ begin
     edIntervaloCrescimento.Clear;
     btGravar.Tag  := 0;
     pnFotos.Visible := False;
+
+    Result := True;
   end else begin
 
     btGravar.Tag          := cds_PesquisaID.Value;
@@ -250,7 +255,11 @@ begin
             pnFotos.Visible             := True;
           end;
         end;
+
         BuscarFotos;
+
+        Result := True;
+
       except
         on E : Exception do begin
           DisplayMsg(MSG_ERR, 'Erro ao Carregar os dados para Alteração.', '', E.Message);
@@ -267,8 +276,8 @@ procedure TfrmControleEstagioOPF.btAlterarClick(Sender: TObject);
 begin
   if not cds_Pesquisa.IsEmpty then begin
     if ((cds_PesquisaDATAFINAL.IsNull) or (cds_PesquisaDATAINICIO.AsDateTime < cds_PesquisaDATAFINAL.AsDateTime)) then begin
-      AtualizarEdits(False);
-      InvertePaineis;
+      if AtualizarEdits(False) then
+        InvertePaineis;
     end else begin
       DisplayMsg(MSG_WAR, 'Estágio Encerrado, Portanto não pode ser Alterado!');
       Exit;
@@ -604,26 +613,32 @@ var
     Nome : string;
   begin
     AFoto:= TImage.Create(Self);
-    AFoto.Parent := Self;
-    AFoto.Visible := False;
-    AFoto.Picture.Bitmap.LoadFromFile(ACaminhoFoto + '.bmp');
-
     cjJpg := TJPegImage.Create;
     cjBmp := TBitmap.Create;
+    try
 
-    cjBmp.Assign(AFoto.Picture.Bitmap);
-    cjJpg.Assign(cjBMP);
+      AFoto.Parent := Self;
+      AFoto.Visible := False;
+      AFoto.Picture.Bitmap.LoadFromFile(ACaminhoFoto + '.bmp');
 
-    Nome := ExtractFileName(ACaminhoFoto + '.jpg');
+      cjBmp.Assign(AFoto.Picture.Bitmap);
+      cjJpg.Assign(cjBMP);
 
-    cjJpg.SaveToFile(CONFIG_LOCAL.DirImagens + Nome);
-    DeleteFile(ACaminhoFoto + '.bmp');
-    cjJpg.Free;
-    cjBmp.Free;
-    AFoto.Free;
+      Nome := ExtractFileName(ACaminhoFoto + '.jpg');
+
+      cjJpg.SaveToFile(CONFIG_LOCAL.DirImagens + Nome);
+      DeleteFile(ACaminhoFoto + '.bmp');
+
+    finally
+      FreeAndNil(AFoto);
+      FreeAndNil(cjJpg);
+      FreeAndNil(cjBmp);
+    end;
   end;
 begin
+
   fCaptura := TfCaptura.Create(Self);
+
   try
     DirNomeFoto := ExtractFilePath(Application.ExeName) +
       FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + IntToStr(btGravar.Tag) +'.bmp';
@@ -632,6 +647,7 @@ begin
       Copy(ExtractFileName(DirNomeFoto),1, Length(ExtractFileName(DirNomeFoto))-4);
 
     fCaptura.camCamera.FichierImage := ExtractFileName(DirNomeFoto);
+
     if fCaptura.ShowModal = mrOk then begin
       fCaptura.camCamera.CaptureImageDisque;
       ConverteParaJpeg(NomeFoto);
@@ -646,8 +662,8 @@ end;
 
 procedure TfrmControleEstagioOPF.btNovoClick(Sender: TObject);
 begin
-  AtualizarEdits(True);
-  InvertePaineis;
+  if AtualizarEdits(True) then
+    InvertePaineis;
 end;
 
 procedure TfrmControleEstagioOPF.btnSalvarImagemClick(Sender: TObject);

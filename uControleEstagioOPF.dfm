@@ -83,12 +83,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           FieldName = 'DATAINICIO'
           Width = 150
           Visible = True
-        end
-        item
-          Expanded = False
-          FieldName = 'DATAFINAL'
-          Width = 150
-          Visible = True
         end>
     end
     object pnBotoesVisualizacao: TPanel
@@ -696,7 +690,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
       Height = 42
       Align = alTop
       BevelOuter = bvNone
-      Caption = 'Controle de Est'#225'gios da Ordem de Produ'#231#227'o'
+      Caption = 'Gerar Nova Ordem de Produ'#231#227'o'
       Color = clSkyBlue
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -732,7 +726,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
         Width = 857
         Height = 42
         Align = alTop
-        Caption = 'Controle de Est'#225'gio da Ordem de Produ'#231#227'o'
+        Caption = 'Gerar Nova Ordem de Produ'#231#227'o'
         Color = clSkyBlue
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -1366,8 +1360,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               Color = 16250871
               ParentBackground = False
               TabOrder = 1
-              ExplicitTop = 111
-              ExplicitHeight = 273
               object Image1: TImage
                 AlignWithMargins = True
                 Left = 3
@@ -1392,7 +1384,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
                 Caption = 'Buscar WebCam'
                 TabOrder = 0
                 OnClick = btnImagemWebCamClick
-                ExplicitTop = 214
+                ExplicitLeft = 2
               end
               object btnSalvarImagem: TBitBtn
                 AlignWithMargins = True
@@ -1404,7 +1396,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
                 Caption = 'Salvar Imagem'
                 TabOrder = 1
                 OnClick = btnSalvarImagemClick
-                ExplicitTop = 245
               end
               object btnImagemArquivo: TBitBtn
                 AlignWithMargins = True
@@ -1416,7 +1407,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
                 Caption = 'Buscar Arquivo'
                 TabOrder = 2
                 OnClick = btnImagemArquivoClick
-                ExplicitTop = 183
               end
             end
           end
