@@ -283,103 +283,13 @@ begin
 end;
 
 procedure TfrmControleEstagioOPF.btRelatorioClick(Sender: TObject);
-var
-  FWC       : TFWConnection;
-  Consulta  : TFDQuery;
-  OPFE      : TOPFINAL_ESTAGIO;
-  I         : Integer;
 begin
 
   if not cds_Pesquisa.IsEmpty then begin
     if btRelatorio.Tag = 0 then begin
       btRelatorio.Tag := 1;
       try
-
-        FWC       := TFWConnection.Create;
-        Consulta  := TFDQuery.Create(nil);
-        OPFE      := TOPFINAL_ESTAGIO.Create(FWC);
-
-        try
-          try
-
-            cds_FichadeProducao.EmptyDataSet;
-
-            Consulta.Close;
-            Consulta.SQL.Clear;
-            Consulta.SQL.Add('SELECT');
-            Consulta.SQL.Add('	OPF.ID AS IDOPF,');
-            Consulta.SQL.Add('	OPFE.ID AS IDOPFE,');
-            Consulta.SQL.Add('	OPFE.SEQUENCIA AS SEQUENCIA,');
-            Consulta.SQL.Add('	PF.ID AS CODIGOPRODUTO,');
-            Consulta.SQL.Add('	PF.DESCRICAO AS NOMEPRODUTO,');
-            Consulta.SQL.Add('	CAST(OPFE.DATAHORA AS DATE) AS DATAGERACAOOPF,');
-            Consulta.SQL.Add('	PMC.ID AS IDOPMC,');
-            Consulta.SQL.Add('	CAST(OPFE.DATAHORA AS DATE) AS DATAGERACAOOPMC,');
-            Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC,');
-            Consulta.SQL.Add('	OPFE.OBSERVACAO,');
-            Consulta.SQL.Add('	OPFE.ULTIMOLOTE');
-            Consulta.SQL.Add('FROM OPFINAL OPF');
-            Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
-            Consulta.SQL.Add('INNER JOIN PRODUTO PF ON (PF.ID = OPF.PRODUTO_ID)');
-            Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
-            Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
-            Consulta.SQL.Add('WHERE 1 = 1');
-            Consulta.SQL.Add('AND OPFE.ID = :IDOPFE');
-            Consulta.Connection                     := FWC.FDConnection;
-            Consulta.ParamByName('IDOPFE').DataType := ftInteger;
-            Consulta.ParamByName('IDOPFE').AsInteger:= cds_PesquisaID.Value;
-            Consulta.Prepare;
-            Consulta.Open;
-            Consulta.FetchAll;
-
-            if not Consulta.IsEmpty then begin
-              Consulta.First;
-
-              DisplayMsg(MSG_INPUT_INT, 'Informe a Quantidade de Lotes a Gerar!', '', '', '1');
-
-              if ResultMsgModal = mrOk then begin
-                if ResultMsgInputInt > 0 then begin
-                  for I := (Consulta.FieldByName('ULTIMOLOTE').AsInteger + 1) to (Consulta.FieldByName('ULTIMOLOTE').AsInteger + ResultMsgInputInt) do begin
-                    cds_FichadeProducao.EmptyDataSet;
-
-                    cds_FichadeProducao.Append;
-                    cds_FichadeProducaoIDOPF.Value              := Consulta.FieldByName('IDOPF').AsInteger;
-                    cds_FichadeProducaoIDOPFE.Value             := StrZero(Consulta.FieldByName('IDOPFE').AsString, MinimoCodigoBarras);
-                    cds_FichadeProducaoCODIGOPRODUTO.Value      := Consulta.FieldByName('CODIGOPRODUTO').AsInteger;
-                    cds_FichadeProducaoNOMEPRODUTO.Value        := Consulta.FieldByName('NOMEPRODUTO').AsString;
-                    cds_FichadeProducaoDATAGERACAOOPFE.Value    := Consulta.FieldByName('DATAGERACAOOPF').AsDateTime;
-                    cds_FichadeProducaoIDOPMC.Value             := Consulta.FieldByName('IDOPMC').AsInteger;
-                    cds_FichadeProducaoDATAGERACAOOPMC.Value    := Consulta.FieldByName('DATAGERACAOOPMC').AsDateTime;
-                    cds_FichadeProducaoCODIGOMC.Value           := Consulta.FieldByName('CODIGOMC').AsString;
-                    cds_FichadeProducaoOBSERVACAO.Value         := Consulta.FieldByName('OBSERVACAO').AsString;
-                    cds_FichadeProducaoNUMEROLOTE.Value         := StrZero(IntToStr(I), MinimoCodigoBarras);
-                    cds_FichadeProducaoCODIGOBARRAS.Value       := StrZero(Consulta.FieldByName('IDOPF').AsString + '*' + Consulta.FieldByName('SEQUENCIA').AsString, MinimoCodigoBarras);
-                    cds_FichadeProducao.Post;
-
-                    DMUtil.frxDBDataset1.DataSet := cds_FichadeProducao;
-                    DMUtil.ImprimirRelatorio('frFichaTecnicadeProducao.fr3');
-                  end;
-
-                  OPFE.ID.Value           := Consulta.FieldByName('IDOPFE').AsInteger;
-                  OPFE.ULTIMOLOTE.Value   := (Consulta.FieldByName('ULTIMOLOTE').AsInteger + ResultMsgInputInt);
-                  OPFE.Update;
-
-                  FWC.Commit;
-
-                end;
-              end;
-            end;
-          Except
-            on E : Exception do begin
-              DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta!', '', E.Message);
-            end;
-          end;
-        finally
-          FreeAndNil(Consulta);
-          FreeAndNil(OPFE);
-          FreeAndNil(FWC);
-          cds_FichadeProducao.EmptyDataSet;
-        end;
+        ImprimirOPFE(cds_PesquisaID.AsInteger);
       finally
         btRelatorio.Tag := 0;
       end;

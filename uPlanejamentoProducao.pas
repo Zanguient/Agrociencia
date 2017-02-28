@@ -48,8 +48,6 @@ type
     CDS_MEIOCULTURADATA: TDateField;
     CDS_NOVAOPID: TIntegerField;
     CDS_NOVAOPDATA: TDateField;
-    CDS_OPGERADAID: TIntegerField;
-    CDS_OPGERADADATA: TDateField;
     CDS_PLANTASCLIENTE: TStringField;
     CDS_PLANTASPRODUTO: TStringField;
     CDS_PLANTASABRIRCADASTRO: TIntegerField;
@@ -57,6 +55,18 @@ type
     CDS_MEIOCULTURAVOLUMEFINAL: TStringField;
     CDS_MEIOCULTURAABRIROP: TIntegerField;
     CDS_MEIOCULTURAIMPRIMIROP: TIntegerField;
+    CDS_NOVAOPESPECIE: TStringField;
+    CDS_NOVAOPESTAGIOATUAL: TStringField;
+    CDS_NOVAOPCODIGOMC: TStringField;
+    CDS_NOVAOPABRIROP: TIntegerField;
+    CDS_NOVAOPGERAROP: TIntegerField;
+    CDS_OPGERADAID: TIntegerField;
+    CDS_OPGERADADATA: TDateField;
+    CDS_OPGERADAESPECIE: TStringField;
+    CDS_OPGERADAESTAGIOATUAL: TStringField;
+    CDS_OPGERADACODIGOMC: TStringField;
+    CDS_OPGERADAABRIROP: TIntegerField;
+    CDS_OPGERADAIMPRIMIROP: TIntegerField;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -70,6 +80,11 @@ type
     procedure gdMeioCulturaDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure gdMeioCulturaCellClick(Column: TColumn);
+    procedure gdGerarOPDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure gdOPGeradaDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure gdOPGeradaCellClick(Column: TColumn);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -130,8 +145,79 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.CarregarGerarNovaOP;
+var
+  FWC       : TFWConnection;
+  Consulta  : TFDQuery;
 begin
-  //
+
+  FWC       := TFWConnection.Create;
+  Consulta  := TFDQuery.Create(nil);
+
+  try
+    try
+
+      CDS_NOVAOP.DisableControls;
+
+      CDS_NOVAOP.EmptyDataSet;
+
+      Consulta.Close;
+      Consulta.SQL.Clear;
+      Consulta.SQL.Add('SELECT');
+      Consulta.SQL.Add('	OPFE.ID,');
+      Consulta.SQL.Add('	OPFE.PREVISAOTERMINO AS DATA,');
+      Consulta.SQL.Add('	P.DESCRICAO AS ESPECIE,');
+      Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOATUAL,');
+      Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC');
+      Consulta.SQL.Add('FROM OPFINAL OPF');
+      Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+      Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
+      Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
+      Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
+      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
+      Consulta.SQL.Add('AND OPFE.PREVISAOTERMINO BETWEEN :DATAI AND :DATAF');
+
+      Consulta.Connection                     := FWC.FDConnection;
+
+      Consulta.ParamByName('DATAI').DataType  := ftDate;
+      Consulta.ParamByName('DATAF').DataType  := ftDate;
+      Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
+      Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
+
+      Consulta.Prepare;
+      Consulta.Open;
+      Consulta.FetchAll;
+
+      if not Consulta.IsEmpty then begin
+        Consulta.First;
+        while not Consulta.Eof do begin
+          CDS_NOVAOP.Append;
+          CDS_NOVAOPID.Value            := Consulta.FieldByName('ID').AsInteger;
+          CDS_NOVAOPDATA.Value          := Consulta.FieldByName('DATA').AsDateTime;
+          CDS_NOVAOPESPECIE.Value       := Consulta.FieldByName('ESPECIE').AsString;
+          CDS_NOVAOPESTAGIOATUAL.Value  := Consulta.FieldByName('ESTAGIOATUAL').AsString;
+          CDS_NOVAOPCODIGOMC.Value      := Consulta.FieldByName('CODIGOMC').AsString;
+          CDS_NOVAOPABRIROP.Value       := 0;
+          CDS_NOVAOPGERAROP.Value       := 0;
+          CDS_NOVAOP.Post;
+          Consulta.Next;
+        end;
+      end;
+
+      TSNOP.TabVisible := not Consulta.IsEmpty;
+      TSNOP.Caption    := 'Finalizando Estágio (Gerar Nova OP) (' + IntToStr(Consulta.RecordCount) + ')';
+
+    Except
+      on E : Exception do begin
+        DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta Finalizando Estágio!', '', E.Message);
+      end;
+    end;
+  finally
+    CDS_NOVAOP.EnableControls;
+    FreeAndNil(Consulta);
+    FreeAndNil(FWC);
+  end;
 end;
 
 procedure TfrmPlanejamentoProducao.CarregarMeiodeCultura;
@@ -208,8 +294,81 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.CarregarOPGerada;
+var
+  FWC       : TFWConnection;
+  Consulta  : TFDQuery;
 begin
-  //
+
+  FWC       := TFWConnection.Create;
+  Consulta  := TFDQuery.Create(nil);
+
+  try
+    try
+
+      CDS_OPGERADA.DisableControls;
+
+      CDS_OPGERADA.EmptyDataSet;
+
+      Consulta.Close;
+      Consulta.SQL.Clear;
+      Consulta.SQL.Add('SELECT');
+      Consulta.SQL.Add('	OPFE.ID,');
+      Consulta.SQL.Add('	OPFE.PREVISAOINICIO AS DATA,');
+      Consulta.SQL.Add('	P.DESCRICAO AS ESPECIE,');
+      Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOPREVISTO,');
+      Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC');
+      Consulta.SQL.Add('FROM OPFINAL OPF');
+      Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+      Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
+      Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
+      Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
+      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
+      Consulta.SQL.Add('AND OPFE.PREVISAOINICIO BETWEEN :DATAI AND :DATAF');
+      Consulta.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
+      Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO_LOTE OPFEL WHERE OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
+
+      Consulta.Connection                     := FWC.FDConnection;
+
+      Consulta.ParamByName('DATAI').DataType  := ftDate;
+      Consulta.ParamByName('DATAF').DataType  := ftDate;
+      Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
+      Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
+
+      Consulta.Prepare;
+      Consulta.Open;
+      Consulta.FetchAll;
+
+      if not Consulta.IsEmpty then begin
+        Consulta.First;
+        while not Consulta.Eof do begin
+          CDS_OPGERADA.Append;
+          CDS_OPGERADAID.Value            := Consulta.FieldByName('ID').AsInteger;
+          CDS_OPGERADADATA.Value          := Consulta.FieldByName('DATA').AsDateTime;
+          CDS_OPGERADAESPECIE.Value       := Consulta.FieldByName('ESPECIE').AsString;
+          CDS_OPGERADAESTAGIOATUAL.Value  := Consulta.FieldByName('ESTAGIOPREVISTO').AsString;
+          CDS_OPGERADACODIGOMC.Value      := Consulta.FieldByName('CODIGOMC').AsString;
+          CDS_OPGERADAABRIROP.Value       := 0;
+          CDS_OPGERADAIMPRIMIROP.Value    := 0;
+          CDS_OPGERADA.Post;
+          Consulta.Next;
+        end;
+      end;
+
+      TSOPG.TabVisible := not Consulta.IsEmpty;
+      TSOPG.Caption    := 'Novo Estágio (OP Gerada) (' + IntToStr(Consulta.RecordCount) + ')';
+
+    Except
+      on E : Exception do begin
+        DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta do Novo Estágio!', '', E.Message);
+      end;
+    end;
+  finally
+    CDS_OPGERADA.EnableControls;
+    FreeAndNil(Consulta);
+    FreeAndNil(FWC);
+  end;
 end;
 
 procedure TfrmPlanejamentoProducao.CarregarRecebimentoPlantas;
@@ -318,6 +477,28 @@ begin
   AjustaGrid;
 end;
 
+procedure TfrmPlanejamentoProducao.gdGerarOPDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+var
+  BUTTON: Integer;
+  R: TRect;
+  SCapt : string;
+begin
+  if Pos(Column.FieldName, '|ABRIROP|GERAROP') > 0 then begin
+    gdGerarOP.Canvas.FillRect(Rect);
+    BUTTON  := 0;
+    R       := Rect;
+    SCapt   := Column.Title.Caption;
+    InflateRect(R,-2,-2); //Diminue o tamanho do Botão
+    DrawFrameControl(gdGerarOP.Canvas.Handle,R,BUTTON, BUTTON or BUTTON);
+    with gdGerarOP.Canvas do begin
+      Brush.Style := bsClear;
+      Font.Color  := clBtnText;
+      TextRect(Rect, (Rect.Left + Rect.Right - TextWidth(SCapt)) div 2, (Rect.Top + Rect.Bottom - TextHeight(SCapt)) div 2, SCapt);
+    end;
+  end;
+end;
+
 procedure TfrmPlanejamentoProducao.gdMeioCulturaCellClick(Column: TColumn);
 begin
   if gdMeioCultura.SelectedField.FieldName = 'IMPRIMIROP' then begin
@@ -350,6 +531,35 @@ begin
     InflateRect(R,-2,-2); //Diminue o tamanho do Botão
     DrawFrameControl(gdMeioCultura.Canvas.Handle,R,BUTTON, BUTTON or BUTTON);
     with gdMeioCultura.Canvas do begin
+      Brush.Style := bsClear;
+      Font.Color  := clBtnText;
+      TextRect(Rect, (Rect.Left + Rect.Right - TextWidth(SCapt)) div 2, (Rect.Top + Rect.Bottom - TextHeight(SCapt)) div 2, SCapt);
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.gdOPGeradaCellClick(Column: TColumn);
+begin
+  if gdOPGerada.SelectedField.FieldName = 'IMPRIMIROP' then
+    if Assigned(Self.gdOPGerada.DataSource.DataSet.FindField('ID')) then
+      ImprimirOPFE(Self.gdOPGerada.DataSource.DataSet.FieldByName('ID').AsInteger);
+end;
+
+procedure TfrmPlanejamentoProducao.gdOPGeradaDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+var
+  BUTTON: Integer;
+  R: TRect;
+  SCapt : string;
+begin
+  if Pos(Column.FieldName, '|ABRIROP|IMPRIMIROP') > 0 then begin
+    gdOPGerada.Canvas.FillRect(Rect);
+    BUTTON  := 0;
+    R       := Rect;
+    SCapt   := Column.Title.Caption;
+    InflateRect(R,-2,-2); //Diminue o tamanho do Botão
+    DrawFrameControl(gdOPGerada.Canvas.Handle,R,BUTTON, BUTTON or BUTTON);
+    with gdOPGerada.Canvas do begin
       Brush.Style := bsClear;
       Font.Color  := clBtnText;
       TextRect(Rect, (Rect.Left + Rect.Right - TextWidth(SCapt)) div 2, (Rect.Top + Rect.Bottom - TextHeight(SCapt)) div 2, SCapt);

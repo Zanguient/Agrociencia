@@ -31,6 +31,7 @@ uses
   procedure DeletarArquivosPasta(Diretorio : String);
   procedure ConverterBMPtoJPEG(ACaminhoFoto: string);
   procedure ImprimirOPMC(ID : Integer);
+  procedure ImprimirOPFE(ID : Integer);
   function ValidaUsuario(Email, Senha : String) : Boolean;
   function MD5(Texto : String): String;
   function Criptografa(Texto : String; Tipo : String) : String;
@@ -54,7 +55,7 @@ Uses
   uBeanUsuario,
   uBeanUsuario_Permissao,
   uDomains,
-  uMensagem, uDMUtil;
+  uMensagem, uDMUtil, uBeanOPFinal_Estagio;
 
 procedure LimpaImagens;
 var
@@ -406,6 +407,90 @@ begin
     FreeAndNil(SQL);
     FreeAndNil(SQL_I);
     FreeAndNil(FW);
+  end;
+end;
+
+procedure ImprimirOPFE(ID : Integer);
+var
+  FWC       : TFWConnection;
+  Consulta  : TFDQuery;
+  OPFE      : TOPFINAL_ESTAGIO;
+  I         : Integer;
+begin
+
+  FWC       := TFWConnection.Create;
+  Consulta  := TFDQuery.Create(nil);
+  OPFE      := TOPFINAL_ESTAGIO.Create(FWC);
+
+  try
+    try
+
+      DisplayMsg(MSG_INPUT_INT, 'Informe a Quantidade de Lotes a Gerar!', '', '', '1');
+
+      if ResultMsgModal = mrOk then begin
+        if ResultMsgInputInt > 0 then begin
+          OPFE.SelectList('ID = ' + IntToStr(ID));
+          if OPFE.Count > 0 then begin
+
+            Consulta.Close;
+            Consulta.SQL.Clear;
+            Consulta.SQL.Add('SELECT');
+            Consulta.SQL.Add('	OPF.ID AS IDOPF,');
+            Consulta.SQL.Add('	TRIM(LPAD(CAST(OPFE.ID AS VARCHAR), ' + IntToStr(MinimoCodigoBarras) + ', ''0'')) AS IDOPFE,');
+            Consulta.SQL.Add('	PF.ID AS CODIGOPRODUTO,');
+            Consulta.SQL.Add('	PF.DESCRICAO AS NOMEPRODUTO,');
+            Consulta.SQL.Add('	CAST(OPFE.DATAHORA AS DATE) AS DATAGERACAOOPFE,');
+            Consulta.SQL.Add('	PMC.ID AS IDOPMC,');
+            Consulta.SQL.Add('	CAST(OPFE.DATAHORA AS DATE) AS DATAGERACAOOPMC,');
+            Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC,');
+            Consulta.SQL.Add('	OPFE.OBSERVACAO,');
+            Consulta.SQL.Add('	TRIM(LPAD(CAST((COALESCE(OPFE.ULTIMOLOTE,0) + 1) AS VARCHAR), ' + IntToStr(MinimoCodigoBarras) + ', ''0'')) AS NUMEROLOTE,');
+            Consulta.SQL.Add('	TRIM(LPAD(OPF.ID || ''*'' || OPFE.SEQUENCIA, ' + IntToStr(MinimoCodigoBarras) + ', ''0'')) AS CODIGOBARRAS');
+            Consulta.SQL.Add('FROM OPFINAL OPF');
+            Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+            Consulta.SQL.Add('INNER JOIN PRODUTO PF ON (PF.ID = OPF.PRODUTO_ID)');
+            Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
+            Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
+            Consulta.SQL.Add('WHERE 1 = 1');
+            Consulta.SQL.Add('AND OPFE.ID = :IDOPFE');
+
+            Consulta.Connection                     := FWC.FDConnection;
+
+            for I := 0 to ResultMsgInputInt - 1 do begin
+
+              Consulta.Close;
+              Consulta.ParamByName('IDOPFE').DataType := ftInteger;
+              Consulta.ParamByName('IDOPFE').AsInteger:= ID;
+              Consulta.Prepare;
+              Consulta.Open;
+              Consulta.FetchAll;
+
+              if not Consulta.IsEmpty then begin
+
+                DMUtil.frxDBDataset1.DataSet := Consulta;
+                DMUtil.ImprimirRelatorio('frFichaTecnicadeProducao.fr3');
+
+                FWC.StartTransaction;
+
+                OPFE.ID.Value           := TOPFINAL_ESTAGIO(OPFE.Itens[0]).ID.Value;
+                OPFE.ULTIMOLOTE.Value   := Consulta.FieldByName('NUMEROLOTE').AsInteger;
+                OPFE.Update;
+
+                FWC.Commit;
+              end;
+            end;
+          end;
+        end;
+      end;
+    Except
+      on E : Exception do begin
+        DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta!', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(Consulta);
+    FreeAndNil(OPFE);
+    FreeAndNil(FWC);
   end;
 end;
 

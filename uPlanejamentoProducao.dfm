@@ -279,7 +279,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Top = 95
       Width = 896
       Height = 305
-      ActivePage = TSMC
+      ActivePage = TSOPG
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -291,8 +291,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       OnChange = PageControl1Change
       object TSRP: TTabSheet
         Caption = 'Cadastro e Recebimento de Plantas'
-        ExplicitLeft = 5
-        ExplicitTop = 31
         object Panel3: TPanel
           AlignWithMargins = True
           Left = 3
@@ -310,9 +308,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           ParentBackground = False
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 0
-          ExplicitTop = 8
-          ExplicitWidth = 888
         end
         object gdRecebimentoPlantas: TDBGrid
           AlignWithMargins = True
@@ -381,8 +376,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       object TSMC: TTabSheet
         Caption = 'Ordem de Produ'#231#227'o do Meio de Cultura'
         ImageIndex = 1
-        ExplicitTop = 24
-        ExplicitHeight = 277
         object Panel1: TPanel
           AlignWithMargins = True
           Left = 3
@@ -400,9 +393,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           ParentBackground = False
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 0
-          ExplicitTop = 8
-          ExplicitWidth = 888
         end
         object gdMeioCultura: TDBGrid
           AlignWithMargins = True
@@ -475,8 +465,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       object TSNOP: TTabSheet
         Caption = 'Finalizando Est'#225'gio (Gerar Nova OP)'
         ImageIndex = 2
-        ExplicitTop = 24
-        ExplicitHeight = 277
         object Panel2: TPanel
           AlignWithMargins = True
           Left = 3
@@ -494,9 +482,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           ParentBackground = False
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 0
-          ExplicitTop = 8
-          ExplicitWidth = 888
         end
         object gdGerarOP: TDBGrid
           AlignWithMargins = True
@@ -507,21 +492,75 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Align = alClient
           DataSource = DS_NOVAOP
           DrawingStyle = gdsGradient
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -20
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+          ParentFont = False
           TabOrder = 1
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
-          TitleFont.Height = -13
+          TitleFont.Height = -16
           TitleFont.Name = 'Tahoma'
           TitleFont.Style = []
+          OnDrawColumnCell = gdGerarOPDrawColumnCell
           Columns = <
             item
+              Alignment = taCenter
               Expanded = False
               FieldName = 'ID'
+              Title.Alignment = taCenter
+              Width = 120
               Visible = True
             end
             item
+              Alignment = taCenter
               Expanded = False
               FieldName = 'DATA'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'ESPECIE'
+              Title.Alignment = taCenter
+              Width = 200
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'ESTAGIOATUAL'
+              Title.Alignment = taCenter
+              Width = 200
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'CODIGOMC'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'ABRIROP'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'GERAROP'
+              Title.Alignment = taCenter
+              Width = 120
               Visible = True
             end>
         end
@@ -529,8 +568,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       object TSOPG: TTabSheet
         Caption = 'Novo Est'#225'gio (OP Gerada)'
         ImageIndex = 3
-        ExplicitTop = 24
-        ExplicitHeight = 277
         object Panel4: TPanel
           AlignWithMargins = True
           Left = 3
@@ -548,9 +585,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           ParentBackground = False
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 0
-          ExplicitTop = 8
-          ExplicitWidth = 888
         end
         object gdOPGerada: TDBGrid
           AlignWithMargins = True
@@ -561,21 +595,76 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Align = alClient
           DataSource = DS_OPGERADA
           DrawingStyle = gdsGradient
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -20
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+          ParentFont = False
           TabOrder = 1
           TitleFont.Charset = DEFAULT_CHARSET
           TitleFont.Color = clWindowText
-          TitleFont.Height = -13
+          TitleFont.Height = -16
           TitleFont.Name = 'Tahoma'
           TitleFont.Style = []
+          OnCellClick = gdOPGeradaCellClick
+          OnDrawColumnCell = gdOPGeradaDrawColumnCell
           Columns = <
             item
+              Alignment = taCenter
               Expanded = False
               FieldName = 'ID'
+              Title.Alignment = taCenter
+              Width = 120
               Visible = True
             end
             item
+              Alignment = taCenter
               Expanded = False
               FieldName = 'DATA'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'ESPECIE'
+              Title.Alignment = taCenter
+              Width = 200
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'ESTAGIOATUAL'
+              Title.Alignment = taCenter
+              Width = 200
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'CODIGOMC'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'ABRIROP'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'IMPRIMIROP'
+              Title.Alignment = taCenter
+              Width = 120
               Visible = True
             end>
         end
@@ -651,12 +740,37 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
     Left = 391
     Top = 226
     object CDS_NOVAOPID: TIntegerField
+      DisplayLabel = 'C'#243'digo OP'
       DisplayWidth = 70
       FieldName = 'ID'
     end
     object CDS_NOVAOPDATA: TDateField
+      DisplayLabel = 'Data (Final)'
       DisplayWidth = 80
       FieldName = 'DATA'
+    end
+    object CDS_NOVAOPESPECIE: TStringField
+      DisplayLabel = 'Esp'#233'cie'
+      FieldName = 'ESPECIE'
+      Size = 100
+    end
+    object CDS_NOVAOPESTAGIOATUAL: TStringField
+      DisplayLabel = 'Est'#225'gio Atual'
+      FieldName = 'ESTAGIOATUAL'
+      Size = 100
+    end
+    object CDS_NOVAOPCODIGOMC: TStringField
+      DisplayLabel = 'C'#243'digo do MC'
+      FieldName = 'CODIGOMC'
+      Size = 5
+    end
+    object CDS_NOVAOPABRIROP: TIntegerField
+      DisplayLabel = 'Abrir OP'
+      FieldName = 'ABRIROP'
+    end
+    object CDS_NOVAOPGERAROP: TIntegerField
+      DisplayLabel = 'Gerar OP'
+      FieldName = 'GERAROP'
     end
   end
   object CDS_OPGERADA: TClientDataSet
@@ -665,12 +779,37 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
     Left = 495
     Top = 226
     object CDS_OPGERADAID: TIntegerField
+      DisplayLabel = 'C'#243'digo OP'
       DisplayWidth = 70
       FieldName = 'ID'
     end
     object CDS_OPGERADADATA: TDateField
+      DisplayLabel = 'Data (In'#237'cial)'
       DisplayWidth = 80
       FieldName = 'DATA'
+    end
+    object CDS_OPGERADAESPECIE: TStringField
+      DisplayLabel = 'Esp'#233'cie'
+      FieldName = 'ESPECIE'
+      Size = 100
+    end
+    object CDS_OPGERADAESTAGIOATUAL: TStringField
+      DisplayLabel = 'Est'#225'gio Previsto'
+      FieldName = 'ESTAGIOATUAL'
+      Size = 100
+    end
+    object CDS_OPGERADACODIGOMC: TStringField
+      DisplayLabel = 'C'#243'digo do MC'
+      FieldName = 'CODIGOMC'
+      Size = 5
+    end
+    object CDS_OPGERADAABRIROP: TIntegerField
+      DisplayLabel = 'Abrir OP'
+      FieldName = 'ABRIROP'
+    end
+    object CDS_OPGERADAIMPRIMIROP: TIntegerField
+      DisplayLabel = 'Imprimir OP'
+      FieldName = 'IMPRIMIROP'
     end
   end
   object DS_PLANTAS: TDataSource
