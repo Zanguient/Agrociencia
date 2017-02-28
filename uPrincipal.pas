@@ -42,6 +42,7 @@ type
     Aniversariantes1: TMenuItem;
     CadastrodePlantas1: TMenuItem;
     ControledeQualidadePositivo1: TMenuItem;
+    PlanejamentodaProduo1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -69,6 +70,7 @@ type
     procedure Aniversariantes1Click(Sender: TObject);
     procedure CadastrodePlantas1Click(Sender: TObject);
     procedure ControledeQualidadePositivo1Click(Sender: TObject);
+    procedure Agendamento1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -112,7 +114,9 @@ uses
   uControleQualidade,
   uRelAgendaSemanal,
   uRelAniversariantes,
-  uRelCadastrodePlantas, uControleQualidadePositivo;
+  uRelCadastrodePlantas,
+  uControleQualidadePositivo,
+  uPlanejamentoProducao;
 
 {$R *.dfm}
 
@@ -215,6 +219,17 @@ begin
   CriarComandoSequenciaMenu(MainMenu1);
 
   Caption := 'Sistema Vivetech Agrociências - Usuário: ' + IntToStr(USUARIO.CODIGO) + ' - ' + USUARIO.NOME;
+end;
+
+procedure TfrmPrincipal.Agendamento1Click(Sender: TObject);
+begin
+  if not Assigned(frmPlanejamentoProducao) then
+    frmPlanejamentoProducao := TfrmPlanejamentoProducao.Create(nil);
+  try
+    frmPlanejamentoProducao.ShowModal;
+  finally
+    FreeAndNil(frmPlanejamentoProducao);
+  end;
 end;
 
 procedure TfrmPrincipal.AgendaSemanal1Click(Sender: TObject);

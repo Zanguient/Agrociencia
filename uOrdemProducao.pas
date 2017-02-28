@@ -106,7 +106,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure csPesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
-    procedure FormShow(Sender: TObject);
     procedure btGravarClick(Sender: TObject);
     procedure btCancelarClick(Sender: TObject);
     procedure btAlterarClick(Sender: TObject);
@@ -131,6 +130,7 @@ type
     procedure btnImagemWebCamClick(Sender: TObject);
     procedure btnImagemArquivoClick(Sender: TObject);
     procedure btnSalvarImagemClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     procedure SelecionarObservacao;
     procedure EncerrarOPF;
@@ -138,7 +138,9 @@ type
     { Private declarations }
   public
     NomeImagemAtual: string;
+    CodigoOPF : Integer;
     function AtualizarEdits(Limpar : Boolean) : Boolean;
+    function Alterar : Boolean;
     procedure CarregaDados;
     procedure InvertePaineis;
     procedure Cancelar;
@@ -168,6 +170,46 @@ uses
   uBeanOPFinal_Imagem;
 
 {$R *.dfm}
+
+function TfrmOrdemProducao.Alterar : Boolean;
+Var
+  FWC : TFWConnection;
+  OPF : TOPFINAL;
+begin
+
+  Result := False;
+
+  if not cds_Pesquisa.IsEmpty then begin
+
+    FWC := TFWConnection.Create;
+    OPF := TOPFINAL.Create(FWC);
+    try
+      try
+        OPF.SelectList('ID = ' + cds_PesquisaID.AsString);
+        if OPF.Count = 1 then begin
+          if TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNotNull then begin
+            DisplayMsg(MSG_ERR, 'Ordem de Produção já Encerrada, Não pode ser Alterada!');
+            Exit;
+          end;
+        end;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_ERR, 'Erro ao Verificar Ordem de Produção, Verifique!', '', E.Message);
+        end;
+      end;
+
+    finally
+      FreeAndNil(OPF);
+      FreeAndNil(FWC);
+    end;
+
+    if AtualizarEdits(False) then begin//Se Conseguiu Carregar os Dados Inverte os Painéis
+      InvertePaineis;
+      Result := True;
+    end;
+  end;
+end;
 
 function TfrmOrdemProducao.AtualizarEdits(Limpar : Boolean) : Boolean;
 Var
@@ -289,38 +331,8 @@ begin
 end;
 
 procedure TfrmOrdemProducao.btAlterarClick(Sender: TObject);
-Var
-  FWC : TFWConnection;
-  OPF : TOPFINAL;
 begin
-  if not cds_Pesquisa.IsEmpty then begin
-
-    FWC := TFWConnection.Create;
-    OPF := TOPFINAL.Create(FWC);
-    try
-      try
-        OPF.SelectList('ID = ' + cds_PesquisaID.AsString);
-        if OPF.Count = 1 then begin
-          if TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNotNull then begin
-            DisplayMsg(MSG_ERR, 'Ordem de Produção já Encerrada, Não pode ser Alterada!');
-            Exit;
-          end;
-        end;
-      except
-        on E : Exception do begin
-          FWC.Rollback;
-          DisplayMsg(MSG_ERR, 'Erro ao Verificar Ordem de Produção, Verifique!', '', E.Message);
-        end;
-      end;
-
-    finally
-      FreeAndNil(OPF);
-      FreeAndNil(FWC);
-    end;
-
-    if AtualizarEdits(False) then //Se Conseguiu Carregar os Dados Inverte os Painéis
-      InvertePaineis;
-  end;
+  Alterar;
 end;
 
 procedure TfrmOrdemProducao.btCancelarClick(Sender: TObject);
@@ -351,12 +363,15 @@ Var
   OPF : TOPFINAL;
   E   : TESTAGIO;
   OPE : TOPFINAL_ESTAGIO;
+  FecharTela : Boolean;
 begin
 
   FWC := TFWConnection.Create;
   OPF := TOPFINAL.Create(FWC);
   E   := TESTAGIO.Create(FWC);
   OPE := TOPFINAL_ESTAGIO.Create(FWC);
+
+  FecharTela := False;
 
   try
     try
@@ -443,9 +458,11 @@ begin
 
       FWC.Commit;
 
-      InvertePaineis;
-
-      CarregaDados;
+      if CodigoOPF = 0 then begin
+        InvertePaineis;
+        CarregaDados;
+      end else
+        FecharTela := True;
 
     Except
       on E : Exception do begin
@@ -459,6 +476,10 @@ begin
     FreeAndNil(OPE);
     FreeAndNil(FWC);
   end;
+
+  if FecharTela then
+    Close;
+
 end;
 
 procedure TfrmOrdemProducao.btMenuClick(Sender: TObject);
@@ -655,6 +676,10 @@ procedure TfrmOrdemProducao.Cancelar;
 begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
+
+  if CodigoOPF > 0 then //Se Foi Chamada de outra Tela Fecha.
+    Close;
+
   InvertePaineis;
 end;
 
@@ -744,10 +769,14 @@ begin
       SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
       SQL.SQL.Add('WHERE 1 = 1');
 
-      case cbStatus.ItemIndex of
-        0 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL AND OPF.CANCELADO = False');
-        1 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NOT NULL AND OPF.CANCELADO = False');
-        2 : SQL.SQL.Add('AND OPF.CANCELADO = True');
+      if CodigoOPF > 0 then //Parametro quando tela Chamada de outro Cadastro
+        SQL.SQL.Add('AND OPF.ID = ' + IntToStr(CodigoOPF))
+      else begin
+        case cbStatus.ItemIndex of
+          0 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL AND OPF.CANCELADO = False');
+          1 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NOT NULL AND OPF.CANCELADO = False');
+          2 : SQL.SQL.Add('AND OPF.CANCELADO = True');
+        end;
       end;
 
       SQL.SQL.Add('ORDER BY OPF.ID ASC');
@@ -1008,6 +1037,9 @@ end;
 procedure TfrmOrdemProducao.FormCreate(Sender: TObject);
 begin
   AjustaForm(Self);
+  cds_Pesquisa.CreateDataSet;
+  cds_Etiqueta1.CreateDataSet;
+  CodigoOPF := 0;
 end;
 
 procedure TfrmOrdemProducao.FormKeyDown(Sender: TObject; var Key: Word;
@@ -1049,10 +1081,15 @@ end;
 
 procedure TfrmOrdemProducao.FormShow(Sender: TObject);
 begin
-  cds_Pesquisa.CreateDataSet;
-  cds_Etiqueta1.CreateDataSet;
   CarregaDados;
   AutoSizeDBGrid(gdPesquisa);
+  if CodigoOPF > 0 then begin
+    if CodigoOPF = cds_PesquisaID.AsInteger then begin
+      if not Alterar then
+        PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end else
+      PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+  end;
 end;
 
 procedure TfrmOrdemProducao.gdPesquisaTitleClick(Column: TColumn);

@@ -17,7 +17,7 @@ uses
   Data.DB,
   Vcl.Graphics,
   System.Win.ComObj,
-  FireDAC.Comp.Client, Vcl.ExtCtrls, Vcl.Imaging.jpeg;
+  FireDAC.Comp.Client, Vcl.ExtCtrls, Vcl.Imaging.jpeg, frxDBSet;
 
   procedure CarregarConfigLocal;
   procedure CarregaArrayMenus(Menu : TMainMenu);
@@ -29,6 +29,7 @@ uses
   procedure ExpXLS(DataSet: TDataSet; NomeArq: string);
   procedure DeletarArquivosPasta(Diretorio : String);
   procedure ConverterBMPtoJPEG(ACaminhoFoto: string);
+  procedure ImprimirOPMC(ID : Integer);
   function ValidaUsuario(Email, Senha : String) : Boolean;
   function MD5(Texto : String): String;
   function Criptografa(Texto : String; Tipo : String) : String;
@@ -52,7 +53,7 @@ Uses
   uBeanUsuario,
   uBeanUsuario_Permissao,
   uDomains,
-  uMensagem;
+  uMensagem, uDMUtil;
 
 procedure CarregarConfigLocal;
 Var
@@ -305,6 +306,93 @@ begin
     FreeAndNil(cjJpg);
     FreeAndNil(cjBmp);
     FreeAndNil(AFoto);
+  end;
+end;
+
+procedure ImprimirOPMC(ID : Integer);
+var
+  FW    : TFWConnection;
+  SQL   : TFDQuery;
+  FR    : TfrxDBDataset;
+  SQL_I : TFDQuery;
+  FR_I  : TfrxDBDataset;
+begin
+  FW    := TFWConnection.Create;
+  SQL   := TFDQuery.Create(nil);
+  SQL_I := TFDQuery.Create(nil);
+  try
+    SQL.Close;
+    SQL.SQL.Clear;
+    SQL.Connection := FW.FDConnection;
+    SQL.SQL.Add('SELECT');
+    SQL.SQL.Add('Trim(LPAD(cast(OPMC.ID as varchar), 3, ''0'')) as ID,');
+    SQL.SQL.Add('MC.CODIGO,');
+    SQL.SQL.Add('E.METODO,');
+    SQL.SQL.Add('OPMC.ID_RECIPIENTE,');
+    SQL.SQL.Add('PR.DESCRICAO,');
+    SQL.SQL.Add('MC.PHRECOMENDADO,');
+    SQL.SQL.Add('OPMC.PHINICIAL,');
+    SQL.SQL.Add('OPMC.PHFINAL,');
+    SQL.SQL.Add('OPMC.DATAHORA,');
+    SQL.SQL.Add('OPMC.QUANTRECIPIENTES,');
+    SQL.SQL.Add('OPMC.MLRECIPIENTE,');
+    SQL.SQL.Add('OPMC.QUANTPRODUTO,');
+    SQL.SQL.Add('OPMC.OBSERVACAO,');
+    SQL.SQL.Add('OPMC.OBSERVACAOENCERRAMENTO,');
+    SQL.SQL.Add('OPMC.ID_USUARIOEXECUTAR,');
+    SQL.SQL.Add('U.NOME,');
+    SQL.SQL.Add('OPMC.DATAFIM,');
+    SQL.SQL.Add('OPMC.ENCERRADO');
+    SQL.SQL.Add('FROM ORDEMPRODUCAOMC OPMC');
+    SQL.SQL.Add('INNER JOIN MEIOCULTURA MC ON OPMC.ID_PRODUTO = MC.ID_PRODUTO');
+    SQL.SQL.Add('INNER JOIN ESTERILIZACAO E ON OPMC.ID_ESTERILIZACAO = E.ID');
+    SQL.SQL.Add('INNER JOIN PRODUTO PR ON OPMC.ID_RECIPIENTE = PR.ID');
+    SQL.SQL.Add('LEFT JOIN USUARIO U ON OPMC.ID_USUARIOEXECUTAR = U.ID');
+    SQL.SQL.Add('WHERE OPMC.ID = :ID');
+    SQL.ParamByName('ID').AsInteger := ID;
+    SQL.Prepare;
+    SQL.Open();
+
+    if SQL.IsEmpty then begin
+      DisplayMsg(MSG_INF, 'Dados da Ordem de Produção não encontrados!');
+      Exit;
+    end;
+
+    SQL_I.Close;
+    SQL_I.SQL.Clear;
+    SQL_I.Connection := FW.FDConnection;
+    SQL_I.SQL.Add('SELECT');
+    SQL_I.SQL.Add('OPMCI.ID_PRODUTO,');
+    SQL_I.SQL.Add('PR.DESCRICAO,');
+    SQL_I.SQL.Add('UN.SIMBOLO,');
+    SQL_I.SQL.Add('OPMCI.QUANTIDADE');
+    SQL_I.SQL.Add('FROM ORDEMPRODUCAOMC_ITENS OPMCI');
+    SQL_I.SQL.Add('INNER JOIN PRODUTO PR ON OPMCI.ID_PRODUTO = PR.ID');
+    SQL_I.SQL.Add('INNER JOIN UNIDADEMEDIDA UN ON PR.UNIDADEMEDIDA_ID = UN.ID');
+    SQL_I.SQL.Add('WHERE OPMCI.ID_ORDEMPRODUCAOMC = :ID');
+    SQL_I.ParamByName('ID').AsInteger := ID;
+    SQL_I.Prepare;
+    SQL_I.Open();
+
+    FR    := TfrxDBDataset.Create(nil);
+    FR_I  := TfrxDBDataset.Create(nil);
+    try
+      FR.UserName     := 'ORDEMPRODUCAO';
+      FR_I.UserName   := 'ITENS';
+
+      FR.DataSet      := SQL;
+      FR_I.DataSet    := SQL_I;
+
+      DMUtil.ImprimirRelatorio('frOPMC.fr3');
+      DisplayMsgFinaliza;
+    finally
+      FreeAndNil(FR_I);
+      FreeAndNil(FR);
+    end;
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(SQL_I);
+    FreeAndNil(FW);
   end;
 end;
 
