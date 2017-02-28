@@ -38,6 +38,8 @@ type
     PREVISTO : Integer;
     SALDO : Integer;
     SALDOMC : Double;
+    CADESTAGIO : Integer;
+    CADESPECIE : Integer;
     INTERVALO: ARRAY OF TIntervalo;
     SAIDAS : ARRAY OF TSaidas;
   end;
@@ -315,6 +317,8 @@ begin
               Consulta.SQL.Add('	P.DESCRICAO,');
               Consulta.SQL.Add('	E.TIPO,');
               Consulta.SQL.Add('	E.DESCRICAO AS DESCRICAOESTAGIO,');
+              Consulta.SQL.Add('	OPFE.ESTAGIO_ID AS ESTAGIO,');
+              Consulta.SQL.Add('	P.ID AS ESPECIE,');
               Consulta.SQL.Add('	OPFE.QUANTIDADEESTIMADA,');
               Consulta.SQL.Add('	COALESCE((SELECT SUM(OPL.QUANTIDADE) FROM OPFINAL_ESTAGIO_LOTE OPL WHERE OPL.OPFINAL_ESTAGIO_ID = OPFE.ID),0) AS SALDOESTAGIO,');
               Consulta.SQL.Add('	COALESCE((SELECT COUNT(OPLS.ID) FROM OPFINAL_ESTAGIO_LOTE OPL INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPLS ON OPL.ID = OPLS.OPFINAL_ESTAGIO_LOTE_ID WHERE OPL.OPFINAL_ESTAGIO_ID = OPFE.ID),0) AS SALDOLOTE');
@@ -345,6 +349,8 @@ begin
                     MULTIPLICACAO.CODIGOOP        := Consulta.FieldByName('ID').AsInteger;
                     MULTIPLICACAO.SEQUENCIA       := Consulta.FieldByName('SEQUENCIA').AsInteger;
                     MULTIPLICACAO.IDESTAGIO       := Consulta.FieldByName('IDESTAGIO').AsInteger;
+                    MULTIPLICACAO.CADESTAGIO      := Consulta.FieldByName('ESTAGIO').AsInteger;
+                    MULTIPLICACAO.CADESPECIE      := Consulta.FieldByName('ESPECIE').AsInteger;
                     MULTIPLICACAO.DATAHORAI       := Now;
                     MULTIPLICACAO.EMANDAMENTO     := True;
                     MULTIPLICACAO.INICIAL         := Consulta.FieldByName('TIPO').AsInteger = 0;
@@ -847,6 +853,8 @@ begin
   MULTIPLICACAO.PREVISTO        := 0;
   MULTIPLICACAO.SALDO           := 0;
   MULTIPLICACAO.SALDOMC         := 0;
+  MULTIPLICACAO.CADESTAGIO      := 0;
+  MULTIPLICACAO.CADESPECIE      := 0;
   MULTIPLICACAO.FIM             := False;
   SetLength(MULTIPLICACAO.INTERVALO, 0);
   SetLength(MULTIPLICACAO.SAIDAS, 0);
@@ -885,7 +893,7 @@ begin
   OPMC:= TORDEMPRODUCAOMC.Create(FWC);
   MC  := TMEIOCULTURA.Create(FWC);
   try
-    IdOPMC := DMUtil.SelecionarOrdemProducaoMeioCultura(0, 0, edOrdemProducaoMC.Text);
+    IdOPMC := DMUtil.SelecionarOrdemProducaoMeioCultura(MULTIPLICACAO.CADESTAGIO, MULTIPLICACAO.CADESPECIE, edOrdemProducaoMC.Text);
     if IdOPMC > 0 then begin
       OPMC.SelectList('ID = '  + IntToStr(IdOPMC));
       if OPMC.Count > 0 then begin
