@@ -1164,12 +1164,17 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
         item
           Expanded = False
           FieldName = 'DESCRICAO'
-          Width = 500
+          Width = 350
           Visible = True
         end
         item
           Expanded = False
           FieldName = 'PHRECOMENDADO'
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'SALDO'
           Visible = True
         end>
     end
@@ -1844,6 +1849,10 @@ object frmSelecionaOPMC: TfrmSelecionaOPMC
     object cds_PesquisaORDEMPRODUCAO: TIntegerField
       DisplayLabel = 'C'#243'd. OP Meio de Cultura'
       FieldName = 'ORDEMPRODUCAO'
+    end
+    object cds_PesquisaSALDO: TFloatField
+      DisplayLabel = 'Saldo'
+      FieldName = 'SALDO'
     end
   end
   object ds_Pesquisa: TDataSource

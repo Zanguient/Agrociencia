@@ -414,16 +414,16 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
         Left = 4
         Top = 4
         Width = 715
-        Height = 117
+        Height = 133
         Align = alTop
         TabOrder = 0
         DesignSize = (
           715
-          117)
+          133)
         object lbEstagio: TLabel
           AlignWithMargins = True
-          Left = 316
-          Top = 76
+          Left = 2
+          Top = 103
           Width = 6
           Height = 23
           Color = clBtnFace
@@ -435,9 +435,17 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           ParentColor = False
           ParentFont = False
         end
+        object lbOPMC: TLabel
+          Left = 316
+          Top = 51
+          Width = 33
+          Height = 13
+          Caption = 'OPMC:'
+          Enabled = False
+        end
         object edNumeroLoteEstagio: TLabeledEdit
           Left = 2
-          Top = 76
+          Top = 67
           Width = 151
           Height = 27
           EditLabel.Width = 30
@@ -461,7 +469,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
         end
         object edCodigoOrdemProducao: TLabeledEdit
           Left = 2
-          Top = 24
+          Top = 18
           Width = 151
           Height = 27
           EditLabel.Width = 142
@@ -483,7 +491,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
         end
         object edNomeProduto: TLabeledEdit
           Left = 159
-          Top = 24
+          Top = 18
           Width = 547
           Height = 27
           Anchors = [akLeft, akTop, akRight]
@@ -507,7 +515,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
         end
         object edEstacaoTrabalho: TLabeledEdit
           Left = 159
-          Top = 76
+          Top = 67
           Width = 151
           Height = 27
           EditLabel.Width = 53
@@ -528,12 +536,47 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           ParentFont = False
           TabOrder = 3
         end
+        object edOrdemProducaoMC: TButtonedEdit
+          AlignWithMargins = True
+          Left = 316
+          Top = 67
+          Width = 56
+          Height = 27
+          Enabled = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          Images = DMUtil.ImageList1
+          ParentFont = False
+          RightButton.ImageIndex = 0
+          RightButton.Visible = True
+          TabOrder = 4
+          OnChange = edOrdemProducaoMCChange
+          OnKeyDown = edOrdemProducaoMCKeyDown
+        end
+        object edDescOPMC: TEdit
+          Left = 378
+          Top = 67
+          Width = 328
+          Height = 27
+          Anchors = [akLeft, akTop, akRight]
+          Enabled = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 5
+        end
       end
       object GridPanel1: TGridPanel
         Left = 1
-        Top = 124
+        Top = 140
         Width = 721
-        Height = 305
+        Height = 289
         Align = alClient
         ColumnCollection = <
           item
@@ -558,19 +601,22 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Value = 100.000000000000000000
           end>
         TabOrder = 1
+        ExplicitTop = 124
+        ExplicitHeight = 305
         object Panel2: TPanel
           Left = 1
           Top = 1
           Width = 359
-          Height = 303
+          Height = 287
           Align = alClient
           TabOrder = 0
+          ExplicitHeight = 303
           object gdCodigoBarras: TDBGrid
             AlignWithMargins = True
             Left = 4
             Top = 78
             Width = 351
-            Height = 169
+            Height = 153
             Align = alClient
             DataSource = ds_Entradas
             DrawingStyle = gdsGradient
@@ -598,11 +644,12 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           object Panel4: TPanel
             AlignWithMargins = True
             Left = 4
-            Top = 253
+            Top = 237
             Width = 351
             Height = 46
             Align = alBottom
             TabOrder = 1
+            ExplicitTop = 253
             DesignSize = (
               351
               46)
@@ -701,17 +748,19 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Left = 360
           Top = 1
           Width = 360
-          Height = 303
+          Height = 287
           Align = alClient
           TabOrder = 1
+          ExplicitHeight = 303
           object Panel5: TPanel
             AlignWithMargins = True
             Left = 4
-            Top = 253
+            Top = 237
             Width = 352
             Height = 46
             Align = alBottom
             TabOrder = 0
+            ExplicitTop = 253
             DesignSize = (
               352
               46)
@@ -816,7 +865,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
     Left = 264
     Top = 208
     Bitmap = {
-      494C010103000800580020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101030008005C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000000000000000DADA

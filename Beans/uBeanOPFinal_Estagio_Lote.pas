@@ -18,6 +18,7 @@ type
     FUSUARIO_ID: TFieldInteger;
     FQUANTIDADE: TFieldInteger;
     FESTACAOTRABALHO: TFieldString;
+    FORDEMPRODUCAOMC_ID: TFieldInteger;
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
     procedure SetID(const Value: TFieldInteger);
@@ -27,6 +28,7 @@ type
     procedure SetUSUARIO_ID(const Value: TFieldInteger);
     procedure SetQUANTIDADE(const Value: TFieldInteger);
     procedure SetESTACAOTRABALHO(const Value: TFieldString);
+    procedure SetORDEMPRODUCAOMC_ID(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
@@ -39,6 +41,7 @@ type
     property OBSERVACAO         : TFieldString read FOBSERVACAO write SetOBSERVACAO;
     property QUANTIDADE         : TFieldInteger read FQUANTIDADE write SetQUANTIDADE;
     property ESTACAOTRABALHO    : TFieldString read FESTACAOTRABALHO write SetESTACAOTRABALHO;
+    property ORDEMPRODUCAOMC_ID : TFieldInteger read FORDEMPRODUCAOMC_ID write SetORDEMPRODUCAOMC_ID;
   end;
 
 implementation
@@ -91,6 +94,12 @@ end;
 procedure TOPFINAL_ESTAGIO_LOTE.SetOPFINAL_ESTAGIO_ID(const Value: TFieldInteger);
 begin
   FOPFINAL_ESTAGIO_ID := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO_LOTE.SetORDEMPRODUCAOMC_ID(
+  const Value: TFieldInteger);
+begin
+  FORDEMPRODUCAOMC_ID := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO_LOTE.SetQUANTIDADE(const Value: TFieldInteger);

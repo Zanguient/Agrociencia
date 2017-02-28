@@ -938,14 +938,16 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           object gbPeriodoEstagio: TGroupBox
             AlignWithMargins = True
             Left = 4
-            Top = 324
+            Top = 260
             Width = 419
-            Height = 193
+            Height = 257
             Align = alClient
-            TabOrder = 5
+            TabOrder = 4
+            ExplicitTop = 324
+            ExplicitHeight = 193
             DesignSize = (
               419
-              193)
+              257)
             object Label2: TLabel
               AlignWithMargins = True
               Left = 3
@@ -1103,60 +1105,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               TabOrder = 0
             end
             object edt_NomeEspecie: TEdit
-              Left = 66
-              Top = 28
-              Width = 345
-              Height = 27
-              Anchors = [akLeft, akTop, akRight]
-              Enabled = False
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 1
-            end
-          end
-          object gbRecipiente: TGroupBox
-            AlignWithMargins = True
-            Left = 4
-            Top = 260
-            Width = 419
-            Height = 58
-            Align = alTop
-            Caption = '  Recipiente  '
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 4
-            DesignSize = (
-              419
-              58)
-            object edt_Recipiente: TButtonedEdit
-              AlignWithMargins = True
-              Left = 3
-              Top = 28
-              Width = 56
-              Height = 27
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              Images = DMUtil.ImageList1
-              ParentFont = False
-              RightButton.ImageIndex = 0
-              RightButton.Visible = True
-              TabOrder = 0
-              OnChange = edt_RecipienteChange
-              OnKeyDown = edt_RecipienteKeyDown
-              OnRightButtonClick = edt_RecipienteRightButtonClick
-            end
-            object edt_NomeRecipiente: TEdit
               Left = 66
               Top = 28
               Width = 345

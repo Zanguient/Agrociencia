@@ -488,3 +488,18 @@ CREATE TABLE opfinal_estagio_lote_s_positivo
 WITH (
   OIDS=FALSE
 );
+
+ALTER TABLE ordemproducaomc
+   ADD COLUMN saldo double precision;
+
+ALTER TABLE opfinal_estagio
+  DROP COLUMN recipiente_id;
+
+ALTER TABLE opfinal_estagio_lote
+   ADD COLUMN ordemproducaomc_id bigint;
+
+ALTER TABLE opfinal_estagio_lote
+  ADD CONSTRAINT fk_opf_e_l_opmc FOREIGN KEY (ordemproducaomc_id) REFERENCES ordemproducaomc (id)
+   ON UPDATE CASCADE ON DELETE RESTRICT;
+CREATE INDEX fki_opf_e_l_opmc
+  ON opfinal_estagio_lote(ordemproducaomc_id);

@@ -84,9 +84,6 @@ type
     cds_FichadeProducaoOBSERVACAO: TStringField;
     cds_FichadeProducaoIDOPF: TIntegerField;
     cds_FichadeProducaoCODIGOBARRAS: TStringField;
-    gbRecipiente: TGroupBox;
-    edt_Recipiente: TButtonedEdit;
-    edt_NomeRecipiente: TEdit;
     pnFotos: TPanel;
     ScrollBox1: TScrollBox;
     cds_FichadeProducaoIDOPFE: TStringField;
@@ -121,10 +118,6 @@ type
       Shift: TShiftState);
     procedure btObservacaoClick(Sender: TObject);
     procedure edIntervaloCrescimentoChange(Sender: TObject);
-    procedure edt_RecipienteRightButtonClick(Sender: TObject);
-    procedure edt_RecipienteChange(Sender: TObject);
-    procedure edt_RecipienteKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure btnImagemWebCamClick(Sender: TObject);
     procedure btnSalvarImagemClick(Sender: TObject);
     procedure btnImagemArquivoClick(Sender: TObject);
@@ -185,7 +178,7 @@ begin
     edDataPrevistaInicio.Clear;
     edDataPrevistaTermino.Clear;
     edObservacao.Clear;
-    edt_Recipiente.Clear;
+//    edt_Recipiente.Clear;
     edQuantidadeEstimada.Clear;
     edIntervaloCrescimento.Clear;
     btGravar.Tag  := 0;
@@ -251,8 +244,6 @@ begin
             edQuantidadeEstimada.Text   := SQL.FieldByName('QUANTIDADEESTIMADA').AsString;
             edDataPrevistaInicio.Date   := SQL.FieldByName('PREVISAOINICIO').AsDateTime;
             edDataPrevistaTermino.Date  := SQL.FieldByName('PREVISAOTERMINO').AsDateTime;
-            edt_Recipiente.Text         := SQL.FieldByName('RECIPIENTE_ID').AsString;
-            edt_NomeRecipiente.Text     := SQL.FieldByName('RECIPIENTE').AsString;
             pnFotos.Visible             := True;
           end;
         end;
@@ -516,12 +507,12 @@ begin
         Exit;
       end;
 
-      if Length(Trim(edt_Recipiente.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'Recipiente não informado, Verifique!');
-        if edt_Recipiente.CanFocus then
-          edt_Recipiente.SetFocus;
-        Exit;
-      end;
+//      if Length(Trim(edt_Recipiente.Text)) = 0 then begin
+//        DisplayMsg(MSG_WAR, 'Recipiente não informado, Verifique!');
+//        if edt_Recipiente.CanFocus then
+//          edt_Recipiente.SetFocus;
+//        Exit;
+//      end;
 //      if Length(Trim(edObservacao.Text)) = 0 then begin
 //        DisplayMsg(MSG_WAR, 'Observação não informada, Verifique!');
 //        if edObservacao.CanFocus then
@@ -547,7 +538,6 @@ begin
       OPFE.QUANTIDADEESTIMADA.Value   := StrToIntDef(edQuantidadeEstimada.Text,0);
       OPFE.PREVISAOINICIO.Value       := edDataPrevistaInicio.Date;
       OPFE.PREVISAOTERMINO.Value      := edDataPrevistaTermino.Date;
-      OPFE.RECIPIENTE_ID.Value        := StrToIntDef(edt_Recipiente.Text, 0);
 
       if ID > 0 then begin
         OPFE.ID.Value          := ID;
@@ -1033,40 +1023,6 @@ begin
     DataInicio                  := StrToDate(edDataPrevistaInicio.Text);
     edDataPrevistaTermino.Date  := edDataPrevistaInicio.Date + StrToIntDef(edIntervaloCrescimento.Text, 0);
   except
-  end;
-end;
-
-procedure TfrmControleEstagioOPF.edt_RecipienteChange(Sender: TObject);
-begin
-  edt_NomeRecipiente.Clear;
-end;
-
-procedure TfrmControleEstagioOPF.edt_RecipienteKeyDown(Sender: TObject;
-  var Key: Word; Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-    edt_RecipienteRightButtonClick(nil);
-end;
-
-procedure TfrmControleEstagioOPF.edt_RecipienteRightButtonClick(
-  Sender: TObject);
-var
-  FWC     : TFWConnection;
-  P       : TPRODUTO;
-  Filtro  : string;
-begin
-
-  FWC := TFWConnection.Create;
-  P   := TPRODUTO.Create(FWC);
-  try
-    Filtro := 'finalidade = ' + IntToStr(Integer(eRecipiente));
-    edt_Recipiente.Text := IntToStr(DMUtil.Selecionar(P, edt_Recipiente.Text, Filtro));
-    P.SelectList('id = ' + edt_Recipiente.Text);
-    if P.Count = 1 then
-      edt_NomeRecipiente.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
-  finally
-    FreeAndNil(P);
-    FreeAndNil(FWC);
   end;
 end;
 

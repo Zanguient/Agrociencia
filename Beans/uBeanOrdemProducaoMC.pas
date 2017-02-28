@@ -26,6 +26,7 @@ type
     FID_ESTERILIZACAO: TFieldInteger;
     FOBSERVACAO: TFieldString;
     FOBSERVACAOENCERRAMENTO: TFieldString;
+    FSALDO: TFieldFloat;
     procedure SetDATAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAINICIO(const Value: TFieldDate);
@@ -44,6 +45,7 @@ type
     procedure SetID_ESTERILIZACAO(const Value: TFieldInteger);
     procedure SetOBSERVACAO(const Value: TFieldString);
     procedure SetOBSERVACAOENCERRAMENTO(const Value: TFieldString);
+    procedure SetSALDO(const Value: TFieldFloat);
   protected
     procedure InitInstance; override;
   published
@@ -65,6 +67,7 @@ type
     property ID_ESTERILIZACAO : TFieldInteger read FID_ESTERILIZACAO write SetID_ESTERILIZACAO;
     property OBSERVACAO : TFieldString read FOBSERVACAO write SetOBSERVACAO;
     property OBSERVACAOENCERRAMENTO : TFieldString read FOBSERVACAOENCERRAMENTO write SetOBSERVACAOENCERRAMENTO;
+    property SALDO : TFieldFloat read FSALDO write SetSALDO;
   end;
 implementation
 
@@ -171,6 +174,11 @@ end;
 procedure TORDEMPRODUCAOMC.SetQUANTRECIPIENTES(const Value: TFieldInteger);
 begin
   FQUANTRECIPIENTES := Value;
+end;
+
+procedure TORDEMPRODUCAOMC.SetSALDO(const Value: TFieldFloat);
+begin
+  FSALDO := Value;
 end;
 
 end.

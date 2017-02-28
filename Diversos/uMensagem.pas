@@ -32,6 +32,7 @@ type
     lbMsg: TLabel;
     edEdit: TEdit;
     btTeclado: TSpeedButton;
+    edUsuario: TEdit;
     procedure lbDetalhesClick(Sender: TObject);
     procedure btSimClick(Sender: TObject);
     procedure btNaoClick(Sender: TObject);
@@ -56,12 +57,13 @@ var
   ResultMsgInputText  : String;
   ResultMsgInputInt   : Integer;
   ResultMsgInputCurr  : Currency;
+  ResultMsgPassword   : Integer;
 
 implementation
 
 {$R *.dfm}
 
-uses uFuncoes, uConstantes;
+uses uFuncoes, uConstantes, uBeanUsuario, uFWConnection;
 
 function DisplayMsg(const MsgTypeNo: eMSG; MsgText: String; Titulo: String = ''; MsgExtendida: String = ''; InputDefault : String = ''): TForm;
 
@@ -86,6 +88,7 @@ begin
     frmMensagem.edEdit.Visible            := (MsgTypeNo in [MSG_PASSWORD, MSG_INPUT_TEXT, MSG_INPUT_INT, MSG_INPUT_CURR]);
     frmMensagem.btTeclado.Visible         := (MsgTypeNo in [MSG_PASSWORD, MSG_INPUT_TEXT, MSG_INPUT_INT, MSG_INPUT_CURR]);
     frmMensagem.lbMsg.Caption             := MsgText;
+    frmMensagem.edUsuario.Visible         := MsgTypeNo = MSG_PASSWORD;
     frmMensagem.mmMsgExtendida.Text       := MsgExtendida;
 
     case MsgTypeNo of
@@ -221,6 +224,9 @@ begin
 end;
 
 procedure TfrmMensagem.btNaoClick(Sender: TObject);
+var
+  FWC  : TFWConnection;
+  USER : TUSUARIO;
 begin
   case iMsgTypeNo of
     MSG_INPUT_TEXT  : begin
@@ -255,6 +261,34 @@ begin
                           end;
                         end;
                       end;
+    MSG_PASSWORD    : begin
+                        FWC  := TFWConnection.Create;
+                        USER := TUSUARIO.Create(FWC);
+                        try
+                          if (edUsuario.Text = EmptyStr) or (edEdit.Text = EmptyStr) then begin
+                            ResultMsgModal    := mrNone;
+                            ModalResult       := mrNone;
+                            lbMsg.Caption     := 'Preencha os campos usuário e senha!';
+                            lbMsg.Font.Color  := clRed;
+                            Exit;
+                          end;
+
+                          USER.SelectList('EMAIL = ' + QuotedStr(edUsuario.Text) + ' AND SENHA = ' + QuotedStr(Criptografa(edEdit.Text, 'E')));
+                          if USER.Count = 0 then begin
+                            ResultMsgModal    := mrNone;
+                            ModalResult       := mrNone;
+                            lbMsg.Caption     := 'Usuário e/ou senha incorretos!';
+                            lbMsg.Font.Color  := clRed;
+                            Exit;
+                          end;
+                          ResultMsgPassword := TUSUARIO(USER.Itens[0]).ID.Value;
+                          ResultMsgModal    := mrOk;
+                          ModalResult       := mrOk;
+                        finally
+                          FreeAndNil(USER);
+                          FreeAndNil(FWC);
+                        end;
+                      end
     else begin
       ResultMsgModal  := mrNo;
       Close;

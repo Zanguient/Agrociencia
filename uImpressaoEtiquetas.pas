@@ -68,7 +68,7 @@ uses
   uBeanOPFinal_Estagio_Lote,
   uBeanOPFinal_Estagio_Lote_S,
   uConstantes,
-  uDMUtil;
+  uDMUtil, uBeanUsuario;
 {$R *.dfm}
 
 procedure TfrmImpressaoEtiquetas.btEtiquetasClick(Sender: TObject);
@@ -85,7 +85,32 @@ procedure TfrmImpressaoEtiquetas.btnAdicionarClick(Sender: TObject);
 var
   FWC : TFWConnection;
   LS  : TOPFINAL_ESTAGIO_LOTE_S;
+  USU : TUSUARIO;
 begin
+  if not (USUARIO.PERMITEINCLUIRETIQUETAS) then begin
+    DisplayMsg(MSG_PASSWORD, 'Digite o usuário e senha de alguem que tenha permissão por favor!');
+    if not (ResultMsgModal in [mrOk, mrYes]) then Exit;
+    FWC := TFWConnection.Create;
+    USU := TUSUARIO.Create(FWC);
+    try
+      USU.SelectList('ID = ' + IntToStr(ResultMsgPassword));
+      if USU.Count > 0 then begin
+        if not (TUSUARIO(USU.Itens[0]).PERMITEITENSETIQUETA.Value) then begin
+          DisplayMsg(MSG_WAR, 'Usuário informado não tem permissão para a operação atual!');
+          Exit;
+        end;
+      end
+      else begin
+        DisplayMsg(MSG_WAR, 'Usuário não encontrado!');
+        Exit;
+      end;
+
+    finally
+      FreeAndNil(USU);
+      FreeAndNil(FWC);
+    end;
+
+  end;
   FWC := TFWConnection.Create;
   LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
   try
@@ -116,7 +141,32 @@ procedure TfrmImpressaoEtiquetas.btnExcluirClick(Sender: TObject);
 var
   FWC : TFWConnection;
   LS  : TOPFINAL_ESTAGIO_LOTE_S;
+  USU : TUSUARIO;
 begin
+  if not (USUARIO.PERMITEINCLUIRETIQUETAS) then begin
+    DisplayMsg(MSG_PASSWORD, 'Digite o usuário e senha de alguem que tenha permissão por favor!');
+    if not (ResultMsgModal in [mrOk, mrYes]) then Exit;
+    FWC := TFWConnection.Create;
+    USU := TUSUARIO.Create(FWC);
+    try
+      USU.SelectList('ID = ' + IntToStr(ResultMsgPassword));
+      if USU.Count > 0 then begin
+        if not (TUSUARIO(USU.Itens[0]).PERMITEITENSETIQUETA.Value) then begin
+          DisplayMsg(MSG_WAR, 'Usuário informado não tem permissão para a operação atual!');
+          Exit;
+        end;
+      end
+      else begin
+        DisplayMsg(MSG_WAR, 'Usuário não encontrado!');
+        Exit;
+      end;
+
+    finally
+      FreeAndNil(USU);
+      FreeAndNil(FWC);
+    end;
+  end;
+
   FWC := TFWConnection.Create;
   LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
   try
@@ -291,10 +341,8 @@ begin
       end;
 
       edNumeroLoteEstagio.Enabled   := cds_Itens.RecordCount = 0;
-      if USUARIO.PERMITEINCLUIRETIQUETAS then begin
-        btnAdicionar.Visible          := not edNumeroLoteEstagio.Enabled;
-        btnExcluir.Visible            := btnAdicionar.Visible;
-      end;
+      btnAdicionar.Visible          := not edNumeroLoteEstagio.Enabled;
+      btnExcluir.Visible            := btnAdicionar.Visible;
     end;
   end;
 end;
@@ -332,6 +380,8 @@ begin
   edNomeProduto.Clear;
   cds_Itens.EmptyDataSet;
   edt_Quantidade.Text := IntToStr(cds_Itens.RecordCount);
+  btnAdicionar.Visible := False;
+  btnExcluir.Visible := False;
 end;
 
 end.

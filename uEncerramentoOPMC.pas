@@ -216,6 +216,7 @@ begin
       OPMC.MLRECIPIENTE.Value           := edt_MLPorRecipiente.Value;
       OPMC.QUANTRECIPIENTES.Value       := edt_QuantidadeRecipiente.Value;
       OPMC.OBSERVACAOENCERRAMENTO.Value := edt_Observacao.Text;
+      OPMC.SALDO.Value                  := edt_QuantidadeRecipiente.Value;
 
       OPMC.Update;
 
