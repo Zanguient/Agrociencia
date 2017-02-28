@@ -190,6 +190,7 @@ begin
     edIntervaloCrescimento.Clear;
     btGravar.Tag  := 0;
     pnFotos.Visible := False;
+    LimpaImagens;
 
     Result := True;
   end else begin
@@ -404,23 +405,9 @@ var
   NomeArquivo : string;
   FWC : TFWConnection;
   SQL : TFDQuery;
+  IMG : TIMAGENS;
+  Achou: Boolean;
 begin
-  try
-    for I := 0 to Pred(ScrollBox1.ControlCount) do begin
-      if Assigned(ScrollBox1.Controls[I]) then begin
-        if ScrollBox1.Controls[I] is TImage then begin
-          ScrollBox1.Controls[I].Visible := False;
-          TImage(ScrollBox1.Controls[I]).Picture.Assign(nil);
-          TImage(ScrollBox1.Controls[I]).Repaint;
-
-          TImage(ScrollBox1.Controls[I]).Destroy
-        end;
-      end;
-    end;
-  except
-
-  end;
-
   ScrollBox1.HorzScrollBar.Position:=0;
   Diretorio := CONFIG_LOCAL.DirImagens; //aqui é o caminho da pasta
   espaco := 10;
@@ -437,26 +424,41 @@ begin
     SQL.ParamByName('IDESTAGIO').AsInteger := btGravar.Tag;
     SQL.Open();
 
+    LimpaImagens;
+
     SQL.First;
     while not SQL.Eof do begin
       NomeArquivo := Diretorio + SQL.FieldByName('NOMEIMAGEM').asString;
       if FileExists(NomeArquivo) then begin
-        Imagem := TImage.Create(Self);
-        Imagem.Parent := ScrollBox1;
-        Imagem.Width := 50;
-        Imagem.Height := 50;
-        Imagem.Top := 10;
-        Imagem.Stretch := true;
-        Imagem.Left := espaco;
-        Imagem.OnDblClick := Deletar;
-        Imagem.Tag := SQL.FieldByName('ID').AsInteger;
-        Imagem.Picture.LoadFromFile(NomeArquivo);
-        espaco := espaco + Imagem.Height + 10;
+        Achou := False;
+        for IMG in IMAGENS do begin
+          if IMG.ID = SQL.Fields[0].AsInteger then begin
+            Achou := True;
+            Break;
+          end;
+        end;
+        if not Achou then begin
+          SetLength(IMAGENS, Length(IMAGENS) + 1);
+
+          IMAGENS[High(IMAGENS)].ID          := SQL.Fields[0].AsInteger;
+          IMAGENS[High(IMAGENS)].NomeImagem  := SQL.Fields[1].AsString;
+          IMAGENS[High(IMAGENS)].Imagem      := TImage.Create(Self);
+          IMAGENS[High(IMAGENS)].Imagem.Parent := ScrollBox1;
+          IMAGENS[High(IMAGENS)].Imagem.Width := 50;
+          IMAGENS[High(IMAGENS)].Imagem.Height := 50;
+          IMAGENS[High(IMAGENS)].Imagem.Top := 10;
+          IMAGENS[High(IMAGENS)].Imagem.Stretch := true;
+          IMAGENS[High(IMAGENS)].Imagem.Left := espaco;
+          IMAGENS[High(IMAGENS)].Imagem.OnDblClick := Deletar;
+          IMAGENS[High(IMAGENS)].Imagem.Tag := SQL.FieldByName('ID').AsInteger;
+          IMAGENS[High(IMAGENS)].Imagem.Picture.LoadFromFile(NomeArquivo);
+          espaco := espaco + IMAGENS[High(IMAGENS)].Imagem.Height + 10;
+        end;
       end else
         DisplayMsg(MSG_INF, 'Imagem não encontrada!', '', NomeArquivo);
       SQL.Next;
     end;
-    ScrollBox1.Repaint;
+    ScrollBox1.Refresh;
   finally
     FreeAndNil(SQL);
     FreeAndNil(FWC);

@@ -1384,7 +1384,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
                 Caption = 'Buscar WebCam'
                 TabOrder = 0
                 OnClick = btnImagemWebCamClick
-                ExplicitLeft = 2
               end
               object btnSalvarImagem: TBitBtn
                 AlignWithMargins = True
@@ -2137,6 +2136,14 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
     end
   end
   object OpenPictureDialog1: TOpenPictureDialog
+    Filter = 
+      'All (*.gif;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.ico;*.emf;*.w' +
+      'mf)|*.gif;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.ico;*.emf;*.wm' +
+      'f|GIF Image (*.gif)|*.gif|JPEG Image File (*.jpg)|*.jpg|JPEG Ima' +
+      'ge File (*.jpeg)|*.jpeg|Portable Network Graphics (*.png)|*.png|' +
+      'Bitmaps (*.bmp)|*.bmp|TIFF Images (*.tif)|*.tif|TIFF Images (*.t' +
+      'iff)|*.tiff|Icons (*.ico)|*.ico|Enhanced Metafiles (*.emf)|*.emf' +
+      '|Metafiles (*.wmf)|*.wmf'
     Left = 663
     Top = 330
   end

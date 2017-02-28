@@ -2,6 +2,9 @@ unit uConstantes;
 
 interface
 
+uses
+  Vcl.ExtCtrls;
+
 type
   TTipoPrecificacao = (eNenhum, eMargem, ePrecoEspecial);
   TFinalidadeProduto = (eTodos, eProdutoFinal, eMateriaPrima, eMeioCultura, eRecipiente);
@@ -45,6 +48,12 @@ type
     Descricao : String;
   end;
 
+  TIMAGENS = record
+    ID : Integer;
+    NomeImagem : string;
+    Imagem : TImage;
+  end;
+
   TPRECOS = record
     ID_PRODUTO : integer;
     SKU : String;
@@ -75,6 +84,7 @@ Var
   CONFIG_LOCAL    : TCONFIGURACOESLOCAIS;
   MENUS           : array of TMENU;
   CLASSIFICACAO   : array of TCLASSIFICACAO;
+  IMAGENS         : array of TIMAGENS;
   DESIGNREL       : Boolean;
   DirArqConf      : String;
   DirInstall      : String;

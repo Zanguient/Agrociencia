@@ -20,6 +20,7 @@ uses
   FireDAC.Comp.Client, Vcl.ExtCtrls, Vcl.Imaging.jpeg, frxDBSet;
 
   procedure CarregarConfigLocal;
+  procedure LimpaImagens;
   procedure CarregaArrayMenus(Menu : TMainMenu);
   procedure DefinePermissaoMenu(Menu : TMainMenu);
   procedure CarregarConexaoBD;
@@ -55,6 +56,18 @@ Uses
   uDomains,
   uMensagem, uDMUtil;
 
+procedure LimpaImagens;
+var
+  IMAGEM : Integer;
+begin
+  for IMAGEM := Low(IMAGENS) to High(IMAGENS) do begin
+    IMAGENS[IMAGEM].Imagem.Picture.Assign(nil);
+    IMAGENS[IMAGEM].Imagem.Destroy;
+    IMAGENS[IMAGEM].ID := 0;
+    IMAGENS[IMAGEM].NomeImagem := '';
+  end;
+  SetLength(IMAGENS, 0);
+end;
 procedure CarregarConfigLocal;
 Var
   ArqINI : TIniFile;
