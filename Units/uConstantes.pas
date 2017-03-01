@@ -8,6 +8,7 @@ uses
 type
   TTipoPrecificacao = (eNenhum, eMargem, ePrecoEspecial);
   TFinalidadeProduto = (eTodos, eProdutoFinal, eMateriaPrima, eMeioCultura, eRecipiente);
+  TAcaoCadastro = (eNada, eNovo, eAlterar);
 
 type
   TDADOSLOGIN = record
@@ -71,6 +72,12 @@ type
     PERCENTUAL_VPC : Currency;
     PERCENTUAL_FRETE : Currency;
     PERCENTUAL_OUTROS : Currency;
+  end;
+
+type
+  TPARAMETROS = Record
+    Codigo : Integer;
+    Acao : TAcaoCadastro;
   end;
 
 Const

@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
   JvToolEdit, JvBaseEdits, FireDAC.Comp.Client, System.Math, Vcl.Imaging.jpeg,
-  Vcl.FileCtrl, Vcl.ExtDlgs;
+  Vcl.FileCtrl, Vcl.ExtDlgs, uConstantes;
 
 type
   TfrmControleEstagioOPF = class(TForm)
@@ -121,13 +121,19 @@ type
     procedure btnImagemWebCamClick(Sender: TObject);
     procedure btnSalvarImagemClick(Sender: TObject);
     procedure btnImagemArquivoClick(Sender: TObject);
+    procedure edDataPrevistaInicioChange(Sender: TObject);
   private
     procedure SelecionarObservacao;
     procedure Deletar(Sender: TObject);
+    procedure CalculaDataPrevistaTermino;
+    procedure BuscaOPF;
     { Private declarations }
   public
     NomeImagemAtual : string;
+    Parametros : TPARAMETROS;
     function AtualizarEdits(Limpar : Boolean) : Boolean;
+    function Alterar : Boolean;
+    function Inserir : Boolean;
     procedure CarregaDados;
     procedure InvertePaineis;
     procedure Cancelar;
@@ -142,7 +148,6 @@ implementation
 
 uses
   uDomains,
-  uConstantes,
   uFWConnection,
   uMensagem,
   uFuncoes,
@@ -158,6 +163,53 @@ uses
   uBeanOpFinal_Estagio_Imagens;
 
 {$R *.dfm}
+
+function TfrmControleEstagioOPF.Alterar: Boolean;
+Var
+  FWC     : TFWConnection;
+  OPFE    : TOPFINAL_ESTAGIO;
+  Alterar : Boolean;
+begin
+
+  Result  := False;
+  Alterar := False;
+
+  if not cds_Pesquisa.IsEmpty then begin
+
+    FWC   := TFWConnection.Create;
+    OPFE  := TOPFINAL_ESTAGIO.Create(FWC);
+    try
+      try
+
+        OPFE.SelectList('ID = ' + cds_PesquisaID.AsString);
+        if OPFE.Count = 1 then begin
+
+          if ((not TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAFIM.isNull) and (TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAINICIO.Value < TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAFIM.Value)) then begin
+            DisplayMsg(MSG_WAR, 'Estágio Encerrado, Portanto não pode ser Alterado!');
+            Exit;
+          end;
+
+          Alterar := True;
+        end;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_ERR, 'Erro ao Verificar Estágio da Ordem de Produção, Verifique!', '', E.Message);
+        end;
+      end;
+    finally
+      FreeAndNil(OPFE);
+      FreeAndNil(FWC);
+    end;
+
+    if Alterar then begin
+      if AtualizarEdits(False) then begin//Se Conseguiu Carregar os Dados Inverte os Painéis
+        InvertePaineis;
+        Result := True;
+      end;
+    end;
+  end;
+end;
 
 function TfrmControleEstagioOPF.AtualizarEdits(Limpar: Boolean) : Boolean;
 Var
@@ -178,12 +230,19 @@ begin
     edDataPrevistaInicio.Clear;
     edDataPrevistaTermino.Clear;
     edObservacao.Clear;
-//    edt_Recipiente.Clear;
     edQuantidadeEstimada.Clear;
     edIntervaloCrescimento.Clear;
     btGravar.Tag  := 0;
     pnFotos.Visible := False;
     LimpaImagens;
+
+    if Parametros.Acao = eNovo then begin //Caso for Chamada de outra tela carregar com o Cadastro do Planta
+      if Parametros.Codigo > 0 then begin
+        edCodigoOPF.Text := IntToStr(Parametros.Codigo);
+        BuscaOPF;
+        edCodigoOPF.Enabled := Length(Trim(edDescOPF.Text)) = 0;
+      end;
+    end;
 
     Result := True;
   end else begin
@@ -211,16 +270,13 @@ begin
         SQL.SQL.Add('	OPFE.OBSERVACAO,');
         SQL.SQL.Add('	OPFE.QUANTIDADEESTIMADA,');
         SQL.SQL.Add('	OPFE.PREVISAOINICIO,');
-        SQL.SQL.Add('	OPFE.PREVISAOTERMINO,');
-        SQL.SQL.Add('	OPFE.RECIPIENTE_ID,');
-        SQL.SQL.Add('	PP.DESCRICAO AS RECIPIENTE');
+        SQL.SQL.Add('	OPFE.PREVISAOTERMINO');
         SQL.SQL.Add('FROM OPFINAL_ESTAGIO OPFE');
         SQL.SQL.Add('INNER JOIN OPFINAL OPF ON (OPF.ID = OPFE.OPFINAL_ID)');
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
         SQL.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
         SQL.SQL.Add('INNER JOIN PRODUTO PR ON (PR.ID = OPF.PRODUTO_ID)');
         SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPFE.MEIOCULTURA_ID)');
-        SQL.SQL.Add('INNER JOIN PRODUTO PP ON (PP.ID = OPFE.RECIPIENTE_ID)');
         SQL.SQL.Add('WHERE 1 = 1');
         SQL.SQL.Add('AND OPFE.ID = :IDOPFE');
         SQL.Connection                      := FWC.FDConnection;
@@ -266,15 +322,7 @@ end;
 
 procedure TfrmControleEstagioOPF.btAlterarClick(Sender: TObject);
 begin
-  if not cds_Pesquisa.IsEmpty then begin
-    if ((cds_PesquisaDATAFINAL.IsNull) or (cds_PesquisaDATAINICIO.AsDateTime < cds_PesquisaDATAFINAL.AsDateTime)) then begin
-      if AtualizarEdits(False) then
-        InvertePaineis;
-    end else begin
-      DisplayMsg(MSG_WAR, 'Estágio Encerrado, Portanto não pode ser Alterado!');
-      Exit;
-    end;
-  end;
+  Alterar;
 end;
 
 procedure TfrmControleEstagioOPF.btCancelarClick(Sender: TObject);
@@ -294,6 +342,52 @@ begin
         btRelatorio.Tag := 0;
       end;
     end;
+  end;
+end;
+
+procedure TfrmControleEstagioOPF.BuscaOPF;
+var
+  FWC     : TFWConnection;
+  OPF     : TOPFINAL;
+  SQL     : TFDQuery;
+  Filtro  : string;
+begin
+
+  FWC := TFWConnection.Create;
+  OPF := TOPFINAL.Create(FWC);
+  SQL := TFDQuery.Create(nil);
+
+  try
+
+    Filtro := 'DATAENCERRAMENTO IS NULL AND CANCELADO = False';
+
+    SQL.Close;
+    SQL.SQL.Clear;
+    SQL.SQL.Add('SELECT');
+    SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
+    SQL.SQL.Add('	P.ID,');
+    SQL.SQL.Add(' P.DESCRICAO');
+    SQL.SQL.Add('FROM OPFINAL OPF');
+    SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+    SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+    SQL.SQL.Add('WHERE 1 = 1');
+    SQL.SQL.Add('AND OPF.ID = :IDOPF');
+    SQL.Connection  := FWC.FDConnection;
+    SQL.ParamByName('IDOPF').DataType   := ftInteger;
+    SQL.ParamByName('IDOPF').AsInteger  := StrToIntDef(edCodigoOPF.Text, -1);
+    SQL.Prepare;
+    SQL.Open;
+
+    if not SQL.IsEmpty then begin
+      edDescOPF.Text         := SQL.Fields[0].AsString;
+      edt_CodigoEspecie.Text := SQL.Fields[1].AsString;
+      edt_NomeEspecie.Text   := SQL.Fields[2].AsString;
+    end;
+
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(OPF);
+    FreeAndNil(FWC);
   end;
 end;
 
@@ -388,10 +482,13 @@ Var
   FWC   : TFWConnection;
   OPFE  : TOPFINAL_ESTAGIO;
   ID    : Integer;
+  FecharTela : Boolean;
 begin
 
   FWC   := TFWConnection.Create;
   OPFE  := TOPFINAL_ESTAGIO.Create(FWC);
+
+  FecharTela := False;
 
   try
     try
@@ -470,9 +567,11 @@ begin
 
       FWC.Commit;
 
-      InvertePaineis;
-
-      CarregaDados;
+      if Parametros.Codigo = 0 then begin
+        InvertePaineis;
+        CarregaDados;
+      end else
+        FecharTela := True;
 
     Except
       on E : Exception do begin
@@ -484,6 +583,9 @@ begin
     FreeAndNil(OPFE);
     FreeAndNil(FWC);
   end;
+
+  if FecharTela then
+    Close;
 end;
 
 procedure TfrmControleEstagioOPF.btnImagemArquivoClick(Sender: TObject);
@@ -564,8 +666,7 @@ end;
 
 procedure TfrmControleEstagioOPF.btNovoClick(Sender: TObject);
 begin
-  if AtualizarEdits(True) then
-    InvertePaineis;
+  Inserir;
 end;
 
 procedure TfrmControleEstagioOPF.btnSalvarImagemClick(Sender: TObject);
@@ -625,10 +726,24 @@ begin
   end;
 end;
 
+procedure TfrmControleEstagioOPF.CalculaDataPrevistaTermino;
+begin
+  if Length(SoNumeros(edDataPrevistaInicio.Text)) = 8 then begin
+    if StrToIntDef(edIntervaloCrescimento.Text,0) > 0 then
+      edDataPrevistaTermino.Date := edDataPrevistaInicio.Date + StrToIntDef(edIntervaloCrescimento.Text,0)
+    else
+      edDataPrevistaTermino.Date := edDataPrevistaInicio.Date;
+  end;
+end;
+
 procedure TfrmControleEstagioOPF.Cancelar;
 begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
+
+  if Parametros.Codigo > 0 then //Se Foi Chamada de outra Tela Fecha.
+    Close;
+
   InvertePaineis;
 end;
 
@@ -670,6 +785,14 @@ begin
       SQL.SQL.Add('AND OPF.CANCELADO = False');
       SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
       SQL.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
+      case Parametros.Acao of
+        eNovo : SQL.SQL.Add('AND 1 = 2'); //Não Precisa trazer nada na tela
+        eAlterar : begin
+          if Parametros.Codigo > 0 then //Parametro quando tela Chamada de outro Cadastro
+            SQL.SQL.Add('AND OPFE.ID = ' + IntToStr(Parametros.Codigo));
+        end;
+      end;
+
       SQL.SQL.Add('ORDER BY OPF.ID, OPFE.SEQUENCIA');
       SQL.Connection  := FWC.FDConnection;
       SQL.Prepare;
@@ -828,50 +951,9 @@ begin
 end;
 
 procedure TfrmControleEstagioOPF.edCodigoOPFRightButtonClick(Sender: TObject);
-var
-  FWC     : TFWConnection;
-  OPF     : TOPFINAL;
-  SQL     : TFDQuery;
-  Filtro  : string;
 begin
-
-  FWC := TFWConnection.Create;
-  OPF := TOPFINAL.Create(FWC);
-  SQL := TFDQuery.Create(nil);
-
-  try
-
-    Filtro := 'DATAENCERRAMENTO IS NULL AND CANCELADO = False';
-    edCodigoOPF.Text := IntToStr(DMUtil.SelecionarCadastroPlantas(edCodigoOPF.Text));
-
-    SQL.Close;
-    SQL.SQL.Clear;
-    SQL.SQL.Add('SELECT');
-    SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
-    SQL.SQL.Add('	P.ID,');
-    SQL.SQL.Add(' P.DESCRICAO');
-    SQL.SQL.Add('FROM OPFINAL OPF');
-    SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
-    SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
-    SQL.SQL.Add('WHERE 1 = 1');
-    SQL.SQL.Add('AND OPF.ID = :IDOPF');
-    SQL.Connection  := FWC.FDConnection;
-    SQL.ParamByName('IDOPF').DataType   := ftInteger;
-    SQL.ParamByName('IDOPF').AsInteger  := StrToIntDef(edCodigoOPF.Text, -1);
-    SQL.Prepare;
-    SQL.Open;
-
-    if not SQL.IsEmpty then begin
-      edDescOPF.Text         := SQL.Fields[0].AsString;
-      edt_CodigoEspecie.Text := SQL.Fields[1].AsString;
-      edt_NomeEspecie.Text   := SQL.Fields[2].AsString;
-    end;
-
-  finally
-    FreeAndNil(SQL);
-    FreeAndNil(OPF);
-    FreeAndNil(FWC);
-  end;
+  edCodigoOPF.Text := IntToStr(DMUtil.SelecionarCadastroPlantas(edCodigoOPF.Text));
+  BuscaOPF;
 end;
 
 procedure TfrmControleEstagioOPF.edCodigoOPMCChange(Sender: TObject);
@@ -925,15 +1007,14 @@ begin
   end;
 end;
 
-procedure TfrmControleEstagioOPF.edIntervaloCrescimentoChange(Sender: TObject);
-Var
-  DataInicio : TDate;
+procedure TfrmControleEstagioOPF.edDataPrevistaInicioChange(Sender: TObject);
 begin
-  try
-    DataInicio                  := StrToDate(edDataPrevistaInicio.Text);
-    edDataPrevistaTermino.Date  := edDataPrevistaInicio.Date + StrToIntDef(edIntervaloCrescimento.Text, 0);
-  except
-  end;
+  CalculaDataPrevistaTermino;
+end;
+
+procedure TfrmControleEstagioOPF.edIntervaloCrescimentoChange(Sender: TObject);
+begin
+  CalculaDataPrevistaTermino;
 end;
 
 procedure TfrmControleEstagioOPF.Filtrar;
@@ -944,7 +1025,12 @@ end;
 
 procedure TfrmControleEstagioOPF.FormCreate(Sender: TObject);
 begin
+  Parametros.Codigo := 0;
+  Parametros.Acao   := eNada;
+  SetLength(IMAGENS, 0);
   AjustaForm(Self);
+  cds_Pesquisa.CreateDataSet;
+  cds_FichadeProducao.CreateDataSet;
 end;
 
 procedure TfrmControleEstagioOPF.FormKeyDown(Sender: TObject; var Key: Word;
@@ -986,15 +1072,48 @@ end;
 
 procedure TfrmControleEstagioOPF.FormShow(Sender: TObject);
 begin
-  cds_Pesquisa.CreateDataSet;
-  cds_FichadeProducao.CreateDataSet;
   CarregaDados;
   AutoSizeDBGrid(gdPesquisa);
+  case Parametros.Acao of
+    eNovo   : begin
+      if not Inserir then
+        PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end;
+    eAlterar: begin
+      if Parametros.Codigo > 0 then begin
+        if Parametros.Codigo = cds_PesquisaID.AsInteger then begin
+          if not Alterar then
+            PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+        end else
+          PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+      end else
+        PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end;
+  end;
 end;
 
 procedure TfrmControleEstagioOPF.gdPesquisaTitleClick(Column: TColumn);
 begin
   OrdenarGrid(Column);
+end;
+
+function TfrmControleEstagioOPF.Inserir: Boolean;
+begin
+
+  Result := False;
+
+  try
+
+    if AtualizarEdits(True) then begin
+      InvertePaineis;
+      Result := True;
+    end;
+
+  except
+    on E : Exception do begin
+      DisplayMsg(MSG_ERR, 'Erro ao Iniciar Inserção', '', E.Message);
+    end;
+  end;
 end;
 
 procedure TfrmControleEstagioOPF.InvertePaineis;
@@ -1004,8 +1123,13 @@ begin
   pnEdicao.Visible              := not pnEdicao.Visible;
   pnBotoesEdicao.Visible        := pnEdicao.Visible;
   if pnEdicao.Visible then begin
+    if not edCodigoOPF.Enabled then begin
+      if edCodigoEstagio.CanFocus then
+        edCodigoEstagio.SetFocus;
+    end else begin
     if edCodigoOPF.CanFocus then
       edCodigoOPF.SetFocus;
+    end;
   end;
 end;
 

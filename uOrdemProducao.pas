@@ -198,7 +198,6 @@ begin
           DisplayMsg(MSG_ERR, 'Erro ao Verificar Ordem de Produção, Verifique!', '', E.Message);
         end;
       end;
-
     finally
       FreeAndNil(OPF);
       FreeAndNil(FWC);

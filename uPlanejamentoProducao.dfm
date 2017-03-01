@@ -490,6 +490,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Width = 882
           Height = 220
           Align = alClient
+          Color = clMoneyGreen
           DataSource = DS_NOVAOP
           DrawingStyle = gdsGradient
           Font.Charset = DEFAULT_CHARSET
@@ -505,6 +506,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           TitleFont.Height = -16
           TitleFont.Name = 'Tahoma'
           TitleFont.Style = []
+          OnCellClick = gdGerarOPCellClick
           OnDrawColumnCell = gdGerarOPDrawColumnCell
           Columns = <
             item
@@ -593,6 +595,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Width = 882
           Height = 220
           Align = alClient
+          Color = clMoneyGreen
           DataSource = DS_OPGERADA
           DrawingStyle = gdsGradient
           Font.Charset = DEFAULT_CHARSET
@@ -743,6 +746,9 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       DisplayLabel = 'C'#243'digo OP'
       DisplayWidth = 70
       FieldName = 'ID'
+    end
+    object CDS_NOVAOPIDOPF: TIntegerField
+      FieldName = 'IDOPF'
     end
     object CDS_NOVAOPDATA: TDateField
       DisplayLabel = 'Data (Final)'

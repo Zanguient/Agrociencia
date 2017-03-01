@@ -67,6 +67,7 @@ type
     CDS_OPGERADACODIGOMC: TStringField;
     CDS_OPGERADAABRIROP: TIntegerField;
     CDS_OPGERADAIMPRIMIROP: TIntegerField;
+    CDS_NOVAOPIDOPF: TIntegerField;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -85,6 +86,7 @@ type
     procedure gdOPGeradaDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure gdOPGeradaCellClick(Column: TColumn);
+    procedure gdGerarOPCellClick(Column: TColumn);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -164,6 +166,7 @@ begin
       Consulta.SQL.Clear;
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPFE.ID,');
+      Consulta.SQL.Add('	OPF.ID AS IDOPF,');
       Consulta.SQL.Add('	OPFE.PREVISAOTERMINO AS DATA,');
       Consulta.SQL.Add('	P.DESCRICAO AS ESPECIE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOATUAL,');
@@ -194,6 +197,7 @@ begin
         while not Consulta.Eof do begin
           CDS_NOVAOP.Append;
           CDS_NOVAOPID.Value            := Consulta.FieldByName('ID').AsInteger;
+          CDS_NOVAOPIDOPF.Value         := Consulta.FieldByName('IDOPF').AsInteger;
           CDS_NOVAOPDATA.Value          := Consulta.FieldByName('DATA').AsDateTime;
           CDS_NOVAOPESPECIE.Value       := Consulta.FieldByName('ESPECIE').AsString;
           CDS_NOVAOPESTAGIOATUAL.Value  := Consulta.FieldByName('ESTAGIOATUAL').AsString;
@@ -465,8 +469,13 @@ end;
 procedure TfrmPlanejamentoProducao.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
-    Close;
+  case Key of
+    VK_ESCAPE : Close;
+    VK_RETURN : begin
+      if edDataInicial.Focused or edDataFinal.Focused then
+        ConsultaDados;
+    end;
+  end;
 end;
 
 procedure TfrmPlanejamentoProducao.FormShow(Sender: TObject);
@@ -475,6 +484,37 @@ begin
   edDataFinal.Date    := Date + 7;
   ConsultaDados;
   AjustaGrid;
+end;
+
+procedure TfrmPlanejamentoProducao.gdGerarOPCellClick(Column: TColumn);
+begin
+  if gdGerarOP.SelectedField.FieldName = 'ABRIROP' then begin
+    if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('ID')) then begin
+      if not Assigned(frmControleEstagioOPF) then
+        frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
+      try
+        frmControleEstagioOPF.Parametros.Codigo := Self.gdGerarOP.DataSource.DataSet.FindField('ID').AsInteger;
+        frmControleEstagioOPF.Parametros.Acao   := eAlterar;
+        frmControleEstagioOPF.ShowModal;
+      finally
+        FreeAndNil(frmControleEstagioOPF);
+      end;
+    end;
+  end else begin
+    if gdGerarOP.SelectedField.FieldName = 'GERAROP' then begin
+      if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('IDOPF')) then begin
+        if not Assigned(frmControleEstagioOPF) then
+          frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
+        try
+          frmControleEstagioOPF.Parametros.Codigo := Self.gdGerarOP.DataSource.DataSet.FindField('IDOPF').AsInteger;
+          frmControleEstagioOPF.Parametros.Acao   := eNovo;
+          frmControleEstagioOPF.ShowModal;
+        finally
+          FreeAndNil(frmControleEstagioOPF);
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TfrmPlanejamentoProducao.gdGerarOPDrawColumnCell(Sender: TObject;
@@ -502,7 +542,8 @@ end;
 procedure TfrmPlanejamentoProducao.gdMeioCulturaCellClick(Column: TColumn);
 begin
   if gdMeioCultura.SelectedField.FieldName = 'IMPRIMIROP' then begin
-    ImprimirOPMC(Self.gdMeioCultura.DataSource.DataSet.FieldByName('ID').AsInteger);
+    if Assigned(Self.gdMeioCultura.DataSource.DataSet.FindField('ID')) then
+      ImprimirOPMC(Self.gdMeioCultura.DataSource.DataSet.FieldByName('ID').AsInteger);
   end else begin
     if gdMeioCultura.SelectedField.FieldName = 'ABRIROP' then begin
       if not Assigned(frmControleEstagioOPF) then
@@ -540,9 +581,24 @@ end;
 
 procedure TfrmPlanejamentoProducao.gdOPGeradaCellClick(Column: TColumn);
 begin
-  if gdOPGerada.SelectedField.FieldName = 'IMPRIMIROP' then
-    if Assigned(Self.gdOPGerada.DataSource.DataSet.FindField('ID')) then
-      ImprimirOPFE(Self.gdOPGerada.DataSource.DataSet.FieldByName('ID').AsInteger);
+
+  if gdOPGerada.SelectedField.FieldName = 'ABRIROP' then begin
+    if Assigned(Self.gdOPGerada.DataSource.DataSet.FindField('ID')) then begin
+      if not Assigned(frmControleEstagioOPF) then
+        frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
+      try
+        frmControleEstagioOPF.Parametros.Codigo := Self.gdOPGerada.DataSource.DataSet.FindField('ID').AsInteger;
+        frmControleEstagioOPF.Parametros.Acao   := eAlterar;
+        frmControleEstagioOPF.ShowModal;
+      finally
+        FreeAndNil(frmControleEstagioOPF);
+      end;
+    end;
+  end else begin
+    if gdOPGerada.SelectedField.FieldName = 'IMPRIMIROP' then
+      if Assigned(Self.gdOPGerada.DataSource.DataSet.FindField('ID')) then
+        ImprimirOPFE(Self.gdOPGerada.DataSource.DataSet.FieldByName('ID').AsInteger);
+  end;
 end;
 
 procedure TfrmPlanejamentoProducao.gdOPGeradaDrawColumnCell(Sender: TObject;
@@ -571,13 +627,15 @@ procedure TfrmPlanejamentoProducao.gdRecebimentoPlantasCellClick(
   Column: TColumn);
 begin
   if gdRecebimentoPlantas.SelectedField.FieldName = 'ABRIRCADASTRO' then begin
-    if not Assigned(frmOrdemProducao) then
-      frmOrdemProducao := TfrmOrdemProducao.Create(nil);
-    try
-      frmOrdemProducao.CodigoOPF := Self.gdRecebimentoPlantas.DataSource.DataSet.FieldByName('ID').AsInteger;
-      frmOrdemProducao.ShowModal;
-    finally
-      FreeAndNil(frmOrdemProducao);
+    if Assigned(Self.gdRecebimentoPlantas.DataSource.DataSet.FindField('ID')) then begin
+      if not Assigned(frmOrdemProducao) then
+        frmOrdemProducao := TfrmOrdemProducao.Create(nil);
+      try
+        frmOrdemProducao.CodigoOPF := Self.gdRecebimentoPlantas.DataSource.DataSet.FieldByName('ID').AsInteger;
+        frmOrdemProducao.ShowModal;
+      finally
+        FreeAndNil(frmOrdemProducao);
+      end;
     end;
   end;
 end;
