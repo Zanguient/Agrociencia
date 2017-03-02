@@ -411,7 +411,7 @@ object frmControleQualidade: TfrmControleQualidade
     object Label1: TLabel
       Left = 365
       Top = 8
-      Width = 43
+      Width = 36
       Height = 13
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Motivo:'
@@ -419,7 +419,7 @@ object frmControleQualidade: TfrmControleQualidade
     object lbPote: TLabel
       Left = 196
       Top = 56
-      Width = 63
+      Width = 6
       Height = 24
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -520,7 +520,6 @@ object frmControleQualidade: TfrmControleQualidade
         Caption = 'Buscar WebCam'
         TabOrder = 0
         OnClick = btnImagemClick
-        ExplicitWidth = 209
       end
       object btnImagemArquivo: TBitBtn
         AlignWithMargins = True
@@ -532,7 +531,6 @@ object frmControleQualidade: TfrmControleQualidade
         Caption = 'Buscar Arquivo'
         TabOrder = 1
         OnClick = btnImagemArquivoClick
-        ExplicitWidth = 209
       end
     end
   end

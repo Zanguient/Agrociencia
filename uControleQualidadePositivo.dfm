@@ -35,8 +35,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
     ParentBackground = False
     ParentFont = False
     TabOrder = 0
-    ExplicitLeft = -243
-    ExplicitWidth = 706
   end
   object pnSuperior: TPanel
     AlignWithMargins = True
@@ -47,8 +45,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 706
-    ExplicitHeight = 369
     DesignSize = (
       750
       345)
@@ -129,8 +125,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
         Caption = 'Buscar WebCam'
         TabOrder = 0
         OnClick = btnImagemWebCamClick
-        ExplicitTop = 280
-        ExplicitWidth = 139
       end
       object btnImagemArquivo: TBitBtn
         AlignWithMargins = True
@@ -142,8 +136,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
         Caption = 'Buscar Arquivo'
         TabOrder = 1
         OnClick = btnImagemArquivoClick
-        ExplicitTop = 249
-        ExplicitWidth = 139
       end
     end
     object edt_Localizacao: TLabeledEdit
@@ -197,8 +189,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
     Color = clWhite
     ParentBackground = False
     TabOrder = 2
-    ExplicitTop = 405
-    ExplicitWidth = 706
     object gpBotoes: TGridPanel
       AlignWithMargins = True
       Left = 3
@@ -230,7 +220,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
           Value = 100.000000000000000000
         end>
       TabOrder = 0
-      ExplicitWidth = 700
       object Panel8: TPanel
         Left = 0
         Top = 0
@@ -239,7 +228,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitWidth = 350
         object btGravar: TSpeedButton
           AlignWithMargins = True
           Left = 269
@@ -398,8 +386,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitLeft = 350
-        ExplicitWidth = 350
         object btFechar: TSpeedButton
           AlignWithMargins = True
           Left = 269
