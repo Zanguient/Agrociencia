@@ -110,7 +110,7 @@ uses
   uMensagem,
   uFuncoes,
   uOrdemProducao,
-  uControleEstagioOPF;
+  uControleEstagioOPF, uOrdemProducaoMeioCultura;
 {$R *.dfm}
 
 { TfrmAgendamento }
@@ -546,12 +546,16 @@ begin
       ImprimirOPMC(Self.gdMeioCultura.DataSource.DataSet.FieldByName('ID').AsInteger);
   end else begin
     if gdMeioCultura.SelectedField.FieldName = 'ABRIROP' then begin
-      if not Assigned(frmControleEstagioOPF) then
-        frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
-      try
-        frmControleEstagioOPF.ShowModal;
-      finally
-        FreeAndNil(frmControleEstagioOPF);
+      if Assigned(Self.gdMeioCultura.DataSource.DataSet.FindField('ID')) then begin
+        if not Assigned(frmOrdemProducaoMeioCultura) then
+          frmOrdemProducaoMeioCultura := TfrmOrdemProducaoMeioCultura.Create(nil);
+        try
+          frmOrdemProducaoMeioCultura.Parametros.Codigo := Self.gdMeioCultura.DataSource.DataSet.FindField('ID').AsInteger;
+          frmOrdemProducaoMeioCultura.Parametros.Acao   := eAlterar;
+          frmOrdemProducaoMeioCultura.ShowModal;
+        finally
+          FreeAndNil(frmOrdemProducaoMeioCultura);
+        end;
       end;
     end;
   end;

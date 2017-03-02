@@ -1361,7 +1361,7 @@ object frmOrdemProducao: TfrmOrdemProducao
               Font.Name = 'Tahoma'
               Font.Style = []
               ParentFont = False
-              TabOrder = 0
+              TabOrder = 2
             end
             object edDataColeta: TJvDateEdit
               Left = 6
@@ -1375,7 +1375,7 @@ object frmOrdemProducao: TfrmOrdemProducao
               Font.Style = []
               ParentFont = False
               ShowNullDate = False
-              TabOrder = 1
+              TabOrder = 0
             end
             object edColetadoPor: TEdit
               AlignWithMargins = True
@@ -1390,7 +1390,7 @@ object frmOrdemProducao: TfrmOrdemProducao
               Font.Name = 'Tahoma'
               Font.Style = []
               ParentFont = False
-              TabOrder = 2
+              TabOrder = 1
             end
             object edLocalizador: TEdit
               AlignWithMargins = True
@@ -2262,7 +2262,7 @@ object frmOrdemProducao: TfrmOrdemProducao
     Left = 360
     Top = 304
     Bitmap = {
-      494C0101030014007C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103001400800020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

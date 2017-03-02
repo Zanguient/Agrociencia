@@ -69,7 +69,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
         Font.Style = []
         ParentFont = False
         ShowNullDate = False
-        TabOrder = 0
+        TabOrder = 1
       end
       object edDataInicial: TJvDateEdit
         AlignWithMargins = True
@@ -84,7 +84,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
         Font.Style = []
         ParentFont = False
         ShowNullDate = False
-        TabOrder = 1
+        TabOrder = 0
       end
       object btConsulta: TBitBtn
         AlignWithMargins = True
@@ -279,7 +279,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Top = 95
       Width = 896
       Height = 305
-      ActivePage = TSOPG
+      ActivePage = TSMC
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -440,6 +440,14 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
               Alignment = taCenter
               Expanded = False
               FieldName = 'CODIGOMC'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'VOLUMEFINAL'
               Title.Alignment = taCenter
               Width = 120
               Visible = True

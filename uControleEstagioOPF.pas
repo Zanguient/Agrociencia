@@ -782,10 +782,13 @@ begin
       SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
       SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
       SQL.SQL.Add('WHERE 1 = 1');
-      SQL.SQL.Add('AND OPF.CANCELADO = False');
-      SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
-      SQL.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
+
       case Parametros.Acao of
+        eNada : begin
+          SQL.SQL.Add('AND OPF.CANCELADO = False');
+          SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
+          SQL.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
+        end;
         eNovo : SQL.SQL.Add('AND 1 = 2'); //Não Precisa trazer nada na tela
         eAlterar : begin
           if Parametros.Codigo > 0 then //Parametro quando tela Chamada de outro Cadastro
