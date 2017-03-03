@@ -75,7 +75,8 @@ uses
   uRelCadastrodePlantas in 'uRelCadastrodePlantas.pas' {frmRelCadastrodePlantas},
   uBeanOPFinal_Estagio_Lote_S_Positivo in 'Beans\uBeanOPFinal_Estagio_Lote_S_Positivo.pas',
   uControleQualidadePositivo in 'uControleQualidadePositivo.pas' {frmControleQualidadePositivo},
-  uPlanejamentoProducao in 'uPlanejamentoProducao.pas' {frmPlanejamentoProducao};
+  uPlanejamentoProducao in 'uPlanejamentoProducao.pas' {frmPlanejamentoProducao},
+  uComposicaoSolucaoEstoque in 'uComposicaoSolucaoEstoque.pas' {frmComposicaoSolucaoEstoque};
 
 {$R *.res}
 

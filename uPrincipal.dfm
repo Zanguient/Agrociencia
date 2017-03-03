@@ -71,6 +71,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Motivos de Descarte'
         OnClick = MotivosdeDescarte1Click
       end
+      object ComposiodeSoluodeEstoque1: TMenuItem
+        Caption = 'Composi'#231#227'o de Solu'#231#227'o de Estoque'
+        OnClick = ComposiodeSoluodeEstoque1Click
+      end
     end
     object Movimentao1: TMenuItem
       Caption = 'Movimenta'#231#227'o'

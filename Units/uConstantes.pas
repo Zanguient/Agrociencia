@@ -7,7 +7,7 @@ uses
 
 type
   TTipoPrecificacao = (eNenhum, eMargem, ePrecoEspecial);
-  TFinalidadeProduto = (eTodos, eProdutoFinal, eMateriaPrima, eMeioCultura, eRecipiente);
+  TFinalidadeProduto = (eTodos, eProdutoFinal, eMateriaPrima, eMeioCultura, eRecipiente, eSolEstoque);
   TAcaoCadastro = (eNada, eNovo, eAlterar);
 
 type
