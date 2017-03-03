@@ -94,7 +94,7 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
       ParentFont = False
       TabOrder = 1
     end
-    object edNomeProduto: TLabeledEdit
+    object edProduto: TLabeledEdit
       Left = 159
       Top = 24
       Width = 493
@@ -592,12 +592,16 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     object cds_ItensORDEMPRODUCAO: TIntegerField
       FieldName = 'ORDEMPRODUCAO'
     end
-    object cds_ItensNOMEPRODUTO: TStringField
-      FieldName = 'NOMEPRODUTO'
-      Size = 500
+    object cds_ItensPRODUTO: TStringField
+      FieldName = 'PRODUTO'
+      Size = 100
     end
     object cds_ItensDATALOTE: TDateField
       FieldName = 'DATALOTE'
+    end
+    object cds_ItensCODIGOMC: TStringField
+      FieldName = 'CODIGOMC'
+      Size = 5
     end
   end
   object ds_Itens: TDataSource

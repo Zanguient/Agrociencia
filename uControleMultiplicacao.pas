@@ -158,27 +158,28 @@ Var
 begin
   if btFinalizar.Tag = 0 then begin
     btFinalizar.Tag := 1;
-    if edDescOPMC.Text = EmptyStr then begin
-      DisplayMsg(MSG_WAR, 'Selecione uma Ordem de Produção MC para continuar!');
-      if edOrdemProducaoMC.CanFocus then edOrdemProducaoMC.SetFocus;
-      Exit;
-    end;
-    if StrToIntDef(edQuantidadeEntrada.Text, 0) = 0 then begin
-      DisplayMsg(MSG_WAR, 'Informe ao menos um recipiente de entrada para continuar!');
-      if edCodigoEntrada.CanFocus then edCodigoEntrada.SetFocus;
-      Exit;
-    end;
-    if StrToIntDef(edQuantidadeSaida.Text, 0) = 0 then begin
-      DisplayMsg(MSG_WAR, 'Informe ao menos um recipiente de saída para continuar!');
-      if MULTIPLICACAO.FIM then begin
-        if edQuantidadeSaida.CanFocus then edQuantidadeSaida.SetFocus;
-      end
-      else begin
-        if edCodigoSaida.CanFocus then edCodigoSaida.SetFocus;
-      end;
-      Exit;
-    end;
     try
+      if edDescOPMC.Text = EmptyStr then begin
+        DisplayMsg(MSG_WAR, 'Selecione uma Ordem de Produção MC para continuar!');
+        if edOrdemProducaoMC.CanFocus then edOrdemProducaoMC.SetFocus;
+        Exit;
+      end;
+      if StrToIntDef(edQuantidadeEntrada.Text, 0) = 0 then begin
+        DisplayMsg(MSG_WAR, 'Informe ao menos um recipiente de entrada para continuar!');
+        if edCodigoEntrada.CanFocus then edCodigoEntrada.SetFocus;
+        Exit;
+      end;
+      if StrToIntDef(edQuantidadeSaida.Text, 0) = 0 then begin
+        DisplayMsg(MSG_WAR, 'Informe ao menos um recipiente de saída para continuar!');
+        if MULTIPLICACAO.FIM then begin
+          if edQuantidadeSaida.CanFocus then edQuantidadeSaida.SetFocus;
+        end
+        else begin
+          if edCodigoSaida.CanFocus then edCodigoSaida.SetFocus;
+        end;
+        Exit;
+      end;
+
       if not (cds_Entradas.IsEmpty and cds_Saidas.IsEmpty) then begin
         if MULTIPLICACAO.EMANDAMENTO then begin
 

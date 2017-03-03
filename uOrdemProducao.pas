@@ -102,6 +102,8 @@ type
     btnSalvarImagem: TBitBtn;
     btnImagemArquivo: TBitBtn;
     OpenPictureDialog1: TOpenPictureDialog;
+    cds_Etiqueta1PRODUTO: TStringField;
+    cds_PesquisaIDPRODUTO: TIntegerField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -761,6 +763,7 @@ begin
       SQL.SQL.Add('	OPF.DATAHORA,');
       SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
       SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
+      SQL.SQL.Add('	P.ID AS CODIGOPRODUTO,');
       SQL.SQL.Add('	OPF.QUANTIDADE,');
       SQL.SQL.Add('	OPF.SELECAOPOSITIVA,');
       SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO');
@@ -796,6 +799,7 @@ begin
           cds_PesquisaQUANTIDADE.Value          := SQL.FieldByName('QUANTIDADE').AsInteger;
           cds_PesquisaSELECAOPOSITIVA.Value     := SQL.FieldByName('SELECAOPOSITIVA').AsString;
           cds_PesquisaCODIGOSELECAOCAMPO.Value  := SQL.FieldByName('CODIGOSELECAOCAMPO').AsString;
+          cds_PesquisaIDPRODUTO.Value           := SQL.FieldByName('CODIGOPRODUTO').AsInteger;
           cds_Pesquisa.Post;
           SQL.Next;
         end;
@@ -1100,7 +1104,6 @@ end;
 procedure TfrmOrdemProducao.IMPRIMIRETIQUETAS1Click(Sender: TObject);
 Var
   I : Integer;
-  CodigoBarras : string;
 begin
 
   if not cds_Pesquisa.IsEmpty then begin
@@ -1113,10 +1116,10 @@ begin
 
       if ResultMsgModal = mrOk then begin
         if ResultMsgInputInt > 0 then begin
-          CodigoBarras := cds_PesquisaID.AsString;
           for I := 1 to ResultMsgInputInt do begin
             cds_Etiqueta1.Append;
-            cds_Etiqueta1CODIGOOP.AsString  := CodigoBarras;
+            cds_Etiqueta1CODIGOOP.AsString  := cds_PesquisaID.AsString + '*1';
+            cds_Etiqueta1PRODUTO.AsString   := cds_PesquisaPRODUTO.AsString + ' - ' + cds_PesquisaIDPRODUTO.AsString;
             cds_Etiqueta1.Post;
           end;
         end;

@@ -601,8 +601,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Value = 100.000000000000000000
           end>
         TabOrder = 1
-        ExplicitTop = 124
-        ExplicitHeight = 305
         object Panel2: TPanel
           Left = 1
           Top = 1
@@ -610,7 +608,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Height = 287
           Align = alClient
           TabOrder = 0
-          ExplicitHeight = 303
           object gdCodigoBarras: TDBGrid
             AlignWithMargins = True
             Left = 4
@@ -649,7 +646,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Height = 46
             Align = alBottom
             TabOrder = 1
-            ExplicitTop = 253
             DesignSize = (
               351
               46)
@@ -751,7 +747,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Height = 287
           Align = alClient
           TabOrder = 1
-          ExplicitHeight = 303
           object Panel5: TPanel
             AlignWithMargins = True
             Left = 4
@@ -760,7 +755,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
             Height = 46
             Align = alBottom
             TabOrder = 0
-            ExplicitTop = 253
             DesignSize = (
               352
               46)
@@ -865,7 +859,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
     Left = 264
     Top = 208
     Bitmap = {
-      494C0101030008005C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000800600020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000000000000000DADA

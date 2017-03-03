@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<TfrxReport Version="5.2.3" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="42396,5981039468" ReportOptions.Description.Text="" ReportOptions.LastChange="42786,8824333796" ScriptLanguage="PascalScript" ScriptText.Text="&#13;&#10;begin&#13;&#10;&#13;&#10;end.">
+<TfrxReport Version="5.2.3" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="42396,5981039468" ReportOptions.Description.Text="" ReportOptions.LastChange="42796,9597363657" ScriptLanguage="PascalScript" ScriptText.Text="&#13;&#10;begin&#13;&#10;&#13;&#10;end.">
   <Datasets>
     <item DataSet="frxDBDataset1" DataSetName="frxDBDataset1"/>
   </Datasets>
   <Variables>
-    <item Name="Usuario" Value="'Sergio Jonas Schulz'"/>
+    <item Name="Usuario" Value="'SERGIO JONAS SCHULZ'"/>
     <item Name="UserLogin" Value="user"/>
     <item Name="Login" Value="'Sergio Jonas NetSchulz'"/>
   </Variables>
   <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
-  <TfrxReportPage Name="Page1" PaperWidth="108" PaperHeight="297" PaperSize="256" LeftMargin="0,3" RightMargin="0,3" TopMargin="0" BottomMargin="0" ColumnWidth="0" ColumnPositions.Text="" EndlessHeight="True" HGuides.Text="" VGuides.Text="">
-    <TfrxMasterData Name="MasterData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="68,03154" Left="0" Top="18,89765" Width="405,921522" Columns="3" ColumnWidth="132,283464566929" ColumnGap="0" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" RowCount="0">
-      <TfrxBarCodeView Name="BarCode1" Left="36,35436" Top="15,33859" Width="90" Height="37,7953" BarType="bcCodeEAN128" Expression="&#60;frxDBDataset1.&#34;CODIGOBARRAS&#34;&#62;" Rotation="0" Text="12345678" WideBarRatio="2" Zoom="1" Font.Charset="1" Font.Color="0" Font.Height="-12" Font.Name="Arial" Font.Style="0"/>
-      <TfrxMemoView Name="frxDBDataset1NOMEPRODUTO" Left="2,55906" Top="51,35436" Width="64,25201" Height="11,33859" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" Font.Charset="1" Font.Color="-16777208" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="OP: [frxDBDataset1.&#34;ORDEMPRODUCAO&#34;]"/>
-      <TfrxMemoView Name="Memo1" Left="68,03154" Top="51,35436" Width="56,69295" Height="11,33859" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" DisplayFormat.FormatStr="mm.dd.yyyy" DisplayFormat.Kind="fkDateTime" Font.Charset="1" Font.Color="-16777208" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" Text="[frxDBDataset1.&#34;DATALOTE&#34;]"/>
-      <TfrxMemoView Name="Memo2" Left="5" Top="0" Width="120,94496" Height="15,11812" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" Font.Charset="1" Font.Color="-16777208" Font.Height="-11" Font.Name="Arial" Font.Style="0" ParentFont="False" WordWrap="False" Text="[frxDBDataset1.&#34;NOMEPRODUTO&#34;]"/>
+  <TfrxReportPage Name="Page1" PaperWidth="105" PaperHeight="22" PaperSize="256" LeftMargin="1" RightMargin="1" TopMargin="0" BottomMargin="0" ColumnWidth="0" ColumnPositions.Text="" HGuides.Text="" VGuides.Text="">
+    <TfrxMasterData Name="MasterData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="81,259842519685" Left="0" Top="18,89765" Width="389,29159" Columns="3" ColumnWidth="124,724409448819" ColumnGap="7,55905511811024" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" RowCount="0">
+      <TfrxBarCodeView Name="BarCode1" Left="32,83464567" Top="30,89765" Width="90" Height="37,7953" BarType="bcCodeEAN128" Expression="&#60;frxDBDataset1.&#34;CODIGOBARRAS&#34;&#62;" Rotation="0" Text="12345678" WideBarRatio="2" Zoom="1" Font.Charset="1" Font.Color="0" Font.Height="-9" Font.Name="Arial" Font.Style="0"/>
+      <TfrxMemoView Name="frxDBDataset1NOMEPRODUTO" Left="1,88976378" Top="69,81102362" Width="42,33070866" Height="11,33858268" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" Font.Charset="1" Font.Color="-16777208" Font.Height="-8" Font.Name="Arial" Font.Style="1" ParentFont="False" WordWrap="False" VAlign="vaCenter" Text="OP:[frxDBDataset1.&#34;ORDEMPRODUCAO&#34;]"/>
+      <TfrxMemoView Name="Memo1" Left="45,90545567" Top="69,81102362" Width="35,90551181" Height="11,33858268" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" DisplayFormat.FormatStr="mm.dd.yy" DisplayFormat.Kind="fkDateTime" Font.Charset="1" Font.Color="-16777208" Font.Height="-8" Font.Name="Arial" Font.Style="5" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="[frxDBDataset1.&#34;DATALOTE&#34;]"/>
+      <TfrxMemoView Name="Memo2" Left="1,88976378" Top="18,58267717" Width="120,94488189" Height="9,4488189" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" Font.Charset="1" Font.Color="-16777208" Font.Height="-9" Font.Name="Arial" Font.Style="0" HAlign="haCenter" ParentFont="False" WordWrap="False" VAlign="vaCenter" Text="[frxDBDataset1.&#34;PRODUTO&#34;]"/>
+      <TfrxMemoView Name="Memo3" Left="13,77953" Top="4,75590551" Width="94,48825" Height="13,2283489" AutoWidth="True" AllowExpressions="False" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" Font.Charset="1" Font.Color="16777215" Font.Height="-9" Font.Name="Arial" Font.Style="0" Fill.BackColor="0" HAlign="haCenter" ParentFont="False" WordWrap="False" VAlign="vaCenter" Text="Vivetech Agrociências"/>
+      <TfrxMemoView Name="Memo4" Left="83,59840567" Top="69,81102362" Width="38,55117866" Height="11,33858268" DataSet="frxDBDataset1" DataSetName="frxDBDataset1" Font.Charset="1" Font.Color="-16777208" Font.Height="-8" Font.Name="Arial" Font.Style="1" HAlign="haRight" ParentFont="False" WordWrap="False" VAlign="vaCenter" Text="MC:[frxDBDataset1.&#34;CODIGOMC&#34;]"/>
     </TfrxMasterData>
   </TfrxReportPage>
 </TfrxReport>

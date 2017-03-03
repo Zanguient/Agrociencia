@@ -15,6 +15,7 @@ type
     SEQUENCIA : Integer;
     ESTAGIO : Integer;
     LOTE : Integer;
+    CODIGOMC : string;
   end;
 
 type
@@ -23,7 +24,7 @@ type
     pnSuperior: TPanel;
     edNumeroLoteEstagio: TLabeledEdit;
     edCodigoOrdemProducao: TLabeledEdit;
-    edNomeProduto: TLabeledEdit;
+    edProduto: TLabeledEdit;
     pnBotoesEdicao: TPanel;
     GridPanel2: TGridPanel;
     Panel4: TPanel;
@@ -33,12 +34,13 @@ type
     ds_Itens: TDataSource;
     btFechar: TSpeedButton;
     cds_ItensORDEMPRODUCAO: TIntegerField;
-    cds_ItensNOMEPRODUTO: TStringField;
+    cds_ItensPRODUTO: TStringField;
     edt_Quantidade: TLabeledEdit;
     cds_ItensCODIGOBARRAS: TStringField;
     cds_ItensDATALOTE: TDateField;
     btnAdicionar: TBitBtn;
     btnExcluir: TBitBtn;
+    cds_ItensCODIGOMC: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure btEtiquetasClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -212,8 +214,9 @@ begin
           cds_Itens.Append;
           cds_ItensCODIGOBARRAS.Value   := StrZero(TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[I]).ID.asString, MinimoCodigoBarras);
           cds_ItensORDEMPRODUCAO.Value  := LOTE.ORDEMPRODUCAO;
-          cds_ItensNOMEPRODUTO.Value    := edNomeProduto.Text;
+          cds_ItensPRODUTO.Value        := edProduto.Text;
           cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
+          cds_ItensCODIGOMC.Value       := LOTE.CODIGOMC;
           cds_Itens.Post;
         end;
       end;
@@ -261,8 +264,9 @@ begin
             Consulta.SQL.Add('	OPF.ID,');
             Consulta.SQL.Add('	OPFE.ID AS IDESTAGIO,');
             Consulta.SQL.Add('	OPFE.SEQUENCIA,');
-            Consulta.SQL.Add('	P.DESCRICAO,');
+            Consulta.SQL.Add('	(P.DESCRICAO || '' - '' || P.ID) AS PRODUTO,');
             Consulta.SQL.Add('	E.TIPO,');
+            Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC,');
             Consulta.SQL.Add('  (COALESCE((SELECT SUM(COALESCE(CEP.QUANTIDADE, 0.00))');
             Consulta.SQL.Add('	FROM CONTROLEESTOQUE CE INNER JOIN CONTROLEESTOQUEPRODUTO CEP ON (CEP.CONTROLEESTOQUE_ID = CE.ID)');
             Consulta.SQL.Add('	WHERE CE.CANCELADO = FALSE AND CEP.PRODUTO_ID = P.ID),0.00)) AS SALDO');
@@ -270,6 +274,7 @@ begin
             Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
             Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
             Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (OPFE.ESTAGIO_ID = E.ID)');
+            Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = OPFE.MEIOCULTURA_ID)');
 
             Consulta.SQL.Add('WHERE 1 = 1');
             Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
@@ -287,11 +292,12 @@ begin
               if Consulta.FieldByName('ID').AsInteger = CodigoOPF then begin
                 if Consulta.FieldByName('SEQUENCIA').AsInteger = SeqEstagio then begin
 
-                  edNomeProduto.Text            := Consulta.FieldByName('DESCRICAO').AsString;
+                  edProduto.Text                := Consulta.FieldByName('PRODUTO').AsString;
                   edCodigoOrdemProducao.Enabled := False;
                   LOTE.ORDEMPRODUCAO            := Consulta.FieldByName('ID').AsInteger;
                   LOTE.SEQUENCIA                := Consulta.FieldByName('SEQUENCIA').AsInteger;
                   LOTE.ESTAGIO                  := Consulta.FieldByName('IDESTAGIO').AsInteger;
+                  LOTE.CODIGOMC                 := Consulta.FieldByName('CODIGOMC').AsString;
 
                   edNumeroLoteEstagio.Enabled   := True;
                   if edNumeroLoteEstagio.CanFocus then
@@ -328,8 +334,9 @@ begin
               cds_Itens.Append;
               cds_ItensCODIGOBARRAS.Value   := StrZero(TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[I]).ID.asString, MinimoCodigoBarras);
               cds_ItensORDEMPRODUCAO.Value  := LOTE.ORDEMPRODUCAO;
-              cds_ItensNOMEPRODUTO.Value    := edNomeProduto.Text;
+              cds_ItensPRODUTO.Value        := edProduto.Text;
               cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
+              cds_ItensCODIGOMC.Value       := LOTE.CODIGOMC;
               cds_Itens.Post;
             end;
           end;
@@ -377,7 +384,7 @@ begin
   edCodigoOrdemProducao.Enabled := True;
   edNumeroLoteEstagio.Clear;
   edNumeroLoteEstagio.Enabled   := False;
-  edNomeProduto.Clear;
+  edProduto.Clear;
   cds_Itens.EmptyDataSet;
   edt_Quantidade.Text := IntToStr(cds_Itens.RecordCount);
   btnAdicionar.Visible := False;
