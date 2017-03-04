@@ -79,7 +79,8 @@ uses
   uComposicaoSolucaoEstoque in 'uComposicaoSolucaoEstoque.pas' {frmComposicaoSolucaoEstoque},
   uBeanOrdemProducaoSolucao in 'Beans\uBeanOrdemProducaoSolucao.pas',
   uBeanOrdemProducaoSolucao_Itens in 'Beans\uBeanOrdemProducaoSolucao_Itens.pas',
-  uOrdemProducaoSolucao in 'uOrdemProducaoSolucao.pas' {frmOrdemProducaoSolucao};
+  uOrdemProducaoSolucao in 'uOrdemProducaoSolucao.pas' {frmOrdemProducaoSolucao},
+  uFotosEstagio in 'uFotosEstagio.pas' {Form1};
 
 {$R *.res}
 

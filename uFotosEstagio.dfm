@@ -1,0 +1,47 @@
+object frmFotosEstagio: TfrmFotosEstagio
+  Left = 0
+  Top = 0
+  BorderStyle = bsNone
+  ClientHeight = 358
+  ClientWidth = 520
+  Color = clWhite
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  KeyPreview = True
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object ImagePrincipal: TImage
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 514
+    Height = 277
+    Align = alClient
+    Center = True
+    Proportional = True
+    ExplicitLeft = 200
+    ExplicitTop = 120
+    ExplicitWidth = 105
+    ExplicitHeight = 105
+  end
+  object ScrollBox1: TScrollBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 286
+    Width = 514
+    Height = 69
+    Align = alBottom
+    TabOrder = 0
+    ExplicitLeft = 11
+    ExplicitTop = 11
+    ExplicitWidth = 420
+  end
+end

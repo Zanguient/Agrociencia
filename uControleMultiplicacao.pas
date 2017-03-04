@@ -88,6 +88,7 @@ type
     edOrdemProducaoMC: TButtonedEdit;
     edDescOPMC: TEdit;
     lbOPMC: TLabel;
+    btFotosEstagio: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -97,6 +98,7 @@ type
     procedure ds_EntradasDataChange(Sender: TObject; Field: TField);
     procedure ds_SaidasDataChange(Sender: TObject; Field: TField);
     procedure edOrdemProducaoMCChange(Sender: TObject);
+    procedure btFotosEstagioClick(Sender: TObject);
   private
     MULTIPLICACAO : TMultiplicacao;
     procedure ExecutarEvento;
@@ -134,7 +136,10 @@ uses
   uBeanOrdemProducaoMC_Estoque_OP,
   uBeanProdutos,
   uDMUtil,
-  uBeanOPFinal, uBeanOrdemProducaoMC, uBeanMeioCultura;
+  uBeanOPFinal,
+  uBeanOrdemProducaoMC,
+  uBeanMeioCultura,
+  uFotosEstagio;
 
 {$R *.dfm}
 
@@ -222,6 +227,20 @@ begin
       end;
     finally
       btFinalizar.Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmControleMultiplicacao.btFotosEstagioClick(Sender: TObject);
+begin
+  if MULTIPLICACAO.IDESTAGIO > 0 then begin
+    if frmFotosEstagio = nil then
+      frmFotosEstagio := TfrmFotosEstagio.Create(nil);
+    try
+      frmFotosEstagio.IdEstagio := MULTIPLICACAO.IDESTAGIO;
+      frmFotosEstagio.ShowModal;
+    finally
+      FreeAndNil(frmFotosEstagio);
     end;
   end;
 end;
