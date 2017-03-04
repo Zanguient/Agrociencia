@@ -189,33 +189,6 @@ procedure TfrmControleQualidade.btnImagemClick(Sender: TObject);
 var
   DirNomeFoto: string;
   NomeFoto: string;
-  procedure ConverteParaJpeg(ACaminhoFoto: string);
-  var
-    cjBmp: TBitmap;
-    cjJpg: TJpegImage;
-    strNomeSemExtensao: string;
-    AFoto: TImage;
-    Nome : string;
-  begin
-    AFoto:= TImage.Create(Self);
-    AFoto.Parent := Self;
-    AFoto.Visible := False;
-    AFoto.Picture.Bitmap.LoadFromFile(ACaminhoFoto + '.bmp');
-
-    cjJpg := TJPegImage.Create;
-    cjBmp := TBitmap.Create;
-
-    cjBmp.Assign(AFoto.Picture.Bitmap);
-    cjJpg.Assign(cjBMP);
-
-    Nome := ExtractFileName(ACaminhoFoto + '.jpg');
-
-    cjJpg.SaveToFile(CONFIG_LOCAL.DirImagens + Nome);
-    DeleteFile(ACaminhoFoto + '.bmp');
-    cjJpg.Free;
-    cjBmp.Free;
-    AFoto.Free;
-  end;
 begin
   fCaptura := TfCaptura.Create(Self);
   try
@@ -228,7 +201,7 @@ begin
     fCaptura.camCamera.FichierImage := ExtractFileName(DirNomeFoto);
     if fCaptura.ShowModal = mrOk then begin
       fCaptura.camCamera.CaptureImageDisque;
-      ConverteParaJpeg(NomeFoto);
+      ConverterBMPtoJPEG(NomeFoto);
       NomeFoto := CONFIG_LOCAL.DirImagens + ExtractFileName(NomeFoto + '.jpg');
       Image1.Picture.LoadFromFile(NomeFoto);
       NomeImagemAtual := NomeFoto;

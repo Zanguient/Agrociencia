@@ -554,7 +554,6 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           RightButton.Visible = True
           TabOrder = 4
           OnChange = edOrdemProducaoMCChange
-          OnKeyDown = edOrdemProducaoMCKeyDown
         end
         object edDescOPMC: TEdit
           Left = 378
@@ -859,7 +858,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
     Left = 264
     Top = 208
     Bitmap = {
-      494C010103000800600020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000800640020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000000000000000DADA

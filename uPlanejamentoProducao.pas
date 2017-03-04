@@ -68,6 +68,7 @@ type
     CDS_OPGERADAABRIROP: TIntegerField;
     CDS_OPGERADAIMPRIMIROP: TIntegerField;
     CDS_NOVAOPIDOPF: TIntegerField;
+    CDS_NOVAOPSALDOPOTES: TIntegerField;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -150,10 +151,12 @@ procedure TfrmPlanejamentoProducao.CarregarGerarNovaOP;
 var
   FWC       : TFWConnection;
   Consulta  : TFDQuery;
+  ConsultaPotes : TFDQuery;
 begin
 
   FWC       := TFWConnection.Create;
   Consulta  := TFDQuery.Create(nil);
+  ConsultaPotes := TFDQuery.Create(nil);
 
   try
     try
@@ -165,7 +168,7 @@ begin
       Consulta.Close;
       Consulta.SQL.Clear;
       Consulta.SQL.Add('SELECT');
-      Consulta.SQL.Add('	OPFE.ID,');
+      Consulta.SQL.Add('	OPFE.ID AS IDOPFE,');
       Consulta.SQL.Add('	OPF.ID AS IDOPF,');
       Consulta.SQL.Add('	OPFE.PREVISAOTERMINO AS DATA,');
       Consulta.SQL.Add('	P.DESCRICAO AS ESPECIE,');
@@ -193,24 +196,50 @@ begin
       Consulta.FetchAll;
 
       if not Consulta.IsEmpty then begin
+
         Consulta.First;
+
+        ConsultaPotes.Close;
+        ConsultaPotes.SQL.Clear;
+        ConsultaPotes.SQL.Add('SELECT');
+        ConsultaPotes.SQL.Add('	COUNT(OPFELS.ID) AS SALDOPOTES');
+        ConsultaPotes.SQL.Add('FROM OPFINAL_ESTAGIO OPFE');
+        ConsultaPotes.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPFEL ON (OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
+        ConsultaPotes.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+        ConsultaPotes.SQL.Add('WHERE 1 = 1');
+        ConsultaPotes.SQL.Add('AND OPFELS.BAIXADO = FALSE');
+        ConsultaPotes.SQL.Add('AND OPFE.ID = :IDOPFE');
+        ConsultaPotes.Connection  := FWC.FDConnection;
+
         while not Consulta.Eof do begin
-          CDS_NOVAOP.Append;
-          CDS_NOVAOPID.Value            := Consulta.FieldByName('ID').AsInteger;
-          CDS_NOVAOPIDOPF.Value         := Consulta.FieldByName('IDOPF').AsInteger;
-          CDS_NOVAOPDATA.Value          := Consulta.FieldByName('DATA').AsDateTime;
-          CDS_NOVAOPESPECIE.Value       := Consulta.FieldByName('ESPECIE').AsString;
-          CDS_NOVAOPESTAGIOATUAL.Value  := Consulta.FieldByName('ESTAGIOATUAL').AsString;
-          CDS_NOVAOPCODIGOMC.Value      := Consulta.FieldByName('CODIGOMC').AsString;
-          CDS_NOVAOPABRIROP.Value       := 0;
-          CDS_NOVAOPGERAROP.Value       := 0;
-          CDS_NOVAOP.Post;
+
+          ConsultaPotes.Close;
+          ConsultaPotes.ParamByName('IDOPFE').DataType  := ftInteger;
+          ConsultaPotes.ParamByName('IDOPFE').Value     := Consulta.FieldByName('IDOPFE').AsInteger;
+          ConsultaPotes.Prepare;
+          ConsultaPotes.Open;
+          ConsultaPotes.FetchAll;
+          if not ConsultaPotes.IsEmpty then begin
+            if ConsultaPotes.FieldByName('SALDOPOTES').AsInteger > 0 then begin
+              CDS_NOVAOP.Append;
+              CDS_NOVAOPID.Value            := Consulta.FieldByName('IDOPFE').AsInteger;
+              CDS_NOVAOPIDOPF.Value         := Consulta.FieldByName('IDOPF').AsInteger;
+              CDS_NOVAOPDATA.Value          := Consulta.FieldByName('DATA').AsDateTime;
+              CDS_NOVAOPESPECIE.Value       := Consulta.FieldByName('ESPECIE').AsString;
+              CDS_NOVAOPESTAGIOATUAL.Value  := Consulta.FieldByName('ESTAGIOATUAL').AsString;
+              CDS_NOVAOPCODIGOMC.Value      := Consulta.FieldByName('CODIGOMC').AsString;
+              CDS_NOVAOPABRIROP.Value       := 0;
+              CDS_NOVAOPGERAROP.Value       := 0;
+              CDS_NOVAOPSALDOPOTES.Value    := ConsultaPotes.FieldByName('SALDOPOTES').AsInteger;
+              CDS_NOVAOP.Post;
+            end;
+          end;
           Consulta.Next;
         end;
       end;
 
-      TSNOP.TabVisible := not Consulta.IsEmpty;
-      TSNOP.Caption    := 'Finalizando Estágio (Gerar Nova OP) (' + IntToStr(Consulta.RecordCount) + ')';
+      TSNOP.TabVisible := not CDS_NOVAOP.IsEmpty;
+      TSNOP.Caption    := 'Finalizando Estágio (Gerar Nova OP) (' + IntToStr(CDS_NOVAOP.RecordCount) + ')';
 
     Except
       on E : Exception do begin
@@ -219,6 +248,7 @@ begin
     end;
   finally
     CDS_NOVAOP.EnableControls;
+    FreeAndNil(ConsultaPotes);
     FreeAndNil(Consulta);
     FreeAndNil(FWC);
   end;

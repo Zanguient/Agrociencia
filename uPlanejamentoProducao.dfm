@@ -279,7 +279,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Top = 95
       Width = 896
       Height = 305
-      ActivePage = TSMC
+      ActivePage = TSNOP
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -560,6 +560,13 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
             item
               Alignment = taCenter
               Expanded = False
+              FieldName = 'SALDOPOTES'
+              Title.Alignment = taCenter
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
               FieldName = 'ABRIROP'
               Title.Alignment = taCenter
               Width = 120
@@ -785,6 +792,10 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
     object CDS_NOVAOPGERAROP: TIntegerField
       DisplayLabel = 'Gerar OP'
       FieldName = 'GERAROP'
+    end
+    object CDS_NOVAOPSALDOPOTES: TIntegerField
+      DisplayLabel = 'Saldo de Potes'
+      FieldName = 'SALDOPOTES'
     end
   end
   object CDS_OPGERADA: TClientDataSet
