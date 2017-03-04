@@ -76,7 +76,10 @@ uses
   uBeanOPFinal_Estagio_Lote_S_Positivo in 'Beans\uBeanOPFinal_Estagio_Lote_S_Positivo.pas',
   uControleQualidadePositivo in 'uControleQualidadePositivo.pas' {frmControleQualidadePositivo},
   uPlanejamentoProducao in 'uPlanejamentoProducao.pas' {frmPlanejamentoProducao},
-  uComposicaoSolucaoEstoque in 'uComposicaoSolucaoEstoque.pas' {frmComposicaoSolucaoEstoque};
+  uComposicaoSolucaoEstoque in 'uComposicaoSolucaoEstoque.pas' {frmComposicaoSolucaoEstoque},
+  uBeanOrdemProducaoSolucao in 'Beans\uBeanOrdemProducaoSolucao.pas',
+  uBeanOrdemProducaoSolucao_Itens in 'Beans\uBeanOrdemProducaoSolucao_Itens.pas',
+  uOrdemProducaoSolucao in 'uOrdemProducaoSolucao.pas' {frmOrdemProducaoSolucao};
 
 {$R *.res}
 

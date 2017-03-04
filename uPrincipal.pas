@@ -44,6 +44,7 @@ type
     ControledeQualidadePositivo1: TMenuItem;
     PlanejamentodaProduo1: TMenuItem;
     ComposiodeSoluodeEstoque1: TMenuItem;
+    SoluodeEstoque1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -73,6 +74,7 @@ type
     procedure ControledeQualidadePositivo1Click(Sender: TObject);
     procedure Agendamento1Click(Sender: TObject);
     procedure ComposiodeSoluodeEstoque1Click(Sender: TObject);
+    procedure SoluodeEstoque1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -119,7 +121,8 @@ uses
   uRelCadastrodePlantas,
   uControleQualidadePositivo,
   uPlanejamentoProducao,
-  uComposicaoSolucaoEstoque;
+  uComposicaoSolucaoEstoque,
+  uOrdemProducaoSolucao;
 
 {$R *.dfm}
 
@@ -437,6 +440,17 @@ begin
     FrmRedefinirSenha.ShowModal;
   finally
     FreeAndNil(FrmRedefinirSenha);
+  end;
+end;
+
+procedure TfrmPrincipal.SoluodeEstoque1Click(Sender: TObject);
+begin
+  if frmOrdemProducaoSolucao = nil then
+    frmOrdemProducaoSolucao := TfrmOrdemProducaoSolucao.Create(nil);
+  try
+    frmOrdemProducaoSolucao.ShowModal;
+  finally
+    FreeAndNil(frmOrdemProducaoSolucao);
   end;
 end;
 

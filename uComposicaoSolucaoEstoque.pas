@@ -421,7 +421,7 @@ begin
   UM     := TUNIDADEMEDIDA.Create(FWC);
   edtNomeMateriaPrima.Clear;
   try
-    Filtro := 'finalidade = 2';
+    Filtro := 'finalidade in (2,5) and id not in (' + IntToStr(pnCadastro.Tag) + ')';
     edtMateriaPrima.Tag := DMUtil.Selecionar(P, edtMateriaPrima.Text, Filtro);
     if edtMateriaPrima.Tag > 0 then begin
       P.SelectList('id = ' + IntToStr(edtMateriaPrima.Tag));

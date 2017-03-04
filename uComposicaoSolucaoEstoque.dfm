@@ -25,10 +25,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = -66
-    ExplicitTop = -7
-    ExplicitWidth = 751
-    ExplicitHeight = 511
     object pnPequisaDados: TPanel
       Left = 0
       Top = 0
@@ -45,7 +41,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
       ParentBackground = False
       ParentFont = False
       TabOrder = 0
-      ExplicitWidth = 751
       object btPesquisar: TSpeedButton
         AlignWithMargins = True
         Left = 582
@@ -130,7 +125,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
-        ExplicitWidth = 639
       end
     end
     object gdPesquisa: TDBGrid
@@ -178,8 +172,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
       Color = clWhite
       ParentBackground = False
       TabOrder = 2
-      ExplicitTop = 448
-      ExplicitWidth = 745
       object gpBotoes: TGridPanel
         AlignWithMargins = True
         Left = 4
@@ -211,7 +203,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
             Value = 100.000000000000000000
           end>
         TabOrder = 0
-        ExplicitWidth = 737
         object Panel8: TPanel
           Left = 0
           Top = 0
@@ -220,7 +211,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitWidth = 368
           object btAlterar: TSpeedButton
             AlignWithMargins = True
             Left = 232
@@ -300,8 +290,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitLeft = 368
-          ExplicitWidth = 369
           object btFechar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -496,10 +484,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = -66
-    ExplicitTop = -7
-    ExplicitWidth = 751
-    ExplicitHeight = 511
     object dg_Componentes: TDBGrid
       AlignWithMargins = True
       Left = 3
@@ -554,8 +538,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
       Align = alTop
       Caption = '  Selecione a Mat'#233'ria-Prima  '
       TabOrder = 0
-      ExplicitTop = 322
-      ExplicitWidth = 745
       DesignSize = (
         679
         61)
@@ -625,7 +607,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
         Font.Style = []
         ParentFont = False
         TabOrder = 1
-        ExplicitWidth = 343
       end
       object edt_Quantidade: TJvValidateEdit
         Left = 478
@@ -643,7 +624,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
         Font.Style = []
         ParentFont = False
         TabOrder = 2
-        ExplicitLeft = 544
       end
       object btNovo: TBitBtn
         AlignWithMargins = True
@@ -753,7 +733,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 3
         OnClick = btNovoClick
-        ExplicitLeft = 634
       end
       object btExcluir: TBitBtn
         AlignWithMargins = True
@@ -821,7 +800,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 4
         OnClick = btExcluirClick
-        ExplicitLeft = 690
       end
       object edt_UnidadeMedida: TEdit
         Left = 397
@@ -837,7 +815,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
         Font.Style = []
         ParentFont = False
         TabOrder = 5
-        ExplicitLeft = 463
       end
     end
     object pnBotoesEdicao: TPanel
@@ -857,8 +834,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
       ParentFont = False
       TabOrder = 2
       TabStop = True
-      ExplicitTop = 448
-      ExplicitWidth = 745
       object GridPanel2: TGridPanel
         AlignWithMargins = True
         Left = 4
@@ -893,7 +868,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
             SizeStyle = ssAuto
           end>
         TabOrder = 0
-        ExplicitWidth = 737
         object Panel4: TPanel
           Left = 335
           Top = 0
@@ -902,8 +876,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitLeft = 368
-          ExplicitWidth = 369
           object btCancelar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -1318,7 +1290,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitWidth = 368
           object btGravar: TSpeedButton
             AlignWithMargins = True
             Left = 232
@@ -1481,7 +1452,7 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
     Height = 42
     Align = alTop
     BevelOuter = bvNone
-    Caption = 'Composi'#231#227'o de Meio de Cultura'
+    Caption = 'Composi'#231#227'o de Solu'#231#227'o de Estoque'
     Color = clSkyBlue
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -1491,8 +1462,6 @@ object frmComposicaoSolucaoEstoque: TfrmComposicaoSolucaoEstoque
     ParentBackground = False
     ParentFont = False
     TabOrder = 1
-    ExplicitLeft = -60
-    ExplicitWidth = 745
   end
   object cds_Pesquisa: TClientDataSet
     Aggregates = <>

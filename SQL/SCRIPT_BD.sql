@@ -503,3 +503,47 @@ ALTER TABLE opfinal_estagio_lote
    ON UPDATE CASCADE ON DELETE RESTRICT;
 CREATE INDEX fki_opf_e_l_opmc
   ON opfinal_estagio_lote(ordemproducaomc_id);
+
+CREATE TABLE public.ordemproducaosolucao
+(
+   id serial, 
+   datainclusao timestamp without time zone, 
+   id_usuarioinclusao bigint, 
+   id_produto bigint, 
+   quantidade double precision, 
+   id_usuarioencerramento bigint, 
+   dataencerramento timestamp without time zone, 
+   CONSTRAINT pk_ordemproducaosolucao PRIMARY KEY (id), 
+   CONSTRAINT fk_opsol_ui FOREIGN KEY (id_usuarioinclusao) REFERENCES usuario (id) ON UPDATE CASCADE ON DELETE RESTRICT, 
+   CONSTRAINT fk_opsol_prod FOREIGN KEY (id_produto) REFERENCES produto (id) ON UPDATE CASCADE ON DELETE RESTRICT, 
+   CONSTRAINT fk_opsol_ue FOREIGN KEY (id_usuarioencerramento) REFERENCES usuario (id) ON UPDATE CASCADE ON DELETE RESTRICT
+) 
+WITH (
+  OIDS = FALSE
+);
+
+CREATE TABLE public.ordemproducaosolucao_itens
+(
+   id serial, 
+   id_ordemproducaosolucao bigint, 
+   id_produto bigint, 
+   quantidade double precision, 
+   CONSTRAINT pk_ordemproducaosolucao_itens PRIMARY KEY (id), 
+   CONSTRAINT fk_opsoli_opsol FOREIGN KEY (id_ordemproducaosolucao) REFERENCES ordemproducaosolucao (id) ON UPDATE CASCADE ON DELETE CASCADE, 
+   CONSTRAINT fk_opsoli_prod FOREIGN KEY (id_produto) REFERENCES produto (id) ON UPDATE CASCADE ON DELETE RESTRICT
+) 
+WITH (
+  OIDS = FALSE
+);
+
+ALTER TABLE ordemproducaosolucao
+   ADD COLUMN encerrado boolean;
+
+ALTER TABLE ordemproducaosolucao
+   ADD COLUMN dataprevisao date;
+
+ALTER TABLE ordemproducaosolucao
+   ADD COLUMN observacao text;
+
+ALTER TABLE ordemproducaosolucao
+   ADD COLUMN observacaoencerramento text;
