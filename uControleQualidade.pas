@@ -47,6 +47,7 @@ type
     procedure SelecionaMotivoDescarte;
     procedure SelecionaPote;
     procedure LimparDados;
+    procedure GravarDescarte;
   public
     { Public declarations }
   end;
@@ -78,90 +79,15 @@ begin
 end;
 
 procedure TfrmControleQualidade.btDescartarClick(Sender: TObject);
-var
-  FWC : TFWConnection;
-  CQ  : TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE;
-  OPS : TOPFINAL_ESTAGIO_LOTE_S;
-  R   : TPRODUTO;
-  CE  : TCONTROLEESTOQUE;
-  CEP : TCONTROLEESTOQUEPRODUTO;
-  IMG : TIMAGEM;
-  IMGV: TOPFINAL_E_L_S_Q_IMAGEM;
 begin
-  FWC := TFWConnection.Create;
-  CQ  := TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE.Create(FWC);
-  OPS := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
-  R   := TPRODUTO.Create(FWC);
-  CE  := TCONTROLEESTOQUE.Create(FWC);
-  CEP := TCONTROLEESTOQUEPRODUTO.Create(FWC);
-  IMG := TIMAGEM.Create(FWC);
-  IMGV:= TOPFINAL_E_L_S_Q_IMAGEM.Create(FWC);
-  try
-
-    DisplayMsg(MSG_WAIT, 'Gravando dados! Aguarde...');
-    FWC.StartTransaction;
+  if btDescartar.Tag = 0 then begin
+    btDescartar.Tag := 1;
     try
-
-      CQ.ID.isNull := True;
-      CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value               := StrToInt(edt_CodigoPote.Text);
-      CQ.ID_MOTIVODESCARTE.Value                       := StrToInt(edt_CodigoMotivo.Text);
-//      CQ.NOMEIMAGEM.Value                              := NomeImagemAtual;
-      CQ.Insert;
-
-      IMG.ID.isNull                                    := True;
-      IMG.ID_USUARIO.Value                             := USUARIO.CODIGO;
-      IMG.NOMEIMAGEM.Value                             := ExtractFileName(NomeImagemAtual);
-      IMG.Insert;
-
-      IMGV.ID.isNull                                   := True;
-      IMGV.ID_OPFINAL_ESTAGIO_LOTE_S_QUALIDADE.Value   := CQ.ID.Value;
-      IMGV.ID_IMAGEM.Value                             := IMG.ID.Value;
-      IMGV.Insert;
-
-      OPS.ID.Value                                     := CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value;
-      OPS.BAIXADO.Value                                := True;
-      OPS.Update;
-
-      R.SelectList('ID = ' + IntToStr(lbPote.Tag));
-      if R.Count > 0 then begin
-        if TPRODUTO(R.Itens[0]).RECIPIENTEREAPROVEITAVEL.Value then begin
-          CE.ID.isNull              := True;
-          CE.DATAHORA.Value         := Now;
-          CE.USUARIO_ID.Value       := USUARIO.CODIGO;
-          CE.TIPOMOVIMENTACAO.Value := 0;
-          CE.CANCELADO.Value        := False;
-          CE.OBSERVACAO.Value       := 'Baixa do pote ' + edt_CodigoPote.Text;
-          CE.Insert;
-
-          CEP.ID.isNull := True;
-          CEP.CONTROLEESTOQUE_ID.Value := CE.ID.Value;
-          CEP.PRODUTO_ID.Value         := lbPote.Tag;
-          CEP.QUANTIDADE.Value         := 1;
-          CEP.Insert;
-        end;
-      end;
-      FWC.Commit;
-      DisplayMsgFinaliza;
-      LimparDados;
-      if edt_CodigoPote.CanFocus then edt_CodigoPote.SetFocus;
-
-    except
-      on E : Exception do begin
-        FWC.Rollback;
-        DisplayMsg(MSG_WAR, 'Ocorreu um erro ao descartar o pote selecionado!', '', E.Message);
-      end;
+      GravarDescarte;
+    finally
+      btDescartar.Tag := 0;
     end;
-  finally
-    FreeAndNil(CQ);
-    FreeAndNil(OPS);
-    FreeAndNil(R);
-    FreeAndNil(CE);
-    FreeAndNil(CEP);
-    FreeAndNil(IMG);
-    FreeAndNil(IMGV);
-    FreeAndNil(FWC);
   end;
-
 end;
 
 procedure TfrmControleQualidade.btFecharClick(Sender: TObject);
@@ -190,7 +116,7 @@ var
   DirNomeFoto: string;
   NomeFoto: string;
 begin
-  fCaptura := TfCaptura.Create(Self);
+  fCaptura := TfCaptura.Create(nil);
   try
     DirNomeFoto := ExtractFilePath(Application.ExeName) +
       FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + edt_CodigoPote.Text +'.bmp';
@@ -244,9 +170,98 @@ begin
         Close;
     end;
   end;
-  if Key = VK_RETURN then begin
+end;
 
+procedure TfrmControleQualidade.GravarDescarte;
+var
+  FWC : TFWConnection;
+  CQ  : TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE;
+  OPS : TOPFINAL_ESTAGIO_LOTE_S;
+  R   : TPRODUTO;
+  CE  : TCONTROLEESTOQUE;
+  CEP : TCONTROLEESTOQUEPRODUTO;
+  IMG : TIMAGEM;
+  IMGV: TOPFINAL_E_L_S_Q_IMAGEM;
+begin
 
+  if Length(Trim(edt_Motivo.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Motivo do Descarte não Selecionado, Verifique!');
+    if edt_CodigoMotivo.CanFocus then
+      edt_CodigoMotivo.SetFocus;
+    Exit;
+  end;
+
+  FWC := TFWConnection.Create;
+  CQ  := TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE.Create(FWC);
+  OPS := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
+  R   := TPRODUTO.Create(FWC);
+  CE  := TCONTROLEESTOQUE.Create(FWC);
+  CEP := TCONTROLEESTOQUEPRODUTO.Create(FWC);
+  IMG := TIMAGEM.Create(FWC);
+  IMGV:= TOPFINAL_E_L_S_Q_IMAGEM.Create(FWC);
+  try
+    FWC.StartTransaction;
+    try
+
+      CQ.ID.isNull := True;
+      CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value               := StrToInt(edt_CodigoPote.Text);
+      CQ.ID_MOTIVODESCARTE.Value                       := StrToInt(edt_CodigoMotivo.Text);
+      CQ.Insert;
+
+      IMG.ID.isNull                                    := True;
+      IMG.ID_USUARIO.Value                             := USUARIO.CODIGO;
+      IMG.NOMEIMAGEM.Value                             := ExtractFileName(NomeImagemAtual);
+      IMG.Insert;
+
+      IMGV.ID.isNull                                   := True;
+      IMGV.ID_OPFINAL_ESTAGIO_LOTE_S_QUALIDADE.Value   := CQ.ID.Value;
+      IMGV.ID_IMAGEM.Value                             := IMG.ID.Value;
+      IMGV.Insert;
+
+      OPS.ID.Value                                     := CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value;
+      OPS.BAIXADO.Value                                := True;
+      OPS.Update;
+
+      R.SelectList('ID = ' + IntToStr(lbPote.Tag));
+      if R.Count > 0 then begin
+        if TPRODUTO(R.Itens[0]).RECIPIENTEREAPROVEITAVEL.Value then begin
+          CE.ID.isNull              := True;
+          CE.DATAHORA.Value         := Now;
+          CE.USUARIO_ID.Value       := USUARIO.CODIGO;
+          CE.TIPOMOVIMENTACAO.Value := 0;
+          CE.CANCELADO.Value        := False;
+          CE.OBSERVACAO.Value       := 'Baixa do pote ' + edt_CodigoPote.Text;
+          CE.Insert;
+
+          CEP.ID.isNull := True;
+          CEP.CONTROLEESTOQUE_ID.Value := CE.ID.Value;
+          CEP.PRODUTO_ID.Value         := lbPote.Tag;
+          CEP.QUANTIDADE.Value         := 1;
+          CEP.Insert;
+        end;
+      end;
+      FWC.Commit;
+
+      LimparDados;
+
+      if edt_CodigoPote.CanFocus then
+        edt_CodigoPote.SetFocus;
+
+    except
+      on E : Exception do begin
+        FWC.Rollback;
+        DisplayMsg(MSG_WAR, 'Ocorreu um erro ao descartar o pote selecionado!', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(CQ);
+    FreeAndNil(OPS);
+    FreeAndNil(R);
+    FreeAndNil(CE);
+    FreeAndNil(CEP);
+    FreeAndNil(IMG);
+    FreeAndNil(IMGV);
+    FreeAndNil(FWC);
   end;
 end;
 

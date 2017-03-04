@@ -37,12 +37,12 @@ begin
 end;
 
 procedure TfCaptura.FormShow(Sender: TObject);
-var
-  P : ^TTabImage;
+//var
+//  P : ^TTabImage;
 begin
   try
     camCamera.Actif := True;
-    New(P);
+    //New(P);
     fCaptura.Caption := fCaptura.Caption + camCamera.FichierImage;
   except
     MessageDlg('Ocorreu um erro ao tentar ativar a Webcam.' + #13 +
