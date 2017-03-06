@@ -143,6 +143,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Cadastro de Plantas'
         OnClick = CadastrodePlantas1Click
       end
+      object PosiodeEstoque1: TMenuItem
+        Caption = 'Posi'#231#227'o de Estoque'
+        OnClick = PosiodeEstoque1Click
+      end
     end
     object Configuraes1: TMenuItem
       Caption = 'Configura'#231#245'es'

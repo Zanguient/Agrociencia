@@ -45,6 +45,7 @@ type
     PlanejamentodaProduo1: TMenuItem;
     ComposiodeSoluodeEstoque1: TMenuItem;
     SoluodeEstoque1: TMenuItem;
+    PosiodeEstoque1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -75,6 +76,7 @@ type
     procedure Agendamento1Click(Sender: TObject);
     procedure ComposiodeSoluodeEstoque1Click(Sender: TObject);
     procedure SoluodeEstoque1Click(Sender: TObject);
+    procedure PosiodeEstoque1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -122,7 +124,8 @@ uses
   uControleQualidadePositivo,
   uPlanejamentoProducao,
   uComposicaoSolucaoEstoque,
-  uOrdemProducaoSolucao;
+  uOrdemProducaoSolucao,
+  uRelPosicaoEstoque;
 
 {$R *.dfm}
 
@@ -418,6 +421,17 @@ begin
     frmOrdemProducaoMeioCultura.ShowModal;
   finally
     FreeAndNil(frmOrdemProducaoMeioCultura);
+  end;
+end;
+
+procedure TfrmPrincipal.PosiodeEstoque1Click(Sender: TObject);
+begin
+  try
+    if frmRelPosicaoEstoque = nil then
+      frmRelPosicaoEstoque := TfrmRelPosicaoEstoque.Create(Self);
+    frmRelPosicaoEstoque.ShowModal;
+  finally
+    FreeAndNil(frmRelPosicaoEstoque);
   end;
 end;
 

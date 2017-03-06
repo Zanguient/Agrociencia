@@ -80,7 +80,8 @@ uses
   uBeanOrdemProducaoSolucao in 'Beans\uBeanOrdemProducaoSolucao.pas',
   uBeanOrdemProducaoSolucao_Itens in 'Beans\uBeanOrdemProducaoSolucao_Itens.pas',
   uOrdemProducaoSolucao in 'uOrdemProducaoSolucao.pas' {frmOrdemProducaoSolucao},
-  uFotosEstagio in 'uFotosEstagio.pas' {Form1};
+  uFotosEstagio in 'uFotosEstagio.pas' {Form1},
+  uRelPosicaoEstoque in 'uRelPosicaoEstoque.pas' {frmRelPosicaoEstoque};
 
 {$R *.res}
 
