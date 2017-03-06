@@ -736,8 +736,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitLeft = 427
-          ExplicitTop = -1
           object btCancelar: TSpeedButton
             AlignWithMargins = True
             Left = 3
@@ -2086,13 +2084,13 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Filter = 
-      'All (*.gif;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.ico;*.emf;*.w' +
-      'mf)|*.gif;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.ico;*.emf;*.wm' +
-      'f|GIF Image (*.gif)|*.gif|JPEG Image File (*.jpg)|*.jpg|JPEG Ima' +
-      'ge File (*.jpeg)|*.jpeg|Portable Network Graphics (*.png)|*.png|' +
-      'Bitmaps (*.bmp)|*.bmp|TIFF Images (*.tif)|*.tif|TIFF Images (*.t' +
-      'iff)|*.tiff|Icons (*.ico)|*.ico|Enhanced Metafiles (*.emf)|*.emf' +
-      '|Metafiles (*.wmf)|*.wmf'
+      'All (*.gif;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.ico;*.emf;*.wmf)|*.' +
+      'gif;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.ico;*.emf;*.wmf|GIF Image ' +
+      '(*.gif)|*.gif|JPEG Image File (*.jpg)|*.jpg|JPEG Image File (*.j' +
+      'peg)|*.jpeg|Portable Network Graphics (*.png)|*.png|Bitmaps (*.b' +
+      'mp)|*.bmp|TIFF Images (*.tif)|*.tif|TIFF Images (*.tiff)|*.tiff|' +
+      'Icons (*.ico)|*.ico|Enhanced Metafiles (*.emf)|*.emf|Metafiles (' +
+      '*.wmf)|*.wmf'
     Left = 663
     Top = 330
   end

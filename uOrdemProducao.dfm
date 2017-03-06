@@ -2265,7 +2265,7 @@ object frmOrdemProducao: TfrmOrdemProducao
     Left = 360
     Top = 304
     Bitmap = {
-      494C010103001400880020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101030014008C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2817,13 +2817,13 @@ object frmOrdemProducao: TfrmOrdemProducao
   end
   object OpenPictureDialog1: TOpenPictureDialog
     Filter = 
-      'All (*.gif;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.ico;*.emf;*.w' +
-      'mf)|*.gif;*.jpg;*.jpeg;*.png;*.bmp;*.tif;*.tiff;*.ico;*.emf;*.wm' +
-      'f|GIF Image (*.gif)|*.gif|JPEG Image File (*.jpg)|*.jpg|JPEG Ima' +
-      'ge File (*.jpeg)|*.jpeg|Portable Network Graphics (*.png)|*.png|' +
-      'Bitmaps (*.bmp)|*.bmp|TIFF Images (*.tif)|*.tif|TIFF Images (*.t' +
-      'iff)|*.tiff|Icons (*.ico)|*.ico|Enhanced Metafiles (*.emf)|*.emf' +
-      '|Metafiles (*.wmf)|*.wmf'
+      'All (*.gif;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.ico;*.emf;*.wmf)|*.' +
+      'gif;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.ico;*.emf;*.wmf|GIF Image ' +
+      '(*.gif)|*.gif|JPEG Image File (*.jpg)|*.jpg|JPEG Image File (*.j' +
+      'peg)|*.jpeg|Portable Network Graphics (*.png)|*.png|Bitmaps (*.b' +
+      'mp)|*.bmp|TIFF Images (*.tif)|*.tif|TIFF Images (*.tiff)|*.tiff|' +
+      'Icons (*.ico)|*.ico|Enhanced Metafiles (*.emf)|*.emf|Metafiles (' +
+      '*.wmf)|*.wmf'
     Left = 663
     Top = 330
   end

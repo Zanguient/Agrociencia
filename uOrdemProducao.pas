@@ -101,9 +101,9 @@ type
     btnImagemWebCam: TBitBtn;
     btnSalvarImagem: TBitBtn;
     btnImagemArquivo: TBitBtn;
-    OpenPictureDialog1: TOpenPictureDialog;
     cds_Etiqueta1PRODUTO: TStringField;
     cds_PesquisaIDPRODUTO: TIntegerField;
+    OpenPictureDialog1: TOpenPictureDialog;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

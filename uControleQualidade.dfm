@@ -535,7 +535,15 @@ object frmControleQualidade: TfrmControleQualidade
     end
   end
   object OpenPictureDialog1: TOpenPictureDialog
-    Left = 344
-    Top = 232
+    Filter = 
+      'All (*.gif;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.ico;*.emf;*.wmf)|*.' +
+      'gif;*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.ico;*.emf;*.wmf|GIF Image ' +
+      '(*.gif)|*.gif|JPEG Image File (*.jpg)|*.jpg|JPEG Image File (*.j' +
+      'peg)|*.jpeg|Portable Network Graphics (*.png)|*.png|Bitmaps (*.b' +
+      'mp)|*.bmp|TIFF Images (*.tif)|*.tif|TIFF Images (*.tiff)|*.tiff|' +
+      'Icons (*.ico)|*.ico|Enhanced Metafiles (*.emf)|*.emf|Metafiles (' +
+      '*.wmf)|*.wmf'
+    Left = 663
+    Top = 330
   end
 end

@@ -958,7 +958,7 @@ begin
   P      := TPRODUTO.Create(FWC);
   UN     := TUNIDADEMEDIDA.Create(FWC);
   try
-    Filtro := 'finalidade = 2';
+    Filtro := 'finalidade in (2,5)';
     edtMateriaPrima.Tag := DMUtil.Selecionar(P, edtMateriaPrima.Text, Filtro);
     if edtMateriaPrima.Tag > 0 then begin
       P.SelectList('id = ' + IntToStr(edtMateriaPrima.Tag));
