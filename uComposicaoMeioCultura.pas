@@ -146,9 +146,11 @@ uses
 
 procedure TfrmComposicaoMeioCultura.btAlterarClick(Sender: TObject);
 begin
-  InvertePaineis;
-  pnCadastro.Tag := cds_PesquisaID.Value;
-  SelecionaComponentes;
+  if not cds_Pesquisa.IsEmpty then begin
+    InvertePaineis;
+    pnCadastro.Tag := cds_PesquisaID.Value;
+    SelecionaComponentes;
+  end;
 end;
 
 procedure TfrmComposicaoMeioCultura.btCancelarClick(Sender: TObject);

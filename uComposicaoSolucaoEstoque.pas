@@ -98,9 +98,11 @@ uses
 
 procedure TfrmComposicaoSolucaoEstoque.btAlterarClick(Sender: TObject);
 begin
-  InvertePaineis;
-  pnCadastro.Tag := cds_PesquisaID.Value;
-  SelecionaComponentes;
+  if not cds_Pesquisa.IsEmpty then begin
+    InvertePaineis;
+    pnCadastro.Tag := cds_PesquisaID.Value;
+    SelecionaComponentes;
+  end;
 end;
 
 procedure TfrmComposicaoSolucaoEstoque.btCancelarClick(Sender: TObject);
