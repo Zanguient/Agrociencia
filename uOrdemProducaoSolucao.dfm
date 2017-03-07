@@ -317,7 +317,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
             ExplicitLeft = 114
             ExplicitTop = -3
           end
-          object SpeedButton1: TSpeedButton
+          object btNovo: TSpeedButton
             AlignWithMargins = True
             Left = 148
             Top = 3
@@ -382,7 +382,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFDFBDAEAB5227AD5328AE5328AE5428AF5529B05529E2
               BFAEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
-            OnClick = SpeedButton1Click
+            OnClick = btNovoClick
             ExplicitLeft = 12
             ExplicitTop = 8
             ExplicitHeight = 42
@@ -577,7 +577,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
             ExplicitTop = 8
             ExplicitHeight = 42
           end
-          object SpeedButton2: TSpeedButton
+          object btExcluir: TSpeedButton
             AlignWithMargins = True
             Left = 3
             Top = 3
@@ -642,7 +642,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
               FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
-            OnClick = SpeedButton2Click
+            OnClick = btExcluirClick
             ExplicitLeft = 12
             ExplicitTop = 8
             ExplicitHeight = 42
@@ -731,7 +731,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
     ParentBackground = False
     TabOrder = 2
     Visible = False
-    object GroupBox3: TGroupBox
+    object gbMateriaPrima: TGroupBox
       AlignWithMargins = True
       Left = 3
       Top = 72
@@ -739,7 +739,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
       Height = 60
       Align = alTop
       Caption = '  Selecione a Mat'#233'ria-Prima  '
-      TabOrder = 0
+      TabOrder = 1
       DesignSize = (
         724
         60)
@@ -828,7 +828,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
         ParentFont = False
         TabOrder = 2
       end
-      object btNovo: TBitBtn
+      object btAdd: TBitBtn
         AlignWithMargins = True
         Left = 557
         Top = 18
@@ -935,9 +935,9 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
           04005104005104005104005104005104005104005104005104DBDBDBF3F3F3FF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 3
-        OnClick = btNovoClick
+        OnClick = btAddClick
       end
-      object btExcluir: TBitBtn
+      object btDel: TBitBtn
         AlignWithMargins = True
         Left = 613
         Top = 18
@@ -1002,7 +1002,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         TabOrder = 4
-        OnClick = btExcluirClick
+        OnClick = btDelClick
       end
       object btBuscar: TBitBtn
         AlignWithMargins = True
@@ -1090,9 +1090,9 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
     object pnBotoesEdicao: TPanel
       AlignWithMargins = True
       Left = 3
-      Top = 344
+      Top = 216
       Width = 724
-      Height = 60
+      Height = 188
       Align = alBottom
       BevelOuter = bvNone
       Color = clWhite
@@ -1103,15 +1103,28 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
       Font.Style = []
       ParentBackground = False
       ParentFont = False
-      TabOrder = 4
+      TabOrder = 3
       TabStop = True
-      object GridPanel2: TGridPanel
+      object Label1: TLabel
         AlignWithMargins = True
         Left = 3
         Top = 3
         Width = 718
+        Height = 20
+        Align = alTop
+        AutoSize = False
+        Caption = 'Observa'#231#227'o:'
+        ExplicitLeft = 0
+        ExplicitTop = 8
+        ExplicitWidth = 724
+      end
+      object GridPanel2: TGridPanel
+        AlignWithMargins = True
+        Left = 3
+        Top = 131
+        Width = 718
         Height = 54
-        Align = alClient
+        Align = alBottom
         BevelOuter = bvNone
         ColumnCollection = <
           item
@@ -1138,7 +1151,8 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
           item
             SizeStyle = ssAuto
           end>
-        TabOrder = 0
+        TabOrder = 1
+        ExplicitTop = 72
         object Panel4: TPanel
           Left = 359
           Top = 0
@@ -1146,7 +1160,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
           Height = 54
           Align = alClient
           BevelOuter = bvNone
-          TabOrder = 0
+          TabOrder = 1
           object btn_Cancelar: TBitBtn
             AlignWithMargins = True
             Left = 3
@@ -1560,7 +1574,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
           Height = 54
           Align = alClient
           BevelOuter = bvNone
-          TabOrder = 1
+          TabOrder = 0
           object btGravar: TBitBtn
             AlignWithMargins = True
             Left = 256
@@ -1711,13 +1725,32 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
           end
         end
       end
+      object mmObservacao: TMemo
+        AlignWithMargins = True
+        Left = 3
+        Top = 29
+        Width = 718
+        Height = 96
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        ExplicitLeft = 0
+        ExplicitTop = 8
+        ExplicitWidth = 724
+        ExplicitHeight = 80
+      end
     end
-    object dg_MateriaPrima: TDBGrid
+    object gdMateriaPrima: TDBGrid
       AlignWithMargins = True
       Left = 3
       Top = 138
       Width = 724
-      Height = 91
+      Height = 72
       Align = alClient
       BorderStyle = bsNone
       DataSource = ds_MateriaPrima
@@ -1729,7 +1762,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
       Font.Style = []
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
       ParentFont = False
-      TabOrder = 1
+      TabOrder = 2
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
       TitleFont.Height = -16
@@ -1766,7 +1799,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
       Height = 63
       Align = alTop
       Caption = 'Solu'#231#227'o de Estoque'
-      TabOrder = 2
+      TabOrder = 0
       DesignSize = (
         724
         63)
@@ -1866,45 +1899,6 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
         ParentFont = False
         ShowNullDate = False
         TabOrder = 3
-      end
-    end
-    object Panel1: TPanel
-      Left = 0
-      Top = 232
-      Width = 730
-      Height = 109
-      Align = alBottom
-      BevelOuter = bvNone
-      TabOrder = 3
-      object Label1: TLabel
-        Left = 0
-        Top = 0
-        Width = 730
-        Height = 13
-        Align = alTop
-        AutoSize = False
-        Caption = 'Observa'#231#227'o:'
-        ExplicitLeft = 16
-        ExplicitTop = 8
-        ExplicitWidth = 62
-      end
-      object mmObservacao: TMemo
-        Left = 0
-        Top = 13
-        Width = 730
-        Height = 96
-        Align = alClient
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 0
-        ExplicitLeft = 1
-        ExplicitTop = 14
-        ExplicitWidth = 728
-        ExplicitHeight = 94
       end
     end
   end

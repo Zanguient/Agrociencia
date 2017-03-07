@@ -113,8 +113,8 @@ begin
       Consulta.SQL.Add('LEFT JOIN CONTROLEESTOQUEPRODUTO CEP ON (CEP.PRODUTO_ID = P.ID)');
       Consulta.SQL.Add('LEFT JOIN CONTROLEESTOQUE CE ON (CE.ID = CEP.CONTROLEESTOQUE_ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
-      Consulta.SQL.Add('AND CE.CANCELADO = FALSE');
-      Consulta.SQL.Add('AND CAST(CE.DATAHORA AS DATE) <= :DATA');
+      Consulta.SQL.Add('AND COALESCE(CE.CANCELADO, FALSE) = FALSE');
+      Consulta.SQL.Add('AND CAST(COALESCE(CE.DATAHORA, :DATA) AS DATE) <= :DATA');
       Consulta.SQL.Add('GROUP BY 1, 2, 3');
       Consulta.SQL.Add('ORDER BY 1');
 

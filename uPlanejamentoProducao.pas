@@ -69,6 +69,17 @@ type
     CDS_OPGERADAIMPRIMIROP: TIntegerField;
     CDS_NOVAOPIDOPF: TIntegerField;
     CDS_NOVAOPSALDOPOTES: TIntegerField;
+    TSOPESOL: TTabSheet;
+    gdOPESolEstoque: TDBGrid;
+    Panel5: TPanel;
+    CDS_ESOLESTOQUE: TClientDataSet;
+    DS_ESOLESTOQUE: TDataSource;
+    CDS_ESOLESTOQUEID: TIntegerField;
+    CDS_ESOLESTOQUEDATA: TDateField;
+    CDS_ESOLESTOQUESOLUCAO: TStringField;
+    CDS_ESOLESTOQUEVOLUMEFINAL: TStringField;
+    CDS_ESOLESTOQUEABRIROP: TIntegerField;
+    CDS_ESOLESTOQUEIMPRIMIROP: TIntegerField;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -88,6 +99,9 @@ type
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure gdOPGeradaCellClick(Column: TColumn);
     procedure gdGerarOPCellClick(Column: TColumn);
+    procedure gdOPESolEstoqueDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure gdOPESolEstoqueCellClick(Column: TColumn);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -95,6 +109,7 @@ type
     procedure CarregarMeiodeCultura;
     procedure CarregarGerarNovaOP;
     procedure CarregarOPGerada;
+    procedure CarregarESolEstoque;
     { Private declarations }
   public
     { Public declarations }
@@ -111,7 +126,9 @@ uses
   uMensagem,
   uFuncoes,
   uOrdemProducao,
-  uControleEstagioOPF, uOrdemProducaoMeioCultura;
+  uControleEstagioOPF,
+  uOrdemProducaoMeioCultura,
+  uOrdemProducaoSolucao;
 {$R *.dfm}
 
 { TfrmAgendamento }
@@ -132,7 +149,12 @@ begin
       if PageControl1.ActivePage = TSNOP then
         AutoSizeDBGrid(gdGerarOP)
       else
-        AutoSizeDBGrid(gdOPGerada);
+        if PageControl1.ActivePage = TSOPG then
+          AutoSizeDBGrid(gdOPGerada)
+        else
+          if PageControl1.ActivePage = TSOPESOL then
+            AutoSizeDBGrid(gdOPESolEstoque);
+
 end;
 
 procedure TfrmPlanejamentoProducao.btConsultaClick(Sender: TObject);
@@ -144,6 +166,78 @@ begin
     finally
       btConsulta.Tag := 0;
     end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.CarregarESolEstoque;
+var
+  FWC       : TFWConnection;
+  Consulta  : TFDQuery;
+begin
+
+  FWC       := TFWConnection.Create;
+  Consulta  := TFDQuery.Create(nil);
+
+  try
+    try
+
+      CDS_ESOLESTOQUE.DisableControls;
+
+      CDS_ESOLESTOQUE.EmptyDataSet;
+
+      Consulta.Close;
+      Consulta.SQL.Clear;
+      Consulta.SQL.Add('SELECT');
+      Consulta.SQL.Add('	OPS.ID,');
+      Consulta.SQL.Add('	OPS.DATAPREVISAO AS DATA,');
+      Consulta.SQL.Add('	P.DESCRICAO AS SOLUCAO,');
+      Consulta.SQL.Add('	OPS.QUANTIDADE,');
+      Consulta.SQL.Add('	UN.SIMBOLO');
+      Consulta.SQL.Add('FROM ORDEMPRODUCAOSOLUCAO OPS');
+      Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPS.ID_PRODUTO)');
+      Consulta.SQL.Add('INNER JOIN UNIDADEMEDIDA UN ON (UN.ID = P.UNIDADEMEDIDA_ID)');
+      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND CAST(OPS.DATAPREVISAO AS DATE) BETWEEN :DATAI AND :DATAF');
+      Consulta.SQL.Add('AND OPS.ENCERRADO = FALSE');
+
+      Consulta.Connection                     := FWC.FDConnection;
+
+      Consulta.ParamByName('DATAI').DataType  := ftDate;
+      Consulta.ParamByName('DATAF').DataType  := ftDate;
+      Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
+      Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
+
+      Consulta.Prepare;
+      Consulta.Open;
+      Consulta.FetchAll;
+
+      if not Consulta.IsEmpty then begin
+        Consulta.First;
+        while not Consulta.Eof do begin
+          CDS_ESOLESTOQUE.Append;
+          CDS_ESOLESTOQUEID.Value           := Consulta.FieldByName('ID').AsInteger;
+          CDS_ESOLESTOQUEDATA.Value         := Consulta.FieldByName('DATA').AsDateTime;
+          CDS_ESOLESTOQUESOLUCAO.Value      := Consulta.FieldByName('SOLUCAO').AsString;
+          CDS_ESOLESTOQUEVOLUMEFINAL.Value  := Consulta.FieldByName('QUANTIDADE').AsString + ' ' + Consulta.FieldByName('SIMBOLO').AsString;
+          CDS_ESOLESTOQUEABRIROP.Value      := 0;
+          CDS_ESOLESTOQUEIMPRIMIROP.Value   := 0;
+          CDS_ESOLESTOQUE.Post;
+          Consulta.Next;
+        end;
+      end;
+
+      TSOPESOL.TabVisible := not Consulta.IsEmpty;
+      TSOPESOL.Caption    := 'Ordem de Produção de Solução Estoque (' + IntToStr(Consulta.RecordCount) + ')';
+
+    Except
+      on E : Exception do begin
+        DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta das Produções da Solução Estoque!', '', E.Message);
+      end;
+    end;
+  finally
+    CDS_ESOLESTOQUE.EnableControls;
+    FreeAndNil(Consulta);
+    FreeAndNil(FWC);
   end;
 end;
 
@@ -485,6 +579,7 @@ begin
   CarregarMeiodeCultura;
   CarregarGerarNovaOP;
   CarregarOPGerada;
+  CarregarESolEstoque;
 end;
 
 procedure TfrmPlanejamentoProducao.FormCreate(Sender: TObject);
@@ -493,6 +588,7 @@ begin
   CDS_MEIOCULTURA.CreateDataSet;
   CDS_NOVAOP.CreateDataSet;
   CDS_OPGERADA.CreateDataSet;
+  CDS_ESOLESTOQUE.CreateDataSet;
   AjustaForm(Self);
 end;
 
@@ -611,6 +707,52 @@ begin
       TextRect(Rect, (Rect.Left + Rect.Right - TextWidth(SCapt)) div 2, (Rect.Top + Rect.Bottom - TextHeight(SCapt)) div 2, SCapt);
     end;
   end;
+end;
+
+procedure TfrmPlanejamentoProducao.gdOPESolEstoqueCellClick(Column: TColumn);
+begin
+  if gdOPESolEstoque.SelectedField.FieldName = 'IMPRIMIROP' then begin
+    if Assigned(Self.gdOPESolEstoque.DataSource.DataSet.FindField('ID')) then
+      ImprimirOPSOL(Self.gdOPESolEstoque.DataSource.DataSet.FieldByName('ID').AsInteger);
+  end else begin
+    if gdOPESolEstoque.SelectedField.FieldName = 'ABRIROP' then begin
+      if Assigned(Self.gdOPESolEstoque.DataSource.DataSet.FindField('ID')) then begin
+        if not Assigned(frmOrdemProducaoSolucao) then
+          frmOrdemProducaoSolucao := TfrmOrdemProducaoSolucao.Create(nil);
+        try
+          frmOrdemProducaoSolucao.Parametros.Codigo := Self.gdOPESolEstoque.DataSource.DataSet.FindField('ID').AsInteger;
+          frmOrdemProducaoSolucao.Parametros.Acao   := eAlterar;
+          frmOrdemProducaoSolucao.ShowModal;
+        finally
+          FreeAndNil(frmOrdemProducaoSolucao);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.gdOPESolEstoqueDrawColumnCell(
+  Sender: TObject; const Rect: TRect; DataCol: Integer; Column: TColumn;
+  State: TGridDrawState);
+var
+  BUTTON: Integer;
+  R: TRect;
+  SCapt : string;
+begin
+  if Pos(Column.FieldName, '|ABRIROP|IMPRIMIROP') > 0 then begin
+    gdOPESolEstoque.Canvas.FillRect(Rect);
+    BUTTON  := 0;
+    R       := Rect;
+    SCapt   := Column.Title.Caption;
+    InflateRect(R,-2,-2); //Diminue o tamanho do Botão
+    DrawFrameControl(gdOPESolEstoque.Canvas.Handle,R,BUTTON, BUTTON or BUTTON);
+    with gdOPESolEstoque.Canvas do begin
+      Brush.Style := bsClear;
+      Font.Color  := clBtnText;
+      TextRect(Rect, (Rect.Left + Rect.Right - TextWidth(SCapt)) div 2, (Rect.Top + Rect.Bottom - TextHeight(SCapt)) div 2, SCapt);
+    end;
+  end;
+
 end;
 
 procedure TfrmPlanejamentoProducao.gdOPGeradaCellClick(Column: TColumn);

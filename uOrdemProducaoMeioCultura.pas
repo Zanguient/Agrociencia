@@ -134,7 +134,6 @@ type
   private
     function AtualizarEdits(Limpar : Boolean) : Boolean;
     function Alterar : Boolean;
-
     procedure Cancelar;
     { Private declarations }
   public
@@ -327,6 +326,7 @@ begin
     if AtualizarEdits(False) then begin//Se Conseguiu Carregar os Dados Inverte os Painéis
       InvertePaineis;
       Result := True;
+      AutoSizeDBGrid(dg_MateriaPrima);
     end;
   end;
 end;
@@ -815,11 +815,9 @@ begin
 
   CarregarDados;
 
-  AutoSizeDBGrid(dg_MateriaPrima);
-  AutoSizeDBGrid(gdPesquisa);
-
   case Parametros.Acao of
-    eAlterar: begin
+    eNada : AutoSizeDBGrid(gdPesquisa);
+    eAlterar : begin
       if Parametros.Codigo > 0 then begin
         if Parametros.Codigo = cds_PesquisaID.AsInteger then begin
           if not Alterar then

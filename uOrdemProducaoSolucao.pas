@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids,
   Vcl.StdCtrls, Vcl.Buttons, Data.DB, Datasnap.DBClient, JvExStdCtrls, JvEdit,
   JvValidateEdit, Vcl.Mask, JvExMask, JvToolEdit, FireDAC.Comp.Client,
-  frxDBSet;
+  frxDBSet, uConstantes;
 
 type
   TfrmOrdemProducaoSolucao = class(TForm)
@@ -22,11 +22,11 @@ type
     gpBotoes: TGridPanel;
     Panel8: TPanel;
     btAlterar: TSpeedButton;
-    SpeedButton1: TSpeedButton;
+    btNovo: TSpeedButton;
     btRelatorio: TSpeedButton;
     Panel9: TPanel;
     btFechar: TSpeedButton;
-    SpeedButton2: TSpeedButton;
+    btExcluir: TSpeedButton;
     ds_Pesquisa: TDataSource;
     cds_Pesquisa: TClientDataSet;
     cds_PesquisaID: TIntegerField;
@@ -35,7 +35,7 @@ type
     cds_PesquisaDATAPREVISAO: TDateField;
     cds_PesquisaQUANTIDADE: TCurrencyField;
     pnDados: TPanel;
-    GroupBox3: TGroupBox;
+    gbMateriaPrima: TGroupBox;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
@@ -43,8 +43,8 @@ type
     edtMateriaPrima: TButtonedEdit;
     edtNomeMateriaPrima: TEdit;
     edt_Quantidade: TJvValidateEdit;
-    btNovo: TBitBtn;
-    btExcluir: TBitBtn;
+    btAdd: TBitBtn;
+    btDel: TBitBtn;
     btBuscar: TBitBtn;
     edt_UnidadeMedida: TEdit;
     pnBotoesEdicao: TPanel;
@@ -53,7 +53,7 @@ type
     btn_Cancelar: TBitBtn;
     Panel5: TPanel;
     btGravar: TBitBtn;
-    dg_MateriaPrima: TDBGrid;
+    gdMateriaPrima: TDBGrid;
     gbSolucaoEstoque: TGroupBox;
     Label7: TLabel;
     Label8: TLabel;
@@ -72,9 +72,8 @@ type
     ds_MateriaPrima: TDataSource;
     cds_PesquisaENCERRADO: TBooleanField;
     btEncerrar: TSpeedButton;
-    Panel1: TPanel;
-    Label1: TLabel;
     mmObservacao: TMemo;
+    Label1: TLabel;
     procedure edt_CodigoSolucaoEstoqueChange(Sender: TObject);
     procedure edt_CodigoSolucaoEstoqueKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -83,15 +82,15 @@ type
     procedure edtMateriaPrimaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edtMateriaPrimaRightButtonClick(Sender: TObject);
-    procedure btNovoClick(Sender: TObject);
-    procedure btExcluirClick(Sender: TObject);
+    procedure btAddClick(Sender: TObject);
+    procedure btDelClick(Sender: TObject);
     procedure btBuscarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btGravarClick(Sender: TObject);
     procedure btn_CancelarClick(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
+    procedure btNovoClick(Sender: TObject);
     procedure btAlterarClick(Sender: TObject);
-    procedure SpeedButton2Click(Sender: TObject);
+    procedure btExcluirClick(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btEncerrarClick(Sender: TObject);
@@ -101,18 +100,20 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
   private
+    function AtualizarEdits(Limpar : Boolean) : Boolean;
+    function Alterar : Boolean;
+    procedure Cancelar;
     { Private declarations }
   public
     { Public declarations }
+    Parametros : TPARAMETROS;
     procedure SelecionaSolucaoEstoque;
     procedure SelecionaMateriaPrima;
     procedure BuscaMateriaPrima;
     procedure InvertePaineis;
-    function AtualizaEdits(Limpar : Boolean) : Boolean;
     procedure CarregarDados;
     procedure DeletarOrdemProducao;
     procedure Filtrar;
-    procedure ImprimirOPSOL(Id : Integer);
   end;
 
 var
@@ -123,14 +124,54 @@ implementation
 uses
   uFWConnection, uBeanProdutos, uDMUtil, uBeanUnidadeMedida, uMensagem,
   uBeanProdutoComposicao, uBeanOrdemProducaoSolucao,
-  uBeanOrdemProducaoSolucao_Itens, uFuncoes, uConstantes, uBeanControleEstoque,
+  uBeanOrdemProducaoSolucao_Itens, uFuncoes, uBeanControleEstoque,
   uBeanControleEstoqueProduto;
 
 {$R *.dfm}
 
 { TfrmOrdemProducaoSolucao }
 
-function TfrmOrdemProducaoSolucao.AtualizaEdits(Limpar: Boolean) : Boolean;
+function TfrmOrdemProducaoSolucao.Alterar: Boolean;
+Var
+  FWC   : TFWConnection;
+  OPSOL : TORDEMPRODUCAOSOLUCAO;
+begin
+
+  Result := False;
+
+  if not cds_Pesquisa.IsEmpty then begin
+
+    FWC   := TFWConnection.Create;
+    OPSOL := TORDEMPRODUCAOSOLUCAO.Create(FWC);
+    try
+      try
+        OPSOL.SelectList('ID = ' + cds_PesquisaID.AsString);
+        if OPSOL.Count = 1 then begin
+          if TORDEMPRODUCAOSOLUCAO(OPSOL.Itens[0]).ENCERRADO.Value then begin
+            DisplayMsg(MSG_ERR, 'Ordem de Produção já Encerrada, Não pode ser Alterada!');
+            Exit;
+          end;
+        end;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_ERR, 'Erro ao Verificar Ordem de Produção, Verifique!', '', E.Message);
+        end;
+      end;
+    finally
+      FreeAndNil(OPSOL);
+      FreeAndNil(FWC);
+    end;
+
+    if AtualizarEdits(False) then begin//Se Conseguiu Carregar os Dados Inverte os Painéis
+      InvertePaineis;
+      Result := True;
+      AutoSizeDBGrid(gdMateriaPrima);
+    end;
+  end;
+end;
+
+function TfrmOrdemProducaoSolucao.AtualizarEdits(Limpar: Boolean) : Boolean;
 var
   FWC : TFWConnection;
   SOL : TORDEMPRODUCAOSOLUCAO;
@@ -150,6 +191,7 @@ begin
     edtMateriaPrima.Clear;
     edtNomeMateriaPrima.Clear;
     edt_Quantidade.Clear;
+    edt_UnidadeMedida.Clear;
     edt_CodigoSolucaoEstoque.Clear;
     edt_DescricaoSolucaoEstoque.Clear;
     edt_QuantidadeSolucaoEstoque.Clear;
@@ -226,12 +268,7 @@ end;
 
 procedure TfrmOrdemProducaoSolucao.btAlterarClick(Sender: TObject);
 begin
-  if cds_PesquisaENCERRADO.Value then begin
-    DisplayMsg(MSG_WAR, 'Ordem de Produção já foi encerrada!');
-    Exit;
-  end;
-  if AtualizaEdits(False) then //Se Conseguiu Carregar os Dados Inverte os Painéis
-    InvertePaineis;
+  Alterar;
 end;
 
 procedure TfrmOrdemProducaoSolucao.btBuscarClick(Sender: TObject);
@@ -249,80 +286,83 @@ var
   I         : Integer;
   Mensagem  : string;
 begin
+
   if cds_PesquisaENCERRADO.Value then begin
     DisplayMsg(MSG_WAR, 'Ordem de Produção já foi encerrada!');
     Exit;
   end;
 
   DisplayMsg(MSG_INPUT_TEXT, 'Informe a Observação do Encerramento!');
-  if ResultMsgModal in [mrOk, mrYes] then
+
+  if ResultMsgModal = mrOk then begin
+
     Mensagem := ResultMsgInputText;
 
-  DisplayMsg(MSG_WAIT, 'Encerrando Ordem de Produção');
-
-  FWC := TFWConnection.Create;
-  SOL := TORDEMPRODUCAOSOLUCAO.Create(FWC);
-  SOLI:= TORDEMPRODUCAOSOLUCAO_ITENS.Create(FWC);
-  CE  := TCONTROLEESTOQUE.Create(FWC);
-  CEP := TCONTROLEESTOQUEPRODUTO.Create(FWC);
-  try
-    FWC.StartTransaction;
+    FWC := TFWConnection.Create;
+    SOL := TORDEMPRODUCAOSOLUCAO.Create(FWC);
+    SOLI:= TORDEMPRODUCAOSOLUCAO_ITENS.Create(FWC);
+    CE  := TCONTROLEESTOQUE.Create(FWC);
+    CEP := TCONTROLEESTOQUEPRODUTO.Create(FWC);
     try
-      SOL.SelectList('ID = ' + cds_PesquisaID.AsString);
-      if SOL.Count > 0 then begin
-        SOL.ID.Value                      := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID.Value;
-        SOL.OBSERVACAOENCERRAMENTO.Value  := Mensagem;
-        SOL.ID_USUARIOENCERRAMENTO.Value  := USUARIO.CODIGO;
-        SOL.DATAENCERRAMENTO.Value        := Now;
-        SOL.ENCERRADO.Value               := True;
-        SOL.Update;
+      FWC.StartTransaction;
+      try
+        SOL.SelectList('ID = ' + cds_PesquisaID.AsString);
+        if SOL.Count > 0 then begin
+          SOL.ID.Value                      := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID.Value;
+          SOL.OBSERVACAOENCERRAMENTO.Value  := Mensagem;
+          SOL.ID_USUARIOENCERRAMENTO.Value  := USUARIO.CODIGO;
+          SOL.DATAENCERRAMENTO.Value        := Now;
+          SOL.ENCERRADO.Value               := True;
+          SOL.Update;
 
-        SOLI.SelectList('ID_ORDEMPRODUCAOSOLUCAO = ' + TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID.asString);
-        if SOLI.Count > 0 then begin
-          CE.ID.isNull                    := True;
-          CE.USUARIO_ID.Value             := USUARIO.CODIGO;
-          CE.TIPOMOVIMENTACAO.Value       := 0;
-          CE.CANCELADO.Value              := False;
-          CE.DATAHORA.Value               := Now;
-          CE.OBSERVACAO.Value             := 'Ordem de Produção de Solução de Estoque ' + cds_PesquisaID.AsString;
-          CE.Insert;
+          SOLI.SelectList('ID_ORDEMPRODUCAOSOLUCAO = ' + TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID.asString);
+          if SOLI.Count > 0 then begin
+            CE.ID.isNull                    := True;
+            CE.USUARIO_ID.Value             := USUARIO.CODIGO;
+            CE.TIPOMOVIMENTACAO.Value       := 0;
+            CE.CANCELADO.Value              := False;
+            CE.DATAHORA.Value               := Now;
+            CE.OBSERVACAO.Value             := 'Ordem de Produção de Solução de Estoque ' + cds_PesquisaID.AsString;
+            CE.Insert;
 
-          CEP.ID.isNull                   := True;
-          CEP.CONTROLEESTOQUE_ID.Value    := CE.ID.Value;
-          CEP.PRODUTO_ID.Value            := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID_PRODUTO.Value;
-          CEP.QUANTIDADE.Value            := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).QUANTIDADE.Value;
-          CEP.Insert;
-
-          for I := 0 to Pred(SOLI.Count) do begin
-            CEP.ID.isNull                 := True;
-            CEP.CONTROLEESTOQUE_ID.Value  := CE.ID.Value;
-            CEP.PRODUTO_ID.Value          := TORDEMPRODUCAOSOLUCAO_ITENS(SOLI.Itens[I]).ID_PRODUTO.Value;
-            CEP.QUANTIDADE.Value          := TORDEMPRODUCAOSOLUCAO_ITENS(SOLI.Itens[I]).QUANTIDADE.Value * -1;
+            CEP.ID.isNull                   := True;
+            CEP.CONTROLEESTOQUE_ID.Value    := CE.ID.Value;
+            CEP.PRODUTO_ID.Value            := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID_PRODUTO.Value;
+            CEP.QUANTIDADE.Value            := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).QUANTIDADE.Value;
             CEP.Insert;
+
+            for I := 0 to Pred(SOLI.Count) do begin
+              CEP.ID.isNull                 := True;
+              CEP.CONTROLEESTOQUE_ID.Value  := CE.ID.Value;
+              CEP.PRODUTO_ID.Value          := TORDEMPRODUCAOSOLUCAO_ITENS(SOLI.Itens[I]).ID_PRODUTO.Value;
+              CEP.QUANTIDADE.Value          := TORDEMPRODUCAOSOLUCAO_ITENS(SOLI.Itens[I]).QUANTIDADE.Value * -1;
+              CEP.Insert;
+            end;
           end;
         end;
-      end;
-      FWC.Commit;
-      DisplayMsgFinaliza;
-      CarregarDados;
-    except
-      on E : Exception do begin
-        FWC.Rollback;
-        DisplayMsg(MSG_WAR, 'Erro ao Encerrar Ordem de Produção', '', E.Message);
-        Exit;
-      end;
-    end;
-  finally
-    FreeAndNil(SOL);
-    FreeAndNil(SOLI);
-    FreeAndNil(CEP);
-    FreeAndNil(CE);
-    FreeAndNil(FWC);
-  end;
 
+        FWC.Commit;
+
+        CarregarDados;
+
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_WAR, 'Erro ao Encerrar Ordem de Produção', '', E.Message);
+          Exit;
+        end;
+      end;
+    finally
+      FreeAndNil(SOL);
+      FreeAndNil(SOLI);
+      FreeAndNil(CEP);
+      FreeAndNil(CE);
+      FreeAndNil(FWC);
+    end;
+  end;
 end;
 
-procedure TfrmOrdemProducaoSolucao.btExcluirClick(Sender: TObject);
+procedure TfrmOrdemProducaoSolucao.btDelClick(Sender: TObject);
 begin
   if not cds_MateriaPrima.IsEmpty then
     cds_MateriaPrima.Delete;
@@ -391,8 +431,12 @@ begin
 
       FWC.Commit;
 
-      InvertePaineis;
-      CarregarDados;
+      if Parametros.Codigo = 0 then begin
+        InvertePaineis;
+        CarregarDados;
+      end else
+        FecharTela := True;
+
     except
       on E : Exception do begin
         FWC.Rollback;
@@ -410,7 +454,7 @@ begin
 
 end;
 
-procedure TfrmOrdemProducaoSolucao.btNovoClick(Sender: TObject);
+procedure TfrmOrdemProducaoSolucao.btAddClick(Sender: TObject);
 begin
   if not cds_MateriaPrima.Locate(cds_MateriaPrimaIDPRODUTO.FieldName, edtMateriaPrima.Text, []) then begin
     cds_MateriaPrima.Append;
@@ -428,7 +472,7 @@ end;
 
 procedure TfrmOrdemProducaoSolucao.btn_CancelarClick(Sender: TObject);
 begin
-  InvertePaineis;
+  Cancelar;
 end;
 
 procedure TfrmOrdemProducaoSolucao.btPesquisarClick(Sender: TObject);
@@ -507,6 +551,18 @@ begin
   end;
 end;
 
+procedure TfrmOrdemProducaoSolucao.Cancelar;
+begin
+
+  if cds_Pesquisa.State in [dsInsert, dsEdit] then
+    cds_Pesquisa.Cancel;
+
+  if Parametros.Codigo > 0 then //Se Foi Chamada de outra Tela Fecha.
+    Close;
+
+  InvertePaineis;
+end;
+
 procedure TfrmOrdemProducaoSolucao.CarregarDados;
 var
   SQL : TFDQuery;
@@ -531,9 +587,18 @@ begin
     SQL.SQL.Add('INNER JOIN UNIDADEMEDIDA UN ON (UN.ID = P.UNIDADEMEDIDA_ID)');
     SQL.SQL.Add('WHERE 1 = 1');
 
-    case cbStatus.ItemIndex of
-      0 : SQL.SQL.Add('AND NOT SOL.ENCERRADO');
-      1 : SQL.SQL.Add('AND SOL.ENCERRADO');
+    case Parametros.Acao of
+      eNada : begin
+        case cbStatus.ItemIndex of
+          0 : SQL.SQL.Add('AND NOT SOL.ENCERRADO');
+          1 : SQL.SQL.Add('AND SOL.ENCERRADO');
+        end;
+      end;
+      eNovo : SQL.SQL.Add('AND 1 = 2'); //Não Precisa trazer nada na tela
+      eAlterar : begin
+        if Parametros.Codigo > 0 then //Parametro quando tela Chamada de outro Cadastro
+          SQL.SQL.Add('AND SOL.ID = ' + IntToStr(Parametros.Codigo));
+      end;
     end;
 
     SQL.Connection := FW.FDConnection;
@@ -658,6 +723,8 @@ end;
 
 procedure TfrmOrdemProducaoSolucao.FormCreate(Sender: TObject);
 begin
+  Parametros.Codigo := 0;
+  Parametros.Acao   := eNada;
   cds_Pesquisa.CreateDataSet;
   cds_MateriaPrima.CreateDataSet;
   AjustaForm(Self);
@@ -675,104 +742,35 @@ end;
 
 procedure TfrmOrdemProducaoSolucao.FormShow(Sender: TObject);
 begin
+
   CarregarDados;
-  AutoSizeDBGrid(gdPesquisa);
-end;
 
-procedure TfrmOrdemProducaoSolucao.ImprimirOPSOL(Id: Integer);
-var
-  FW    : TFWConnection;
-  SQL   : TFDQuery;
-  FR    : TfrxDBDataset;
-  SQL_I : TFDQuery;
-  FR_I  : TfrxDBDataset;
-begin
-  FW    := TFWConnection.Create;
-  SQL   := TFDQuery.Create(nil);
-  SQL_I := TFDQuery.Create(nil);
-  try
-    SQL.Close;
-    SQL.SQL.Clear;
-    SQL.Connection := FW.FDConnection;
-    SQL.SQL.Add('SELECT');
-    SQL.SQL.Add('Trim(LPAD(cast(OPMC.ID as varchar), 3, ''0'')) as ID,');
-    SQL.SQL.Add('OPMC.ID_PRODUTO,');
-    SQL.SQL.Add('PR.DESCRICAO,');
-    SQL.SQL.Add('OPMC.DATAINCLUSAO,');
-    SQL.SQL.Add('OPMC.QUANTIDADE,');
-    SQL.SQL.Add('OPMC.ID_USUARIOINCLUSAO,');
-    SQL.SQL.Add('OPMC.ID_USUARIOENCERRAMENTO,');
-    SQL.SQL.Add('OPMC.DATAPREVISAO,');
-    SQL.SQL.Add('OPMC.OBSERVACAO,');
-    SQL.SQL.Add('OPMC.OBSERVACAOENCERRAMENTO,');
-    SQL.SQL.Add('U.NOME AS USUARIOINCLUSAO,');
-    SQL.SQL.Add('UU.NOME AS USUARIOENCERRAMENTO,');
-    SQL.SQL.Add('OPMC.DATAENCERRAMENTO,');
-    SQL.SQL.Add('OPMC.ENCERRADO');
-    SQL.SQL.Add('FROM ORDEMPRODUCAOSOLUCAO OPMC');
-    SQL.SQL.Add('INNER JOIN PRODUTO PR ON OPMC.ID_PRODUTO = PR.ID');
-    SQL.SQL.Add('INNER JOIN USUARIO U ON OPMC.ID_USUARIOINCLUSAO = U.ID');
-    SQL.SQL.Add('INNER JOIN USUARIO UU ON OPMC.ID_USUARIOENCERRAMENTO = UU.ID');
-    SQL.SQL.Add('WHERE OPMC.ID = :ID');
-    SQL.ParamByName('ID').AsInteger := ID;
-    SQL.Prepare;
-    SQL.Open();
-
-    if SQL.IsEmpty then begin
-      DisplayMsg(MSG_INF, 'Dados da Ordem de Produção não encontrados!');
-      Exit;
+  case Parametros.Acao of
+    eNada : AutoSizeDBGrid(gdPesquisa);
+    eAlterar: begin
+      if Parametros.Codigo > 0 then begin
+        if Parametros.Codigo = cds_PesquisaID.AsInteger then begin
+          if not Alterar then
+            PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+        end else
+          PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+      end else
+        PostMessage(Self.Handle, WM_CLOSE, 0, 0);
     end;
-
-    SQL_I.Close;
-    SQL_I.SQL.Clear;
-    SQL_I.Connection := FW.FDConnection;
-    SQL_I.SQL.Add('SELECT');
-    SQL_I.SQL.Add('OPMCI.ID_PRODUTO,');
-    SQL_I.SQL.Add('PR.DESCRICAO,');
-    SQL_I.SQL.Add('UN.SIMBOLO,');
-    SQL_I.SQL.Add('OPMCI.QUANTIDADE');
-    SQL_I.SQL.Add('FROM ORDEMPRODUCAOSOLUCAO_ITENS OPMCI');
-    SQL_I.SQL.Add('INNER JOIN PRODUTO PR ON OPMCI.ID_PRODUTO = PR.ID');
-    SQL_I.SQL.Add('INNER JOIN UNIDADEMEDIDA UN ON PR.UNIDADEMEDIDA_ID = UN.ID');
-    SQL_I.SQL.Add('WHERE OPMCI.ID_ORDEMPRODUCAOSOLUCAO = :ID');
-    SQL_I.ParamByName('ID').AsInteger := ID;
-    SQL_I.Prepare;
-    SQL_I.Open();
-
-    FR    := TfrxDBDataset.Create(nil);
-    FR_I  := TfrxDBDataset.Create(nil);
-    try
-      FR.UserName     := 'ORDEMPRODUCAO';
-      FR_I.UserName   := 'ITENS';
-
-      FR.DataSet      := SQL;
-      FR_I.DataSet    := SQL_I;
-
-      DMUtil.ImprimirRelatorio('frOPSOL.fr3');
-      DisplayMsgFinaliza;
-    finally
-      FreeAndNil(FR_I);
-      FreeAndNil(FR);
-    end;
-  finally
-    FreeAndNil(SQL);
-    FreeAndNil(SQL_I);
-    FreeAndNil(FW);
   end;
 end;
 
 procedure TfrmOrdemProducaoSolucao.InvertePaineis;
-var
-  FW : TFWConnection;
 begin
   pnPesquisa.Visible               := not pnPesquisa.Visible;
   pnBotoesVisualizacao.Visible     := pnDados.Visible;
   pnDados.Visible                  := not pnDados.Visible;
   pnBotoesEdicao.Visible           := pnDados.Visible;
-    if edt_CodigoSolucaoEstoque.CanFocus then
-      edt_CodigoSolucaoEstoque.SetFocus;
 
-  AutoSizeDBGrid(dg_MateriaPrima);
+  if edt_CodigoSolucaoEstoque.CanFocus then
+    edt_CodigoSolucaoEstoque.SetFocus;
+
+  AutoSizeDBGrid(gdMateriaPrima);
   AutoSizeDBGrid(gdPesquisa);
 end;
 
@@ -836,13 +834,13 @@ begin
   end;
 end;
 
-procedure TfrmOrdemProducaoSolucao.SpeedButton1Click(Sender: TObject);
+procedure TfrmOrdemProducaoSolucao.btNovoClick(Sender: TObject);
 begin
-  if AtualizaEdits(True) then //Se Conseguiu Carregar os Dados Inverte os Painéis
+  if AtualizarEdits(True) then //Se Conseguiu Carregar os Dados Inverte os Painéis
     InvertePaineis;
 end;
 
-procedure TfrmOrdemProducaoSolucao.SpeedButton2Click(Sender: TObject);
+procedure TfrmOrdemProducaoSolucao.btExcluirClick(Sender: TObject);
 begin
   if not cds_Pesquisa.IsEmpty then begin
     if cds_PesquisaENCERRADO.Value then begin

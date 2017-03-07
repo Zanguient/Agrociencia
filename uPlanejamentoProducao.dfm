@@ -279,7 +279,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Top = 95
       Width = 896
       Height = 305
-      ActivePage = TSNOP
+      ActivePage = TSOPESOL
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -687,6 +687,101 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
             end>
         end
       end
+      object TSOPESOL: TTabSheet
+        Caption = 'Ordem de Produ'#231#227'o de Solu'#231#227'o Estoque'
+        ImageIndex = 4
+        object gdOPESolEstoque: TDBGrid
+          AlignWithMargins = True
+          Left = 3
+          Top = 51
+          Width = 882
+          Height = 220
+          Align = alClient
+          Color = clMoneyGreen
+          DataSource = DS_ESOLESTOQUE
+          DrawingStyle = gdsGradient
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -20
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+          ParentFont = False
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -16
+          TitleFont.Name = 'Tahoma'
+          TitleFont.Style = []
+          OnCellClick = gdOPESolEstoqueCellClick
+          OnDrawColumnCell = gdOPESolEstoqueDrawColumnCell
+          Columns = <
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'ID'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'DATA'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'SOLUCAO'
+              Width = 228
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'VOLUMEFINAL'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'ABRIROP'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'IMPRIMIROP'
+              Title.Alignment = taCenter
+              Width = 120
+              Visible = True
+            end>
+        end
+        object Panel5: TPanel
+          AlignWithMargins = True
+          Left = 3
+          Top = 3
+          Width = 882
+          Height = 42
+          Align = alTop
+          Caption = 'Ordem de Produ'#231#227'o de Solu'#231#227'o Estoque'
+          Color = clSkyBlue
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -21
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentBackground = False
+          ParentFont = False
+          TabOrder = 1
+        end
+      end
     end
   end
   object CDS_PLANTAS: TClientDataSet
@@ -855,6 +950,44 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
   object DS_OPGERADA: TDataSource
     DataSet = CDS_OPGERADA
     Left = 495
+    Top = 282
+  end
+  object CDS_ESOLESTOQUE: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 591
+    Top = 226
+    object CDS_ESOLESTOQUEID: TIntegerField
+      DisplayLabel = 'C'#243'digo OP'
+      DisplayWidth = 70
+      FieldName = 'ID'
+    end
+    object CDS_ESOLESTOQUEDATA: TDateField
+      DisplayLabel = 'Data'
+      DisplayWidth = 80
+      FieldName = 'DATA'
+    end
+    object CDS_ESOLESTOQUESOLUCAO: TStringField
+      DisplayLabel = 'Solu'#231#227'o'
+      FieldName = 'SOLUCAO'
+      Size = 5
+    end
+    object CDS_ESOLESTOQUEVOLUMEFINAL: TStringField
+      DisplayLabel = 'Volume Final'
+      FieldName = 'VOLUMEFINAL'
+    end
+    object CDS_ESOLESTOQUEABRIROP: TIntegerField
+      DisplayLabel = 'Abrir OP'
+      FieldName = 'ABRIROP'
+    end
+    object CDS_ESOLESTOQUEIMPRIMIROP: TIntegerField
+      DisplayLabel = 'Imprimir OP'
+      FieldName = 'IMPRIMIROP'
+    end
+  end
+  object DS_ESOLESTOQUE: TDataSource
+    DataSet = CDS_ESOLESTOQUE
+    Left = 591
     Top = 282
   end
 end
