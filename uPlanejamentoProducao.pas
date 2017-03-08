@@ -517,7 +517,6 @@ begin
 
       Consulta.Close;
       Consulta.SQL.Clear;
-      Consulta.SQL.Add('');
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPF.ID,');
       Consulta.SQL.Add('	OPF.DATAESTIMADAPROCESSAMENTO AS DATA,');

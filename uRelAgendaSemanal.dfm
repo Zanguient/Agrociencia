@@ -4,7 +4,7 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
   ActiveControl = edDataInicial
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio de Agenda Semanal'
-  ClientHeight = 339
+  ClientHeight = 262
   ClientWidth = 370
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -34,7 +34,6 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    ExplicitWidth = 343
     DesignSize = (
       364
       58)
@@ -77,13 +76,12 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       ParentFont = False
       ShowNullDate = False
       TabOrder = 1
-      ExplicitLeft = 222
     end
   end
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 276
+    Top = 199
     Width = 364
     Height = 60
     Align = alBottom
@@ -110,9 +108,8 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 4
-    ExplicitTop = 251
-    ExplicitWidth = 343
+    TabOrder = 3
+    ExplicitTop = 276
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -120,7 +117,6 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       Height = 58
       Align = alClient
       TabOrder = 0
-      ExplicitWidth = 170
       object btRelatorio: TSpeedButton
         AlignWithMargins = True
         Left = 62
@@ -245,8 +241,6 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       Height = 58
       Align = alClient
       TabOrder = 1
-      ExplicitLeft = 171
-      ExplicitWidth = 171
       object btFechar: TSpeedButton
         AlignWithMargins = True
         Left = 4
@@ -365,66 +359,11 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       end
     end
   end
-  object gbOpcoes: TGroupBox
-    AlignWithMargins = True
-    Left = 3
-    Top = 67
-    Width = 364
-    Height = 89
-    Align = alTop
-    Caption = ' Op'#231#245'es '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -16
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 1
-    ExplicitWidth = 339
-    DesignSize = (
-      364
-      89)
-    object cbMeioCultura: TCheckBox
-      AlignWithMargins = True
-      Left = 5
-      Top = 31
-      Width = 136
-      Height = 20
-      Caption = 'Meio de Cultura'
-      Checked = True
-      State = cbChecked
-      TabOrder = 0
-    end
-    object cbProdutoFinal: TCheckBox
-      AlignWithMargins = True
-      Left = 5
-      Top = 57
-      Width = 117
-      Height = 20
-      Caption = 'Produto Final'
-      Checked = True
-      State = cbChecked
-      TabOrder = 1
-    end
-    object cbRecebimentodePlantas: TCheckBox
-      AlignWithMargins = True
-      Left = 168
-      Top = 31
-      Width = 193
-      Height = 20
-      Anchors = [akTop, akRight]
-      Caption = 'Recebimento de Plantas'
-      Checked = True
-      State = cbChecked
-      TabOrder = 2
-      ExplicitLeft = 143
-    end
-  end
   object rgStatus: TRadioGroup
     Left = 0
-    Top = 159
+    Top = 64
     Width = 370
-    Height = 91
+    Height = 109
     Align = alClient
     Caption = 'Status'
     Columns = 2
@@ -439,15 +378,14 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
       'N'#227'o Encerradas'
       'Ambas')
     ParentFont = False
-    TabOrder = 2
-    ExplicitTop = 132
-    ExplicitWidth = 349
-    ExplicitHeight = 93
+    TabOrder = 1
+    ExplicitTop = 159
+    ExplicitHeight = 91
   end
   object cbExibirSQL: TCheckBox
     AlignWithMargins = True
     Left = 3
-    Top = 253
+    Top = 176
     Width = 364
     Height = 17
     Align = alBottom
@@ -458,8 +396,7 @@ object frmRelAgendaSemanal: TfrmRelAgendaSemanal
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
-    ExplicitTop = 228
-    ExplicitWidth = 343
+    TabOrder = 2
+    ExplicitTop = 253
   end
 end
