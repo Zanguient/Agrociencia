@@ -367,6 +367,53 @@ Var
   FecharTela : Boolean;
 begin
 
+  if Length(Trim(edNomeCliente.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Cliente não informado, Verifique!');
+    if edCodigoCliente.CanFocus then
+      edCodigoCliente.SetFocus;
+    Exit;
+  end;
+
+  if Length(Trim(edNomeProduto.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Produto não informado, Verifique!');
+    if edCodigoProduto.CanFocus then
+      edCodigoProduto.SetFocus;
+    Exit;
+  end;
+
+  if Length(SoNumeros(edDataColeta.Text)) > 0 then begin
+    try
+      StrToDate(edDataColeta.Text);
+    except
+      DisplayMsg(MSG_WAR, 'Data de Coleta Inválida, Verifique!');
+      if edDataColeta.CanFocus then
+        edDataColeta.SetFocus;
+      Exit;
+    end;
+  end;
+
+  if Length(SoNumeros(edDataRecebimento.Text)) > 0 then begin
+    try
+      StrToDate(edDataRecebimento.Text);
+    except
+      DisplayMsg(MSG_WAR, 'Data de Recebimento Inválida, Verifique!');
+      if edDataRecebimento.CanFocus then
+        edDataRecebimento.SetFocus;
+      Exit;
+    end;
+  end;
+
+  if Length(SoNumeros(edDataEstimada.Text)) > 0 then begin
+    try
+      StrToDate(edDataEstimada.Text);
+    except
+      DisplayMsg(MSG_WAR, 'Data Estimada Inválida, Verifique!');
+      if edDataEstimada.CanFocus then
+        edDataEstimada.SetFocus;
+      Exit;
+    end;
+  end;
+
   FWC := TFWConnection.Create;
   OPF := TOPFINAL.Create(FWC);
   E   := TESTAGIO.Create(FWC);
@@ -376,57 +423,6 @@ begin
 
   try
     try
-//      E.SelectList('INICIAL');
-//      if E.Count = 0 then begin
-//        DisplayMsg(MSG_WAR, 'Estagio inicial não encontrado! Cadastre para continuar!');
-//        Exit;
-//      end;
-      if Length(Trim(edNomeCliente.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'Cliente não informado, Verifique!');
-        if edCodigoCliente.CanFocus then
-          edCodigoCliente.SetFocus;
-        Exit;
-      end;
-
-      if Length(Trim(edNomeProduto.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'Produto não informado, Verifique!');
-        if edCodigoProduto.CanFocus then
-          edCodigoProduto.SetFocus;
-        Exit;
-      end;
-
-      if Length(SoNumeros(edDataColeta.Text)) > 0 then begin
-        try
-          StrToDate(edDataColeta.Text);
-        except
-          DisplayMsg(MSG_WAR, 'Data de Coleta Inválida, Verifique!');
-          if edDataColeta.CanFocus then
-            edDataColeta.SetFocus;
-          Exit;
-        end;
-      end;
-
-      if Length(SoNumeros(edDataRecebimento.Text)) > 0 then begin
-        try
-          StrToDate(edDataRecebimento.Text);
-        except
-          DisplayMsg(MSG_WAR, 'Data de Recebimento Inválida, Verifique!');
-          if edDataRecebimento.CanFocus then
-            edDataRecebimento.SetFocus;
-          Exit;
-        end;
-      end;
-
-      if Length(SoNumeros(edDataEstimada.Text)) > 0 then begin
-        try
-          StrToDate(edDataEstimada.Text);
-        except
-          DisplayMsg(MSG_WAR, 'Data Estimada Inválida, Verifique!');
-          if edDataEstimada.CanFocus then
-            edDataEstimada.SetFocus;
-          Exit;
-        end;
-      end;
 
       OPF.DATAHORA.Value                  := Now;
       OPF.QUANTIDADE.Value                := StrToIntDef(edQuantidade.Text,0);
@@ -542,7 +538,7 @@ var
   IMG : TIMAGEM;
   EIMG : TOPFINAL_IMAGEM;
 begin
-  if Assigned(Image1.Picture) then begin
+  if Assigned(Image1.Picture.Graphic) then begin
     FWC  := TFWConnection.Create;
     IMG  := TIMAGEM.Create(FWC);
     EIMG := TOPFINAL_IMAGEM.Create(FWC);
@@ -561,7 +557,7 @@ begin
 
         FWC.Commit;
 
-        Image1.Picture.Bitmap.Assign(Nil);
+        Image1.Picture := nil;
         Image1.Parent.Repaint;
 
         NomeImagemAtual := '';

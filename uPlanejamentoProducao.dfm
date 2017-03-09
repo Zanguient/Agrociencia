@@ -279,7 +279,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Top = 95
       Width = 896
       Height = 305
-      ActivePage = TSOPG
+      ActivePage = TSRP
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -340,19 +340,35 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
               Expanded = False
               FieldName = 'ID'
               Title.Alignment = taCenter
-              Width = 122
+              Width = 110
               Visible = True
             end
             item
               Expanded = False
               FieldName = 'CLIENTE'
-              Width = 330
+              Width = 250
               Visible = True
             end
             item
               Expanded = False
-              FieldName = 'PRODUTO'
-              Width = 376
+              FieldName = 'ESPECIE'
+              Width = 250
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'SELECAOPOSITIVA'
+              Title.Alignment = taCenter
+              Width = 125
+              Visible = True
+            end
+            item
+              Alignment = taCenter
+              Expanded = False
+              FieldName = 'CODIGOSELECAOCAMPO'
+              Title.Alignment = taCenter
+              Width = 200
               Visible = True
             end
             item
@@ -799,9 +815,19 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       FieldName = 'CLIENTE'
       Size = 100
     end
-    object CDS_PLANTASPRODUTO: TStringField
-      DisplayLabel = 'Produto'
-      FieldName = 'PRODUTO'
+    object CDS_PLANTASESPECIE: TStringField
+      DisplayLabel = 'Esp'#233'cie'
+      FieldName = 'ESPECIE'
+      Size = 100
+    end
+    object CDS_PLANTASSELECAOPOSITIVA: TStringField
+      DisplayLabel = 'Sele'#231#227'o Positiva'
+      FieldName = 'SELECAOPOSITIVA'
+      Size = 3
+    end
+    object CDS_PLANTASCODIGOSELECAOCAMPO: TStringField
+      DisplayLabel = 'C'#243'digo Sele'#231#227'o Campo'
+      FieldName = 'CODIGOSELECAOCAMPO'
       Size = 100
     end
     object CDS_PLANTASDATA: TDateField
@@ -970,7 +996,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
     object CDS_ESOLESTOQUESOLUCAO: TStringField
       DisplayLabel = 'Solu'#231#227'o'
       FieldName = 'SOLUCAO'
-      Size = 5
+      Size = 100
     end
     object CDS_ESOLESTOQUEVOLUMEFINAL: TStringField
       DisplayLabel = 'Volume Final'

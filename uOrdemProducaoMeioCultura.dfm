@@ -1796,13 +1796,12 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
             Caption = 'Descri'#231#227'o:'
           end
           object Label9: TLabel
-            Left = 343
+            Left = 326
             Top = 12
-            Width = 60
+            Width = 97
             Height = 13
             Anchors = [akTop, akRight]
-            Caption = 'Quantidade:'
-            ExplicitLeft = 342
+            Caption = 'Quantidade (Litros):'
           end
           object edt_CodigoMeioCultura: TButtonedEdit
             AlignWithMargins = True
@@ -1827,7 +1826,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
           object edt_DescricaoMeioCultura: TEdit
             Left = 69
             Top = 25
-            Width = 269
+            Width = 251
             Height = 27
             Anchors = [akLeft, akTop, akRight]
             Enabled = False
@@ -1840,9 +1839,9 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
             TabOrder = 1
           end
           object edt_QuantidadeMeioCultura: TJvValidateEdit
-            Left = 343
+            Left = 326
             Top = 25
-            Width = 84
+            Width = 101
             Height = 27
             Anchors = [akTop, akRight]
             CriticalPoints.MaxValueIncluded = False
@@ -2135,7 +2134,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
     Left = 360
     Top = 304
     Bitmap = {
-      494C010102001400A40020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010102001400A80020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

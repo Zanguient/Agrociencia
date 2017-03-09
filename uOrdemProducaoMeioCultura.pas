@@ -194,6 +194,36 @@ var
   FecharTela : Boolean;
 begin
 
+  if Length(Trim(edt_NomeEsterilizacao.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Obrigatório informar a Esterilização, Verifique!');
+    if edt_CodigoEsterilizacao.CanFocus then
+      edt_CodigoEsterilizacao.SetFocus;
+    Exit;
+  end;
+
+  try
+    StrToDate(edt_DataInicio.Text);
+  except
+    DisplayMsg(MSG_WAR, 'Data de Início Inválida, Verifique!');
+    if edt_DataInicio.CanFocus then
+      edt_DataInicio.SetFocus;
+    Exit;
+  end;
+
+  if Length(Trim(edt_DescricaoMeioCultura.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Obrigatório informar o Meio de Cultura, Verifique!');
+    if edt_CodigoMeioCultura.CanFocus then
+      edt_CodigoMeioCultura.SetFocus;
+    Exit;
+  end;
+
+  if Length(Trim(edt_NomeRecipiente.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Obrigatório informar o Recipiente, Verifique!');
+    if edt_CodigoRecipientes.CanFocus then
+      edt_CodigoRecipientes.SetFocus;
+    Exit;
+  end;
+
   FWC := TFWConnection.Create;
   MC  := TORDEMPRODUCAOMC.Create(FWC);
   MI  := TORDEMPRODUCAOMC_ITENS.Create(FWC);

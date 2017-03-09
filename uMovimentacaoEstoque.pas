@@ -116,7 +116,11 @@ uses
 procedure TfrmMovimentacaoEstoque.AtualizarEdits(Limpar: Boolean);
 begin
   if Limpar then begin
+    rgTipoMovimentacao.ItemIndex := 0;
     edObservacao.Clear;
+    edCodigoProduto.Clear;
+    edDescricaoProduto.Clear;
+    edQuantidade.Clear;
     cds_Produtos.EmptyDataSet;
   end else begin
     edObservacao.Text      := cds_PesquisaOBSERVACAO.Value;

@@ -204,31 +204,44 @@ Var
   P   : TPRODUTO;
 begin
 
+  if Length(Trim(edDescricao.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Descrição não informada, Verifique!');
+    if edDescricao.CanFocus then
+      edDescricao.SetFocus;
+    Exit;
+  end;
+
+  if cbFinalidadeProduto.ItemIndex = 0 then begin
+    DisplayMsg(MSG_WAR, 'Finalidade Inválida, Verifique!');
+    if cbFinalidadeProduto.CanFocus then
+      cbFinalidadeProduto.SetFocus;
+    Exit;
+  end;
+
+  if lbUnidadeMedida.Caption = EmptyStr then begin
+    DisplayMsg(MSG_WAR, 'Unidade de Medida Inválida, Verifique!');
+    if edUnidadeMedida.CanFocus then
+      edUnidadeMedida.SetFocus;
+    Exit;
+  end;
+
   FWC := TFWConnection.Create;
   P   := TPRODUTO.Create(FWC);
 
   try
     try
 
-      if Length(Trim(edDescricao.Text)) = 0 then begin
-        DisplayMsg(MSG_WAR, 'Descrição não informada, Verifique!');
-        if edDescricao.CanFocus then
-          edDescricao.SetFocus;
-        Exit;
-      end;
-
-      if cbFinalidadeProduto.ItemIndex = 0 then begin
-        DisplayMsg(MSG_WAR, 'Finalidade Inválida, Verifique!');
-        if cbFinalidadeProduto.CanFocus then
-          cbFinalidadeProduto.SetFocus;
-        Exit;
-      end;
-
-      if lbUnidadeMedida.Caption = EmptyStr then begin
-        DisplayMsg(MSG_WAR, 'Unidade de Medida Inválida, Verifique!');
-        if edUnidadeMedida.CanFocus then
-          edUnidadeMedida.SetFocus;
-        Exit;
+      //Não Permitir Nomes Repetidos para o MC
+      case TFinalidadeProduto(cbFinalidadeProduto.ItemIndex) of
+        eMeioCultura : begin
+          P.SelectList('UPPER(DESCRICAO) = ' + QuotedStr(UpperCase(edDescricao.Text)) + ' AND ID <> ' + IntToStr((Sender as TSpeedButton).Tag));
+          if P.Count > 0 then begin
+            DisplayMsg(MSG_WAR, 'Já Existe um Meio de Cultura com o Nome.:' + sLineBreak + QuotedStr(edDescricao.Text) + ', Verifique!');
+            if edDescricao.CanFocus then
+              edDescricao.SetFocus;
+            Exit;
+          end;
+        end;
       end;
 
       P.DESCRICAO.Value                 := edDescricao.Text;

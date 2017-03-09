@@ -49,7 +49,7 @@ type
     CDS_NOVAOPID: TIntegerField;
     CDS_NOVAOPDATA: TDateField;
     CDS_PLANTASCLIENTE: TStringField;
-    CDS_PLANTASPRODUTO: TStringField;
+    CDS_PLANTASESPECIE: TStringField;
     CDS_PLANTASABRIRCADASTRO: TIntegerField;
     CDS_MEIOCULTURACODIGOMC: TStringField;
     CDS_MEIOCULTURAVOLUMEFINAL: TStringField;
@@ -80,6 +80,8 @@ type
     CDS_ESOLESTOQUEVOLUMEFINAL: TStringField;
     CDS_ESOLESTOQUEABRIROP: TIntegerField;
     CDS_ESOLESTOQUEIMPRIMIROP: TIntegerField;
+    CDS_PLANTASSELECAOPOSITIVA: TStringField;
+    CDS_PLANTASCODIGOSELECAOCAMPO: TStringField;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -190,7 +192,7 @@ begin
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPS.ID,');
       Consulta.SQL.Add('	OPS.DATAPREVISAO AS DATA,');
-      Consulta.SQL.Add('	P.DESCRICAO AS SOLUCAO,');
+      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || P.ID AS SOLUCAO,');
       Consulta.SQL.Add('	OPS.QUANTIDADE,');
       Consulta.SQL.Add('	UN.SIMBOLO');
       Consulta.SQL.Add('FROM ORDEMPRODUCAOSOLUCAO OPS');
@@ -265,7 +267,7 @@ begin
       Consulta.SQL.Add('	OPFE.ID AS IDOPFE,');
       Consulta.SQL.Add('	OPF.ID AS IDOPF,');
       Consulta.SQL.Add('	OPFE.PREVISAOTERMINO AS DATA,');
-      Consulta.SQL.Add('	P.DESCRICAO AS ESPECIE,');
+      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || P.ID AS ESPECIE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOATUAL,');
       Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC');
       Consulta.SQL.Add('FROM OPFINAL OPF');
@@ -442,7 +444,7 @@ begin
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPFE.ID,');
       Consulta.SQL.Add('	OPFE.PREVISAOINICIO AS DATA,');
-      Consulta.SQL.Add('	P.DESCRICAO AS ESPECIE,');
+      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || P.ID AS ESPECIE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOPREVISTO,');
       Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC');
       Consulta.SQL.Add('FROM OPFINAL OPF');
@@ -521,7 +523,9 @@ begin
       Consulta.SQL.Add('	OPF.ID,');
       Consulta.SQL.Add('	OPF.DATAESTIMADAPROCESSAMENTO AS DATA,');
       Consulta.SQL.Add('	C.NOME AS CLIENTE,');
-      Consulta.SQL.Add('	P.DESCRICAO AS PRODUTO');
+      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || P.ID AS ESPECIE,');
+      Consulta.SQL.Add('	OPF.SELECAOPOSITIVA AS SELECAOPOSITIVA,');
+      Consulta.SQL.Add('	OPF.CODIGOSELECAOCAMPO AS CODIGOSELECAOCAMPO');
       Consulta.SQL.Add('FROM OPFINAL OPF');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
       Consulta.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
@@ -547,11 +551,13 @@ begin
         Consulta.First;
         while not Consulta.Eof do begin
           CDS_PLANTAS.Append;
-          CDS_PLANTASID.Value           := Consulta.FieldByName('ID').AsInteger;
-          CDS_PLANTASCLIENTE.Value      := Consulta.FieldByName('CLIENTE').AsString;
-          CDS_PLANTASPRODUTO.Value      := Consulta.FieldByName('PRODUTO').AsString;
-          CDS_PLANTASDATA.Value         := Consulta.FieldByName('DATA').AsDateTime;
-          CDS_PLANTASABRIRCADASTRO.Value:= 0;
+          CDS_PLANTASID.Value                 := Consulta.FieldByName('ID').AsInteger;
+          CDS_PLANTASCLIENTE.Value            := Consulta.FieldByName('CLIENTE').AsString;
+          CDS_PLANTASESPECIE.Value            := Consulta.FieldByName('ESPECIE').AsString;
+          CDS_PLANTASSELECAOPOSITIVA.Value    := Consulta.FieldByName('SELECAOPOSITIVA').AsString;
+          CDS_PLANTASCODIGOSELECAOCAMPO.Value := Consulta.FieldByName('CODIGOSELECAOCAMPO').AsString;
+          CDS_PLANTASDATA.Value               := Consulta.FieldByName('DATA').AsDateTime;
+          CDS_PLANTASABRIRCADASTRO.Value      := 0;
           CDS_PLANTAS.Post;
           Consulta.Next;
         end;

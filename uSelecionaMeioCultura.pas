@@ -274,6 +274,9 @@ begin
     if cds_Pesquisa.RecordCount = 1 then begin
       btSelecionarClick(nil);
       PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end else begin
+      if cds_Pesquisa.RecordCount > 0 then
+        AutoSizeDBGrid(dgSeleciona);
     end;
   finally
     FreeAndNil(P);

@@ -8,15 +8,15 @@ uses
   JvExStdCtrls, JvEdit, JvValidateEdit, Data.DB, Datasnap.DBClient, Vcl.Grids,
   Vcl.DBGrids, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
-  FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  Vcl.Mask, JvExMask, JvToolEdit, JvBaseEdits;
 
 type
   TfrmComposicaoMeioCultura = class(TForm)
     Panel2: TPanel;
-    GroupBox1: TGroupBox;
+    gbMateriaPrima: TGroupBox;
     edtMateriaPrima: TButtonedEdit;
     edtNomeMateriaPrima: TEdit;
-    edt_Quantidade: TJvValidateEdit;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
@@ -30,7 +30,7 @@ type
     cds_ComponentesIDPRODUTO: TIntegerField;
     cds_ComponentesNOMEPRODUTO: TStringField;
     cds_ComponentesQUANTIDADE: TFloatField;
-    dg_Componentes: TDBGrid;
+    gdComponentes: TDBGrid;
     ds_Componentes: TDataSource;
     cds_ComponentesID: TIntegerField;
     btNovo: TBitBtn;
@@ -60,16 +60,15 @@ type
     Label1: TLabel;
     edt_CodigoEstagio: TButtonedEdit;
     Label2: TLabel;
-    edt_PHRec: TJvValidateEdit;
     Label14: TLabel;
-    GroupBox2: TGroupBox;
+    gbEspecie: TGroupBox;
     Label6: TLabel;
     Label7: TLabel;
     edt_CodigoEspecie: TButtonedEdit;
     edt_NomeEspecie: TEdit;
     btnNovaEspecie: TBitBtn;
     btnRetiraEspecie: TBitBtn;
-    dg_Especies: TDBGrid;
+    gdEspecies: TDBGrid;
     cds_Especies: TClientDataSet;
     ds_Especies: TDataSource;
     cds_EspeciesID: TIntegerField;
@@ -82,6 +81,9 @@ type
     edt_UnidadeMedida: TEdit;
     Label10: TLabel;
     cds_ComponentesUNIDADE: TStringField;
+    edQuantidade: TJvCalcEdit;
+    edPHRec: TJvCalcEdit;
+    cds_PesquisaCODIGOMC: TStringField;
     procedure edtMeioCulturaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure btNovoClick(Sender: TObject);
@@ -139,7 +141,8 @@ uses
   uBeanProdutoComposicao,
   uSeleciona,
   uFuncoes,
-  uMensagem, uBeanUnidadeMedida;
+  uMensagem,
+  uBeanUnidadeMedida;
 {$R *.dfm}
 
 { TfrmComposicaoMeioCultura }
@@ -187,6 +190,9 @@ begin
     btGravar.Tag := 1;
     try
       GravarComponentes;
+
+      CarregaDados;
+
     finally
       btGravar.Tag := 0;
     end;
@@ -218,12 +224,14 @@ begin
     cds_Componentes.Append;
     cds_ComponentesIDPRODUTO.Value  := StrToInt(edtMateriaPrima.Text);
     cds_ComponentesNOMEPRODUTO.Value:= edtNomeMateriaPrima.Text;
-    cds_ComponentesQUANTIDADE.Value := edt_Quantidade.Value;
+    cds_ComponentesQUANTIDADE.Value := edQuantidade.Value;
     cds_ComponentesUNIDADE.Value    := edt_UnidadeMedida.Text;
     cds_Componentes.Post;
 
     edtMateriaPrima.Clear;
-    edt_Quantidade.Clear;
+    edtNomeMateriaPrima.Clear;
+    edt_UnidadeMedida.Clear;
+    edQuantidade.Clear;
 
   end else
     DisplayMsg(MSG_WAR, 'Produto ' + edtMateriaPrima.Text + ' - ' + edtNomeMateriaPrima.Text + ' já Adicionado, Verifique!');
@@ -251,7 +259,7 @@ begin
   cds_Componentes.EmptyDataSet;
   pnCadastro.Tag := 0;
   edt_CodigoEstagio.Clear;
-  edt_PHRec.Value  := 0;
+  edPHRec.Clear;
   edt_CodigoEstagio.Clear;
   edt_CodigoMeioCutura.Clear;
   edt_Observacao.Clear;
@@ -261,31 +269,54 @@ end;
 procedure TfrmComposicaoMeioCultura.CarregaDados;
 Var
   FWC : TFWConnection;
-  P   : TPRODUTO;
+  SQL : TFDQuery;
   I,
   Codigo  : Integer;
 begin
 
   try
     FWC := TFWConnection.Create;
-    P   := TPRODUTO.Create(FWC);
+    SQL := TFDQuery.Create(nil);
     cds_Pesquisa.DisableControls;
+
     try
 
       Codigo := cds_PesquisaID.Value;
 
       cds_Pesquisa.EmptyDataSet;
 
-      P.SelectList('ID > 0 AND FINALIDADE = 3', 'ID');
-      if P.Count > 0 then begin
-        for I := 0 to P.Count -1 do begin
+      SQL.Close;
+      SQL.SQL.Clear;
+      SQL.SQL.Add('SELECT');
+      SQL.SQL.Add('	P.ID,');
+      SQL.SQL.Add('	P.DESCRICAO,');
+      SQL.SQL.Add('	P.FINALIDADE,');
+      SQL.SQL.Add('	P.UNIDADEMEDIDA_ID,');
+      SQL.SQL.Add('	P.CODIGOEXTERNO,');
+      SQL.SQL.Add('	COALESCE(MC.CODIGO, '''') AS CODIGOMC');
+      SQL.SQL.Add('FROM PRODUTO P');
+      SQL.SQL.Add('LEFT JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = P.ID)');
+      SQL.SQL.Add('WHERE 1 = 1');
+      SQL.SQL.Add('AND P.FINALIDADE = 3');
+      SQL.SQL.Add('ORDER BY P.ID');
+
+      SQL.Connection  := FWC.FDConnection;
+      SQL.Prepare;
+      SQL.Open;
+      SQL.FetchAll;
+
+      if not SQL.IsEmpty then begin
+        SQL.First;
+        while not SQL.Eof do begin
           cds_Pesquisa.Append;
-          cds_PesquisaID.Value              := TPRODUTO(P.Itens[I]).ID.Value;
-          cds_PesquisaDESCRICAO.Value       := TPRODUTO(P.Itens[I]).DESCRICAO.Value;
-          cds_PesquisaFINALIDADE.Value      := TPRODUTO(P.Itens[I]).FINALIDADE.Value;
-          cds_PesquisaUNIDADEMEDIDA.Value   := TPRODUTO(P.Itens[I]).UNIDADEMEDIDA_ID.Value;
-          cds_PesquisaCODIGOEXTERNO.Value   := TPRODUTO(P.Itens[I]).CODIGOEXTERNO.Value;
+          cds_PesquisaID.Value              := SQL.FieldByName('ID').AsInteger;
+          cds_PesquisaDESCRICAO.Value       := SQL.FieldByName('DESCRICAO').AsString;
+          cds_PesquisaFINALIDADE.Value      := SQL.FieldByName('FINALIDADE').AsInteger;
+          cds_PesquisaUNIDADEMEDIDA.Value   := SQL.FieldByName('UNIDADEMEDIDA_ID').AsInteger;
+          cds_PesquisaCODIGOEXTERNO.Value   := SQL.FieldByName('CODIGOEXTERNO').AsString;
+          cds_PesquisaCODIGOMC.Value        := SQL.FieldByName('CODIGOMC').AsString;
           cds_Pesquisa.Post;
+          SQL.Next;
         end;
       end;
 
@@ -299,7 +330,7 @@ begin
 
   finally
     cds_Pesquisa.EnableControls;
-    FreeAndNil(P);
+    FreeAndNil(SQL);
     FreeAndNil(FWC);
   end;
 end;
@@ -446,9 +477,9 @@ procedure TfrmComposicaoMeioCultura.FormShow(Sender: TObject);
 begin
   pnPesquisa.Visible := True;
   pnCadastro.Visible := not pnPesquisa.Visible;
-  AutoSizeDBGrid(dg_Componentes);
+  AutoSizeDBGrid(gdComponentes);
   AutoSizeDBGrid(gdPesquisa);
-  AutoSizeDBGrid(dg_Especies);
+  AutoSizeDBGrid(gdEspecies);
 
   CarregaDados;
 end;
@@ -461,16 +492,46 @@ var
   ME  : TMEIOCULTURAESPECIE;
   I: Integer;
 begin
+
+  if not ((edPHRec.Value >= 1) and (edPHRec.Value <= 14)) then begin
+    DisplayMsg(MSG_WAR, 'Obrigatório informar um pH Recomendado entre 1 e 14, Verifique!');
+    if edPHRec.CanFocus then
+      edPHRec.SetFocus;
+    Exit;
+  end;
+
+  if Length(Trim(edt_NomeEstagio.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Obrigatório informar o Estágio, Verifique!');
+    if edt_CodigoEstagio.CanFocus then
+      edt_CodigoEstagio.SetFocus;
+    Exit;
+  end;
+
+  if Length(Trim(edt_CodigoMeioCutura.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Obrigatório informar o Código para o Meio de Cultura, Verifique!');
+    if edt_CodigoMeioCutura.CanFocus then
+      edt_CodigoMeioCutura.SetFocus;
+    Exit;
+  end;
+
   FWC := TFWConnection.Create;
   PC  := TPRODUTOCOMPOSICAO.Create(FWC);
   M   := TMEIOCULTURA.Create(FWC);
   ME  := TMEIOCULTURAESPECIE.Create(FWC);
   try
-    DisplayMsg(MSG_WAIT, 'Gravando dados no banco de dados...');
     FWC.StartTransaction;
     try
+
+      M.SelectList('CODIGO = ' + QuotedStr(edt_CodigoMeioCutura.Text) + ' AND ID_PRODUTO <> ' + IntToStr(pnCadastro.Tag));
+      if M.Count > 0 then begin
+        DisplayMsg(MSG_WAR, 'Já Existe Composição para o MC.: ' + edt_CodigoMeioCutura.Text + ', Verifique!');
+        if edt_CodigoMeioCutura.CanFocus then
+          edt_CodigoMeioCutura.SetFocus;
+        Exit;
+      end;
+
       M.ID_ESTAGIO.Value      := StrToInt(edt_CodigoEstagio.Text);
-      M.PHRECOMENDADO.Value   := edt_PHRec.Value;
+      M.PHRECOMENDADO.Value   := edPHRec.Value;
       M.CODIGO.Value          := edt_CodigoMeioCutura.Text;
       M.OBSERVACAO.Value      := edt_Observacao.Text;
       M.SelectList('ID_PRODUTO = ' + QuotedStr(IntToStr(pnCadastro.Tag)));
@@ -530,7 +591,6 @@ begin
         cds_Componentes.Next;
       end;
       FWC.Commit;
-      DisplayMsgFinaliza;
       LimpaEdits;
     except
       on E : Exception do begin
@@ -590,8 +650,8 @@ begin
         if E.Count > 0 then
           edt_NomeEstagio.Text := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
 
-        edt_PHRec.Value        := TMEIOCULTURA(M.Itens[0]).PHRECOMENDADO.Value;
-        edt_Observacao.Text    := TMEIOCULTURA(M.Itens[0]).OBSERVACAO.asString;
+        edPHRec.Value        := TMEIOCULTURA(M.Itens[0]).PHRECOMENDADO.Value;
+        edt_Observacao.Text  := TMEIOCULTURA(M.Itens[0]).OBSERVACAO.asString;
 
         ME.SelectList('ID_MEIOCULTURA = ' + TMEIOCULTURA(M.Itens[0]).ID.asSQL);
         if ME.Count > 0 then begin
@@ -715,8 +775,8 @@ begin
         UM.SelectList('ID = ' + TPRODUTO(P.Itens[0]).UNIDADEMEDIDA_ID.asSQL);
         if UM.Count > 0 then
           edt_UnidadeMedida.Text  := TUNIDADEMEDIDA(UM.Itens[0]).SIMBOLO.Value;
-        if edt_Quantidade.CanFocus then
-          edt_Quantidade.SetFocus;
+        if edQuantidade.CanFocus then
+          edQuantidade.SetFocus;
       end;
     end;
   finally

@@ -64,6 +64,11 @@ begin
 
   CarregarConexaoBD;
 
+  if Length(Trim(CONFIG_LOCAL.DirImagens)) > 0 then begin
+    if not DirectoryExists(CONFIG_LOCAL.DirImagens) then
+      CreateDir(CONFIG_LOCAL.DirImagens);
+  end;
+
   RelParams    := TStringList.Create;
   carregaArrayClassificacao;
 end;

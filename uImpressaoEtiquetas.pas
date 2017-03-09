@@ -41,6 +41,8 @@ type
     btnAdicionar: TBitBtn;
     btnExcluir: TBitBtn;
     cds_ItensCODIGOMC: TStringField;
+    edCodigoUsuario: TLabeledEdit;
+    edNomeUsuario: TLabeledEdit;
     procedure btFecharClick(Sender: TObject);
     procedure btEtiquetasClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -241,6 +243,7 @@ var
   Codigo,
   CodigoOPF,
   SeqEstagio: Integer;
+  U         : TUSUARIO;
   L         : TOPFINAL_ESTAGIO_LOTE;
   LS        : TOPFINAL_ESTAGIO_LOTE_S;
   I: Integer;
@@ -321,27 +324,36 @@ begin
   end else if edNumeroLoteEstagio.Focused then begin
     if StrToIntDef(edNumeroLoteEstagio.Text, 0) > 0 then begin
       FWC := TFWConnection.Create;
+      U   := TUSUARIO.Create(FWC);
       L   := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
       LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
       try
         L.SelectList('OPFINAL_ESTAGIO_ID = ' + IntToStr(LOTE.ESTAGIO) + ' AND NUMEROLOTE = ' + edNumeroLoteEstagio.Text);
         if L.Count > 0 then begin
-          LOTE.LOTE := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).ID.Value;
-          LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.LOTE));
-          if LS.Count > 0 then begin
-            cds_Itens.EmptyDataSet;
-            for I := 0 to Pred(LS.Count) do begin
-              cds_Itens.Append;
-              cds_ItensCODIGOBARRAS.Value   := StrZero(TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[I]).ID.asString, MinimoCodigoBarras);
-              cds_ItensORDEMPRODUCAO.Value  := LOTE.ORDEMPRODUCAO;
-              cds_ItensPRODUTO.Value        := edProduto.Text;
-              cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
-              cds_ItensCODIGOMC.Value       := LOTE.CODIGOMC;
-              cds_Itens.Post;
+          U.SelectList('ID = ' + TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).USUARIO_ID.asString);
+          if U.Count > 0 then begin
+
+            edCodigoUsuario.Text  := TUSUARIO(U.Itens[0]).ID.asString;
+            edNomeUsuario.Text    := TUSUARIO(U.Itens[0]).NOME.asString;
+            LOTE.LOTE             := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).ID.Value;
+
+            LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.LOTE));
+            if LS.Count > 0 then begin
+              cds_Itens.EmptyDataSet;
+              for I := 0 to Pred(LS.Count) do begin
+                cds_Itens.Append;
+                cds_ItensCODIGOBARRAS.Value   := StrZero(TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[I]).ID.asString, MinimoCodigoBarras);
+                cds_ItensORDEMPRODUCAO.Value  := LOTE.ORDEMPRODUCAO;
+                cds_ItensPRODUTO.Value        := edProduto.Text;
+                cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
+                cds_ItensCODIGOMC.Value       := LOTE.CODIGOMC;
+                cds_Itens.Post;
+              end;
             end;
           end;
         end;
       finally
+        FreeAndNil(U);
         FreeAndNil(L);
         FreeAndNil(LS);
         FreeAndNil(FWC);
@@ -386,9 +398,15 @@ begin
   edNumeroLoteEstagio.Enabled   := False;
   edProduto.Clear;
   cds_Itens.EmptyDataSet;
-  edt_Quantidade.Text := IntToStr(cds_Itens.RecordCount);
+  edt_Quantidade.Clear;
   btnAdicionar.Visible := False;
   btnExcluir.Visible := False;
+  edCodigoUsuario.Clear;
+  edNomeUsuario.Clear;
+
+  if edCodigoOrdemProducao.CanFocus then
+    edCodigoOrdemProducao.SetFocus;
+
 end;
 
 end.
