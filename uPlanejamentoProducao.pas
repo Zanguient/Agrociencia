@@ -192,7 +192,7 @@ begin
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPS.ID,');
       Consulta.SQL.Add('	OPS.DATAPREVISAO AS DATA,');
-      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || P.ID AS SOLUCAO,');
+      Consulta.SQL.Add('	P.DESCRICAO AS SOLUCAO,');
       Consulta.SQL.Add('	OPS.QUANTIDADE,');
       Consulta.SQL.Add('	UN.SIMBOLO');
       Consulta.SQL.Add('FROM ORDEMPRODUCAOSOLUCAO OPS');
@@ -267,7 +267,7 @@ begin
       Consulta.SQL.Add('	OPFE.ID AS IDOPFE,');
       Consulta.SQL.Add('	OPF.ID AS IDOPF,');
       Consulta.SQL.Add('	OPFE.PREVISAOTERMINO AS DATA,');
-      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || P.ID AS ESPECIE,');
+      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOATUAL,');
       Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC');
       Consulta.SQL.Add('FROM OPFINAL OPF');
@@ -444,7 +444,7 @@ begin
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPFE.ID,');
       Consulta.SQL.Add('	OPFE.PREVISAOINICIO AS DATA,');
-      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || P.ID AS ESPECIE,');
+      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOPREVISTO,');
       Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC');
       Consulta.SQL.Add('FROM OPFINAL OPF');
@@ -523,7 +523,7 @@ begin
       Consulta.SQL.Add('	OPF.ID,');
       Consulta.SQL.Add('	OPF.DATAESTIMADAPROCESSAMENTO AS DATA,');
       Consulta.SQL.Add('	C.NOME AS CLIENTE,');
-      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || P.ID AS ESPECIE,');
+      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
       Consulta.SQL.Add('	OPF.SELECAOPOSITIVA AS SELECAOPOSITIVA,');
       Consulta.SQL.Add('	OPF.CODIGOSELECAOCAMPO AS CODIGOSELECAOCAMPO');
       Consulta.SQL.Add('FROM OPFINAL OPF');

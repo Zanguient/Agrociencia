@@ -45,7 +45,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitHeight = 109
     DesignSize = (
       661
       184)
@@ -384,7 +383,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     ParentFont = False
     TabOrder = 2
     TabStop = True
-    ExplicitTop = 166
     object GridPanel2: TGridPanel
       AlignWithMargins = True
       Left = 3

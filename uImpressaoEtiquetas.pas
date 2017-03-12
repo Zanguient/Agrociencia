@@ -267,7 +267,7 @@ begin
             Consulta.SQL.Add('	OPF.ID,');
             Consulta.SQL.Add('	OPFE.ID AS IDESTAGIO,');
             Consulta.SQL.Add('	OPFE.SEQUENCIA,');
-            Consulta.SQL.Add('	(P.DESCRICAO || '' - '' || P.ID) AS PRODUTO,');
+            Consulta.SQL.Add('	(P.DESCRICAO || '' - '' || OPF.ID) AS PRODUTO,');
             Consulta.SQL.Add('	E.TIPO,');
             Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC,');
             Consulta.SQL.Add('  (COALESCE((SELECT SUM(COALESCE(CEP.QUANTIDADE, 0.00))');

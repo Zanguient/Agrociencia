@@ -279,7 +279,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Top = 95
       Width = 896
       Height = 305
-      ActivePage = TSRP
+      ActivePage = TSNOP
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText

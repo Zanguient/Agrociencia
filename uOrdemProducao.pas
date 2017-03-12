@@ -1115,7 +1115,7 @@ begin
           for I := 1 to ResultMsgInputInt do begin
             cds_Etiqueta1.Append;
             cds_Etiqueta1CODIGOOP.AsString  := StrZero(cds_PesquisaID.AsString, MinimoCodigoBarras);
-            cds_Etiqueta1PRODUTO.AsString   := cds_PesquisaPRODUTO.AsString + ' - ' + cds_PesquisaIDPRODUTO.AsString;
+            cds_Etiqueta1PRODUTO.AsString   := cds_PesquisaPRODUTO.AsString + ' - ' + cds_PesquisaID.AsString;
             cds_Etiqueta1.Post;
           end;
         end;
