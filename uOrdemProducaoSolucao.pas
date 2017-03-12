@@ -381,6 +381,22 @@ var
   FecharTela : Boolean;
 begin
 
+  if Length(Trim(edt_DescricaoSolucaoEstoque.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Obrigatório informar a Solução Estoque, Verifique!');
+    if edt_CodigoSolucaoEstoque.CanFocus then
+      edt_CodigoSolucaoEstoque.SetFocus;
+    Exit;
+  end;
+
+  try
+    StrToDate(edt_DataInicio.Text);
+  except
+    DisplayMsg(MSG_WAR, 'Data de Início Inválida, Verifique!');
+    if edt_DataInicio.CanFocus then
+      edt_DataInicio.SetFocus;
+    Exit;
+  end;
+
   FWC   := TFWConnection.Create;
   SOL   := TORDEMPRODUCAOSOLUCAO.Create(FWC);
   SOLI  := TORDEMPRODUCAOSOLUCAO_ITENS.Create(FWC);

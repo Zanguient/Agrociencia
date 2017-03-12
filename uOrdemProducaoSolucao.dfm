@@ -820,6 +820,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
         CriticalPoints.MinValueIncluded = False
         DisplayFormat = dfFloat
         DecimalPlaces = 3
+        EditText = '0,000'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -1152,7 +1153,6 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
             SizeStyle = ssAuto
           end>
         TabOrder = 1
-        ExplicitTop = 72
         object Panel4: TPanel
           Left = 359
           Top = 0
@@ -1739,10 +1739,6 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
         Font.Style = []
         ParentFont = False
         TabOrder = 0
-        ExplicitLeft = 0
-        ExplicitTop = 8
-        ExplicitWidth = 724
-        ExplicitHeight = 80
       end
     end
     object gdMateriaPrima: TDBGrid
@@ -1877,6 +1873,7 @@ object frmOrdemProducaoSolucao: TfrmOrdemProducaoSolucao
         CriticalPoints.MaxValueIncluded = False
         CriticalPoints.MinValueIncluded = False
         DisplayFormat = dfFloat
+        DecimalPlaces = 3
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
