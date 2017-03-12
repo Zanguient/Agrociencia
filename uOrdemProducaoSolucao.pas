@@ -125,7 +125,7 @@ uses
   uFWConnection, uBeanProdutos, uDMUtil, uBeanUnidadeMedida, uMensagem,
   uBeanProdutoComposicao, uBeanOrdemProducaoSolucao,
   uBeanOrdemProducaoSolucao_Itens, uFuncoes, uBeanControleEstoque,
-  uBeanControleEstoqueProduto;
+  uBeanControleEstoqueProduto, uBeanUsuario;
 
 {$R *.dfm}
 
@@ -777,14 +777,33 @@ begin
 end;
 
 procedure TfrmOrdemProducaoSolucao.InvertePaineis;
+var
+  FW : TFWConnection;
+  U  : TUSUARIO;
 begin
   pnPesquisa.Visible               := not pnPesquisa.Visible;
   pnBotoesVisualizacao.Visible     := pnDados.Visible;
   pnDados.Visible                  := not pnDados.Visible;
   pnBotoesEdicao.Visible           := pnDados.Visible;
 
-  if edt_CodigoSolucaoEstoque.CanFocus then
-    edt_CodigoSolucaoEstoque.SetFocus;
+  if pnDados.Visible then begin
+    FW := TFWConnection.Create;
+    U  := TUSUARIO.Create(FW);
+    try
+      U.SelectList('ID = ' + QuotedStr(IntToStr(USUARIO.CODIGO)));
+      if U.Count > 0 then begin
+        btAdd.Enabled    := TUSUARIO(U.Itens[0]).PERMITEPRODUTOALEMCOMPOSICAO.Value;
+        btDel.Enabled    := TUSUARIO(U.Itens[0]).PERMITEPRODUTOALEMCOMPOSICAO.Value;
+      end;
+    finally
+      FreeAndNil(U);
+      FreeAndNil(FW);
+    end;
+
+    if edt_CodigoSolucaoEstoque.CanFocus then
+      edt_CodigoSolucaoEstoque.SetFocus;
+  end;
+
 
   AutoSizeDBGrid(gdMateriaPrima);
   AutoSizeDBGrid(gdPesquisa);
