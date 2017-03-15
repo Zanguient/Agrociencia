@@ -129,6 +129,7 @@ begin
       Consulta.SQL.Add('	DIA,');
       Consulta.SQL.Add('	TIPOCLIENTE,');
       Consulta.SQL.Add('	NOME,');
+      Consulta.SQL.Add('	NOMECONTATO,');
       Consulta.SQL.Add('	DATANASCIMENTO,');
       Consulta.SQL.Add('	EMAIL');
       Consulta.SQL.Add('FROM (');
@@ -138,6 +139,7 @@ begin
       Consulta.SQL.Add('	EXTRACT(DAY FROM U.DATANASCIMENTO) AS DIA,');
       Consulta.SQL.Add('	''Cliente Interno'' AS TIPOCLIENTE,');
       Consulta.SQL.Add('	U.NOME AS NOME,');
+      Consulta.SQL.Add('	U.NOME AS NOMECONTATO,');
       Consulta.SQL.Add('	U.DATANASCIMENTO AS DATANASCIMENTO,');
       Consulta.SQL.Add('	U.EMAIL');
       Consulta.SQL.Add('FROM USUARIO U');
@@ -148,6 +150,7 @@ begin
       Consulta.SQL.Add('	EXTRACT(DAY FROM C.DATANASCIMENTO) AS DIA,');
       Consulta.SQL.Add('	''Cliente Externo'' AS TIPOCLIENTE,');
       Consulta.SQL.Add('	C.NOME AS NOME,');
+      Consulta.SQL.Add('	C.NOMECONTATO AS NOMECONTATO,');
       Consulta.SQL.Add('	C.DATANASCIMENTO AS DATANASCIMENTO,');
       Consulta.SQL.Add('	C.EMAIL');
       Consulta.SQL.Add('FROM CLIENTE C');

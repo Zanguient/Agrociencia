@@ -164,25 +164,33 @@ begin
     try
       if edDescOPMC.Text = EmptyStr then begin
         DisplayMsg(MSG_WAR, 'Selecione uma Ordem de Produção MC para continuar!');
-        if edOrdemProducaoMC.CanFocus then
+        if edOrdemProducaoMC.CanFocus then begin
           edOrdemProducaoMC.SetFocus;
+          edOrdemProducaoMC.SelectAll;
+        end;
         Exit;
       end;
       if StrToIntDef(edQuantidadeEntrada.Text, 0) = 0 then begin
         DisplayMsg(MSG_WAR, 'Informe ao menos um recipiente de entrada para continuar!');
-        if edCodigoEntrada.CanFocus then
+        if edCodigoEntrada.CanFocus then begin
           edCodigoEntrada.SetFocus;
+          edCodigoEntrada.SelectAll;
+        end;
         Exit;
       end;
       if StrToIntDef(edQuantidadeSaida.Text, 0) = 0 then begin
         DisplayMsg(MSG_WAR, 'Informe ao menos um recipiente de saída para continuar!');
         if MULTIPLICACAO.FIM then begin
-          if edQuantidadeSaida.CanFocus then
+          if edQuantidadeSaida.CanFocus then begin
             edQuantidadeSaida.SetFocus;
+            edQuantidadeSaida.SelectAll;
+          end;
         end
         else begin
-          if edCodigoSaida.CanFocus then
+          if edCodigoSaida.CanFocus then begin
             edCodigoSaida.SetFocus;
+            edCodigoSaida.SelectAll;
+          end;
         end;
         Exit;
       end;
@@ -387,8 +395,10 @@ begin
                     edCodigoSaida.Enabled         := not MULTIPLICACAO.FIM;
                     rgSaida.Enabled               := not MULTIPLICACAO.FIM;
 
-                    if edNumeroLoteEstagio.CanFocus then
+                    if edNumeroLoteEstagio.CanFocus then begin
                       edNumeroLoteEstagio.SetFocus;
+                      edNumeroLoteEstagio.SelectAll;
+                    end;
 
                     if (MULTIPLICACAO.PREVISTO > 0) and (MULTIPLICACAO.PREVISTO <= MULTIPLICACAO.SALDO) then
                       DisplayMsg(MSG_INF, 'Quantidade de Potes ou Plantas(' + IntToStr(MULTIPLICACAO.PREVISTO) + ') previsto já foi alcançado!');
@@ -413,12 +423,18 @@ begin
           MULTIPLICACAO.NUMEROLOTE      := StrToIntDef(edNumeroLoteEstagio.Text, 0);
           if LoteExiste then begin
             DisplayMsg(MSG_WAR, 'Lote já cadastrado para o estágio selecionado!');
+            if edNumeroLoteEstagio.CanFocus then begin
+              edNumeroLoteEstagio.SetFocus;
+              edNumeroLoteEstagio.SelectAll;
+            end;
             Exit;
           end;
           edNumeroLoteEstagio.Enabled   := False;
           edEstacaoTrabalho.Enabled     := True;
-          if edEstacaoTrabalho.CanFocus then
+          if edEstacaoTrabalho.CanFocus then begin
             edEstacaoTrabalho.SetFocus;
+            edEstacaoTrabalho.SelectAll;
+          end;
         end;
       end else begin
         if edEstacaoTrabalho.Focused then begin
@@ -426,8 +442,10 @@ begin
             MULTIPLICACAO.ESTACAOTRABALHO := edEstacaoTrabalho.Text;
             edOrdemProducaoMC.Enabled     := True;
             lbOPMC.Enabled                := True;
-            if edOrdemProducaoMC.CanFocus then
+            if edOrdemProducaoMC.CanFocus then begin
               edOrdemProducaoMC.SetFocus;
+              edOrdemProducaoMC.SelectAll;
+            end;
             edEstacaoTrabalho.Enabled     := False;
           end;
         end else begin
@@ -438,8 +456,10 @@ begin
               edCodigoSaida.Enabled         := not MULTIPLICACAO.FIM;
               rgSaida.Enabled               := not MULTIPLICACAO.FIM;
               edOrdemProducaoMC.Enabled     := False;
-              if edCodigoEntrada.CanFocus then
+              if edCodigoEntrada.CanFocus then begin
                 edCodigoEntrada.SetFocus;
+                edCodigoEntrada.SelectAll;
+              end;
             end;
           end else begin
             if edCodigoEntrada.Focused then begin
@@ -450,11 +470,19 @@ begin
                     if MULTIPLICACAO.INICIAL then begin
                       if Codigo <> MULTIPLICACAO.CODIGOOP then begin
                         DisplayMsg(MSG_WAR, 'Pote selecionado não pertence a ordem de produção atual!');
+                        if edCodigoEntrada.CanFocus then begin
+                          edCodigoEntrada.SetFocus;
+                          edCodigoEntrada.SelectAll;
+                        end;
                         Exit;
                       end;
                     end else begin
                       if cds_Entradas.Locate(cds_EntradasCODIGOBARRAS.FieldName, Codigo, []) then begin
                         DisplayMsg(MSG_WAR, 'Pote já foi adicionado ao lote atual!');
+                        if edCodigoEntrada.CanFocus then begin
+                          edCodigoEntrada.SetFocus;
+                          edCodigoEntrada.SelectAll;
+                        end;
                         Exit;
                       end;
                       FWC     := TFWConnection.Create;
@@ -472,16 +500,28 @@ begin
 
                         if BuscaOP.IsEmpty then begin
                           DisplayMsg(MSG_WAR, 'Código de barras não encontrado!');
+                          if edCodigoEntrada.CanFocus then begin
+                            edCodigoEntrada.SetFocus;
+                            edCodigoEntrada.SelectAll;
+                          end;
                           Exit;
                         end;
 
                         if BuscaOP.FieldByName('OP').AsInteger <> MULTIPLICACAO.CODIGOOP then begin
                           DisplayMsg(MSG_WAR, 'Código de barras informado não pertence a Ordem de Produção selecionada!');
+                          if edCodigoEntrada.CanFocus then begin
+                            edCodigoEntrada.SetFocus;
+                            edCodigoEntrada.SelectAll;
+                          end;
                           Exit;
                         end;
 
                         if BuscaOP.FieldByName('BAIXADO').AsBoolean then begin
                           DisplayMsg(MSG_WAR, 'Código de barras informado já foi baixado anteriormente!');
+                          if edCodigoEntrada.CanFocus then begin
+                            edCodigoEntrada.SetFocus;
+                            edCodigoEntrada.SelectAll;
+                          end;
                           Exit;
                         end;
                       finally
@@ -512,6 +552,10 @@ begin
                     if Codigo = MULTIPLICACAO.IDESTAGIO then begin
                       if MULTIPLICACAO.SALDOMC <= cds_Saidas.RecordCount + 1 then begin
                         DisplayMsg(MSG_WAR, 'Acabaram os potes do Meio de Cultura! Verifique com o Administrador!');
+                        if edCodigoSaida.CanFocus then begin
+                          edCodigoSaida.SetFocus;
+                          edCodigoSaida.SelectAll;
+                        end;
                         Exit;
                       end;
                       cds_Saidas.Insert;
@@ -519,6 +563,10 @@ begin
                       cds_Saidas.Post;
                     end else begin
                       DisplayMsg(MSG_WAR, 'Código de Barras.: ' + IntToStr(Codigo) + ' não pertence a Ordem de Produção N.º ' + IntToStr(MULTIPLICACAO.CODIGOOP) + ', Verifique!');
+                      if edCodigoSaida.CanFocus then begin
+                        edCodigoSaida.SetFocus;
+                        edCodigoSaida.SelectAll;
+                      end;
                       Exit;
                     end;
                   end;
@@ -560,23 +608,31 @@ begin
     end;
     VK_F2 : begin
       rgEntrada.ItemIndex := 0;
-      if edCodigoEntrada.CanFocus then
+      if edCodigoEntrada.CanFocus then begin
         edCodigoEntrada.SetFocus;
+        edCodigoEntrada.SelectAll;
+      end;
     end;
     VK_F3 : begin
       rgEntrada.ItemIndex := 1;
-      if edCodigoEntrada.CanFocus then
+      if edCodigoEntrada.CanFocus then begin
         edCodigoEntrada.SetFocus;
+        edCodigoEntrada.SelectAll;
+      end;
     end;
     VK_F4 : begin
       rgSaida.ItemIndex := 0;
-      if edCodigoSaida.CanFocus then
+      if edCodigoSaida.CanFocus then begin
         edCodigoSaida.SetFocus;
+        edCodigoSaida.SelectAll;
+      end;
     end;
     VK_F5 : begin
       rgSaida.ItemIndex := 1;
-      if edCodigoSaida.CanFocus then
+      if edCodigoSaida.CanFocus then begin
         edCodigoSaida.SetFocus;
+        edCodigoSaida.SelectAll;
+      end;
     end;
     VK_RETURN : begin
       ExecutarEvento;
@@ -902,8 +958,10 @@ begin
   edOrdemProducaoMC.Clear;
   cds_Entradas.EmptyDataSet;
   cds_Saidas.EmptyDataSet;
-  if edCodigoOrdemProducao.CanFocus then
+  if edCodigoOrdemProducao.CanFocus then begin
     edCodigoOrdemProducao.SetFocus;
+    edCodigoOrdemProducao.SelectAll;
+  end;
 end;
 
 procedure TfrmControleMultiplicacao.SelecionaOrdemProducaoMC;
