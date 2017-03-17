@@ -111,7 +111,8 @@ begin
     SQL.SQL.Add('M.CODIGO,');
     SQL.SQL.Add('P.DESCRICAO,');
     SQL.SQL.Add('M.PHRECOMENDADO,');
-    SQL.SQL.Add('OP.ID AS ORDEMPRODUCAO');
+    SQL.SQL.Add('OP.ID AS ORDEMPRODUCAO,');
+    SQL.SQL.Add('OP.SALDO AS SALDO');
     SQL.SQL.Add('FROM ORDEMPRODUCAOMC OP');
     SQL.SQL.Add('INNER JOIN PRODUTO P ON OP.ID_PRODUTO = P.ID');
     SQL.SQL.Add('INNER JOIN MEIOCULTURA M ON P.ID = M.ID_PRODUTO');
@@ -149,9 +150,11 @@ Var
 begin
   Accept := False;
   for I := 0 to DataSet.Fields.Count - 1 do begin
-    if Pos(AnsiLowerCase(edPesquisa.Text),AnsiLowerCase(DataSet.Fields[I].AsVariant)) > 0 then begin
-      Accept := True;
-      Break;
+    if not DataSet.Fields[I].IsNull then begin
+      if Pos(AnsiLowerCase(edPesquisa.Text),AnsiLowerCase(DataSet.Fields[I].AsVariant)) > 0 then begin
+        Accept := True;
+        Break;
+      end;
     end;
   end;
 end;
