@@ -994,7 +994,7 @@ begin
             DisplayMsg(MSG_WAR, 'Meio de cultura selecionado não pode ser usado para esta espécie!');
             Exit;
           end;
-          if TMEIOCULTURA(MC.Itens[0]).ID_ESTAGIO.Value <> MULTIPLICACAO.IDESTAGIO then begin
+          if TMEIOCULTURA(MC.Itens[0]).ID_ESTAGIO.Value <> MULTIPLICACAO.CADESTAGIO then begin
             DisplayMsg(MSG_WAR, 'Meio de cultura selecionado pertence a outro estágio!' + #13 + 'Verifique!');
             Exit;
           end;
