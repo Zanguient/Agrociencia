@@ -40,6 +40,7 @@ type
     SALDOMC : Double;
     CADESTAGIO : Integer;
     CADESPECIE : Integer;
+    ORDEMPRODUCAOMC : Integer;
     INTERVALO: ARRAY OF TIntervalo;
     SAIDAS : ARRAY OF TSaidas;
   end;
@@ -85,10 +86,10 @@ type
     cds_SaidasCODIGOBARRAS: TIntegerField;
     lbEstagio: TLabel;
     edEstacaoTrabalho: TLabeledEdit;
-    edOrdemProducaoMC: TButtonedEdit;
-    edDescOPMC: TEdit;
+    edOrdemProducaoMC: TEdit;
     lbOPMC: TLabel;
     btFotosEstagio: TSpeedButton;
+    edDescOPMC: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -139,7 +140,7 @@ uses
   uBeanOPFinal,
   uBeanOrdemProducaoMC,
   uBeanMeioCultura,
-  uFotosEstagio;
+  uFotosEstagio, uBeanMeioCulturaEspecie;
 
 {$R *.dfm}
 
@@ -451,7 +452,7 @@ begin
         end else begin
           if edOrdemProducaoMC.Focused then begin
             SelecionaOrdemProducaoMC;
-            if Length(Trim(edDescOPMC.Text)) > 0 then begin
+            if MULTIPLICACAO.ORDEMPRODUCAOMC > 0 then begin
               edCodigoEntrada.Enabled       := True;
               edCodigoSaida.Enabled         := not MULTIPLICACAO.FIM;
               rgSaida.Enabled               := not MULTIPLICACAO.FIM;
@@ -936,6 +937,7 @@ begin
   MULTIPLICACAO.CADESTAGIO      := 0;
   MULTIPLICACAO.CADESPECIE      := 0;
   MULTIPLICACAO.FIM             := False;
+  MULTIPLICACAO.ORDEMPRODUCAOMC := 0;
   SetLength(MULTIPLICACAO.INTERVALO, 0);
   SetLength(MULTIPLICACAO.SAIDAS, 0);
   edCodigoOrdemProducao.Clear;
@@ -969,20 +971,36 @@ var
   FWC : TFWConnection;
   OPMC : TORDEMPRODUCAOMC;
   MC   : TMEIOCULTURA;
+  MCE  : TMEIOCULTURAESPECIE;
   IdOPMC : Integer;
 begin
   FWC := TFWConnection.Create;
   OPMC:= TORDEMPRODUCAOMC.Create(FWC);
   MC  := TMEIOCULTURA.Create(FWC);
+  MCE := TMEIOCULTURAESPECIE.Create(FWC);
   try
-    IdOPMC := DMUtil.SelecionarOrdemProducaoMeioCultura(MULTIPLICACAO.CADESTAGIO, MULTIPLICACAO.CADESPECIE, edOrdemProducaoMC.Text);
+    IdOPMC := StrToIntDef(edOrdemProducaoMC.Text, 0);
     if IdOPMC > 0 then begin
       OPMC.SelectList('ID = '  + IntToStr(IdOPMC));
       if OPMC.Count > 0 then begin
+        if TORDEMPRODUCAOMC(OPMC.Itens[0]).SALDO.Value <= 0 then begin
+          DisplayMsg(MSG_WAR, 'Ordem de produção selecionada esta sem saldo no sistema!');
+          Exit;
+        end;
         MC.SelectList('ID_PRODUTO = ' + TORDEMPRODUCAOMC(OPMC.Itens[0]).ID_PRODUTO.asString);
         if MC.Count > 0 then begin
-          edOrdemProducaoMC.Text:= TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.asString;
-          MULTIPLICACAO.SALDOMC := TORDEMPRODUCAOMC(OPMC.Itens[0]).SALDO.Value;
+          MCE.SelectList('ID_MEIOCULTURA = ' + TMEIOCULTURA(MC.Itens[0]).ID.asString + ' AND ID_ESPECIE = ' + IntToStr(MULTIPLICACAO.CADESPECIE));
+          if MCE.Count = 0 then begin
+            DisplayMsg(MSG_WAR, 'Meio de cultura selecionado não pode ser usado para esta espécie!');
+            Exit;
+          end;
+          if TMEIOCULTURA(MC.Itens[0]).ID_ESTAGIO.Value <> MULTIPLICACAO.IDESTAGIO then begin
+            DisplayMsg(MSG_WAR, 'Meio de cultura selecionado pertence a outro estágio!' + #13 + 'Verifique!');
+            Exit;
+          end;
+//          edOrdemProducaoMC.Text        := TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.asString;
+          MULTIPLICACAO.ORDEMPRODUCAOMC := TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.Value;
+          MULTIPLICACAO.SALDOMC         := TORDEMPRODUCAOMC(OPMC.Itens[0]).SALDO.Value;
           edDescOPMC.Text := 'OPMC: ' + TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.asString + ', ' +
                              'Meio de Cultura: ' + TMEIOCULTURA(MC.Itens[0]).CODIGO.asString + ', ' +
                              'Saldo: ' + FloatToStr(TORDEMPRODUCAOMC(OPMC.Itens[0]).SALDO.Value);
@@ -993,6 +1011,7 @@ begin
   finally
     FreeAndNil(OPMC);
     FreeAndNil(MC);
+    FreeAndNil(MCE);
     FreeAndNil(FWC);
   end;
 end;

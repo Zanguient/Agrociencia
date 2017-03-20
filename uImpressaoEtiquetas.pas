@@ -253,7 +253,7 @@ begin
     if Pos('*', edCodigoOrdemProducao.Text) > 0 then begin
 
       CodigoOPF := StrToIntDef(LeftStr(edCodigoOrdemProducao.Text, Pos('*', edCodigoOrdemProducao.Text)-1),0);
-      SeqEstagio:= StrToIntDef(RightStr(edCodigoOrdemProducao.Text, Pos('*', edCodigoOrdemProducao.Text)-1),0);
+      SeqEstagio:= StrToIntDef(RightStr(edCodigoOrdemProducao.Text, (Length(edCodigoOrdemProducao.Text) - Pos('*', edCodigoOrdemProducao.Text))), 0);
 
       if CodigoOPF > 0 then begin
 

@@ -645,11 +645,10 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           ParentFont = False
           TabOrder = 3
         end
-        object edOrdemProducaoMC: TButtonedEdit
-          AlignWithMargins = True
+        object edOrdemProducaoMC: TEdit
           Left = 316
           Top = 67
-          Width = 56
+          Width = 41
           Height = 27
           Enabled = False
           Font.Charset = DEFAULT_CHARSET
@@ -657,17 +656,13 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
           Font.Height = -16
           Font.Name = 'Tahoma'
           Font.Style = []
-          Images = DMUtil.ImageList1
           ParentFont = False
-          RightButton.ImageIndex = 0
-          RightButton.Visible = True
           TabOrder = 4
-          OnChange = edOrdemProducaoMCChange
         end
         object edDescOPMC: TEdit
-          Left = 378
+          Left = 363
           Top = 67
-          Width = 328
+          Width = 343
           Height = 27
           Anchors = [akLeft, akTop, akRight]
           Enabled = False
@@ -967,7 +962,7 @@ object frmControleMultiplicacao: TfrmControleMultiplicacao
     Left = 264
     Top = 208
     Bitmap = {
-      494C010103000800740020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000800780020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000000000000000DADA
