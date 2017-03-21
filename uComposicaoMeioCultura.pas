@@ -84,6 +84,7 @@ type
     edQuantidade: TJvCalcEdit;
     edPHRec: TJvCalcEdit;
     cds_PesquisaCODIGOMC: TStringField;
+    cbTodasEspecies: TCheckBox;
     procedure edtMeioCulturaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure btNovoClick(Sender: TObject);
@@ -534,6 +535,8 @@ begin
       M.PHRECOMENDADO.Value   := edPHRec.Value;
       M.CODIGO.Value          := edt_CodigoMeioCutura.Text;
       M.OBSERVACAO.Value      := edt_Observacao.Text;
+      M.TODASASESPECIES.Value := cbTodasEspecies.Checked;
+
       M.SelectList('ID_PRODUTO = ' + QuotedStr(IntToStr(pnCadastro.Tag)));
       if M.Count > 0 then begin
         M.ID.Value := TMEIOCULTURA(M.Itens[0]).ID.Value;
@@ -644,14 +647,17 @@ begin
 
       M.SelectList('ID_PRODUTO = ' + QuotedStr(IntToStr(pnCadastro.Tag)));
       if M.Count > 0 then begin
+
         edt_CodigoMeioCutura.Text := TMEIOCULTURA(M.Itens[0]).CODIGO.asString;
-        edt_CodigoEstagio.Text := TMEIOCULTURA(M.Itens[0]).ID_ESTAGIO.asString;
+        edt_CodigoEstagio.Text    := TMEIOCULTURA(M.Itens[0]).ID_ESTAGIO.asString;
+
         E.SelectList('ID = ' + TMEIOCULTURA(M.Itens[0]).ID_ESTAGIO.asSQL);
         if E.Count > 0 then
-          edt_NomeEstagio.Text := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
+          edt_NomeEstagio.Text    := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
 
-        edPHRec.Value        := TMEIOCULTURA(M.Itens[0]).PHRECOMENDADO.Value;
-        edt_Observacao.Text  := TMEIOCULTURA(M.Itens[0]).OBSERVACAO.asString;
+        edPHRec.Value             := TMEIOCULTURA(M.Itens[0]).PHRECOMENDADO.Value;
+        edt_Observacao.Text       := TMEIOCULTURA(M.Itens[0]).OBSERVACAO.asString;
+        cbTodasEspecies.Checked   := TMEIOCULTURA(M.Itens[0]).TODASASESPECIES.Value;
 
         ME.SelectList('ID_MEIOCULTURA = ' + TMEIOCULTURA(M.Itens[0]).ID.asSQL);
         if ME.Count > 0 then begin

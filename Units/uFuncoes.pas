@@ -83,6 +83,7 @@ begin
 
     CONFIG_LOCAL.DirRelatorios  := ArqINI.ReadString('CONFIGURACOES', 'DIR_RELATORIOS', DirInstall + 'Relatorios\');
     CONFIG_LOCAL.DirImagens     := ArqINI.ReadString('CONFIGURACOES', 'DIR_IMAGENS', DirInstall + 'Imagens\');
+    CONFIG_LOCAL.DirBackup      := ArqINI.ReadString('CONFIGURACOES', 'DIR_BACKUP', DirInstall + 'Backup\');
 
   finally
     FreeAndNil(ArqINI);

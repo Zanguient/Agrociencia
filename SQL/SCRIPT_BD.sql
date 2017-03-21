@@ -547,3 +547,13 @@ ALTER TABLE ordemproducaosolucao
 
 ALTER TABLE ordemproducaosolucao
    ADD COLUMN observacaoencerramento text;
+   
+ALTER TABLE opfinal
+   ADD COLUMN cultivar character varying(100);
+
+UPDATE opfinal SET cultivar = '';   
+
+ALTER TABLE meiocultura
+   ADD COLUMN todasasespecies boolean;
+
+UPDATE meiocultura SET todasasespecies = False;

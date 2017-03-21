@@ -15,8 +15,8 @@ uses
 type
   TfrmOrdemProducaoMeioCultura = class(TForm)
     pnDados: TPanel;
-    GroupBox2: TGroupBox;
-    GroupBox3: TGroupBox;
+    gbDadosPrincipais: TGroupBox;
+    gbMateriaPrima: TGroupBox;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
@@ -95,6 +95,10 @@ type
     SpeedButton2: TSpeedButton;
     cds_PesquisaVOLUMEFINAL: TStringField;
     btRelatorio: TSpeedButton;
+    pnObservacao: TPanel;
+    btObservacao: TBitBtn;
+    Label11: TLabel;
+    mmObservacao: TMemo;
     procedure FormShow(Sender: TObject);
     procedure btn_CancelarClick(Sender: TObject);
     procedure cds_PesquisaFilterRecord(DataSet: TDataSet; var Accept: Boolean);
@@ -131,10 +135,12 @@ type
     procedure OrdemdeProduo1Click(Sender: TObject);
     procedure Etiquetas1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure btObservacaoClick(Sender: TObject);
   private
     function AtualizarEdits(Limpar : Boolean) : Boolean;
     function Alterar : Boolean;
     procedure Cancelar;
+    procedure SelecionarObservacao;
     { Private declarations }
   public
     { Public declarations }
@@ -167,7 +173,8 @@ uses
   uBeanUnidadeMedida,
   uBeanOrdemProducaoMC,
   uBeanOrdemProducaoMC_Itens,
-  uBeanEsterilizacao, uBeanControleEstoque, uBeanControleEstoqueProduto;
+  uBeanEsterilizacao, uBeanControleEstoque, uBeanControleEstoqueProduto,
+  uBeanObservacao;
 {$R *.dfm}
 
 procedure TfrmOrdemProducaoMeioCultura.btBuscarClick(Sender: TObject);
@@ -244,6 +251,7 @@ begin
       MC.DATAHORA.Value           := Now;
       MC.ENCERRADO.Value          := False;
       MC.ID_ESTERILIZACAO.Value   := StrToInt(edt_CodigoEsterilizacao.Text);
+      MC.OBSERVACAO.Value         := mmObservacao.Lines.Text;
 
       if pnDados.Tag > 0 then begin
         MC.ID.Value               := pnDados.Tag;
@@ -321,6 +329,18 @@ begin
   Cancelar;
 end;
 
+procedure TfrmOrdemProducaoMeioCultura.btObservacaoClick(Sender: TObject);
+begin
+  if btObservacao.Tag = 0 then begin
+    btObservacao.Tag := 1;
+    try
+      SelecionarObservacao;
+    finally
+      btObservacao.Tag := 0;
+    end;
+  end;
+end;
+
 function TfrmOrdemProducaoMeioCultura.Alterar : Boolean;
 Var
   FWC   : TFWConnection;
@@ -391,6 +411,7 @@ begin
     edtMateriaPrima.Clear;
     edtNomeMateriaPrima.Clear;
     edt_Quantidade.Clear;
+    mmObservacao.Clear;
 
     cds_MateriaPrima.EmptyDataSet;
 
@@ -422,6 +443,7 @@ begin
           edt_CodigoRecipientes.Text       := TORDEMPRODUCAOMC(MC.Itens[0]).ID_RECIPIENTE.asString;
           edt_MLPorRecipiente.Value        := TORDEMPRODUCAOMC(MC.Itens[0]).MLRECIPIENTE.Value;
           edt_DataInicio.Date              := TORDEMPRODUCAOMC(MC.Itens[0]).DATAINICIO.Value;
+          mmObservacao.Lines.Text          := TORDEMPRODUCAOMC(MC.Itens[0]).OBSERVACAO.asString;
 
           PR.SelectList('ID = ' + edt_CodigoRecipientes.Text);
           if PR.Count > 0 then
@@ -1051,6 +1073,37 @@ begin
     end;
   finally
     FreeAndNil(P);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmOrdemProducaoMeioCultura.SelecionarObservacao;
+var
+  FWC     : TFWConnection;
+  OBS     : TOBSERVACAO;
+  CodOBS  : Integer;
+begin
+
+  FWC     := TFWConnection.Create;
+  OBS     := TOBSERVACAO.Create(FWC);
+  try
+    try
+
+      CodOBS := DMUtil.Selecionar(OBS);
+      if CodOBS > 0 then begin
+        OBS.SelectList('id = ' + IntToStr(CodOBS));
+        if OBS.Count = 1 then begin
+          if Pos(TOBSERVACAO(OBS.Itens[0]).OBSERVACAO.Value, mmObservacao.Lines.Text) = 0 then
+            mmObservacao.Lines.Add(TOBSERVACAO(OBS.Itens[0]).OBSERVACAO.asString)
+        end;
+      end;
+    except
+      on E : Exception do begin
+        DisplayMsg(MSG_ERR, 'Erro ao Selecionar a Observação', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(OBS);
     FreeAndNil(FWC);
   end;
 end;

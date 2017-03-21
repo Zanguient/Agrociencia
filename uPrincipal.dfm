@@ -11,6 +11,7 @@ object frmPrincipal: TfrmPrincipal
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  KeyPreview = True
   Menu = MainMenu1
   OldCreateOrder = False
   WindowState = wsMaximized
@@ -169,8 +170,14 @@ object frmPrincipal: TfrmPrincipal
     end
     object miSair: TMenuItem
       Caption = 'Sair'
-      ShortCut = 27
-      OnClick = miSairClick
+      object TrocarUsuario1: TMenuItem
+        Caption = 'Trocar Usu'#225'rio'
+        OnClick = TrocarUsuario1Click
+      end
+      object Sair: TMenuItem
+        Caption = 'Sair'
+        OnClick = SairClick
+      end
     end
   end
 end

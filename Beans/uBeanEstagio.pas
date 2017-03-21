@@ -39,10 +39,15 @@ begin
   DESCRICAO.Size  := 100;
   OBSERVACAO.Size := 512;
 
-  DESCRICAO.isSearchField := True;
+  DESCRICAO.isSearchField   := True;
+  OBSERVACAO.isSearchField  := True;
 
-  ID.displayLabel         := 'Código';
-  DESCRICAO.displayLabel  := 'Descrição';
+  ID.displayWidth           := 10;
+  DESCRICAO.displayWidth    := 40;
+
+  ID.displayLabel           := 'Código';
+  DESCRICAO.displayLabel    := 'Descrição';
+  OBSERVACAO.displayLabel   := 'Observação';
 
 end;
 

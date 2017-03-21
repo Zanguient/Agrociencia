@@ -76,7 +76,7 @@ object frmOrdemProducao: TfrmOrdemProducao
           object Label2: TLabel
             AlignWithMargins = True
             Left = 4
-            Top = 132
+            Top = 137
             Width = 435
             Height = 19
             Align = alTop
@@ -87,12 +87,13 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            ExplicitTop = 132
             ExplicitWidth = 248
           end
           object Label3: TLabel
             AlignWithMargins = True
             Left = 4
-            Top = 248
+            Top = 253
             Width = 435
             Height = 19
             Align = alTop
@@ -103,12 +104,13 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            ExplicitTop = 248
             ExplicitWidth = 88
           end
           object Label14: TLabel
             AlignWithMargins = True
             Left = 4
-            Top = 190
+            Top = 195
             Width = 435
             Height = 19
             Align = alTop
@@ -119,12 +121,13 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            ExplicitTop = 190
             ExplicitWidth = 167
           end
           object edQuantidade: TEdit
             AlignWithMargins = True
             Left = 4
-            Top = 157
+            Top = 162
             Width = 435
             Height = 27
             Align = alTop
@@ -136,15 +139,16 @@ object frmOrdemProducao: TfrmOrdemProducao
             NumbersOnly = True
             ParentFont = False
             TabOrder = 2
+            ExplicitTop = 157
           end
           object gbProduto: TGroupBox
             AlignWithMargins = True
             Left = 4
             Top = 68
             Width = 435
-            Height = 58
+            Height = 63
             Align = alTop
-            Caption = ' Produto '
+            Caption = ' Esp'#233'cie '
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
@@ -154,11 +158,26 @@ object frmOrdemProducao: TfrmOrdemProducao
             TabOrder = 1
             DesignSize = (
               435
-              58)
+              63)
+            object Label15: TLabel
+              AlignWithMargins = True
+              Left = 232
+              Top = 10
+              Width = 195
+              Height = 19
+              Anchors = [akLeft, akTop, akRight]
+              Caption = 'Cultivar/Variedade/Sele'#231#227'o:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
             object edCodigoProduto: TButtonedEdit
               AlignWithMargins = True
               Left = 4
-              Top = 24
+              Top = 31
               Width = 56
               Height = 27
               Font.Charset = DEFAULT_CHARSET
@@ -177,10 +196,9 @@ object frmOrdemProducao: TfrmOrdemProducao
             end
             object edNomeProduto: TEdit
               Left = 66
-              Top = 24
-              Width = 361
+              Top = 31
+              Width = 160
               Height = 27
-              Anchors = [akLeft, akTop, akRight]
               Enabled = False
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
@@ -189,6 +207,21 @@ object frmOrdemProducao: TfrmOrdemProducao
               Font.Style = []
               ParentFont = False
               TabOrder = 1
+            end
+            object edCultivar: TEdit
+              AlignWithMargins = True
+              Left = 232
+              Top = 31
+              Width = 195
+              Height = 27
+              Anchors = [akLeft, akTop, akRight]
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 2
             end
           end
           object gbCliente: TGroupBox
@@ -248,12 +281,13 @@ object frmOrdemProducao: TfrmOrdemProducao
           object pnObservacao: TPanel
             AlignWithMargins = True
             Left = 4
-            Top = 273
+            Top = 278
             Width = 435
             Height = 98
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 4
+            ExplicitTop = 273
             object edObservacao: TEdit
               AlignWithMargins = True
               Left = 3
@@ -384,7 +418,7 @@ object frmOrdemProducao: TfrmOrdemProducao
           object edLimiteMultiplicacao: TEdit
             AlignWithMargins = True
             Left = 4
-            Top = 215
+            Top = 220
             Width = 435
             Height = 27
             Align = alTop
@@ -396,18 +430,21 @@ object frmOrdemProducao: TfrmOrdemProducao
             NumbersOnly = True
             ParentFont = False
             TabOrder = 3
+            ExplicitTop = 215
           end
           object Panel6: TPanel
             Left = 1
-            Top = 374
+            Top = 379
             Width = 441
-            Height = 221
+            Height = 216
             Align = alClient
             BevelOuter = bvLowered
             TabOrder = 5
+            ExplicitTop = 374
+            ExplicitHeight = 221
             DesignSize = (
               441
-              221)
+              216)
             object Label6: TLabel
               AlignWithMargins = True
               Left = 6
@@ -2265,7 +2302,7 @@ object frmOrdemProducao: TfrmOrdemProducao
     Left = 360
     Top = 304
     Bitmap = {
-      494C0101030014009C0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103001400A00020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

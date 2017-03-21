@@ -989,11 +989,15 @@ begin
         end;
         MC.SelectList('ID_PRODUTO = ' + TORDEMPRODUCAOMC(OPMC.Itens[0]).ID_PRODUTO.asString);
         if MC.Count > 0 then begin
-          MCE.SelectList('ID_MEIOCULTURA = ' + TMEIOCULTURA(MC.Itens[0]).ID.asString + ' AND ID_ESPECIE = ' + IntToStr(MULTIPLICACAO.CADESPECIE));
-          if MCE.Count = 0 then begin
-            DisplayMsg(MSG_WAR, 'Meio de cultura selecionado não pode ser usado para esta espécie!');
-            Exit;
+
+          if not TMEIOCULTURA(MC.Itens[0]).TODASASESPECIES.Value then begin
+            MCE.SelectList('ID_MEIOCULTURA = ' + TMEIOCULTURA(MC.Itens[0]).ID.asString + ' AND ID_ESPECIE = ' + IntToStr(MULTIPLICACAO.CADESPECIE));
+            if MCE.Count = 0 then begin
+              DisplayMsg(MSG_WAR, 'Meio de cultura selecionado não pode ser usado para esta espécie!');
+              Exit;
+            end;
           end;
+
           if TMEIOCULTURA(MC.Itens[0]).ID_ESTAGIO.Value <> MULTIPLICACAO.CADESTAGIO then begin
             DisplayMsg(MSG_WAR, 'Meio de cultura selecionado pertence a outro estágio!' + #13 + 'Verifique!');
             Exit;

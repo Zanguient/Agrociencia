@@ -27,6 +27,8 @@ type
     btConnection: TSpeedButton;
     edDiretorioImagem: TButtonedEdit;
     Label2: TLabel;
+    edDiretorioBackup: TButtonedEdit;
+    Label3: TLabel;
     procedure btSairClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure edDiretorioRelatorioRightButtonClick(Sender: TObject);
@@ -34,6 +36,8 @@ type
     procedure btSalvarClick(Sender: TObject);
     procedure btConnectionClick(Sender: TObject);
     procedure edDiretorioImagemRightButtonClick(Sender: TObject);
+    procedure edDiretorioBackupRightButtonClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     procedure CarregaConfiguracoes;
     procedure SalvaConfiguracoes;
@@ -103,6 +107,22 @@ begin
   edPorta.Text              := CONEXAO.Port;
   edDiretorioRelatorio.Text := CONFIG_LOCAL.DirRelatorios;
   edDiretorioImagem.Text    := CONFIG_LOCAL.DirImagens;
+  edDiretorioBackup.Text    := CONFIG_LOCAL.DirBackup;
+end;
+
+procedure TfrmConfiguracoesSistema.edDiretorioBackupRightButtonClick(
+  Sender: TObject);
+var
+  Pasta : String;
+begin
+  SelectDirectory('Selecione um Diretório!', '', Pasta);
+
+  if (Trim(Pasta) <> '') then begin
+    if (Pasta[Length(Pasta)] <> '\') then
+      Pasta := Pasta + '\';
+    edDiretorioBackup.Text := Pasta;
+  end;
+
 end;
 
 procedure TfrmConfiguracoesSistema.edDiretorioImagemRightButtonClick(
@@ -138,6 +158,14 @@ begin
   AjustaForm(Self);
 end;
 
+procedure TfrmConfiguracoesSistema.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case Key of
+    VK_ESCAPE : Close;
+  end;
+end;
+
 procedure TfrmConfiguracoesSistema.FormShow(Sender: TObject);
 begin
   CarregaConfiguracoes
@@ -154,6 +182,7 @@ begin
 
     ArqINI.WriteString('CONFIGURACOES', 'DIR_RELATORIOS', edDiretorioRelatorio.Text);
     ArqINI.WriteString('CONFIGURACOES', 'DIR_IMAGENS', edDiretorioImagem.Text);
+    ArqINI.WriteString('CONFIGURACOES', 'DIR_BACKUP', edDiretorioBackup.Text);
 
     ArqINI.WriteString('CONEXAOBD', 'Database', edDataBase.Text);
     ArqINI.WriteString('CONEXAOBD', 'Server', edServer.Text);

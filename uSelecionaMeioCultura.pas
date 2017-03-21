@@ -118,10 +118,13 @@ begin
     SQL.SQL.Add('FROM PRODUTO P');
     SQL.SQL.Add('INNER JOIN MEIOCULTURA M ON P.ID = M.ID_PRODUTO');
     SQL.SQL.Add('WHERE 1 = 1');
+
     if edt_NomeEspecie.Text <> EmptyStr then
-      SQL.SQL.Add('AND EXISTS (SELECT 1 FROM MEIOCULTURAESPECIE ME WHERE ME.ID_MEIOCULTURA = M.ID AND ME.ID_ESPECIE = ' + QuotedStr(edt_Especie.Text) + ')');
+      SQL.SQL.Add('AND ((M.TODASASESPECIES = TRUE) OR (EXISTS (SELECT 1 FROM MEIOCULTURAESPECIE ME WHERE ME.ID_MEIOCULTURA = M.ID AND ME.ID_ESPECIE = ' + QuotedStr(edt_Especie.Text) + ')))');
+
     if edt_NomeEstagio.Text <> EmptyStr then
       SQL.SQL.Add('AND M.ID_ESTAGIO = ' + QuotedStr(edt_CodigoEstagio.Text));
+
     SQL.Connection := FW.FDConnection;
     SQL.Open();
 

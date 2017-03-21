@@ -4,7 +4,7 @@ object frmConfiguracoesSistema: TfrmConfiguracoesSistema
   BorderIcons = []
   BorderStyle = bsNone
   Caption = 'Configura'#231#245'es do Sistema'
-  ClientHeight = 544
+  ClientHeight = 564
   ClientWidth = 885
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,13 +15,14 @@ object frmConfiguracoesSistema: TfrmConfiguracoesSistema
   KeyPreview = True
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object pnBotoesVisualizacao: TPanel
     AlignWithMargins = True
     Left = 3
-    Top = 481
+    Top = 501
     Width = 879
     Height = 60
     Align = alBottom
@@ -285,7 +286,7 @@ object frmConfiguracoesSistema: TfrmConfiguracoesSistema
     Left = 3
     Top = 51
     Width = 879
-    Height = 424
+    Height = 444
     Align = alClient
     TabHeight = 30
     TabOrder = 2
@@ -297,7 +298,7 @@ object frmConfiguracoesSistema: TfrmConfiguracoesSistema
       Left = 7
       Top = 39
       Width = 865
-      Height = 378
+      Height = 398
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
@@ -434,6 +435,19 @@ object frmConfiguracoesSistema: TfrmConfiguracoesSistema
         Width = 157
         Height = 19
         Caption = 'Diret'#243'rio das Imagens'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label3: TLabel
+        Left = 3
+        Top = 358
+        Width = 140
+        Height = 19
+        Caption = 'Diret'#243'rio do Backup'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -637,6 +651,24 @@ object frmConfiguracoesSistema: TfrmConfiguracoesSistema
         TabOrder = 8
         Text = 'Diret'#243'rio de Imagens'
         OnRightButtonClick = edDiretorioImagemRightButtonClick
+      end
+      object edDiretorioBackup: TButtonedEdit
+        Left = 3
+        Top = 383
+        Width = 372
+        Height = 27
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Images = DMUtil.ImageList1
+        ParentFont = False
+        RightButton.ImageIndex = 0
+        RightButton.Visible = True
+        TabOrder = 9
+        Text = 'Diret'#243'rio do Backup'
+        OnRightButtonClick = edDiretorioBackupRightButtonClick
       end
     end
   end

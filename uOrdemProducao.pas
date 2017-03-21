@@ -104,6 +104,8 @@ type
     cds_Etiqueta1PRODUTO: TStringField;
     cds_PesquisaIDPRODUTO: TIntegerField;
     OpenPictureDialog1: TOpenPictureDialog;
+    edCultivar: TEdit;
+    Label15: TLabel;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -227,6 +229,7 @@ begin
     edNomeCliente.Clear;
     edCodigoProduto.Clear;
     edNomeProduto.Clear;
+    edCultivar.Clear;
     edObservacao.Clear;
     edLimiteMultiplicacao.Text := '0';
     cbSelecaoPositiva.ItemIndex := 0;
@@ -261,6 +264,7 @@ begin
         SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
         SQL.SQL.Add('	OPF.PRODUTO_ID,');
         SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
+        SQL.SQL.Add('	OPF.CULTIVAR,');
         SQL.SQL.Add('	OPF.SELECAOPOSITIVA,');
         SQL.SQL.Add('	OPF.ORIGEMMATERIAL,');
         SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO,');
@@ -292,6 +296,7 @@ begin
             edNomeCliente.Text          := SQL.FieldByName('NOMECLIENTE').AsString;
             edCodigoProduto.Text        := SQL.FieldByName('PRODUTO_ID').AsString;
             edNomeProduto.Text          := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
+            edCultivar.Text             := SQL.FieldByName('CULTIVAR').AsString;
             edObservacao.Text           := SQL.FieldByName('OBSERVACAO').AsString;
             edLimiteMultiplicacao.Text  := SQL.FieldByName('LIMITEMULTIPLICACOES').AsString;
 
@@ -381,6 +386,13 @@ begin
     Exit;
   end;
 
+  if Length(Trim(edCultivar.Text)) = 0 then begin
+    DisplayMsg(MSG_WAR, 'Cultivar/Variedade não informado, Verifique!');
+    if edCultivar.CanFocus then
+      edCultivar.SetFocus;
+    Exit;
+  end;
+
   if Length(SoNumeros(edDataColeta.Text)) > 0 then begin
     try
       StrToDate(edDataColeta.Text);
@@ -442,6 +454,7 @@ begin
       OPF.TRANSPORTADORA.Value            := edTransportadora.Text;
       OPF.DATADERECEBIMENTO.Value         := edDataRecebimento.Date;
       OPF.DATAESTIMADAPROCESSAMENTO.Value := edDataEstimada.Date;
+      OPF.CULTIVAR.Value                  := edCultivar.Text;
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         OPF.ID.Value          := (Sender as TSpeedButton).Tag;

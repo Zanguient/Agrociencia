@@ -42,6 +42,7 @@ type
   TCONFIGURACOESLOCAIS = record
     DirRelatorios : string;
     DirImagens : string;
+    DirBackup : string;
   end;
 
   TCLASSIFICACAO = record

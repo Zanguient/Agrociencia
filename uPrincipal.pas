@@ -47,8 +47,9 @@ type
     SoluodeEstoque1: TMenuItem;
     PosiodeEstoque1: TMenuItem;
     EstoquedeProduo1: TMenuItem;
+    Sair: TMenuItem;
+    TrocarUsuario1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
-    procedure miSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RedefinirSenhaClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -79,7 +80,10 @@ type
     procedure SoluodeEstoque1Click(Sender: TObject);
     procedure PosiodeEstoque1Click(Sender: TObject);
     procedure EstoquedeProduo1Click(Sender: TObject);
+    procedure TrocarUsuario1Click(Sender: TObject);
+    procedure SairClick(Sender: TObject);
   private
+    procedure FecharSistema;
     { Private declarations }
   public
     procedure CriarComandoSequenciaMenu(Menu: TMainMenu);
@@ -218,15 +222,28 @@ begin
   end;
 end;
 
+procedure TfrmPrincipal.FecharSistema;
+begin
+  DisplayMsg(MSG_CONF, 'Deseja realmente sair do sistema?', 'Sair do Sistema');
+
+  if (ResultMsgModal = mrYes) then
+    Close;
+end;
+
 procedure TfrmPrincipal.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (ssCtrl in Shift) and (Key = VK_F11) then begin
-    DESIGNREL       := not DESIGNREL;
-    if DESIGNREL then
-      DisplayMsg(MSG_INF, 'Design de Relatórios Ativado!')
-    else
-      DisplayMsg(MSG_INF, 'Design de Relatórios Desativado!');
+  case Key of
+    VK_ESCAPE : FecharSistema;
+    VK_F11 : begin
+      if (ssCtrl in Shift) then begin
+        DESIGNREL       := not DESIGNREL;
+        if DESIGNREL then
+          DisplayMsg(MSG_INF, 'Design de Relatórios Ativado!')
+        else
+          DisplayMsg(MSG_INF, 'Design de Relatórios Desativado!');
+      end;
+    end;
   end;
 end;
 
@@ -278,24 +295,23 @@ begin
 end;
 
 procedure TfrmPrincipal.BackupdoBancodeDados1Click(Sender: TObject);
-var
-  DirBkp : String;
 begin
   DisplayMsg(MSG_WAIT, 'Realizando Backup');
 
-  DirBkp := ExtractFilePath(Application.ExeName) +  'backups\';
+  try
 
- if not DirectoryExists(DirBkp) then
-   CreateDir(DirBkp);
+    if not DirectoryExists(CONFIG_LOCAL.DirBackup) then
+      CreateDir(CONFIG_LOCAL.DirBackup);
 
- if not FileExists(ExtractFilePath(Application.ExeName) + 'pg_dump.exe') then begin
-   DisplayMsg(MSG_INF, 'Executavel do Backup (PG_Dump.exe) não encontrado na pasta do executável!' + sLineBreak + 'Para continuar o executável é necessário!');
-   Exit;
- end;
+    if not FileExists(ExtractFilePath(Application.ExeName) + 'pg_dump.exe') then begin
+      DisplayMsg(MSG_INF, 'Executavel do Backup (PG_Dump.exe) não encontrado na pasta do executável!' + sLineBreak + 'Para continuar o executável é necessário!');
+      Exit;
+    end;
 
- ShellExecute(0, 'OPEN', pchar( ExtractFilePath(Application.ExeName) + 'pg_dump.exe'), pchar(' --host ' + CONEXAO.Server + ' --port 5432 --username ' + CONEXAO.User_Name + ' --format custom --file "' + CONEXAO.Database + '_' + FormatDateTime('yyyymmdd_hhmm', Now) + '.backup" ' + CONEXAO.Database), pchar(DirBkp), SW_SHOWNORMAL);
-
- DisplayMsgFinaliza;
+    ShellExecute(0, 'OPEN', pchar( ExtractFilePath(Application.ExeName) + 'pg_dump.exe'), pchar(' --host ' + CONEXAO.Server + ' --port 5432 --username ' + CONEXAO.User_Name + ' --format custom --file "' + CONEXAO.Database + '_' + FormatDateTime('yyyymmdd_hhmm', Now) + '.backup" ' + CONEXAO.Database), pchar(CONFIG_LOCAL.DirBackup), SW_SHOWNORMAL);
+  finally
+    DisplayMsgFinaliza;
+  end;
 end;
 
 procedure TfrmPrincipal.CadastrodePlantas1Click(Sender: TObject);
@@ -373,14 +389,6 @@ begin
   finally
     FreeAndNil(frmControleQualidadePositivo);
   end;
-end;
-
-procedure TfrmPrincipal.miSairClick(Sender: TObject);
-begin
-  DisplayMsg(MSG_CONF, 'Deseja realmente sair do sistema?', 'Sair do Sistema');
-
-  if (ResultMsgModal = mrYes) then
-    Close;
 end;
 
 procedure TfrmPrincipal.MotivosdeDescarte1Click(Sender: TObject);
@@ -471,6 +479,11 @@ begin
   end;
 end;
 
+procedure TfrmPrincipal.SairClick(Sender: TObject);
+begin
+  FecharSistema;
+end;
+
 procedure TfrmPrincipal.SoluodeEstoque1Click(Sender: TObject);
 begin
   if frmOrdemProducaoSolucao = nil then
@@ -480,6 +493,12 @@ begin
   finally
     FreeAndNil(frmOrdemProducaoSolucao);
   end;
+end;
+
+procedure TfrmPrincipal.TrocarUsuario1Click(Sender: TObject);
+begin
+  ShellExecute(Handle,'open', PChar(Application.ExeName), nil, nil, SW_SHOWNORMAL);
+  Application.Terminate;
 end;
 
 procedure TfrmPrincipal.UnidadedeMedida1Click(Sender: TObject);
