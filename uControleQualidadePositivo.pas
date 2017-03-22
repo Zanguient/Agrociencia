@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.ExtCtrls, Vcl.StdCtrls,
-  FireDAC.Comp.Client, Vcl.ExtDlgs, Vcl.Imaging.jpeg, CapturaCam;
+  FireDAC.Comp.Client, Vcl.ExtDlgs, Vcl.Imaging.jpeg, CapturaCam, Data.DB;
 
 type
   TfrmControleQualidadePositivo = class(TForm)
@@ -50,8 +50,13 @@ var
 implementation
 
 uses
-  uFuncoes, uFWConnection, uMensagem, uConstantes,
-  uBeanOPFinal_Estagio_Lote_S_Positivo, uBeanImagem;
+  uFuncoes,
+  uFWConnection,
+  uMensagem,
+  uConstantes,
+  uBeanOPFinal_Estagio_Lote_S_Positivo,
+  uBeanImagem,
+  uBeanOPFinal_Estagio_Lote;
 
 {$R *.dfm}
 
@@ -73,10 +78,21 @@ var
   FWC       : TFWConnection;
   POSITIVO  : TOPFINAL_ESTAGIO_LOTE_S_POSITIVO;
   IMAGEM    : TIMAGEM;
+  OPFEL     : TOPFINAL_ESTAGIO_LOTE;
+  Consulta  : TFDQuery;
 begin
   if NomeImagemAtual = '' then begin
     DisplayMsg(MSG_WAR, 'Selecione uma imagem para continuar!');
     Exit;
+  end;
+
+  if edt_Localizacao.Enabled then begin
+    if Length(Trim(edt_Localizacao.Text)) = 0 then begin
+      DisplayMsg(MSG_WAR, 'Obrigatório informar a Localização do Lote, Verifique!');
+      if edt_Localizacao.CanFocus then
+        edt_Localizacao.SetFocus;
+      Exit;
+    end;
   end;
 
   if edt_CodigoPote.Tag > 0 then begin
@@ -98,6 +114,55 @@ begin
         POSITIVO.LOCALIZACAO.Value               := edt_Localizacao.Text;
         POSITIVO.OBSERVACAO.Value                := mnObservacao.Text;
         POSITIVO.Insert;
+
+        //Atualizar a localização no Lote
+        if edt_Localizacao.Enabled then begin
+
+          OPFEL   := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
+          Consulta:= TFDQuery.Create(nil);
+          try
+            try
+
+              Consulta.Close;
+              Consulta.SQL.Clear;
+              Consulta.SQL.Add('SELECT');
+              Consulta.SQL.Add('	OPFEL.ID AS IDLOTE');
+              Consulta.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE OPFEL');
+              Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+              Consulta.SQL.Add('WHERE 1 = 1');
+              Consulta.SQL.Add('AND OPFELS.ID = :IDPOTE');
+              Consulta.SQL.Add('AND OPFEL.LOCALIZACAO <> :LOCALIZACAO');
+
+              Consulta.Connection := FWC.FDConnection;
+
+              Consulta.ParamByName('IDPOTE').DataType       := ftInteger;
+              Consulta.ParamByName('LOCALIZACAO').DataType  := ftString;
+              Consulta.ParamByName('IDPOTE').Value          := edt_CodigoPote.Tag;
+              Consulta.ParamByName('LOCALIZACAO').Value     := edt_Localizacao.Text;
+
+              Consulta.Prepare;
+              Consulta.Open;
+              Consulta.FetchAll;
+
+              if not Consulta.IsEmpty then begin
+                Consulta.First;
+                while not Consulta.Eof do begin
+                  OPFEL.ID.Value          := Consulta.FieldByName('IDLOTE').AsInteger;
+                  OPFEL.LOCALIZACAO.Value := edt_Localizacao.Text;
+                  OPFEL.Update;
+                  Consulta.Next;
+                end;
+              end;
+            except
+              on E: Exception do
+                raise Exception.Create('Erro ao Atualizar Localização no Lote.: ' + E.Message);
+            end;
+
+          finally
+            FreeAndNil(OPFEL);
+            FreeAndNil(Consulta);
+          end;
+        end;
 
         FWC.Commit;
 
@@ -212,13 +277,18 @@ begin
   edt_CodigoPote.Clear;
   edt_Localizacao.Clear;
   mnObservacao.Clear;
-  btGravar.Enabled := False;
-  btCancelar.Enabled := False;
-  lbPote.Caption     := '';
-  edt_CodigoPote.Tag := 0;
-  NomeImagemAtual   := '';
-  pnImagem.Visible := False;
+  edt_CodigoPote.Enabled  := True;
+  btGravar.Enabled        := False;
+  btCancelar.Enabled      := False;
+  lbPote.Caption          := '';
+  edt_CodigoPote.Tag      := 0;
+  NomeImagemAtual         := '';
+  pnImagem.Visible        := False;
   Image1.Picture.Assign(nil);
+
+  if edt_CodigoPote.CanFocus then
+    edt_CodigoPote.SetFocus;
+
 end;
 
 procedure TfrmControleQualidadePositivo.SelecionaPote;
@@ -226,20 +296,24 @@ var
   FWC : TFWConnection;
   SQL : TFDQuery;
 begin
+
   pnImagem.Visible := False;
+
   FWC := TFWConnection.Create;
   SQL := TFDQuery.Create(nil);
+
   try
     SQL.Close;
     SQL.SQL.Clear;
-    SQL.Connection := FWC.FDConnection;
     SQL.SQL.Add('SELECT ');
-    SQL.SQL.Add('P.DESCRICAO AS ESPECIE,');
-    SQL.SQL.Add('MC.DESCRICAO AS MEIOCULTURA,');
-    SQL.SQL.Add('R.DESCRICAO AS RECIPIENTE,');
-    SQL.SQL.Add('OP.ID AS OPFINAL,');
-    SQL.SQL.Add('R.ID AS CODRECIPIENTE,');
-    SQL.SQL.Add('E.DESCRICAO AS ESTAGIO');
+    SQL.SQL.Add(' OPS.ID AS IDPOTE,');
+    SQL.SQL.Add(' P.DESCRICAO AS ESPECIE,');
+    SQL.SQL.Add(' MC.DESCRICAO AS MEIOCULTURA,');
+    SQL.SQL.Add(' R.DESCRICAO AS RECIPIENTE,');
+    SQL.SQL.Add(' OP.ID AS OPFINAL,');
+    SQL.SQL.Add(' R.ID AS CODRECIPIENTE,');
+    SQL.SQL.Add(' E.DESCRICAO AS ESTAGIO,');
+    SQL.SQL.Add(' OPL.LOCALIZACAO AS LOCALIZACAO');
     SQL.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE_S OPS');
     SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPL ON OPS.OPFINAL_ESTAGIO_LOTE_ID = OPL.ID');
     SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPE ON OPL.OPFINAL_ESTAGIO_ID = OPE.ID');
@@ -251,25 +325,35 @@ begin
     SQL.SQL.Add('INNER JOIN ESTAGIO E ON OPE.ESTAGIO_ID = E.ID');
     SQL.SQL.Add('WHERE OPS.ID = :POTE');
     SQL.SQL.Add('AND NOT OPS.BAIXADO');
-    SQL.ParamByName('POTE').AsInteger := StrToInt(edt_CodigoPote.Text);
+
+    SQL.Connection := FWC.FDConnection;
+
+    SQL.ParamByName('POTE').AsInteger := StrToIntDef(edt_CodigoPote.Text, -1);
     SQL.Prepare;
     SQL.Open();
 
-    if SQL.IsEmpty then begin
+    if not SQL.IsEmpty then begin
+
+      btGravar.Enabled        := True;
+      btCancelar.Enabled      := True;
+      edt_CodigoPote.Enabled  := False;
+
+      lbPote.Caption := 'Código OP: ' + SQL.FieldByName('OPFINAL').AsString +
+                        ', Espécie: ' + SQL.FieldByName('ESPECIE').AsString +
+                        ', Meio de Cultura: ' + SQL.FieldByName('MEIOCULTURA').AsString +
+                        ', Recipiente: ' + SQL.FieldByName('RECIPIENTE').AsString;
+
+      edt_CodigoPote.Tag  := SQL.FieldByName('IDPOTE').AsInteger;
+      edt_Localizacao.Text:= SQL.FieldByName('LOCALIZACAO').AsString;
+
+      if edt_Localizacao.CanFocus then
+        edt_Localizacao.SetFocus;
+
+      pnImagem.Visible := True;
+    end else begin
       DisplayMsg(MSG_WAR, 'Pote não encontrado! Verifique!');
       Exit;
     end;
-
-    btGravar.Enabled    := True;
-    btCancelar.Enabled  := True;
-
-    lbPote.Caption := 'Código OP: ' + SQL.FieldByName('OPFINAL').AsString +
-                      ', Espécie: ' + SQL.FieldByName('ESPECIE').AsString +
-                      ', Meio de Cultura: ' + SQL.FieldByName('MEIOCULTURA').AsString +
-                      ', Recipiente: ' + SQL.FieldByName('RECIPIENTE').AsString;
-    edt_CodigoPote.Tag := SQL.FieldByName('CODRECIPIENTE').AsInteger;
-    if edt_Localizacao.CanFocus then edt_Localizacao.SetFocus;
-    pnImagem.Visible := True;
   finally
     FreeAndNil(SQL);
     FreeAndNil(FWC);

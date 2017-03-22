@@ -58,7 +58,7 @@ type
     edDescEstagio: TEdit;
     cds_PesquisaDATAINICIO: TDateTimeField;
     cds_PesquisaDATAFINAL: TDateTimeField;
-    Panel6: TPanel;
+    pnObservacao: TPanel;
     edObservacao: TEdit;
     btObservacao: TBitBtn;
     Label1: TLabel;
@@ -94,6 +94,8 @@ type
     btnSalvarImagem: TBitBtn;
     btnImagemArquivo: TBitBtn;
     OpenPictureDialog1: TOpenPictureDialog;
+    Label4: TLabel;
+    edLocalizacao: TEdit;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -234,6 +236,7 @@ begin
     edIntervaloCrescimento.Clear;
     btGravar.Tag  := 0;
     pnFotos.Visible := False;
+    edLocalizacao.Clear;
     LimpaImagens;
 
     if Parametros.Acao = eNovo then begin //Caso for Chamada de outra tela carregar com o Cadastro do Planta
@@ -270,7 +273,8 @@ begin
         SQL.SQL.Add('	OPFE.OBSERVACAO,');
         SQL.SQL.Add('	OPFE.QUANTIDADEESTIMADA,');
         SQL.SQL.Add('	OPFE.PREVISAOINICIO,');
-        SQL.SQL.Add('	OPFE.PREVISAOTERMINO');
+        SQL.SQL.Add('	OPFE.PREVISAOTERMINO,');
+        SQL.SQL.Add('	OPFE.LOCALIZACAO');
         SQL.SQL.Add('FROM OPFINAL_ESTAGIO OPFE');
         SQL.SQL.Add('INNER JOIN OPFINAL OPF ON (OPF.ID = OPFE.OPFINAL_ID)');
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
@@ -300,6 +304,7 @@ begin
             edQuantidadeEstimada.Text   := SQL.FieldByName('QUANTIDADEESTIMADA').AsString;
             edDataPrevistaInicio.Date   := SQL.FieldByName('PREVISAOINICIO').AsDateTime;
             edDataPrevistaTermino.Date  := SQL.FieldByName('PREVISAOTERMINO').AsDateTime;
+            edLocalizacao.Text          := SQL.FieldByName('LOCALIZACAO').AsString;
             pnFotos.Visible             := True;
           end;
         end;
@@ -514,19 +519,6 @@ begin
         Exit;
       end;
 
-//      if Length(Trim(edt_Recipiente.Text)) = 0 then begin
-//        DisplayMsg(MSG_WAR, 'Recipiente não informado, Verifique!');
-//        if edt_Recipiente.CanFocus then
-//          edt_Recipiente.SetFocus;
-//        Exit;
-//      end;
-//      if Length(Trim(edObservacao.Text)) = 0 then begin
-//        DisplayMsg(MSG_WAR, 'Observação não informada, Verifique!');
-//        if edObservacao.CanFocus then
-//          edObservacao.SetFocus;
-//        Exit;
-//      end;
-
       ID := (Sender as TSpeedButton).Tag;
 
       if ID = 0 then begin //Só Verificar o limite Caso o for Cadastro.
@@ -545,6 +537,7 @@ begin
       OPFE.QUANTIDADEESTIMADA.Value   := StrToIntDef(edQuantidadeEstimada.Text,0);
       OPFE.PREVISAOINICIO.Value       := edDataPrevistaInicio.Date;
       OPFE.PREVISAOTERMINO.Value      := edDataPrevistaTermino.Date;
+      OPFE.LOCALIZACAO.Value          := edLocalizacao.Text;
 
       if ID > 0 then begin
         OPFE.ID.Value          := ID;

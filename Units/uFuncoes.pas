@@ -456,7 +456,8 @@ begin
             Consulta.SQL.Add('			WHEN 1 THEN ''00'' || CAST((COALESCE(OPFE.ULTIMOLOTE,0) + 1) AS VARCHAR)');
             Consulta.SQL.Add('			WHEN 2 THEN ''0'' || CAST((COALESCE(OPFE.ULTIMOLOTE,0) + 1) AS VARCHAR)');
             Consulta.SQL.Add('			ELSE CAST((COALESCE(OPFE.ULTIMOLOTE,0) + 1) AS VARCHAR) END AS NUMEROLOTE,');
-            Consulta.SQL.Add('	(OPF.ID || ''*'' || OPFE.SEQUENCIA) AS CODIGOBARRAS');
+            Consulta.SQL.Add('	(OPF.ID || ''*'' || OPFE.SEQUENCIA) AS CODIGOBARRAS,');
+            Consulta.SQL.Add('	OPFE.LOCALIZACAO');
             Consulta.SQL.Add('FROM OPFINAL OPF');
             Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
             Consulta.SQL.Add('INNER JOIN PRODUTO PF ON (PF.ID = OPF.PRODUTO_ID)');

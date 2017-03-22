@@ -149,9 +149,6 @@ end;
 procedure TfrmLogin.FormShow(Sender: TObject);
 begin
 
-  if FileExists(DirInstall + 'Imagens\Fundo.jpg') then
-    IMFundo.Picture.LoadFromFile(DirInstall + 'Imagens\Fundo.jpg');
-
   pnDadosLogin.Left := (Self.Width - pnDadosLogin.Width) div 2;
   pnDadosLogin.Top  := (Self.Height - pnDadosLogin.Height) div 2;
 

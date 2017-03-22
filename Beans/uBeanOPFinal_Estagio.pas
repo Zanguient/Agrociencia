@@ -25,6 +25,7 @@ type
     FPREVISAOINICIO: TFieldDateTime;
     FMEIOCULTURA_ID: TFieldInteger;
     FULTIMOLOTE: TFieldInteger;
+    FLOCALIZACAO: TFieldString;
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
@@ -41,6 +42,7 @@ type
     procedure SetPREVISAOTERMINO(const Value: TFieldDateTime);
     procedure SetMEIOCULTURA_ID(const Value: TFieldInteger);
     procedure SetULTIMOLOTE(const Value: TFieldInteger);
+    procedure SetLOCALIZACAO(const Value: TFieldString);
   protected
     procedure InitInstance; override;
   published
@@ -50,7 +52,6 @@ type
     property DATAHORAINICIO       : TFieldDateTime read FDATAHORAINICIO write SetDATAHORAINICIO;
     property DATAHORAFIM          : TFieldDateTime read FDATAHORAFIM write SetDATAHORAFIM;
     property USUARIO_ID           : TFieldInteger read FUSUARIO_ID write SetUSUARIO_ID;
-//    property OPMC_ID              : TFieldInteger read FOPMC_ID write SetOPMC_ID;
     property MEIOCULTURA_ID       : TFieldInteger read FMEIOCULTURA_ID write SetMEIOCULTURA_ID;
     property ESTAGIO_ID           : TFieldInteger read FESTAGIO_ID write SetESTAGIO_ID;
     property SEQUENCIA            : TFieldInteger read FSEQUENCIA write SetSEQUENCIA;
@@ -60,6 +61,7 @@ type
     property PREVISAOTERMINO      : TFieldDateTime read FPREVISAOTERMINO write SetPREVISAOTERMINO;
     property OBSERVACAO           : TFieldString read FOBSERVACAO write SetOBSERVACAO;
     property ULTIMOLOTE           : TFieldInteger read FULTIMOLOTE write SetULTIMOLOTE;
+    property LOCALIZACAO          : TFieldString read FLOCALIZACAO write SetLOCALIZACAO;
   end;
 
 implementation
@@ -74,13 +76,13 @@ begin
   OPFINAL_ID.isNotNull          := True;
   DATAHORA.isNotNull            := True;
   USUARIO_ID.isNotNull          := True;
-//  OPMC_ID.isNotNull             := True;
   ESTAGIO_ID.isNotNull          := True;
   SEQUENCIA.isNotNull           := True;
   INTERVALOCRESCIMENTO.isNotNull:= True;
   QUANTIDADEESTIMADA.isNotNull  := True;
 
   OBSERVACAO.Size               := 512;
+  LOCALIZACAO.Size              := 100;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetDATAHORA(const Value: TFieldDateTime);
@@ -111,6 +113,11 @@ end;
 procedure TOPFINAL_ESTAGIO.SetINTERVALOCRESCIMENTO(const Value: TFieldInteger);
 begin
   FINTERVALOCRESCIMENTO := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO.SetLOCALIZACAO(const Value: TFieldString);
+begin
+  FLOCALIZACAO := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetMEIOCULTURA_ID(const Value: TFieldInteger);

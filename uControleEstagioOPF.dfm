@@ -447,7 +447,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           object Label1: TLabel
             AlignWithMargins = True
             Left = 4
-            Top = 4
+            Top = 62
             Width = 420
             Height = 19
             Align = alTop
@@ -458,17 +458,37 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            ExplicitTop = 4
             ExplicitWidth = 88
           end
-          object Panel6: TPanel
+          object Label4: TLabel
             AlignWithMargins = True
             Left = 4
-            Top = 29
+            Top = 4
+            Width = 420
+            Height = 19
+            Align = alTop
+            Caption = 'Localiza'#231#227'o:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            ExplicitLeft = 6
+            ExplicitTop = 133
+            ExplicitWidth = 85
+          end
+          object pnObservacao: TPanel
+            AlignWithMargins = True
+            Left = 4
+            Top = 87
             Width = 420
             Height = 98
             Align = alTop
             BevelOuter = bvNone
-            TabOrder = 0
+            TabOrder = 1
+            ExplicitTop = 29
             object edObservacao: TEdit
               AlignWithMargins = True
               Left = 3
@@ -485,6 +505,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               MaxLength = 512
               ParentFont = False
               TabOrder = 0
+              ExplicitTop = 0
             end
             object btObservacao: TBitBtn
               AlignWithMargins = True
@@ -598,12 +619,12 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           end
           object pnFotos: TPanel
             Left = 1
-            Top = 133
+            Top = 196
             Width = 426
-            Height = 387
+            Height = 324
             Align = alBottom
             BevelOuter = bvNone
-            TabOrder = 1
+            TabOrder = 2
             object ScrollBox1: TScrollBox
               AlignWithMargins = True
               Left = 3
@@ -618,7 +639,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               Left = 3
               Top = 78
               Width = 145
-              Height = 306
+              Height = 243
               Align = alLeft
               BevelOuter = bvNone
               Color = 16250871
@@ -629,7 +650,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
                 Left = 3
                 Top = 3
                 Width = 139
-                Height = 207
+                Height = 144
                 Align = alClient
                 Center = True
                 Proportional = True
@@ -641,7 +662,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               object btnImagemWebCam: TBitBtn
                 AlignWithMargins = True
                 Left = 3
-                Top = 247
+                Top = 184
                 Width = 139
                 Height = 25
                 Align = alBottom
@@ -652,7 +673,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               object btnSalvarImagem: TBitBtn
                 AlignWithMargins = True
                 Left = 3
-                Top = 278
+                Top = 215
                 Width = 139
                 Height = 25
                 Align = alBottom
@@ -663,7 +684,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               object btnImagemArquivo: TBitBtn
                 AlignWithMargins = True
                 Left = 3
-                Top = 216
+                Top = 153
                 Width = 139
                 Height = 25
                 Align = alBottom
@@ -672,6 +693,24 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
                 OnClick = btnImagemArquivoClick
               end
             end
+          end
+          object edLocalizacao: TEdit
+            AlignWithMargins = True
+            Left = 4
+            Top = 29
+            Width = 420
+            Height = 27
+            Align = alTop
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 0
+            ExplicitLeft = 73
+            ExplicitTop = 37
+            ExplicitWidth = 324
           end
         end
       end

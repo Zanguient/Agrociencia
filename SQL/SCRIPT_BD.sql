@@ -547,6 +547,8 @@ ALTER TABLE ordemproducaosolucao
 
 ALTER TABLE ordemproducaosolucao
    ADD COLUMN observacaoencerramento text;
+
+////////////////////////////////////////////
    
 ALTER TABLE opfinal
    ADD COLUMN cultivar character varying(100);
@@ -557,3 +559,10 @@ ALTER TABLE meiocultura
    ADD COLUMN todasasespecies boolean;
 
 UPDATE meiocultura SET todasasespecies = False;
+
+ALTER TABLE opfinal_estagio
+   ADD COLUMN localizacao character varying(100);
+UPDATE opfinal_estagio SET localizacao = '';
+ALTER TABLE opfinal_estagio_lote
+   ADD COLUMN localizacao character varying(100);
+UPDATE opfinal_estagio_lote SET localizacao = '';

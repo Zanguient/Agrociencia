@@ -29,6 +29,7 @@ type
     SEQUENCIA : Integer;
     NUMEROLOTE : Integer;
     ESTACAOTRABALHO : string;
+    LOCALIZACAO : string;
     IDESTAGIO : Integer;
     IDLOTE : Integer;
     DATAHORAI: TDateTime;
@@ -344,6 +345,7 @@ begin
               Consulta.SQL.Add('	OPFE.ESTAGIO_ID AS ESTAGIO,');
               Consulta.SQL.Add('	P.ID AS ESPECIE,');
               Consulta.SQL.Add('	OPFE.QUANTIDADEESTIMADA,');
+              Consulta.SQL.Add('	OPFE.LOCALIZACAO,');
               Consulta.SQL.Add('	COALESCE((SELECT SUM(OPL.QUANTIDADE) FROM OPFINAL_ESTAGIO_LOTE OPL WHERE OPL.OPFINAL_ESTAGIO_ID = OPFE.ID),0) AS SALDOESTAGIO,');
               Consulta.SQL.Add('	COALESCE((SELECT COUNT(OPLS.ID) FROM OPFINAL_ESTAGIO_LOTE OPL INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPLS ON OPL.ID = OPLS.OPFINAL_ESTAGIO_LOTE_ID WHERE OPL.OPFINAL_ESTAGIO_ID = OPFE.ID),0) AS SALDOLOTE');
               Consulta.SQL.Add('FROM OPFINAL OPF');
@@ -380,6 +382,7 @@ begin
                     MULTIPLICACAO.INICIAL         := Consulta.FieldByName('TIPO').AsInteger = 0;
                     MULTIPLICACAO.PREVISTO        := Consulta.FieldByName('QUANTIDADEESTIMADA').AsInteger;
                     MULTIPLICACAO.FIM             := Consulta.FieldByName('TIPO').AsInteger = 3;
+                    MULTIPLICACAO.LOCALIZACAO     := Consulta.FieldByName('LOCALIZACAO').AsString;
                     if MULTIPLICACAO.FIM then
                       MULTIPLICACAO.SALDO         := Consulta.FieldByName('SALDOESTAGIO').AsInteger
                     else
@@ -799,6 +802,7 @@ begin
         OPFEL.OBSERVACAO.Value          := '';
         OPFEL.QUANTIDADE.Value          := 0;
         OPFEL.ESTACAOTRABALHO.Value     := MULTIPLICACAO.ESTACAOTRABALHO;
+        OPFEL.LOCALIZACAO.Value         := MULTIPLICACAO.LOCALIZACAO;
         OPFEL.ORDEMPRODUCAOMC_ID.Value  := StrToInt(edOrdemProducaoMC.Text);
         if MULTIPLICACAO.FIM then
           OPFEL.QUANTIDADE.Value        := StrToInt(edQuantidadeSaida.Text);
@@ -926,17 +930,19 @@ begin
   MULTIPLICACAO.CODIGOOP        := 0;
   MULTIPLICACAO.SEQUENCIA       := 0;
   MULTIPLICACAO.NUMEROLOTE      := 0;
+  MULTIPLICACAO.ESTACAOTRABALHO := '';
+  MULTIPLICACAO.LOCALIZACAO     := '';
   MULTIPLICACAO.IDESTAGIO       := 0;
   MULTIPLICACAO.IDLOTE          := 0;
   MULTIPLICACAO.DATAHORAI       := 0;
   MULTIPLICACAO.EMANDAMENTO     := False;
   MULTIPLICACAO.INICIAL         := False;
+  MULTIPLICACAO.FIM             := False;
   MULTIPLICACAO.PREVISTO        := 0;
   MULTIPLICACAO.SALDO           := 0;
   MULTIPLICACAO.SALDOMC         := 0;
   MULTIPLICACAO.CADESTAGIO      := 0;
   MULTIPLICACAO.CADESPECIE      := 0;
-  MULTIPLICACAO.FIM             := False;
   MULTIPLICACAO.ORDEMPRODUCAOMC := 0;
   SetLength(MULTIPLICACAO.INTERVALO, 0);
   SetLength(MULTIPLICACAO.SAIDAS, 0);
