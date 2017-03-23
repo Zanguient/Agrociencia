@@ -3,7 +3,7 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
   Top = 0
   BorderStyle = bsNone
   Caption = 'Impress'#227'o de Etiquetas do Lote'
-  ClientHeight = 304
+  ClientHeight = 403
   ClientWidth = 667
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -41,13 +41,14 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     Left = 3
     Top = 51
     Width = 661
-    Height = 184
+    Height = 283
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitLeft = -2
     DesignSize = (
       661
-      184)
+      283)
     object edNumeroLoteEstagio: TLabeledEdit
       Left = 2
       Top = 76
@@ -319,7 +320,7 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     end
     object edCodigoUsuario: TLabeledEdit
       Left = 2
-      Top = 127
+      Top = 180
       Width = 151
       Height = 27
       EditLabel.Width = 109
@@ -342,7 +343,7 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     end
     object edNomeUsuario: TLabeledEdit
       Left = 159
-      Top = 127
+      Top = 180
       Width = 493
       Height = 27
       Anchors = [akLeft, akTop, akRight]
@@ -364,11 +365,35 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
       ParentFont = False
       TabOrder = 7
     end
+    object edLocalizacao: TLabeledEdit
+      Left = 3
+      Top = 128
+      Width = 649
+      Height = 27
+      Anchors = [akLeft, akTop, akRight]
+      EditLabel.Width = 79
+      EditLabel.Height = 19
+      EditLabel.Caption = 'Localiza'#231#227'o'
+      EditLabel.Font.Charset = DEFAULT_CHARSET
+      EditLabel.Font.Color = clWindowText
+      EditLabel.Font.Height = -16
+      EditLabel.Font.Name = 'Tahoma'
+      EditLabel.Font.Style = []
+      EditLabel.ParentFont = False
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 8
+    end
   end
   object pnBotoesEdicao: TPanel
     AlignWithMargins = True
     Left = 3
-    Top = 241
+    Top = 340
     Width = 661
     Height = 60
     Align = alBottom
@@ -383,6 +408,7 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     ParentFont = False
     TabOrder = 2
     TabStop = True
+    ExplicitTop = 241
     object GridPanel2: TGridPanel
       AlignWithMargins = True
       Left = 3
