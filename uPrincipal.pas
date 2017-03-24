@@ -49,6 +49,7 @@ type
     EstoquedeProduo1: TMenuItem;
     Sair: TMenuItem;
     TrocarUsuario1: TMenuItem;
+    ProduoporOperador1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RedefinirSenhaClick(Sender: TObject);
@@ -82,6 +83,7 @@ type
     procedure EstoquedeProduo1Click(Sender: TObject);
     procedure TrocarUsuario1Click(Sender: TObject);
     procedure SairClick(Sender: TObject);
+    procedure ProduoporOperador1Click(Sender: TObject);
   private
     procedure FecharSistema;
     { Private declarations }
@@ -132,7 +134,8 @@ uses
   uComposicaoSolucaoEstoque,
   uOrdemProducaoSolucao,
   uRelPosicaoEstoque,
-  uRelEstoquedeProducao;
+  uRelEstoquedeProducao,
+  uRelProducaoOperador;
 
 {$R *.dfm}
 
@@ -454,6 +457,17 @@ begin
     frmRelPosicaoEstoque.ShowModal;
   finally
     FreeAndNil(frmRelPosicaoEstoque);
+  end;
+end;
+
+procedure TfrmPrincipal.ProduoporOperador1Click(Sender: TObject);
+begin
+  try
+    if frmRelProducaoOperador = nil then
+      frmRelProducaoOperador := TfrmRelProducaoOperador.Create(Self);
+    frmRelProducaoOperador.ShowModal;
+  finally
+    FreeAndNil(frmRelProducaoOperador);
   end;
 end;
 

@@ -82,7 +82,8 @@ uses
   uOrdemProducaoSolucao in 'uOrdemProducaoSolucao.pas' {frmOrdemProducaoSolucao},
   uFotosEstagio in 'uFotosEstagio.pas' {Form1},
   uRelPosicaoEstoque in 'uRelPosicaoEstoque.pas' {frmRelPosicaoEstoque},
-  uRelEstoquedeProducao in 'uRelEstoquedeProducao.pas' {frmRelEstoquedeProducao};
+  uRelEstoquedeProducao in 'uRelEstoquedeProducao.pas' {frmRelEstoquedeProducao},
+  uRelProducaoOperador in 'uRelProducaoOperador.pas' {frmRelProducaoOperador};
 
 {$R *.res}
 
