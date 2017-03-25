@@ -1,10 +1,10 @@
 object frmRelProducaoOperador: TfrmRelProducaoOperador
   Left = 0
   Top = 0
-  ActiveControl = edCodigoEspecie
+  ActiveControl = edDataInicial
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio de Produ'#231#227'o por Operador'
-  ClientHeight = 279
+  ClientHeight = 352
   ClientWidth = 333
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,6 +15,7 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
   KeyPreview = True
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
@@ -22,7 +23,7 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 216
+    Top = 289
     Width = 327
     Height = 60
     Align = alBottom
@@ -49,7 +50,8 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 4
+    TabOrder = 5
+    ExplicitTop = 216
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -302,7 +304,7 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
   object cbExibirSQL: TCheckBox
     AlignWithMargins = True
     Left = 3
-    Top = 193
+    Top = 266
     Width = 327
     Height = 17
     Align = alBottom
@@ -313,12 +315,13 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 4
+    ExplicitTop = 193
   end
   object gbEspecie: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 3
+    Top = 71
     Width = 327
     Height = 58
     Align = alTop
@@ -329,7 +332,8 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 0
+    TabOrder = 1
+    ExplicitTop = 3
     DesignSize = (
       327
       58)
@@ -369,25 +373,26 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
       TabOrder = 1
     end
   end
-  object gbCliente: TGroupBox
+  object gbOperador: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 131
+    Top = 199
     Width = 327
     Height = 58
     Align = alTop
-    Caption = ' Cliente '
+    Caption = ' Operador '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 3
+    ExplicitTop = 131
     DesignSize = (
       327
       58)
-    object edCodigoCliente: TButtonedEdit
+    object edCodigoOperador: TButtonedEdit
       AlignWithMargins = True
       Left = 4
       Top = 24
@@ -403,11 +408,11 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
       RightButton.ImageIndex = 0
       RightButton.Visible = True
       TabOrder = 0
-      OnChange = edCodigoClienteChange
-      OnKeyDown = edCodigoClienteKeyDown
-      OnRightButtonClick = edCodigoClienteRightButtonClick
+      OnChange = edCodigoOperadorChange
+      OnKeyDown = edCodigoOperadorKeyDown
+      OnRightButtonClick = edCodigoOperadorRightButtonClick
     end
-    object edNomeCliente: TEdit
+    object edNomeOperador: TEdit
       Left = 66
       Top = 24
       Width = 253
@@ -426,7 +431,7 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
   object gbEstagio: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 67
+    Top = 135
     Width = 327
     Height = 58
     Align = alTop
@@ -437,7 +442,8 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 2
+    ExplicitTop = 67
     DesignSize = (
       327
       58)
@@ -475,6 +481,110 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
       Font.Style = []
       ParentFont = False
       TabOrder = 1
+    end
+  end
+  object gbPeriodo: TGroupBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 327
+    Height = 62
+    Align = alTop
+    Caption = ' Per'#237'odo de Produ'#231#227'o '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+    DesignSize = (
+      327
+      62)
+    object Label1: TLabel
+      Left = 129
+      Top = 29
+      Width = 71
+      Height = 19
+      Alignment = taCenter
+      Anchors = [akLeft, akTop, akRight]
+      AutoSize = False
+      Caption = 'at'#233
+    end
+    object edDataInicial: TJvDateEdit
+      Left = 5
+      Top = 26
+      Width = 118
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ShowNullDate = False
+      TabOrder = 0
+    end
+    object edDataFinal: TJvDateEdit
+      Left = 206
+      Top = 26
+      Width = 118
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Anchors = [akTop, akRight]
+      ParentFont = False
+      ShowNullDate = False
+      TabOrder = 1
+    end
+  end
+  object CDS_DADOSRELATORIO: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 192
+    Top = 72
+    object CDS_DADOSRELATORIOCODIGOOPERADOR: TIntegerField
+      FieldName = 'CODIGOOPERADOR'
+    end
+    object CDS_DADOSRELATORIONOMEOPERADOR: TStringField
+      FieldName = 'NOMEOPERADOR'
+      Size = 100
+    end
+    object CDS_DADOSRELATORIOCODIGOESPECIE: TIntegerField
+      FieldName = 'CODIGOESPECIE'
+    end
+    object CDS_DADOSRELATORIODESCRICAOESPECIE: TStringField
+      FieldName = 'DESCRICAOESPECIE'
+      Size = 100
+    end
+    object CDS_DADOSRELATORIOCODIGOESTAGIO: TIntegerField
+      FieldName = 'CODIGOESTAGIO'
+    end
+    object CDS_DADOSRELATORIODESCRICAOESTAGIO: TStringField
+      FieldName = 'DESCRICAOESTAGIO'
+      Size = 100
+    end
+    object CDS_DADOSRELATORIONUMERODELOTES: TIntegerField
+      FieldName = 'NUMERODELOTES'
+    end
+    object CDS_DADOSRELATORIOTEMPOUTILPRODUCAO: TTimeField
+      FieldName = 'TEMPOUTILPRODUCAO'
+    end
+    object CDS_DADOSRELATORIOUNIDADES: TIntegerField
+      FieldName = 'UNIDADES'
+    end
+    object CDS_DADOSRELATORIOUNIDADESPORHORA: TIntegerField
+      FieldName = 'UNIDADESPORHORA'
+    end
+    object CDS_DADOSRELATORIOQUANTIDADEDESCARTE: TIntegerField
+      FieldName = 'QUANTIDADEDESCARTE'
+    end
+    object CDS_DADOSRELATORIODESCARTE: TStringField
+      FieldName = 'DESCARTE'
+      Size = 10
     end
   end
 end
