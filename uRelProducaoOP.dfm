@@ -12,6 +12,8 @@ object frmRelProducaoOP: TfrmRelProducaoOP
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
+  Position = poMainFormCenter
+  OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 13
   object GridPanel1: TGridPanel
@@ -47,8 +49,6 @@ object frmRelProducaoOP: TfrmRelProducaoOP
         Value = 100.000000000000000000
       end>
     TabOrder = 0
-    ExplicitTop = 141
-    ExplicitWidth = 327
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -56,7 +56,6 @@ object frmRelProducaoOP: TfrmRelProducaoOP
       Height = 58
       Align = alClient
       TabOrder = 0
-      ExplicitWidth = 162
       object btRelatorio: TSpeedButton
         AlignWithMargins = True
         Left = 22
@@ -181,8 +180,6 @@ object frmRelProducaoOP: TfrmRelProducaoOP
       Height = 58
       Align = alClient
       TabOrder = 1
-      ExplicitLeft = 163
-      ExplicitWidth = 163
       object btFechar: TSpeedButton
         AlignWithMargins = True
         Left = 4
@@ -316,10 +313,6 @@ object frmRelProducaoOP: TfrmRelProducaoOP
     Font.Style = []
     ParentFont = False
     TabOrder = 1
-    ExplicitLeft = -128
-    ExplicitTop = 4
-    ExplicitWidth = 419
-    ExplicitHeight = 58
     DesignSize = (
       285
       71)
@@ -357,7 +350,6 @@ object frmRelProducaoOP: TfrmRelProducaoOP
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      ExplicitWidth = 345
     end
   end
 end

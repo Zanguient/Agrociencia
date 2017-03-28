@@ -23,6 +23,7 @@ type
     procedure edCodigoOPFChange(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure btRelatorioClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -36,7 +37,7 @@ var
 implementation
 
 uses
-  uDMUtil, uFWConnection, uBeanOPFinal;
+  uDMUtil, uFWConnection, uBeanOPFinal, uMensagem, uConstantes;
 
 {$R *.dfm}
 
@@ -53,42 +54,81 @@ var
   FR        : TfrxDBDataset;
   FRI       : TfrxDBDataset;
 begin
+  if StrToIntDef(edCodigoOPF.Text, -1) <= 0 then begin
+    DisplayMsg(MSG_WAR, 'Selecione uma Ordem de Produção!');
+    if edCodigoOPF.CanFocus then edCodigoOPF.SetFocus;
+    Exit;
+  end;
+
   FWC := TFWConnection.Create;
   Consulta := TFDQuery.Create(nil);
+  ConsultaI := TFDQuery.Create(nil);
+  FR := TfrxDBDataset.Create(nil);
+  FRI := TfrxDBDataset.Create(nil);
   try
-    Consulta.Close;
-    Consulta.SQL.Clear;
-    Consulta.SQL.Add('SELECT');
-    Consulta.SQL.Add('CL.NOME AS NOMECLIENTE,');
-    Consulta.SQL.Add('PR.DESCRICAO AS PRODUTO,');
-    Consulta.SQL.Add('E.DESCRICAO AS ESTAGIO,');
-    Consulta.SQL.Add('CAST(E.PREVISAOINICIO AS DATE) AS DATAI,');
-    Consulta.SQL.Add('CAST(E.PREVISAOTERMINO AS DATE) AS DATAF,');
-    Consulta.SQL.Add('OPEL.NUMEROLOTE,');
-    Consulta.SQL.Add('(SELECT COUNT(*) FROM OPFINAL_ESTAGIO_LOTE_S OPELS WHERE OPELS.OPFINAL_ESTAGIO_LOTE_ID = OPEL.ID) AS UNIDADEPRODUZIDA,');
-    Consulta.SQL.Add('(SELECT COUNT(*) FROM OPFINAL_ESTAGIO_LOTE_S OPELS INNER JOIN OPFINAL_ESTAGIO_LOTE_S_QUALIDADE OPELSQ ON OPELS.ID = OPELSQ.ID_OPFINAL_ESTAGIO_LOTE_S WHERE OPELS.OPFINAL_ESTAGIO_LOTE_ID = OPEL.ID) AS UNIDADEPRODUZIDA');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('FROM OPFINAL OP');
-    Consulta.SQL.Add('INNER JOIN CLIENTE CL ON OP.CLIENTE_ID = CL.ID');
-    Consulta.SQL.Add('INNER JOIN PRODUTO PR ON OP.PRODUTO_ID = PR.ID');
-    Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPE ON OP.ID = OPE.OPFINAL_ID');
-    Consulta.SQL.Add('INNER JOIN ESTAGIO E ON OPE.ESTAGIO_ID = E.ID');
-    Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPEL ON OPEL.OPFINAL_ESTAGIO_ID = OPE.ID');
-    Consulta.SQL.Add('WHERE OP.ID = :ID');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('');
-    Consulta.SQL.Add('');
+    try
+      Consulta.Close;
+      Consulta.SQL.Clear;
+      Consulta.Connection := FWC.FDConnection;
+      Consulta.SQL.Add('SELECT');
+      Consulta.SQL.Add('OP.ID,');
+      Consulta.SQL.Add('CL.NOME AS NOMECLIENTE,');
+      Consulta.SQL.Add('PR.DESCRICAO AS PRODUTO,');
+      Consulta.SQL.Add('E.DESCRICAO AS ESTAGIO,');
+      Consulta.SQL.Add('CAST(OPE.PREVISAOINICIO AS DATE) AS DATAI,');
+      Consulta.SQL.Add('CAST(OPE.PREVISAOTERMINO AS DATE) AS DATAF,');
+      Consulta.SQL.Add('OPEL.NUMEROLOTE,');
+      Consulta.SQL.Add('(SELECT COUNT(*) FROM OPFINAL_ESTAGIO_LOTE_S OPELS WHERE OPELS.OPFINAL_ESTAGIO_LOTE_ID = OPEL.ID) AS UNIDADESPRODUZIDAS,');
+      Consulta.SQL.Add('(SELECT COUNT(*) FROM OPFINAL_ESTAGIO_LOTE_S OPELS WHERE OPELS.OPFINAL_ESTAGIO_LOTE_ID = OPEL.ID AND NOT OPELS.BAIXADO) AS SALDOUNIDADES,');
+      Consulta.SQL.Add('(SELECT COUNT(*) FROM OPFINAL_ESTAGIO_LOTE_S OPELS INNER JOIN OPFINAL_ESTAGIO_LOTE_S_QUALIDADE OPELSQ ON OPELS.ID = OPELSQ.ID_OPFINAL_ESTAGIO_LOTE_S WHERE OPELS.OPFINAL_ESTAGIO_LOTE_ID = OPEL.ID) AS UNIDADESDESCARTADAS');
+      Consulta.SQL.Add('FROM OPFINAL OP');
+      Consulta.SQL.Add('INNER JOIN CLIENTE CL ON OP.CLIENTE_ID = CL.ID');
+      Consulta.SQL.Add('INNER JOIN PRODUTO PR ON OP.PRODUTO_ID = PR.ID');
+      Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPE ON OP.ID = OPE.OPFINAL_ID');
+      Consulta.SQL.Add('INNER JOIN ESTAGIO E ON OPE.ESTAGIO_ID = E.ID');
+      Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPEL ON OPEL.OPFINAL_ESTAGIO_ID = OPE.ID');
+      Consulta.SQL.Add('WHERE OP.ID = :ID');
+      Consulta.SQL.Add('ORDER BY OP.ID, CL.NOME, E.DESCRICAO');
+      Consulta.ParamByName('ID').AsInteger := StrToInt(edCodigoOPF.Text);
+      Consulta.Open();
 
+      ConsultaI.Close;
+      ConsultaI.SQL.Clear;
+      ConsultaI.Connection := FWC.FDConnection;
+      ConsultaI.SQL.Add('SELECT');
+      ConsultaI.SQL.Add('OP.SEQUENCIA,');
+      ConsultaI.SQL.Add('E.DESCRICAO AS ESTAGIO,');
+      ConsultaI.SQL.Add('OPEL.NUMEROLOTE,');
+      ConsultaI.SQL.Add(':DIRIMAGEM || I.NOMEIMAGEM AS IMAGEM');
+      ConsultaI.SQL.Add('FROM OPFINAL_ESTAGIO OP');
+      ConsultaI.SQL.Add('INNER JOIN ESTAGIO E ON OP.ESTAGIO_ID = E.ID');
+      ConsultaI.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPEL ON OP.ID = OPEL.OPFINAL_ESTAGIO_ID');
+      ConsultaI.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPELS ON OPEL.ID = OPELS.OPFINAL_ESTAGIO_LOTE_ID');
+      ConsultaI.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S_POSITIVO OPELSP ON OPELS.ID = OPELSP.ID_OPFINAL_ESTAGIO_LOTE_S');
+      ConsultaI.SQL.Add('INNER JOIN IMAGEM I ON OPELSP.ID_IMAGEM = I.ID');
+      ConsultaI.SQL.Add('WHERE OP.OPFINAL_ID = :ID');
+      ConsultaI.SQL.Add('ORDER BY OP.SEQUENCIA');
+      ConsultaI.ParamByName('ID').AsInteger := StrToInt(edCodigoOPF.Text);
+      ConsultaI.ParamByName('DIRIMAGEM').AsString := CONFIG_LOCAL.DirImagens;
+      ConsultaI.Open();
+
+
+      FR.DataSet := Consulta;
+      FR.UserName := 'ORDEMPRODUCAO';
+
+      FRI.DataSet := ConsultaI;
+      FRI.UserName := 'IMAGENS';
+
+      DMUtil.ImprimirRelatorio('frProducaoporOP.fr3');
+    except
+      on E : exception do
+        DisplayMsg(MSG_WAR, 'Erro ao gerar relatório', '', E.Message);
+    end;
   finally
     FreeAndNil(Consulta);
+    FreeAndNil(ConsultaI);
+    FreeAndNil(FR);
+    FreeAndNil(FRI);
     FreeAndNil(FWC);
   end;
 
@@ -109,6 +149,14 @@ end;
 procedure TfrmRelProducaoOP.edCodigoOPFRightButtonClick(Sender: TObject);
 begin
   edCodigoOPF.Text := IntToStr(DMUtil.SelecionarCadastroPlantas(edCodigoOPF.Text));
+  SelecionaOP;
+end;
+
+procedure TfrmRelProducaoOP.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then
+    Close;
 end;
 
 procedure TfrmRelProducaoOP.SelecionaOP;

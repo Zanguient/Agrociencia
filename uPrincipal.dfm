@@ -156,6 +156,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Produ'#231#227'o por Operador'
         OnClick = ProduoporOperador1Click
       end
+      object ProduoporOP1: TMenuItem
+        Caption = 'Produ'#231#227'o por OP'
+        OnClick = ProduoporOP1Click
+      end
     end
     object Configuraes1: TMenuItem
       Caption = 'Configura'#231#245'es'

@@ -83,7 +83,8 @@ uses
   uFotosEstagio in 'uFotosEstagio.pas' {Form1},
   uRelPosicaoEstoque in 'uRelPosicaoEstoque.pas' {frmRelPosicaoEstoque},
   uRelEstoquedeProducao in 'uRelEstoquedeProducao.pas' {frmRelEstoquedeProducao},
-  uRelProducaoOperador in 'uRelProducaoOperador.pas' {frmRelProducaoOperador};
+  uRelProducaoOperador in 'uRelProducaoOperador.pas' {frmRelProducaoOperador},
+  uRelProducaoOP in 'uRelProducaoOP.pas' {frmRelProducaoOP};
 
 {$R *.res}
 
@@ -95,6 +96,7 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDMUtil, DMUtil);
   Application.CreateForm(TfrmLogin, frmLogin);
+  Application.CreateForm(TfrmRelProducaoOP, frmRelProducaoOP);
   if FrmLogin.ShowModal = mrOk then begin
     FreeAndNil(FrmLogin);
     Application.CreateForm(TFrmPrincipal, FrmPrincipal);
