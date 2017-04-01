@@ -51,7 +51,6 @@ object frmRelPerdaOperador: TfrmRelPerdaOperador
         Value = 100.000000000000000000
       end>
     TabOrder = 6
-    ExplicitTop = 289
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -316,7 +315,6 @@ object frmRelPerdaOperador: TfrmRelPerdaOperador
     Font.Style = []
     ParentFont = False
     TabOrder = 5
-    ExplicitTop = 266
   end
   object gbEspecie: TGroupBox
     AlignWithMargins = True
@@ -333,7 +331,6 @@ object frmRelPerdaOperador: TfrmRelPerdaOperador
     Font.Style = []
     ParentFont = False
     TabOrder = 3
-    ExplicitTop = 71
     DesignSize = (
       327
       58)
@@ -388,7 +385,6 @@ object frmRelPerdaOperador: TfrmRelPerdaOperador
     Font.Style = []
     ParentFont = False
     TabOrder = 1
-    ExplicitLeft = 8
     DesignSize = (
       327
       58)
@@ -443,7 +439,6 @@ object frmRelPerdaOperador: TfrmRelPerdaOperador
     Font.Style = []
     ParentFont = False
     TabOrder = 4
-    ExplicitTop = 135
     DesignSize = (
       327
       58)
@@ -556,7 +551,6 @@ object frmRelPerdaOperador: TfrmRelPerdaOperador
     Font.Style = []
     ParentFont = False
     TabOrder = 2
-    ExplicitLeft = 19
     DesignSize = (
       327
       58)

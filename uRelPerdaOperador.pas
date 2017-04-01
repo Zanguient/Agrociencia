@@ -39,11 +39,11 @@ type
     edDataFinal: TJvDateEdit;
     CDS_DADOSRELATORIOCODIGOMOTIVO: TIntegerField;
     CDS_DADOSRELATORIODESCRICAOMOTIVO: TStringField;
-    CDS_DADOSRELATORIOESTACAOTRABALHO: TStringField;
     CDS_DADOSRELATORIOUNIDADESDESCARTE: TIntegerField;
     gbMotivo: TGroupBox;
     edCodigoMotivo: TButtonedEdit;
     edDescricaoMotivo: TEdit;
+    CDS_DADOSRELATORIOESTACAOTRABALHO: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
@@ -322,7 +322,7 @@ begin
       Consulta.SQL.Add('	MD.ID AS CODIGOMOTIVO,');
       Consulta.SQL.Add('	MD.DESCRICAO AS DESCRICAOMOTIVO,');
       Consulta.SQL.Add('	P.ID AS CODIGOESPECIE,');
-      Consulta.SQL.Add('	(P.DESCRICAO || '' - '' || OPF.ID) AS DESCRICAOESPECIE,');
+      Consulta.SQL.Add('	P.DESCRICAO AS DESCRICAOESPECIE,');
       Consulta.SQL.Add('	E.ID AS CODIGOESTAGIO,');
       Consulta.SQL.Add('	E.DESCRICAO AS DESCRICAOESTAGIO,');
       Consulta.SQL.Add('	COUNT(OPFELSQ.ID) AS UNIDADESDESCARTE');
@@ -409,6 +409,8 @@ begin
           CDS_DADOSRELATORIO.Post;
           Consulta.Next;
         end;
+
+        CDS_DADOSRELATORIO.IndexFieldNames := 'CODIGOOPERADOR;ESTACAOTRABALHO;CODIGOMOTIVO;CODIGOESPECIE;CODIGOESTAGIO';
 
         //Chama o Relatório para exibir os Dados
         DMUtil.frxDBDataset1.DataSet  := CDS_DADOSRELATORIO;

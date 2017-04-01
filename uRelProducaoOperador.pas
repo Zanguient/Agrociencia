@@ -358,15 +358,16 @@ begin
             end;
           end;
 
+          OPFELS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + Consulta.FieldByName('IDLOTE').AsString);
+
           if CDS_DADOSRELATORIO.Locate('CODIGOOPERADOR;CODIGOESPECIE;CODIGOESTAGIO', VarArrayOf([Consulta.FieldByName('CODIGOOPERADOR').AsString, Consulta.FieldByName('CODIGOESPECIE').AsString, Consulta.FieldByName('CODIGOESTAGIO').AsString]), []) then begin
             CDS_DADOSRELATORIO.Edit;
             CDS_DADOSRELATORIONUMERODELOTES.Value             := CDS_DADOSRELATORIONUMERODELOTES.Value + 1;
             CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.Value         := CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.AsDateTime + TempoUtil;
+            CDS_DADOSRELATORIOUNIDADES.Value                  := CDS_DADOSRELATORIOUNIDADES.Value + OPFELS.Count;
             if not ConsultaDesc.IsEmpty then
               CDS_DADOSRELATORIOQUANTIDADEDESCARTE.AsInteger  := CDS_DADOSRELATORIOQUANTIDADEDESCARTE.AsInteger + ConsultaDesc.FieldByName('QUANTIDADEDESCARTES').AsInteger;
           end else begin
-
-            OPFELS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + Consulta.FieldByName('IDLOTE').AsString);
 
             CDS_DADOSRELATORIO.Append;
             CDS_DADOSRELATORIOCODIGOOPERADOR.Value    := Consulta.FieldByName('CODIGOOPERADOR').AsInteger;
