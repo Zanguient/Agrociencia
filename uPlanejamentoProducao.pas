@@ -17,9 +17,7 @@ type
     Panel8: TPanel;
     Panel9: TPanel;
     btFechar: TSpeedButton;
-    Label1: TLabel;
-    edDataFinal: TJvDateEdit;
-    edDataInicial: TJvDateEdit;
+    edData: TJvDateEdit;
     btConsulta: TBitBtn;
     PageControl1: TPageControl;
     TSRP: TTabSheet;
@@ -202,16 +200,14 @@ begin
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPS.ID_PRODUTO)');
       Consulta.SQL.Add('INNER JOIN UNIDADEMEDIDA UN ON (UN.ID = P.UNIDADEMEDIDA_ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
-      Consulta.SQL.Add('AND CAST(OPS.DATAPREVISAO AS DATE) BETWEEN :DATAI AND :DATAF');
+      Consulta.SQL.Add('AND CAST(OPS.DATAPREVISAO AS DATE) <= :DATA');
       Consulta.SQL.Add('AND OPS.ENCERRADO = FALSE');
       Consulta.SQL.Add('ORDER BY OPS.DATAPREVISAO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
-      Consulta.ParamByName('DATAI').DataType  := ftDate;
-      Consulta.ParamByName('DATAF').DataType  := ftDate;
-      Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
-      Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
+      Consulta.ParamByName('DATA').DataType   := ftDate;
+      Consulta.ParamByName('DATA').Value      := edData.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -282,15 +278,13 @@ begin
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
-      Consulta.SQL.Add('AND OPFE.PREVISAOTERMINO BETWEEN :DATAI AND :DATAF');
+      Consulta.SQL.Add('AND CAST(OPFE.PREVISAOTERMINO AS DATE) <= :DATA');
       Consulta.SQL.Add('ORDER BY OPFE.PREVISAOTERMINO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
-      Consulta.ParamByName('DATAI').DataType  := ftDate;
-      Consulta.ParamByName('DATAF').DataType  := ftDate;
-      Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
-      Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
+      Consulta.ParamByName('DATA').DataType   := ftDate;
+      Consulta.ParamByName('DATA').Value      := edData.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -384,16 +378,14 @@ begin
       Consulta.SQL.Add('INNER JOIN UNIDADEMEDIDA UN ON (UN.ID = P.UNIDADEMEDIDA_ID)');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = P.ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
-      Consulta.SQL.Add('AND OPMC.DATAINICIO BETWEEN :DATAI AND :DATAF');
+      Consulta.SQL.Add('AND CAST(OPMC.DATAINICIO AS DATE) <= :DATA');
       Consulta.SQL.Add('AND OPMC.ENCERRADO = False');
       Consulta.SQL.Add('ORDER BY OPMC.DATAINICIO ASC');
 
-      Consulta.Connection                     := FWC.FDConnection;
+      Consulta.Connection                    := FWC.FDConnection;
 
-      Consulta.ParamByName('DATAI').DataType  := ftDate;
-      Consulta.ParamByName('DATAF').DataType  := ftDate;
-      Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
-      Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
+      Consulta.ParamByName('DATA').DataType  := ftDate;
+      Consulta.ParamByName('DATA').Value     := edData.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -461,17 +453,15 @@ begin
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
-      Consulta.SQL.Add('AND OPFE.PREVISAOINICIO BETWEEN :DATAI AND :DATAF');
+      Consulta.SQL.Add('AND CAST(OPFE.PREVISAOINICIO AS DATE) <= :DATA');
       Consulta.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
       Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO_LOTE OPFEL WHERE OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
       Consulta.SQL.Add('ORDER BY OPFE.PREVISAOINICIO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
-      Consulta.ParamByName('DATAI').DataType  := ftDate;
-      Consulta.ParamByName('DATAF').DataType  := ftDate;
-      Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
-      Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
+      Consulta.ParamByName('DATA').DataType   := ftDate;
+      Consulta.ParamByName('DATA').Value      := edData.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -540,16 +530,14 @@ begin
       Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
       Consulta.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
       Consulta.SQL.Add('AND OPF.DATAESTIMADAPROCESSAMENTO IS NOT NULL');
-      Consulta.SQL.Add('AND OPF.DATAESTIMADAPROCESSAMENTO BETWEEN :DATAI AND :DATAF');
+      Consulta.SQL.Add('AND CAST(OPF.DATAESTIMADAPROCESSAMENTO AS DATE) <= :DATA');
       Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO OPFE WHERE OPFE.OPFINAL_ID = OPF.ID)');
       Consulta.SQL.Add('ORDER BY OPF.DATAESTIMADAPROCESSAMENTO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
-      Consulta.ParamByName('DATAI').DataType  := ftDate;
-      Consulta.ParamByName('DATAF').DataType  := ftDate;
-      Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
-      Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
+      Consulta.ParamByName('DATA').DataType   := ftDate;
+      Consulta.ParamByName('DATA').Value      := edData.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -611,7 +599,7 @@ begin
   case Key of
     VK_ESCAPE : Close;
     VK_RETURN : begin
-      if edDataInicial.Focused or edDataFinal.Focused then
+      if edData.Focused then
         ConsultaDados;
     end;
   end;
@@ -619,8 +607,7 @@ end;
 
 procedure TfrmPlanejamentoProducao.FormShow(Sender: TObject);
 begin
-  edDataInicial.Date  := Date;
-  edDataFinal.Date    := Date + 7;
+  edData.Date    := Date + 7;
   ConsultaDados;
   AjustaGrid;
 end;

@@ -1,7 +1,7 @@
 object frmPlanejamentoProducao: TfrmPlanejamentoProducao
   Left = 0
   Top = 0
-  ActiveControl = edDataInicial
+  ActiveControl = edData
   BorderStyle = bsNone
   Caption = 'Planejamento da Produ'#231#227'o'
   ClientHeight = 461
@@ -35,7 +35,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Width = 896
       Height = 86
       Align = alTop
-      Caption = '  Per'#237'odo do Planejamento  '
+      Caption = '  Planejamento At'#233'  '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
@@ -43,43 +43,15 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Font.Style = []
       ParentFont = False
       TabOrder = 0
-      object Label1: TLabel
-        Left = 129
-        Top = 35
-        Width = 21
-        Height = 19
-        Alignment = taCenter
-        Caption = 'at'#233
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-      end
-      object edDataFinal: TJvDateEdit
-        Left = 156
-        Top = 32
-        Width = 118
-        Height = 27
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        ShowNullDate = False
-        TabOrder = 1
-      end
-      object edDataInicial: TJvDateEdit
+      object edData: TJvDateEdit
         AlignWithMargins = True
-        Left = 5
-        Top = 32
-        Width = 118
-        Height = 27
+        Left = 13
+        Top = 30
+        Width = 170
+        Height = 37
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
-        Font.Height = -16
+        Font.Height = -24
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
@@ -88,7 +60,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       end
       object btConsulta: TBitBtn
         AlignWithMargins = True
-        Left = 280
+        Left = 189
         Top = 21
         Width = 100
         Height = 54
@@ -149,7 +121,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC2C2
           C293949385868587888785868590908FB3B3B3FBFBFBFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
-        TabOrder = 2
+        TabOrder = 1
         OnClick = btConsultaClick
       end
     end
@@ -279,7 +251,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Top = 95
       Width = 896
       Height = 305
-      ActivePage = TSNOP
+      ActivePage = TSOPESOL
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -291,10 +263,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       OnChange = PageControl1Change
       object TSRP: TTabSheet
         Caption = 'Cadastro e Recebimento de Plantas'
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Panel3: TPanel
           AlignWithMargins = True
           Left = 3
@@ -325,7 +293,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           DrawingStyle = gdsGradient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -20
+          Font.Height = -19
           Font.Name = 'Tahoma'
           Font.Style = []
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -396,10 +364,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       object TSMC: TTabSheet
         Caption = 'Ordem de Produ'#231#227'o do Meio de Cultura'
         ImageIndex = 1
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Panel1: TPanel
           AlignWithMargins = True
           Left = 3
@@ -430,7 +394,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           DrawingStyle = gdsGradient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -20
+          Font.Height = -19
           Font.Name = 'Tahoma'
           Font.Style = []
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -527,7 +491,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           DrawingStyle = gdsGradient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -20
+          Font.Height = -19
           Font.Name = 'Tahoma'
           Font.Style = []
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -609,10 +573,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       object TSOPG: TTabSheet
         Caption = 'Novo Est'#225'gio (OP Gerada)'
         ImageIndex = 3
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object Panel4: TPanel
           AlignWithMargins = True
           Left = 3
@@ -643,7 +603,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           DrawingStyle = gdsGradient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -20
+          Font.Height = -19
           Font.Name = 'Tahoma'
           Font.Style = []
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -718,10 +678,6 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       object TSOPESOL: TTabSheet
         Caption = 'Ordem de Produ'#231#227'o de Solu'#231#227'o Estoque'
         ImageIndex = 4
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object gdOPESolEstoque: TDBGrid
           AlignWithMargins = True
           Left = 3
@@ -734,7 +690,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           DrawingStyle = gdsGradient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -20
+          Font.Height = -19
           Font.Name = 'Tahoma'
           Font.Style = []
           Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]

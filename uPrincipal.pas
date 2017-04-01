@@ -258,8 +258,8 @@ end;
 
 procedure TfrmPrincipal.FormShow(Sender: TObject);
 begin
-  if FileExists(DirInstall + 'Imagens\Fundo.jpg') then
-    IMFundo.Picture.LoadFromFile(DirInstall + 'Imagens\Fundo.jpg');
+  if FileExists(DirInstall + 'Fundo.jpg') then
+    IMFundo.Picture.LoadFromFile(DirInstall + 'Fundo.jpg');
 
   CarregaArrayMenus(MainMenu1);
 
