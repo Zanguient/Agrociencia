@@ -1,10 +1,10 @@
-object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
+object frmRelPerdaOperador: TfrmRelPerdaOperador
   Left = 0
   Top = 0
   ActiveControl = edDataInicial
   BorderStyle = bsDialog
-  Caption = 'Relat'#243'rio de Cadastro de Plantas'
-  ClientHeight = 299
+  Caption = 'Relat'#243'rio de Perda por Operador'
+  ClientHeight = 412
   ClientWidth = 333
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,6 +15,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   KeyPreview = True
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
@@ -22,7 +23,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 236
+    Top = 349
     Width = 327
     Height = 60
     Align = alBottom
@@ -49,7 +50,8 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 1
+    TabOrder = 6
+    ExplicitTop = 289
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -302,7 +304,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   object cbExibirSQL: TCheckBox
     AlignWithMargins = True
     Left = 3
-    Top = 213
+    Top = 326
     Width = 327
     Height = 17
     Align = alBottom
@@ -313,40 +315,205 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 0
+    TabOrder = 5
+    ExplicitTop = 266
   end
-  object gbPeriodo: TGroupBox
+  object gbEspecie: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 3
+    Top = 199
     Width = 327
-    Height = 78
+    Height = 58
     Align = alTop
-    Caption = ' Per'#237'odo de Recebimento '
+    Caption = ' Esp'#233'cie '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 3
+    ExplicitTop = 71
     DesignSize = (
       327
-      78)
+      58)
+    object edCodigoEspecie: TButtonedEdit
+      AlignWithMargins = True
+      Left = 4
+      Top = 24
+      Width = 56
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Images = DMUtil.ImageList1
+      ParentFont = False
+      RightButton.ImageIndex = 0
+      RightButton.Visible = True
+      TabOrder = 0
+      OnChange = edCodigoEspecieChange
+      OnKeyDown = edCodigoEspecieKeyDown
+      OnRightButtonClick = edCodigoEspecieRightButtonClick
+    end
+    object edDescricaoEspecie: TEdit
+      Left = 66
+      Top = 24
+      Width = 253
+      Height = 27
+      Anchors = [akLeft, akTop, akRight]
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+  end
+  object gbOperador: TGroupBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 71
+    Width = 327
+    Height = 58
+    Align = alTop
+    Caption = ' Operador '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+    ExplicitLeft = 8
+    DesignSize = (
+      327
+      58)
+    object edCodigoOperador: TButtonedEdit
+      AlignWithMargins = True
+      Left = 4
+      Top = 24
+      Width = 56
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Images = DMUtil.ImageList1
+      ParentFont = False
+      RightButton.ImageIndex = 0
+      RightButton.Visible = True
+      TabOrder = 0
+      OnChange = edCodigoOperadorChange
+      OnKeyDown = edCodigoOperadorKeyDown
+      OnRightButtonClick = edCodigoOperadorRightButtonClick
+    end
+    object edNomeOperador: TEdit
+      Left = 66
+      Top = 24
+      Width = 253
+      Height = 27
+      Anchors = [akLeft, akTop, akRight]
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+  end
+  object gbEstagio: TGroupBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 263
+    Width = 327
+    Height = 58
+    Align = alTop
+    Caption = ' Est'#225'gio '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 4
+    ExplicitTop = 135
+    DesignSize = (
+      327
+      58)
+    object edCodigoEstagio: TButtonedEdit
+      AlignWithMargins = True
+      Left = 4
+      Top = 24
+      Width = 56
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Images = DMUtil.ImageList1
+      ParentFont = False
+      RightButton.ImageIndex = 0
+      RightButton.Visible = True
+      TabOrder = 0
+      OnChange = edCodigoEstagioChange
+      OnKeyDown = edCodigoEstagioKeyDown
+      OnRightButtonClick = edCodigoEstagioRightButtonClick
+    end
+    object edDescricaoEstagio: TEdit
+      Left = 66
+      Top = 24
+      Width = 253
+      Height = 27
+      Anchors = [akLeft, akTop, akRight]
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+  end
+  object gbPeriodo: TGroupBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 327
+    Height = 62
+    Align = alTop
+    Caption = ' Per'#237'odo de Produ'#231#227'o '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+    DesignSize = (
+      327
+      62)
     object Label1: TLabel
       Left = 129
-      Top = 36
+      Top = 29
       Width = 71
       Height = 19
       Alignment = taCenter
       Anchors = [akLeft, akTop, akRight]
       AutoSize = False
       Caption = 'at'#233
-      ExplicitWidth = 112
     end
     object edDataInicial: TJvDateEdit
       Left = 5
-      Top = 33
+      Top = 26
       Width = 118
       Height = 27
       Font.Charset = DEFAULT_CHARSET
@@ -360,7 +527,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     end
     object edDataFinal: TJvDateEdit
       Left = 206
-      Top = 33
+      Top = 26
       Width = 118
       Height = 27
       Font.Charset = DEFAULT_CHARSET
@@ -374,25 +541,26 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       TabOrder = 1
     end
   end
-  object gbProduto: TGroupBox
+  object gbMotivo: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 151
+    Top = 135
     Width = 327
     Height = 58
     Align = alTop
-    Caption = ' Produto '
+    Caption = ' Motivo '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 2
+    ExplicitLeft = 19
     DesignSize = (
       327
       58)
-    object edCodigoProduto: TButtonedEdit
+    object edCodigoMotivo: TButtonedEdit
       AlignWithMargins = True
       Left = 4
       Top = 24
@@ -408,11 +576,11 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       RightButton.ImageIndex = 0
       RightButton.Visible = True
       TabOrder = 0
-      OnChange = edCodigoProdutoChange
-      OnKeyDown = edCodigoProdutoKeyDown
-      OnRightButtonClick = edCodigoProdutoRightButtonClick
+      OnChange = edCodigoMotivoChange
+      OnKeyDown = edCodigoMotivoKeyDown
+      OnRightButtonClick = edCodigoMotivoRightButtonClick
     end
-    object edNomeProduto: TEdit
+    object edDescricaoMotivo: TEdit
       Left = 66
       Top = 24
       Width = 253
@@ -428,58 +596,47 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       TabOrder = 1
     end
   end
-  object gbCliente: TGroupBox
-    AlignWithMargins = True
-    Left = 3
-    Top = 87
-    Width = 327
-    Height = 58
-    Align = alTop
-    Caption = ' Cliente '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -16
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 4
-    DesignSize = (
-      327
-      58)
-    object edCodigoCliente: TButtonedEdit
-      AlignWithMargins = True
-      Left = 4
-      Top = 24
-      Width = 56
-      Height = 27
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      Images = DMUtil.ImageList1
-      ParentFont = False
-      RightButton.ImageIndex = 0
-      RightButton.Visible = True
-      TabOrder = 0
-      OnChange = edCodigoClienteChange
-      OnKeyDown = edCodigoClienteKeyDown
-      OnRightButtonClick = edCodigoClienteRightButtonClick
+  object CDS_DADOSRELATORIO: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 192
+    Top = 72
+    object CDS_DADOSRELATORIOCODIGOOPERADOR: TIntegerField
+      FieldName = 'CODIGOOPERADOR'
     end
-    object edNomeCliente: TEdit
-      Left = 66
-      Top = 24
-      Width = 253
-      Height = 27
-      Anchors = [akLeft, akTop, akRight]
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
+    object CDS_DADOSRELATORIONOMEOPERADOR: TStringField
+      FieldName = 'NOMEOPERADOR'
+      Size = 100
+    end
+    object CDS_DADOSRELATORIOESTACAOTRABALHO: TStringField
+      FieldName = 'ESTACAOTRABALHO'
+    end
+    object CDS_DADOSRELATORIOCODIGOMOTIVO: TIntegerField
+      FieldName = 'CODIGOMOTIVO'
+    end
+    object CDS_DADOSRELATORIODESCRICAOMOTIVO: TStringField
+      FieldName = 'DESCRICAOMOTIVO'
+      Size = 255
+    end
+    object CDS_DADOSRELATORIOCODIGOESPECIE: TIntegerField
+      FieldName = 'CODIGOESPECIE'
+    end
+    object CDS_DADOSRELATORIODESCRICAOESPECIE: TStringField
+      FieldName = 'DESCRICAOESPECIE'
+      Size = 100
+    end
+    object CDS_DADOSRELATORIOCODIGOESTAGIO: TIntegerField
+      FieldName = 'CODIGOESTAGIO'
+    end
+    object CDS_DADOSRELATORIODESCRICAOESTAGIO: TStringField
+      FieldName = 'DESCRICAOESTAGIO'
+      Size = 100
+    end
+    object CDS_DADOSRELATORIOUNIDADESDESCARTE: TIntegerField
+      FieldName = 'UNIDADESDESCARTE'
+    end
+    object CDS_DADOSRELATORIOUNIDADES: TIntegerField
+      FieldName = 'UNIDADES'
     end
   end
 end

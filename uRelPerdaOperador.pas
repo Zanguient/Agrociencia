@@ -1,4 +1,4 @@
-unit uRelProducaoOperador;
+unit uRelPerdaOperador;
 
 interface
 
@@ -9,7 +9,7 @@ uses
   frxDBSet, Datasnap.DBClient;
 
 type
-  TfrmRelProducaoOperador = class(TForm)
+  TfrmRelPerdaOperador = class(TForm)
     GridPanel1: TGridPanel;
     Panel1: TPanel;
     btRelatorio: TSpeedButton;
@@ -32,15 +32,18 @@ type
     CDS_DADOSRELATORIODESCRICAOESPECIE: TStringField;
     CDS_DADOSRELATORIOCODIGOESTAGIO: TIntegerField;
     CDS_DADOSRELATORIODESCRICAOESTAGIO: TStringField;
-    CDS_DADOSRELATORIONUMERODELOTES: TIntegerField;
-    CDS_DADOSRELATORIOTEMPOUTILPRODUCAO: TTimeField;
     CDS_DADOSRELATORIOUNIDADES: TIntegerField;
     gbPeriodo: TGroupBox;
     Label1: TLabel;
     edDataInicial: TJvDateEdit;
     edDataFinal: TJvDateEdit;
-    CDS_DADOSRELATORIOUNIDADESPORHORA: TIntegerField;
-    CDS_DADOSRELATORIOQUANTIDADEDESCARTE: TIntegerField;
+    CDS_DADOSRELATORIOCODIGOMOTIVO: TIntegerField;
+    CDS_DADOSRELATORIODESCRICAOMOTIVO: TStringField;
+    CDS_DADOSRELATORIOESTACAOTRABALHO: TStringField;
+    CDS_DADOSRELATORIOUNIDADESDESCARTE: TIntegerField;
+    gbMotivo: TGroupBox;
+    edCodigoMotivo: TButtonedEdit;
+    edDescricaoMotivo: TEdit;
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
@@ -58,6 +61,10 @@ type
       Shift: TShiftState);
     procedure edCodigoEstagioRightButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure edCodigoMotivoChange(Sender: TObject);
+    procedure edCodigoMotivoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoMotivoRightButtonClick(Sender: TObject);
   private
     Procedure FecharTela;
     Procedure Visualizar;
@@ -67,7 +74,7 @@ type
   end;
 
 var
-  frmRelProducaoOperador: TfrmRelProducaoOperador;
+  frmRelPerdaOperador: TfrmRelPerdaOperador;
 
 implementation
 
@@ -83,9 +90,9 @@ uses
   uBeanEstagio,
   uBeanOPFinal_Estagio_Lote_S,
   uBeanOPFinal_Estagio_Lote_Intervalo,
-  uBeanOPFinal_Estagio_Lote_S_Qualidade;
+  uBeanOPFinal_Estagio_Lote_S_Qualidade, uBeanMotivoDescarte;
 
-procedure TfrmRelProducaoOperador.btRelatorioClick(Sender: TObject);
+procedure TfrmRelPerdaOperador.btRelatorioClick(Sender: TObject);
 begin
   if btRelatorio.Tag = 0 then begin
     btRelatorio.Tag := 1;
@@ -111,19 +118,19 @@ begin
   end;
 end;
 
-procedure TfrmRelProducaoOperador.edCodigoOperadorChange(Sender: TObject);
+procedure TfrmRelPerdaOperador.edCodigoOperadorChange(Sender: TObject);
 begin
   edNomeOperador.Clear;
 end;
 
-procedure TfrmRelProducaoOperador.edCodigoOperadorKeyDown(Sender: TObject;
+procedure TfrmRelPerdaOperador.edCodigoOperadorKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if key = VK_RETURN then
     edCodigoOperadorRightButtonClick(nil);
 end;
 
-procedure TfrmRelProducaoOperador.edCodigoOperadorRightButtonClick(
+procedure TfrmRelPerdaOperador.edCodigoOperadorRightButtonClick(
   Sender: TObject);
 var
   FWC : TFWConnection;
@@ -143,19 +150,19 @@ begin
   end;
 end;
 
-procedure TfrmRelProducaoOperador.edCodigoEspecieChange(Sender: TObject);
+procedure TfrmRelPerdaOperador.edCodigoEspecieChange(Sender: TObject);
 begin
   edDescricaoEspecie.Clear;
 end;
 
-procedure TfrmRelProducaoOperador.edCodigoEspecieKeyDown(Sender: TObject;
+procedure TfrmRelPerdaOperador.edCodigoEspecieKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if key = VK_RETURN then
     edCodigoEspecieRightButtonClick(nil);
 end;
 
-procedure TfrmRelProducaoOperador.edCodigoEspecieRightButtonClick(
+procedure TfrmRelPerdaOperador.edCodigoEspecieRightButtonClick(
   Sender: TObject);
 var
   FWC : TFWConnection;
@@ -175,19 +182,19 @@ begin
   end;
 end;
 
-procedure TfrmRelProducaoOperador.edCodigoEstagioChange(Sender: TObject);
+procedure TfrmRelPerdaOperador.edCodigoEstagioChange(Sender: TObject);
 begin
   edDescricaoEstagio.Clear;
 end;
 
-procedure TfrmRelProducaoOperador.edCodigoEstagioKeyDown(Sender: TObject;
+procedure TfrmRelPerdaOperador.edCodigoEstagioKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if key = VK_RETURN then
     edCodigoEstagioRightButtonClick(nil);
 end;
 
-procedure TfrmRelProducaoOperador.edCodigoEstagioRightButtonClick(
+procedure TfrmRelPerdaOperador.edCodigoEstagioRightButtonClick(
   Sender: TObject);
 var
   FWC : TFWConnection;
@@ -207,23 +214,54 @@ begin
   end;
 end;
 
-procedure TfrmRelProducaoOperador.btFecharClick(Sender: TObject);
+procedure TfrmRelPerdaOperador.edCodigoMotivoChange(Sender: TObject);
+begin
+  edDescricaoMotivo.Clear;
+end;
+
+procedure TfrmRelPerdaOperador.edCodigoMotivoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoMotivoRightButtonClick(nil);
+end;
+
+procedure TfrmRelPerdaOperador.edCodigoMotivoRightButtonClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  M   : TMOTIVODESCARTE;
+begin
+  FWC := TFWConnection.Create;
+  M   := TMOTIVODESCARTE.Create(FWC);
+
+  try
+    edCodigoMotivo.Text := IntToStr(DMUtil.Selecionar(M, edCodigoMotivo.Text));
+    M.SelectList('id = ' + edCodigoMotivo.Text);
+    if M.Count = 1 then
+      edDescricaoMotivo.Text := TMOTIVODESCARTE(M.Itens[0]).DESCRICAO.asString;
+  finally
+    FreeAndNil(M);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmRelPerdaOperador.btFecharClick(Sender: TObject);
 begin
   FecharTela;
 end;
 
-procedure TfrmRelProducaoOperador.FecharTela;
+procedure TfrmRelPerdaOperador.FecharTela;
 begin
   if btRelatorio.Tag = 0 then
     Close;
 end;
 
-procedure TfrmRelProducaoOperador.FormCreate(Sender: TObject);
+procedure TfrmRelPerdaOperador.FormCreate(Sender: TObject);
 begin
   CDS_DADOSRELATORIO.CreateDataSet;
 end;
 
-procedure TfrmRelProducaoOperador.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TfrmRelPerdaOperador.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case key of
@@ -231,7 +269,7 @@ begin
   end;
 end;
 
-procedure TfrmRelProducaoOperador.FormShow(Sender: TObject);
+procedure TfrmRelPerdaOperador.FormShow(Sender: TObject);
 begin
   cbExibirSQL.Visible := DESIGNREL;
 
@@ -239,29 +277,16 @@ begin
   edDataFinal.Date    := Date;
 end;
 
-procedure TfrmRelProducaoOperador.Visualizar;
+procedure TfrmRelPerdaOperador.Visualizar;
 var
-  FWC       : TFWConnection;
-  Consulta  : TFDQuery;
-  ConsultaDesc : TFDQuery;
-  OPFELS    : TOPFINAL_ESTAGIO_LOTE_S;
-  OPFELI    : TOPFINAL_ESTAGIO_LOTE_INTERVALO;
-  CQ        : TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE;
-  TempoUtil : TTime;
-  I,
-  MinProd   : Integer;
-  Hora,
-  Minuto,
-  Segundo,
-  MiliSegundo : Word;
+  FWC         : TFWConnection;
+  Consulta    : TFDQuery;
+  ConsultaAux : TFDQuery;
 begin
 
-  FWC       := TFWConnection.Create;
-  Consulta  := TFDQuery.Create(nil);
-  ConsultaDesc := TFDQuery.Create(nil);
-  OPFELS    := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
-  OPFELI    := TOPFINAL_ESTAGIO_LOTE_INTERVALO.Create(FWC);
-  CQ        := TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE.Create(FWC);
+  FWC         := TFWConnection.Create;
+  Consulta    := TFDQuery.Create(nil);
+  ConsultaAux := TFDQuery.Create(nil);
 
   CDS_DADOSRELATORIO.DisableControls;
   CDS_DADOSRELATORIO.EmptyDataSet;
@@ -269,26 +294,61 @@ begin
   try
     try
 
+      ConsultaAux.Close;
+      ConsultaAux.SQL.Clear;
+      ConsultaAux.SQL.Add('SELECT');
+      ConsultaAux.SQL.Add('	COUNT(OPFELS.ID) AS UNIDADES');
+      ConsultaAux.SQL.Add('FROM OPFINAL OPF');
+      ConsultaAux.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+      ConsultaAux.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPFEL ON (OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
+      ConsultaAux.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+      ConsultaAux.SQL.Add('WHERE 1 = 1');
+      ConsultaAux.SQL.Add('AND OPFEL.USUARIO_ID = :IDOPERADOR');
+      ConsultaAux.SQL.Add('AND OPFEL.ESTACAOTRABALHO = :ESTACAOTRABALHO');
+      ConsultaAux.SQL.Add('AND OPF.PRODUTO_ID = :IDESPECIE');
+      ConsultaAux.SQL.Add('AND OPFE.ESTAGIO_ID = :IDESTAGIO');
+      ConsultaAux.Connection  := FWC.FDConnection;
+      ConsultaAux.ParamByName('IDOPERADOR').DataType      := ftInteger;
+      ConsultaAux.ParamByName('ESTACAOTRABALHO').DataType := ftString;
+      ConsultaAux.ParamByName('IDESPECIE').DataType       := ftInteger;
+      ConsultaAux.ParamByName('IDESTAGIO').DataType       := ftInteger;
+
       Consulta.Close;
       Consulta.SQL.Clear;
       Consulta.SQL.Add('SELECT');
-      Consulta.SQL.Add('  OPFEL.ID AS IDLOTE,');
-      Consulta.SQL.Add('CAST((OPFEL.DATAHORAFIM - OPFEL.DATAHORAINICIO) AS TIME) AS TEMPOPRODUCAO,');
       Consulta.SQL.Add('	U.ID AS CODIGOOPERADOR,');
       Consulta.SQL.Add('	U.NOME AS NOMEOPERADOR,');
+      Consulta.SQL.Add('	OPFEL.ESTACAOTRABALHO,');
+      Consulta.SQL.Add('	MD.ID AS CODIGOMOTIVO,');
+      Consulta.SQL.Add('	MD.DESCRICAO AS DESCRICAOMOTIVO,');
       Consulta.SQL.Add('	P.ID AS CODIGOESPECIE,');
-      Consulta.SQL.Add('	P.DESCRICAO AS DESCRICAOESPECIE,');
+      Consulta.SQL.Add('	(P.DESCRICAO || '' - '' || OPF.ID) AS DESCRICAOESPECIE,');
       Consulta.SQL.Add('	E.ID AS CODIGOESTAGIO,');
-      Consulta.SQL.Add('	E.DESCRICAO AS DESCRICAOESTAGIO');
+      Consulta.SQL.Add('	E.DESCRICAO AS DESCRICAOESTAGIO,');
+      Consulta.SQL.Add('	COUNT(OPFELSQ.ID) AS UNIDADESDESCARTE');
       Consulta.SQL.Add('FROM OPFINAL OPF');
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPFEL ON (OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
+      Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+      Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S_QUALIDADE OPFELSQ ON (OPFELSQ.ID_OPFINAL_ESTAGIO_LOTE_S = OPFELS.ID)');
+      Consulta.SQL.Add('INNER JOIN MOTIVODESCARTE MD ON (MD.ID = OPFELSQ.ID_MOTIVODESCARTE)');
       Consulta.SQL.Add('INNER JOIN USUARIO U ON (U.ID = OPFEL.USUARIO_ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
       Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
-      Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
       Consulta.SQL.Add('AND CAST(OPFEL.DATAHORAINICIO AS DATE) BETWEEN :DATAI AND :DATAF');
+
+      if Length(Trim(edNomeOperador.Text)) > 0 then begin
+        Consulta.SQL.Add('AND U.ID = :IDUSUARIO');
+        Consulta.ParamByName('IDUSUARIO').DataType  := ftInteger;
+        Consulta.ParamByName('IDUSUARIO').Value     := StrToIntDef(edCodigoOperador.Text, 0);
+      end;
+
+      if Length(Trim(edDescricaoMotivo.Text)) > 0 then begin
+        Consulta.SQL.Add('AND MD.ID = :IDMOTIVO');
+        Consulta.ParamByName('IDMOTIVO').DataType  := ftInteger;
+        Consulta.ParamByName('IDMOTIVO').Value     := StrToIntDef(edCodigoMotivo.Text, 0);
+      end;
 
       if Length(Trim(edDescricaoEspecie.Text)) > 0 then begin
         Consulta.SQL.Add('AND P.ID = :IDESPECIE');
@@ -302,15 +362,10 @@ begin
         Consulta.ParamByName('IDESTAGIO').Value     := StrToIntDef(edCodigoEstagio.Text, 0);
       end;
 
-      if Length(Trim(edNomeOperador.Text)) > 0 then begin
-        Consulta.SQL.Add('AND U.ID = :IDUSUARIO');
-        Consulta.ParamByName('IDUSUARIO').DataType  := ftInteger;
-        Consulta.ParamByName('IDUSUARIO').Value     := StrToIntDef(edCodigoOperador.Text, 0);
-      end;
+      Consulta.SQL.Add('GROUP BY 1, 2, 3, 4, 5, 6, 7 , 8, 9');
+      Consulta.SQL.Add('ORDER BY 1, 2, 3, 4, 5');
 
-      Consulta.SQL.Add('ORDER BY 1');
-
-      Consulta.Connection                     := FWC.FDConnection;
+      Consulta.Connection := FWC.FDConnection;
 
       Consulta.ParamByName('DATAI').DataType  := ftDate;
       Consulta.ParamByName('DATAF').DataType  := ftDate;
@@ -318,99 +373,49 @@ begin
       Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
 
       if cbExibirSQL.Checked then
-        ShowMessage('Relatório de Cadastro de Plantas!' + sLineBreak + sLineBreak + Consulta.SQL.Text);
+        ShowMessage('Relatório de Perda por Operador!' + sLineBreak + sLineBreak + Consulta.SQL.Text);
 
       Consulta.Prepare;
       Consulta.Open;
       Consulta.FetchAll;
 
       if not Consulta.IsEmpty then begin
-
         Consulta.First;
         while not Consulta.Eof do begin
 
-          ConsultaDesc.Close;
-          ConsultaDesc.SQL.Clear;
-          ConsultaDesc.SQL.Add('SELECT');
-          ConsultaDesc.SQL.Add('	COUNT(OPFELSQ.ID) AS QUANTIDADEDESCARTES');
-          ConsultaDesc.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE OPFEL');
-          ConsultaDesc.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
-          ConsultaDesc.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S_QUALIDADE OPFELSQ ON (OPFELSQ.ID_OPFINAL_ESTAGIO_LOTE_S = OPFELS.ID)');
-          ConsultaDesc.SQL.Add('WHERE 1 = 1');
-          ConsultaDesc.SQL.Add('AND OPFEL.ID = :IDLOTE');
+          ConsultaAux.Close;
+          ConsultaAux.ParamByName('IDOPERADOR').AsInteger     := Consulta.FieldByName('CODIGOOPERADOR').AsInteger;
+          ConsultaAux.ParamByName('ESTACAOTRABALHO').AsString := Consulta.FieldByName('ESTACAOTRABALHO').AsString;
+          ConsultaAux.ParamByName('IDESPECIE').AsInteger      := Consulta.FieldByName('CODIGOESPECIE').AsInteger;
+          ConsultaAux.ParamByName('IDESTAGIO').AsInteger      := Consulta.FieldByName('CODIGOESTAGIO').AsInteger;
+          ConsultaAux.Open;
 
-          ConsultaDesc.Connection  := FWC.FDConnection;
+          CDS_DADOSRELATORIO.Append;
+          CDS_DADOSRELATORIOCODIGOOPERADOR.Value    := Consulta.FieldByName('CODIGOOPERADOR').AsInteger;
+          CDS_DADOSRELATORIONOMEOPERADOR.Value      := Consulta.FieldByName('NOMEOPERADOR').AsString;
+          CDS_DADOSRELATORIOESTACAOTRABALHO.Value   := Consulta.FieldByName('ESTACAOTRABALHO').AsString;
+          CDS_DADOSRELATORIOCODIGOMOTIVO.Value      := Consulta.FieldByName('CODIGOMOTIVO').AsInteger;
+          CDS_DADOSRELATORIODESCRICAOMOTIVO.Value   := Consulta.FieldByName('DESCRICAOMOTIVO').AsString;
+          CDS_DADOSRELATORIOCODIGOESPECIE.Value     := Consulta.FieldByName('CODIGOESPECIE').AsInteger;
+          CDS_DADOSRELATORIODESCRICAOESPECIE.Value  := Consulta.FieldByName('DESCRICAOESPECIE').AsString;
+          CDS_DADOSRELATORIOCODIGOESTAGIO.Value     := Consulta.FieldByName('CODIGOESTAGIO').AsInteger;
+          CDS_DADOSRELATORIODESCRICAOESTAGIO.Value  := Consulta.FieldByName('DESCRICAOESTAGIO').AsString;
+          CDS_DADOSRELATORIOUNIDADESDESCARTE.Value  := Consulta.FieldByName('UNIDADESDESCARTE').AsInteger;
+          CDS_DADOSRELATORIOUNIDADES.Value          := 0;
 
-          ConsultaDesc.ParamByName('IDLOTE').DataType := ftInteger;
-          ConsultaDesc.ParamByName('IDLOTE').Value    := Consulta.FieldByName('IDLOTE').AsInteger;
-          ConsultaDesc.Prepare;
-          ConsultaDesc.Open;
-          ConsultaDesc.FetchAll;
-
-          //Tempo de Produção Total do lote
-          TempoUtil := Consulta.FieldByName('TEMPOPRODUCAO').AsDateTime;
-
-          //Descontar o Tempo parado do lote
-          OPFELI.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + Consulta.FieldByName('IDLOTE').AsString);
-          if OPFELI.Count > 0 then begin
-            for I := 0 to OPFELI.Count - 1 do begin
-              TempoUtil := TOPFINAL_ESTAGIO_LOTE_INTERVALO(OPFELI.Itens[I]).DATAHORASAIDA.Value - TOPFINAL_ESTAGIO_LOTE_INTERVALO(OPFELI.Itens[I]).DATAHORAENTRADA.Value;
-            end;
-          end;
-
-          if CDS_DADOSRELATORIO.Locate('CODIGOOPERADOR;CODIGOESPECIE;CODIGOESTAGIO', VarArrayOf([Consulta.FieldByName('CODIGOOPERADOR').AsString, Consulta.FieldByName('CODIGOESPECIE').AsString, Consulta.FieldByName('CODIGOESTAGIO').AsString]), []) then begin
-            CDS_DADOSRELATORIO.Edit;
-            CDS_DADOSRELATORIONUMERODELOTES.Value             := CDS_DADOSRELATORIONUMERODELOTES.Value + 1;
-            CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.Value         := CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.AsDateTime + TempoUtil;
-            if not ConsultaDesc.IsEmpty then
-              CDS_DADOSRELATORIOQUANTIDADEDESCARTE.AsInteger  := CDS_DADOSRELATORIOQUANTIDADEDESCARTE.AsInteger + ConsultaDesc.FieldByName('QUANTIDADEDESCARTES').AsInteger;
-          end else begin
-
-            OPFELS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + Consulta.FieldByName('IDLOTE').AsString);
-
-            CDS_DADOSRELATORIO.Append;
-            CDS_DADOSRELATORIOCODIGOOPERADOR.Value    := Consulta.FieldByName('CODIGOOPERADOR').AsInteger;
-            CDS_DADOSRELATORIONOMEOPERADOR.Value      := Consulta.FieldByName('NOMEOPERADOR').AsString;
-            CDS_DADOSRELATORIOCODIGOESPECIE.Value     := Consulta.FieldByName('CODIGOESPECIE').AsInteger;
-            CDS_DADOSRELATORIODESCRICAOESPECIE.Value  := Consulta.FieldByName('DESCRICAOESPECIE').AsString;
-            CDS_DADOSRELATORIOCODIGOESTAGIO.Value     := Consulta.FieldByName('CODIGOESTAGIO').AsInteger;
-            CDS_DADOSRELATORIODESCRICAOESTAGIO.Value  := Consulta.FieldByName('DESCRICAOESTAGIO').AsString;
-            CDS_DADOSRELATORIONUMERODELOTES.Value     := 1;
-            CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.Value := TempoUtil;
-            CDS_DADOSRELATORIOUNIDADES.Value          := OPFELS.Count;
-            CDS_DADOSRELATORIOUNIDADESPORHORA.Value   := 0;
-            CDS_DADOSRELATORIOQUANTIDADEDESCARTE.Value:= 0;
-
-            if not ConsultaDesc.IsEmpty then
-              CDS_DADOSRELATORIOQUANTIDADEDESCARTE.AsInteger  := ConsultaDesc.FieldByName('QUANTIDADEDESCARTES').AsInteger;
-
-          end;
-
-          DecodeTime(CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.AsDateTime, Hora, Minuto, Segundo, MiliSegundo);
-
-          MinProd := 0;
-          if Hora > 0 then
-            MinProd := MinProd + (Hora * 60);
-          MinProd := MinProd + Minuto;
-
-          if MinProd > 0 then begin
-            if CDS_DADOSRELATORIOUNIDADES.Value > 0 then
-              CDS_DADOSRELATORIOUNIDADESPORHORA.Value   := Trunc((CDS_DADOSRELATORIOUNIDADES.Value / (MinProd / 60)));
-          end;
+          if not ConsultaAux.IsEmpty then
+            CDS_DADOSRELATORIOUNIDADES.Value        := ConsultaAux.FieldByName('UNIDADES').AsInteger;
 
           CDS_DADOSRELATORIO.Post;
-
           Consulta.Next;
         end;
-
-        CDS_DADOSRELATORIO.IndexFieldNames := 'CODIGOOPERADOR;CODIGOESPECIE;CODIGOESTAGIO';
 
         //Chama o Relatório para exibir os Dados
         DMUtil.frxDBDataset1.DataSet  := CDS_DADOSRELATORIO;
         RelParams.Clear;
         RelParams.Add('DATAI=' + edDataInicial.Text);
         RelParams.Add('DATAF=' + edDataFinal.Text);
-        DMUtil.ImprimirRelatorio('frProducaoOperador.fr3');
+        DMUtil.ImprimirRelatorio('frPerdaOperador.fr3');
       end else begin
         DisplayMsg(MSG_WAR, 'Não há dados para Exibir, Verifique os Filtros!');
         Exit;
@@ -423,11 +428,8 @@ begin
     end;
   finally
     CDS_DADOSRELATORIO.EnableControls;
-    FreeAndNil(CQ);
-    FreeAndNil(OPFELI);
-    FreeAndNil(OPFELS);
     FreeAndNil(Consulta);
-    FreeAndNil(ConsultaDesc);
+    FreeAndNil(ConsultaAux);
     FreeAndNil(FWC);
   end;
 end;

@@ -45,7 +45,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = -2
     DesignSize = (
       661
       283)
@@ -408,7 +407,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     ParentFont = False
     TabOrder = 2
     TabStop = True
-    ExplicitTop = 241
     object GridPanel2: TGridPanel
       AlignWithMargins = True
       Left = 3
@@ -675,6 +673,10 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     object cds_ItensCODIGOMC: TStringField
       FieldName = 'CODIGOMC'
       Size = 5
+    end
+    object cds_ItensNUMEROLOTE: TStringField
+      FieldName = 'NUMEROLOTE'
+      Size = 3
     end
   end
   object ds_Itens: TDataSource

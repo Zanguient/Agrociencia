@@ -46,6 +46,7 @@ begin
       SQL.FetchAll;
 
       DMUtil.frxDBDataset1.DataSet := SQL;
+      RelParams.Clear;
       DMUtil.ImprimirRelatorio('frListagemSimplesFornecedor.fr3');
       DisplayMsgFinaliza;
 
@@ -89,6 +90,7 @@ begin
       SQL.FetchAll;
 
       DMUtil.frxDBDataset1.DataSet := SQL;
+      RelParams.Clear;
       DMUtil.ImprimirRelatorio('frListagemSimplesAlmoxarifado.fr3');
       DisplayMsgFinaliza;
 

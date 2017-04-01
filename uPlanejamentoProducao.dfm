@@ -291,6 +291,10 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       OnChange = PageControl1Change
       object TSRP: TTabSheet
         Caption = 'Cadastro e Recebimento de Plantas'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Panel3: TPanel
           AlignWithMargins = True
           Left = 3
@@ -392,6 +396,10 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       object TSMC: TTabSheet
         Caption = 'Ordem de Produ'#231#227'o do Meio de Cultura'
         ImageIndex = 1
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Panel1: TPanel
           AlignWithMargins = True
           Left = 3
@@ -601,6 +609,10 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       object TSOPG: TTabSheet
         Caption = 'Novo Est'#225'gio (OP Gerada)'
         ImageIndex = 3
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Panel4: TPanel
           AlignWithMargins = True
           Left = 3
@@ -706,6 +718,10 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       object TSOPESOL: TTabSheet
         Caption = 'Ordem de Produ'#231#227'o de Solu'#231#227'o Estoque'
         ImageIndex = 4
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object gdOPESolEstoque: TDBGrid
           AlignWithMargins = True
           Left = 3

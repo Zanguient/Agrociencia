@@ -1136,6 +1136,7 @@ begin
 
       if not cds_Etiqueta1.IsEmpty then begin
         DMUtil.frxDBDataset1.DataSet := cds_Etiqueta1;
+        RelParams.Clear;
         DMUtil.ImprimirRelatorio('frEtiqueta1.fr3');
       end;
     finally

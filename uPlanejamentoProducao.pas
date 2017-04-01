@@ -121,6 +121,7 @@ var
   frmPlanejamentoProducao: TfrmPlanejamentoProducao;
 
 implementation
+
 uses
   uDMUtil,
   uConstantes,
@@ -130,7 +131,9 @@ uses
   uOrdemProducao,
   uControleEstagioOPF,
   uOrdemProducaoMeioCultura,
-  uOrdemProducaoSolucao;
+  uOrdemProducaoSolucao,
+  uDetalhesEstagio;
+
 {$R *.dfm}
 
 { TfrmAgendamento }
@@ -201,6 +204,7 @@ begin
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND CAST(OPS.DATAPREVISAO AS DATE) BETWEEN :DATAI AND :DATAF');
       Consulta.SQL.Add('AND OPS.ENCERRADO = FALSE');
+      Consulta.SQL.Add('ORDER BY OPS.DATAPREVISAO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
@@ -279,6 +283,7 @@ begin
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
       Consulta.SQL.Add('AND OPFE.PREVISAOTERMINO BETWEEN :DATAI AND :DATAF');
+      Consulta.SQL.Add('ORDER BY OPFE.PREVISAOTERMINO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
@@ -381,6 +386,7 @@ begin
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND OPMC.DATAINICIO BETWEEN :DATAI AND :DATAF');
       Consulta.SQL.Add('AND OPMC.ENCERRADO = False');
+      Consulta.SQL.Add('ORDER BY OPMC.DATAINICIO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
@@ -458,6 +464,7 @@ begin
       Consulta.SQL.Add('AND OPFE.PREVISAOINICIO BETWEEN :DATAI AND :DATAF');
       Consulta.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
       Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO_LOTE OPFEL WHERE OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
+      Consulta.SQL.Add('ORDER BY OPFE.PREVISAOINICIO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
@@ -535,6 +542,7 @@ begin
       Consulta.SQL.Add('AND OPF.DATAESTIMADAPROCESSAMENTO IS NOT NULL');
       Consulta.SQL.Add('AND OPF.DATAESTIMADAPROCESSAMENTO BETWEEN :DATAI AND :DATAF');
       Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO OPFE WHERE OPFE.OPFINAL_ID = OPF.ID)');
+      Consulta.SQL.Add('ORDER BY OPF.DATAESTIMADAPROCESSAMENTO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
@@ -644,6 +652,24 @@ begin
           FreeAndNil(frmControleEstagioOPF);
         end;
       end;
+    end else begin
+      if gdGerarOP.SelectedField.FieldName = 'SALDOPOTES' then begin
+        if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('ID')) then begin
+          if not Assigned(frmDetalhesEstagio) then
+            frmDetalhesEstagio := TfrmDetalhesEstagio.Create(nil);
+          try
+            frmDetalhesEstagio.Param.IDOPFE := Self.gdGerarOP.DataSource.DataSet.FindField('ID').AsInteger;
+
+            frmDetalhesEstagio.Param.UNIDADES := 0;
+            if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('SALDOPOTES')) then
+              frmDetalhesEstagio.Param.UNIDADES := Self.gdGerarOP.DataSource.DataSet.FindField('SALDOPOTES').AsInteger;
+
+            frmDetalhesEstagio.ShowModal;
+          finally
+            FreeAndNil(frmDetalhesEstagio);
+          end;
+        end;
+      end;
     end;
   end;
 end;
@@ -655,11 +681,17 @@ var
   R: TRect;
   SCapt : string;
 begin
-  if Pos(Column.FieldName, '|ABRIROP|GERAROP') > 0 then begin
+  if Pos(Column.FieldName, '|ABRIROP|GERAROP|SALDOPOTES|') > 0 then begin
     gdGerarOP.Canvas.FillRect(Rect);
     BUTTON  := 0;
     R       := Rect;
     SCapt   := Column.Title.Caption;
+
+    if Column.FieldName = 'SALDOPOTES' then begin
+      if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('SALDOPOTES')) then
+        SCapt := Self.gdGerarOP.DataSource.DataSet.FieldByName('SALDOPOTES').AsString;
+    end;
+
     InflateRect(R,-2,-2); //Diminue o tamanho do Botão
     DrawFrameControl(gdGerarOP.Canvas.Handle,R,BUTTON, BUTTON or BUTTON);
     with gdGerarOP.Canvas do begin

@@ -84,7 +84,9 @@ uses
   uRelPosicaoEstoque in 'uRelPosicaoEstoque.pas' {frmRelPosicaoEstoque},
   uRelEstoquedeProducao in 'uRelEstoquedeProducao.pas' {frmRelEstoquedeProducao},
   uRelProducaoOperador in 'uRelProducaoOperador.pas' {frmRelProducaoOperador},
-  uRelProducaoOP in 'uRelProducaoOP.pas' {frmRelProducaoOP};
+  uRelProducaoOP in 'uRelProducaoOP.pas' {frmRelProducaoOP},
+  uDetalhesEstagio in 'uDetalhesEstagio.pas' {frmDetalhesEstagio},
+  uRelPerdaOperador in 'uRelPerdaOperador.pas' {frmRelPerdaOperador};
 
 {$R *.res}
 
@@ -96,7 +98,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDMUtil, DMUtil);
   Application.CreateForm(TfrmLogin, frmLogin);
-  Application.CreateForm(TfrmRelProducaoOP, frmRelProducaoOP);
   if FrmLogin.ShowModal = mrOk then begin
     FreeAndNil(FrmLogin);
     Application.CreateForm(TFrmPrincipal, FrmPrincipal);

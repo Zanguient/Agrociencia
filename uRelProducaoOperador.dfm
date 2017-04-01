@@ -51,7 +51,6 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
         Value = 100.000000000000000000
       end>
     TabOrder = 5
-    ExplicitTop = 216
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -316,7 +315,6 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     Font.Style = []
     ParentFont = False
     TabOrder = 4
-    ExplicitTop = 193
   end
   object gbEspecie: TGroupBox
     AlignWithMargins = True
@@ -333,7 +331,6 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     Font.Style = []
     ParentFont = False
     TabOrder = 1
-    ExplicitTop = 3
     DesignSize = (
       327
       58)
@@ -388,7 +385,6 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     Font.Style = []
     ParentFont = False
     TabOrder = 3
-    ExplicitTop = 131
     DesignSize = (
       327
       58)
@@ -443,7 +439,6 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     Font.Style = []
     ParentFont = False
     TabOrder = 2
-    ExplicitTop = 67
     DesignSize = (
       327
       58)
@@ -581,10 +576,6 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     end
     object CDS_DADOSRELATORIOQUANTIDADEDESCARTE: TIntegerField
       FieldName = 'QUANTIDADEDESCARTE'
-    end
-    object CDS_DADOSRELATORIODESCARTE: TStringField
-      FieldName = 'DESCARTE'
-      Size = 10
     end
   end
 end

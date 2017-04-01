@@ -402,6 +402,7 @@ begin
       FR.DataSet      := SQL;
       FR_I.DataSet    := SQL_I;
 
+      RelParams.Clear;
       DMUtil.ImprimirRelatorio('frOPMC.fr3');
       DisplayMsgFinaliza;
     finally
@@ -480,6 +481,7 @@ begin
               if not Consulta.IsEmpty then begin
 
                 DMUtil.frxDBDataset1.DataSet := Consulta;
+                RelParams.Clear;
                 DMUtil.ImprimirRelatorio('frFichaTecnicadeProducao.fr3');
 
                 FWC.StartTransaction;
@@ -579,6 +581,7 @@ begin
       FR.DataSet      := SQL;
       FR_I.DataSet    := SQL_I;
 
+      RelParams.Clear;
       DMUtil.ImprimirRelatorio('frOPSOL.fr3');
       DisplayMsgFinaliza;
     finally

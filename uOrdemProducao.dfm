@@ -87,7 +87,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            ExplicitTop = 132
             ExplicitWidth = 248
           end
           object Label3: TLabel
@@ -104,7 +103,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            ExplicitTop = 248
             ExplicitWidth = 88
           end
           object Label14: TLabel
@@ -121,7 +119,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            ExplicitTop = 190
             ExplicitWidth = 167
           end
           object edQuantidade: TEdit
@@ -2302,7 +2299,7 @@ object frmOrdemProducao: TfrmOrdemProducao
     Left = 360
     Top = 304
     Bitmap = {
-      494C010103001400A00020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103001400A40020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

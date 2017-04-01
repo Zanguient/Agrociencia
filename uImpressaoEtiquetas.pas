@@ -45,6 +45,7 @@ type
     edCodigoUsuario: TLabeledEdit;
     edNomeUsuario: TLabeledEdit;
     edLocalizacao: TLabeledEdit;
+    cds_ItensNUMEROLOTE: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure btEtiquetasClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -410,6 +411,7 @@ begin
                 cds_ItensORDEMPRODUCAO.Value  := LOTE.ORDEMPRODUCAO;
                 cds_ItensPRODUTO.Value        := edProduto.Text;
                 cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
+                cds_ItensNUMEROLOTE.Value     := StrZero(TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).NUMEROLOTE.asString, MinimoCodigoBarras);
                 cds_ItensCODIGOMC.Value       := LOTE.CODIGOMC;
                 cds_Itens.Post;
               end;
@@ -455,6 +457,7 @@ begin
   if not cds_Itens.IsEmpty then begin
     if AtualizaLocalizacao then begin
       DMUtil.frxDBDataset1.DataSet := cds_Itens;
+      RelParams.Clear;
       DMUtil.ImprimirRelatorio('frEtiquetaLote.fr3');
       LimparEdits;
     end;

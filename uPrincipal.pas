@@ -51,6 +51,7 @@ type
     TrocarUsuario1: TMenuItem;
     ProduoporOperador1: TMenuItem;
     ProduoporOP1: TMenuItem;
+    PerdaporOperador1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RedefinirSenhaClick(Sender: TObject);
@@ -86,6 +87,7 @@ type
     procedure SairClick(Sender: TObject);
     procedure ProduoporOperador1Click(Sender: TObject);
     procedure ProduoporOP1Click(Sender: TObject);
+    procedure PerdaporOperador1Click(Sender: TObject);
   private
     procedure FecharSistema;
     { Private declarations }
@@ -138,7 +140,8 @@ uses
   uRelPosicaoEstoque,
   uRelEstoquedeProducao,
   uRelProducaoOperador,
-  uRelProducaoOP;
+  uRelProducaoOP,
+  uRelPerdaOperador;
 
 {$R *.dfm}
 
@@ -449,6 +452,17 @@ begin
     frmOrdemProducaoMeioCultura.ShowModal;
   finally
     FreeAndNil(frmOrdemProducaoMeioCultura);
+  end;
+end;
+
+procedure TfrmPrincipal.PerdaporOperador1Click(Sender: TObject);
+begin
+  try
+    if frmRelPerdaOperador = nil then
+      frmRelPerdaOperador := TfrmRelPerdaOperador.Create(Self);
+    frmRelPerdaOperador.ShowModal;
+  finally
+    FreeAndNil(frmRelPerdaOperador);
   end;
 end;
 

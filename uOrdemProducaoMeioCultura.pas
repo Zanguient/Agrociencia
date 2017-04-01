@@ -918,6 +918,7 @@ begin
 
       if not SQL.IsEmpty then begin
         DMUtil.frxDBDataset1.DataSet := SQL;
+        RelParams.Clear;
         DMUtil.ImprimirRelatorio('frEtiquetaOPMC.fr3');
       end else begin
         DisplayMsg(MSG_WAR, 'Não há dados para Exibir, Verifique os Filtros!');

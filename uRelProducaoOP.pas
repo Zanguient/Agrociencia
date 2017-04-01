@@ -119,6 +119,7 @@ begin
       FRI.DataSet := ConsultaI;
       FRI.UserName := 'IMAGENS';
 
+      RelParams.Clear;
       DMUtil.ImprimirRelatorio('frProducaoporOP.fr3');
     except
       on E : exception do

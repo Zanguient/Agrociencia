@@ -133,6 +133,7 @@ begin
 
       if not Consulta.IsEmpty then begin
         DMUtil.frxDBDataset1.DataSet  := Consulta;
+        RelParams.Clear;
         DMUtil.ImprimirRelatorio('frPosicaoEstoque.fr3');
       end else begin
         DisplayMsg(MSG_WAR, 'Não há dados para Exibir, Verifique os Filtros!');

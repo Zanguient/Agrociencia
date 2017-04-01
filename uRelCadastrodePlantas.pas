@@ -278,6 +278,9 @@ begin
         DMUtil.frxDBDataset1.DataSet  := Consulta;
         FR.UserName                   := 'OPFINAL_IMAGENS';
         FR.DataSet                    := ConsultaI;
+        RelParams.Clear;
+        RelParams.Add('DATAI=' + edDataInicial.Text);
+        RelParams.Add('DATAF=' + edDataFinal.Text);
         DMUtil.ImprimirRelatorio('frCadastrodePlantas.fr3');
       end else begin
         DisplayMsg(MSG_WAR, 'Não há dados para Exibir, Verifique os Filtros!');
