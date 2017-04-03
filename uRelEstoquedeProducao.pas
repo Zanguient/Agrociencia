@@ -222,6 +222,7 @@ begin
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPF.ID AS NUMEROCADASTRO,');
       Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
+      Consulta.SQL.Add('	OPF.CULTIVAR AS CULTIVAR,');
       Consulta.SQL.Add('	CL.NOME AS NOMECLIENTE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIO,');
       Consulta.SQL.Add('	OPFEL.NUMEROLOTE AS NUMERLOTE,');
@@ -254,8 +255,8 @@ begin
         Consulta.ParamByName('IDCLIENTE').Value     := StrToIntDef(edCodigoCliente.Text, 0);
       end;
 
-      Consulta.SQL.Add('GROUP BY 1, 2, 3, 4, 5');
-      Consulta.SQL.Add('ORDER BY 1, 4, 5, 6');
+      Consulta.SQL.Add('GROUP BY 1, 2, 3, 4, 5, 6');
+      Consulta.SQL.Add('ORDER BY 1, 5, 6, 7');
 
       Consulta.Connection                     := FWC.FDConnection;
 

@@ -353,13 +353,11 @@ end;
 procedure TfrmControleEstagioOPF.BuscaOPF;
 var
   FWC     : TFWConnection;
-  OPF     : TOPFINAL;
   SQL     : TFDQuery;
   Filtro  : string;
 begin
 
   FWC := TFWConnection.Create;
-  OPF := TOPFINAL.Create(FWC);
   SQL := TFDQuery.Create(nil);
 
   try
@@ -391,7 +389,6 @@ begin
 
   finally
     FreeAndNil(SQL);
-    FreeAndNil(OPF);
     FreeAndNil(FWC);
   end;
 end;

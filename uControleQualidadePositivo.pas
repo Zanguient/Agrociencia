@@ -5,14 +5,14 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.ExtCtrls, Vcl.StdCtrls,
-  FireDAC.Comp.Client, Vcl.ExtDlgs, Vcl.Imaging.jpeg, CapturaCam, Data.DB;
+  FireDAC.Comp.Client, Vcl.ExtDlgs, Vcl.Imaging.jpeg, CapturaCam, Data.DB,
+  Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids;
 
 type
   TfrmControleQualidadePositivo = class(TForm)
     Panel1: TPanel;
     pnSuperior: TPanel;
     lbPote: TLabel;
-    edt_CodigoPote: TLabeledEdit;
     pnBotoesVisualizacao: TPanel;
     gpBotoes: TGridPanel;
     Panel8: TPanel;
@@ -24,10 +24,22 @@ type
     btnImagemWebCam: TBitBtn;
     btnImagemArquivo: TBitBtn;
     btGravar: TSpeedButton;
-    edt_Localizacao: TLabeledEdit;
-    Label1: TLabel;
-    mnObservacao: TMemo;
     OpenPictureDialog1: TOpenPictureDialog;
+    Panel2: TPanel;
+    mnObservacao: TMemo;
+    Label1: TLabel;
+    Panel3: TPanel;
+    edt_CodigoPote: TLabeledEdit;
+    edt_Localizacao: TLabeledEdit;
+    gdDados: TDBGrid;
+    DS_DADOS: TDataSource;
+    CDS_DADOS: TClientDataSet;
+    CDS_DADOSESPECIE: TStringField;
+    CDS_DADOSNUMEROLOTE: TIntegerField;
+    CDS_DADOSMEIODECULTURA: TStringField;
+    CDS_DADOSUNIDADESLOTE: TIntegerField;
+    CDS_DADOSRECIPIENTE: TStringField;
+    CDS_DADOSCODIGOOP: TStringField;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnImagemArquivoClick(Sender: TObject);
@@ -35,6 +47,7 @@ type
     procedure btCancelarClick(Sender: TObject);
     procedure btGravarClick(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -253,6 +266,7 @@ end;
 procedure TfrmControleQualidadePositivo.FormCreate(Sender: TObject);
 begin
   AjustaForm(Self);
+  CDS_DADOS.CreateDataSet;
 end;
 
 procedure TfrmControleQualidadePositivo.FormKeyDown(Sender: TObject;
@@ -272,6 +286,11 @@ begin
   end;
 end;
 
+procedure TfrmControleQualidadePositivo.FormShow(Sender: TObject);
+begin
+  AutoSizeDBGrid(gdDados);
+end;
+
 procedure TfrmControleQualidadePositivo.LimpaDados;
 begin
   edt_CodigoPote.Clear;
@@ -280,10 +299,10 @@ begin
   edt_CodigoPote.Enabled  := True;
   btGravar.Enabled        := False;
   btCancelar.Enabled      := False;
-  lbPote.Caption          := '';
+  CDS_DADOS.EmptyDataSet;
   edt_CodigoPote.Tag      := 0;
   NomeImagemAtual         := '';
-  pnImagem.Visible        := False;
+  pnImagem.Enabled        := False;
   Image1.Picture.Assign(nil);
 
   if edt_CodigoPote.CanFocus then
@@ -293,24 +312,40 @@ end;
 
 procedure TfrmControleQualidadePositivo.SelecionaPote;
 var
-  FWC : TFWConnection;
-  SQL : TFDQuery;
+  FWC     : TFWConnection;
+  SQL     : TFDQuery;
+  SQLAUX  : TFDQuery;
 begin
 
-  pnImagem.Visible := False;
+  pnImagem.Enabled := False;
 
-  FWC := TFWConnection.Create;
-  SQL := TFDQuery.Create(nil);
+  FWC   := TFWConnection.Create;
+  SQL   := TFDQuery.Create(nil);
+  SQLAUX:= TFDQuery.Create(nil);
 
   try
+
+    SQLAUX.Close;
+    SQLAUX.SQL.Clear;
+    SQLAUX.SQL.Add('SELECT');
+    SQLAUX.SQL.Add('	COUNT(OPFELS.ID) AS UNIDADES');
+    SQLAUX.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE OPFEL');
+    SQLAUX.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+    SQLAUX.SQL.Add('WHERE 1 = 1');
+    SQLAUX.SQL.Add('AND OPFEL.ID = :IDLOTE');
+
+    SQLAUX.Connection := FWC.FDConnection;
+
     SQL.Close;
     SQL.SQL.Clear;
-    SQL.SQL.Add('SELECT ');
-    SQL.SQL.Add(' OPS.ID AS IDPOTE,');
-    SQL.SQL.Add(' P.DESCRICAO AS ESPECIE,');
+    SQL.SQL.Add('SELECT');
+    SQL.SQL.Add('OPS.ID AS IDPOTE,');
+    SQL.SQL.Add(' (OP.ID || ''*'' || OPE.SEQUENCIA) AS CODIGOOP,');
+    SQL.SQL.Add(' OPL.ID AS IDLOTE,');
+    SQL.SQL.Add(' OPL.NUMEROLOTE,');
+    SQL.SQL.Add(' (P.DESCRICAO || '' - '' || OP.ID) AS ESPECIE,');
     SQL.SQL.Add(' MC.DESCRICAO AS MEIOCULTURA,');
     SQL.SQL.Add(' R.DESCRICAO AS RECIPIENTE,');
-    SQL.SQL.Add(' OP.ID AS OPFINAL,');
     SQL.SQL.Add(' R.ID AS CODRECIPIENTE,');
     SQL.SQL.Add(' E.DESCRICAO AS ESTAGIO,');
     SQL.SQL.Add(' OPL.LOCALIZACAO AS LOCALIZACAO');
@@ -338,23 +373,36 @@ begin
       btCancelar.Enabled      := True;
       edt_CodigoPote.Enabled  := False;
 
-      lbPote.Caption := 'Código OP: ' + SQL.FieldByName('OPFINAL').AsString +
-                        ', Espécie: ' + SQL.FieldByName('ESPECIE').AsString +
-                        ', Meio de Cultura: ' + SQL.FieldByName('MEIOCULTURA').AsString +
-                        ', Recipiente: ' + SQL.FieldByName('RECIPIENTE').AsString;
+      SQLAUX.Close;
+      SQLAUX.ParamByName('IDLOTE').AsInteger := SQL.FieldByName('IDLOTE').AsInteger;
+      SQLAUX.Open;
 
-      edt_CodigoPote.Tag  := SQL.FieldByName('IDPOTE').AsInteger;
-      edt_Localizacao.Text:= SQL.FieldByName('LOCALIZACAO').AsString;
+      CDS_DADOS.Append;
+      CDS_DADOSCODIGOOP.Value       := SQL.FieldByName('CODIGOOP').AsString;
+      CDS_DADOSESPECIE.Value        := SQL.FieldByName('ESPECIE').AsString;
+      CDS_DADOSNUMEROLOTE.Value     := SQL.FieldByName('NUMEROLOTE').AsInteger;
+      CDS_DADOSMEIODECULTURA.Value  := SQL.FieldByName('MEIOCULTURA').AsString;
+      CDS_DADOSUNIDADESLOTE.Value   := 0;
+
+      if not SQLAUX.IsEmpty then
+        CDS_DADOSUNIDADESLOTE.Value := SQLAUX.FieldByName('UNIDADES').AsInteger;
+
+      CDS_DADOSRECIPIENTE.Value     := SQL.FieldByName('RECIPIENTE').AsString;
+      CDS_DADOS.Post;
+
+      edt_CodigoPote.Tag    := SQL.FieldByName('IDPOTE').AsInteger;
+      edt_Localizacao.Text  := SQL.FieldByName('LOCALIZACAO').AsString;
 
       if edt_Localizacao.CanFocus then
         edt_Localizacao.SetFocus;
 
-      pnImagem.Visible := True;
+      pnImagem.Enabled := True;
     end else begin
       DisplayMsg(MSG_WAR, 'Pote não encontrado! Verifique!');
       Exit;
     end;
   finally
+    FreeAndNil(SQLAUX);
     FreeAndNil(SQL);
     FreeAndNil(FWC);
   end;

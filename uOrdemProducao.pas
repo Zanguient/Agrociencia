@@ -43,9 +43,8 @@ type
     btCancelar: TSpeedButton;
     Panel5: TPanel;
     btGravar: TSpeedButton;
-    cds_PesquisaDATAHORA: TDateTimeField;
     cds_PesquisaQUANTIDADE: TIntegerField;
-    cds_PesquisaPRODUTO: TStringField;
+    cds_PesquisaESPECIE: TStringField;
     cds_PesquisaCLIENTE: TStringField;
     gbProduto: TGroupBox;
     edCodigoProduto: TButtonedEdit;
@@ -102,10 +101,12 @@ type
     btnSalvarImagem: TBitBtn;
     btnImagemArquivo: TBitBtn;
     cds_Etiqueta1PRODUTO: TStringField;
-    cds_PesquisaIDPRODUTO: TIntegerField;
+    cds_PesquisaIDESPECIE: TIntegerField;
     OpenPictureDialog1: TOpenPictureDialog;
     edCultivar: TEdit;
     Label15: TLabel;
+    cds_PesquisaDATA: TDateField;
+    cds_PesquisaCULTIVAR: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -769,10 +770,11 @@ begin
       SQL.SQL.Clear;
       SQL.SQL.Add('SELECT');
       SQL.SQL.Add('	OPF.ID,');
-      SQL.SQL.Add('	OPF.DATAHORA,');
+      SQL.SQL.Add('	CAST(OPF.DATAHORA AS DATE) AS DATA,');
       SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
-      SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
-      SQL.SQL.Add('	P.ID AS CODIGOPRODUTO,');
+      SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOESPECIE,');
+      SQL.SQL.Add('	OPF.CULTIVAR AS CULTIVAR,');
+      SQL.SQL.Add('	P.ID AS CODIGOESPECIE,');
       SQL.SQL.Add('	OPF.QUANTIDADE,');
       SQL.SQL.Add('	OPF.SELECAOPOSITIVA,');
       SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO');
@@ -802,13 +804,14 @@ begin
         while not SQL.Eof do begin
           cds_Pesquisa.Append;
           cds_PesquisaID.Value                  := SQL.FieldByName('ID').AsInteger;
-          cds_PesquisaDATAHORA.Value            := SQL.FieldByName('DATAHORA').AsDateTime;
+          cds_PesquisaDATA.Value                := SQL.FieldByName('DATA').AsDateTime;
           cds_PesquisaCLIENTE.Value             := SQL.FieldByName('NOMECLIENTE').AsString;
-          cds_PesquisaPRODUTO.Value             := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
+          cds_PesquisaESPECIE.Value             := SQL.FieldByName('DESCRICAOESPECIE').AsString;
+          cds_PesquisaCULTIVAR.Value            := SQL.FieldByName('CULTIVAR').AsString;
           cds_PesquisaQUANTIDADE.Value          := SQL.FieldByName('QUANTIDADE').AsInteger;
           cds_PesquisaSELECAOPOSITIVA.Value     := SQL.FieldByName('SELECAOPOSITIVA').AsString;
           cds_PesquisaCODIGOSELECAOCAMPO.Value  := SQL.FieldByName('CODIGOSELECAOCAMPO').AsString;
-          cds_PesquisaIDPRODUTO.Value           := SQL.FieldByName('CODIGOPRODUTO').AsInteger;
+          cds_PesquisaIDESPECIE.Value           := SQL.FieldByName('CODIGOESPECIE').AsInteger;
           cds_Pesquisa.Post;
           SQL.Next;
         end;
@@ -1128,7 +1131,7 @@ begin
           for I := 1 to ResultMsgInputInt do begin
             cds_Etiqueta1.Append;
             cds_Etiqueta1CODIGOOP.AsString  := StrZero(cds_PesquisaID.AsString, MinimoCodigoBarras);
-            cds_Etiqueta1PRODUTO.AsString   := cds_PesquisaPRODUTO.AsString + ' - ' + cds_PesquisaID.AsString;
+            cds_Etiqueta1PRODUTO.AsString   := cds_PesquisaESPECIE.AsString + ' - ' + cds_PesquisaID.AsString;
             cds_Etiqueta1.Post;
           end;
         end;

@@ -29,10 +29,21 @@ type
     CDS_DETALHESUSUARIO: TStringField;
     CDS_DETALHESESTACAO: TStringField;
     GridPanel1: TGridPanel;
+    Panel1: TPanel;
     lbOP: TLabel;
-    lbEstagio: TLabel;
+    Label1: TLabel;
+    Panel2: TPanel;
     lbEspecie: TLabel;
+    Label2: TLabel;
+    Panel3: TPanel;
+    lbEstagio: TLabel;
+    Label4: TLabel;
+    Panel4: TPanel;
     lbUnidades: TLabel;
+    Label5: TLabel;
+    Panel5: TPanel;
+    lbCultivar: TLabel;
+    Label6: TLabel;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -78,7 +89,8 @@ begin
       SQL.SQL.Clear;
       SQL.SQL.Add('SELECT');
       SQL.SQL.Add('	E.DESCRICAO AS ESTAGIO,');
-      SQL.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE');
+      SQL.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
+      SQL.SQL.Add('	OPF.CULTIVAR');
       SQL.SQL.Add('FROM OPFINAL OPF');
       SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
       SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
@@ -94,10 +106,11 @@ begin
       SQL.FetchAll;
 
       if not SQL.IsEmpty then begin
-        lbOP.Caption := 'Código OP.: ' + IntToStr(Param.IDOPFE);
-        lbEstagio.Caption := 'Estágio.: ' + SQL.FieldByName('ESTAGIO').AsString;
-        lbEspecie.Caption := 'Espécie.: ' + SQL.FieldByName('ESPECIE').AsString;
-        lbUnidades.Caption:= 'Total Unidades.: ' + IntToStr(Param.UNIDADES);
+        lbOP.Caption := IntToStr(Param.IDOPFE);
+        lbEstagio.Caption := SQL.FieldByName('ESTAGIO').AsString;
+        lbEspecie.Caption := SQL.FieldByName('ESPECIE').AsString;
+        lbUnidades.Caption:= IntToStr(Param.UNIDADES);
+        lbCultivar.Caption:= SQL.FieldByName('CULTIVAR').AsString;
       end;
 
       //Carrega Grid

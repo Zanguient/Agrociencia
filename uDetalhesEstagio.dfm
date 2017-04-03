@@ -49,9 +49,6 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         Value = 100.000000000000000000
       end>
     TabOrder = 0
-    ExplicitLeft = -166
-    ExplicitTop = 364
-    ExplicitWidth = 896
     object Panel8: TPanel
       Left = 0
       Top = 0
@@ -60,7 +57,6 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 448
     end
     object Panel9: TPanel
       Left = 362
@@ -70,8 +66,6 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = 448
-      ExplicitWidth = 448
       object btFechar: TSpeedButton
         AlignWithMargins = True
         Left = 3
@@ -147,10 +141,10 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
   object gdDetalhes: TDBGrid
     AlignWithMargins = True
     Left = 3
-    Top = 120
+    Top = 127
     Width = 724
-    Height = 235
-    Align = alBottom
+    Height = 228
+    Align = alClient
     Color = clMoneyGreen
     DataSource = DS_DETALHES
     DrawingStyle = gdsGradient
@@ -216,7 +210,7 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
     Left = 3
     Top = 3
     Width = 724
-    Height = 89
+    Height = 118
     Align = alTop
     ColumnCollection = <
       item
@@ -228,102 +222,270 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
     ControlCollection = <
       item
         Column = 0
-        Control = lbOP
-        Row = 0
-      end
-      item
-        Column = 1
-        Control = lbEstagio
+        Control = Panel1
         Row = 0
       end
       item
         Column = 0
-        Control = lbEspecie
+        Control = Panel2
         Row = 1
       end
       item
         Column = 1
-        Control = lbUnidades
+        Control = Panel3
+        Row = 0
+      end
+      item
+        Column = 1
+        Control = Panel4
         Row = 1
+      end
+      item
+        Column = 0
+        Control = Panel5
+        Row = 2
       end>
     RowCollection = <
       item
-        Value = 50.000000000000000000
+        Value = 33.335006959770860000
       end
       item
-        Value = 50.000000000000000000
+        Value = 33.335006959770860000
+      end
+      item
+        Value = 33.329986080458280000
       end>
     TabOrder = 2
-    ExplicitLeft = 0
-    ExplicitTop = 0
-    ExplicitWidth = 730
-    object lbOP: TLabel
-      AlignWithMargins = True
-      Left = 4
-      Top = 4
-      Width = 355
-      Height = 37
-      Align = alClient
-      Caption = 'C'#243'digo OP.:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
-      Font.Height = -24
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitWidth = 141
-      ExplicitHeight = 29
-    end
-    object lbEstagio: TLabel
-      AlignWithMargins = True
-      Left = 365
-      Top = 4
-      Width = 355
-      Height = 37
-      Align = alClient
-      Caption = 'Est'#225'gio.:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
-      Font.Height = -24
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitWidth = 105
-      ExplicitHeight = 29
-    end
-    object lbEspecie: TLabel
-      AlignWithMargins = True
-      Left = 4
-      Top = 47
-      Width = 355
+    ExplicitLeft = -2
+    object Panel1: TPanel
+      Left = 1
+      Top = 1
+      Width = 361
       Height = 38
       Align = alClient
-      Caption = 'Esp'#233'cie.:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
-      Font.Height = -24
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitWidth = 107
-      ExplicitHeight = 29
+      BevelOuter = bvNone
+      TabOrder = 0
+      ExplicitLeft = 96
+      ExplicitTop = 16
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+      object lbOP: TLabel
+        AlignWithMargins = True
+        Left = 204
+        Top = 3
+        Width = 154
+        Height = 32
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlue
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        ExplicitLeft = 126
+        ExplicitWidth = 6
+        ExplicitHeight = 23
+      end
+      object Label1: TLabel
+        AlignWithMargins = True
+        Left = 3
+        Top = 3
+        Width = 195
+        Height = 32
+        Align = alLeft
+        AutoSize = False
+        Caption = 'C'#243'digo OP.:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
     end
-    object lbUnidades: TLabel
-      AlignWithMargins = True
-      Left = 365
-      Top = 47
-      Width = 355
+    object Panel2: TPanel
+      Left = 1
+      Top = 39
+      Width = 361
       Height = 38
       Align = alClient
-      Caption = 'Total Unidades.:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
-      Font.Height = -24
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitWidth = 195
-      ExplicitHeight = 29
+      BevelOuter = bvNone
+      TabOrder = 1
+      ExplicitLeft = 96
+      ExplicitTop = 16
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+      object lbEspecie: TLabel
+        AlignWithMargins = True
+        Left = 204
+        Top = 3
+        Width = 154
+        Height = 32
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlue
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        ExplicitLeft = 94
+        ExplicitWidth = 6
+        ExplicitHeight = 23
+      end
+      object Label2: TLabel
+        AlignWithMargins = True
+        Left = 3
+        Top = 3
+        Width = 195
+        Height = 32
+        Align = alLeft
+        AutoSize = False
+        Caption = 'Esp'#233'cie.:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+    end
+    object Panel3: TPanel
+      Left = 362
+      Top = 1
+      Width = 361
+      Height = 38
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 2
+      ExplicitLeft = 96
+      ExplicitTop = 16
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+      object lbEstagio: TLabel
+        AlignWithMargins = True
+        Left = 204
+        Top = 3
+        Width = 154
+        Height = 32
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlue
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        ExplicitLeft = 94
+        ExplicitWidth = 6
+        ExplicitHeight = 23
+      end
+      object Label4: TLabel
+        AlignWithMargins = True
+        Left = 3
+        Top = 3
+        Width = 195
+        Height = 32
+        Align = alLeft
+        AutoSize = False
+        Caption = 'Est'#225'gio.:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+    end
+    object Panel4: TPanel
+      Left = 362
+      Top = 39
+      Width = 361
+      Height = 38
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 3
+      ExplicitLeft = 96
+      ExplicitTop = 16
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+      object lbUnidades: TLabel
+        AlignWithMargins = True
+        Left = 204
+        Top = 3
+        Width = 154
+        Height = 32
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlue
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        ExplicitLeft = 93
+        ExplicitWidth = 6
+        ExplicitHeight = 23
+      end
+      object Label5: TLabel
+        AlignWithMargins = True
+        Left = 3
+        Top = 3
+        Width = 195
+        Height = 32
+        Align = alLeft
+        AutoSize = False
+        Caption = 'Total Unidades.:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+    end
+    object Panel5: TPanel
+      Left = 1
+      Top = 77
+      Width = 361
+      Height = 40
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 4
+      ExplicitLeft = 96
+      ExplicitTop = 16
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+      object lbCultivar: TLabel
+        AlignWithMargins = True
+        Left = 204
+        Top = 3
+        Width = 154
+        Height = 34
+        Align = alClient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlue
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        ExplicitLeft = 165
+        ExplicitWidth = 6
+        ExplicitHeight = 23
+      end
+      object Label6: TLabel
+        AlignWithMargins = True
+        Left = 3
+        Top = 3
+        Width = 195
+        Height = 34
+        Align = alLeft
+        AutoSize = False
+        Caption = 'Cultivar/Variedade.:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
     end
   end
   object CDS_DETALHES: TClientDataSet

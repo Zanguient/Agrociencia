@@ -74,6 +74,7 @@ begin
       Consulta.SQL.Add('OP.ID,');
       Consulta.SQL.Add('CL.NOME AS NOMECLIENTE,');
       Consulta.SQL.Add('PR.DESCRICAO AS PRODUTO,');
+      Consulta.SQL.Add('OP.CULTIVAR AS CULTIVAR,');
       Consulta.SQL.Add('E.DESCRICAO AS ESTAGIO,');
       Consulta.SQL.Add('CAST(OPEL.DATAHORAINICIO AS DATE) AS DATAI,');
       Consulta.SQL.Add('CAST(OPE.PREVISAOTERMINO AS DATE) AS DATAF,');

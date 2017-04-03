@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask,
   JvExMask, JvToolEdit, Vcl.StdCtrls, FireDAC.Comp.Client, Data.DB, Vcl.CheckLst,
-  frxDBSet;
+  frxDBSet, System.TypInfo;
 
 type
   TfrmRelPosicaoEstoque = class(TForm)
@@ -18,6 +18,8 @@ type
     cbExibirSQL: TCheckBox;
     gbPeriodo: TGroupBox;
     edData: TJvDateEdit;
+    gbTipoProduto: TGroupBox;
+    cbFinalidadeProduto: TComboBox;
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
@@ -83,7 +85,16 @@ begin
 end;
 
 procedure TfrmRelPosicaoEstoque.FormShow(Sender: TObject);
+var
+  X : TFinalidadeProduto;
 begin
+  cbFinalidadeProduto.Items.Clear;
+  for X := Low(TFinalidadeProduto) to High(TFinalidadeProduto) do
+    cbFinalidadeProduto.Items.Add(GetEnumName(TypeInfo(TFinalidadeProduto), Integer(X)));
+
+  if cbFinalidadeProduto.Items.Count > 0 then
+    cbFinalidadeProduto.ItemIndex  := 0;
+
   cbExibirSQL.Visible := DESIGNREL;
 
   edData.Date  := Date;
@@ -116,13 +127,17 @@ begin
       Consulta.SQL.Add('LEFT JOIN CONTROLEESTOQUEPRODUTO CEP ON (CEP.PRODUTO_ID = P.ID)');
       Consulta.SQL.Add('LEFT JOIN CONTROLEESTOQUE CE ON (CE.ID = CEP.CONTROLEESTOQUE_ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
-      Consulta.SQL.Add('GROUP BY 1, 2, 3');
-      Consulta.SQL.Add('ORDER BY 1');
 
       Consulta.Connection                     := FWC.FDConnection;
 
       Consulta.ParamByName('DATA').DataType  := ftDate;
       Consulta.ParamByName('DATA').Value     := edData.Date;
+
+      if cbFinalidadeProduto.ItemIndex > 0 then
+        Consulta.SQL.Add('AND P.FINALIDADE = ' + IntToStr(cbFinalidadeProduto.ItemIndex));
+
+      Consulta.SQL.Add('GROUP BY 1, 2, 3');
+      Consulta.SQL.Add('ORDER BY 1');
 
       if cbExibirSQL.Checked then
         ShowMessage('Relatório de Posição do Estoque!' + sLineBreak + sLineBreak + Consulta.SQL.Text);

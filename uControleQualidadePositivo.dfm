@@ -1,6 +1,7 @@
 object frmControleQualidadePositivo: TfrmControleQualidadePositivo
   Left = 0
   Top = 0
+  ActiveControl = edt_CodigoPote
   BorderStyle = bsNone
   Caption = 'Controle de Qualidade Positivo'
   ClientHeight = 465
@@ -15,6 +16,7 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
   OldCreateOrder = False
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -45,9 +47,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      750
-      345)
     object lbPote: TLabel
       Left = 225
       Top = 69
@@ -60,35 +59,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
       Font.Style = []
       ParentFont = False
     end
-    object Label1: TLabel
-      Left = 224
-      Top = 94
-      Width = 62
-      Height = 13
-      Caption = 'Observa'#231#227'o:'
-    end
-    object edt_CodigoPote: TLabeledEdit
-      Left = 224
-      Top = 23
-      Width = 151
-      Height = 27
-      EditLabel.Width = 62
-      EditLabel.Height = 13
-      EditLabel.Caption = 'C'#243'digo Pote:'
-      EditLabel.Font.Charset = DEFAULT_CHARSET
-      EditLabel.Font.Color = clWindowText
-      EditLabel.Font.Height = -11
-      EditLabel.Font.Name = 'Tahoma'
-      EditLabel.Font.Style = []
-      EditLabel.ParentFont = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 0
-    end
     object pnImagem: TPanel
       AlignWithMargins = True
       Left = 3
@@ -98,9 +68,9 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
       Align = alLeft
       BevelOuter = bvNone
       Color = 16250871
+      Enabled = False
       ParentBackground = False
-      TabOrder = 1
-      Visible = False
+      TabOrder = 0
       object Image1: TImage
         AlignWithMargins = True
         Left = 3
@@ -138,44 +108,171 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
         OnClick = btnImagemArquivoClick
       end
     end
-    object edt_Localizacao: TLabeledEdit
-      Left = 381
-      Top = 23
-      Width = 361
-      Height = 27
-      Anchors = [akLeft, akTop, akRight]
-      EditLabel.Width = 58
-      EditLabel.Height = 13
-      EditLabel.Caption = 'Localiza'#231#227'o:'
-      EditLabel.Font.Charset = DEFAULT_CHARSET
-      EditLabel.Font.Color = clWindowText
-      EditLabel.Font.Height = -11
-      EditLabel.Font.Name = 'Tahoma'
-      EditLabel.Font.Style = []
-      EditLabel.ParentFont = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      MaxLength = 100
-      ParentFont = False
-      TabOrder = 2
-    end
-    object mnObservacao: TMemo
-      Left = 223
-      Top = 111
-      Width = 519
-      Height = 171
-      Anchors = [akLeft, akTop, akRight]
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      MaxLength = 500
-      ParentFont = False
-      TabOrder = 3
+    object Panel2: TPanel
+      AlignWithMargins = True
+      Left = 224
+      Top = 3
+      Width = 523
+      Height = 339
+      Align = alClient
+      TabOrder = 1
+      ExplicitTop = 69
+      ExplicitWidth = 518
+      ExplicitHeight = 244
+      object Label1: TLabel
+        AlignWithMargins = True
+        Left = 4
+        Top = 197
+        Width = 515
+        Height = 13
+        Align = alBottom
+        Caption = 'Observa'#231#227'o:'
+        ExplicitLeft = 224
+        ExplicitTop = 94
+        ExplicitWidth = 62
+      end
+      object mnObservacao: TMemo
+        AlignWithMargins = True
+        Left = 4
+        Top = 216
+        Width = 515
+        Height = 119
+        Align = alBottom
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        MaxLength = 500
+        ParentFont = False
+        TabOrder = 2
+      end
+      object Panel3: TPanel
+        Left = 1
+        Top = 1
+        Width = 521
+        Height = 56
+        Align = alTop
+        TabOrder = 0
+        ExplicitWidth = 516
+        DesignSize = (
+          521
+          56)
+        object edt_CodigoPote: TLabeledEdit
+          Left = 12
+          Top = 21
+          Width = 151
+          Height = 27
+          EditLabel.Width = 62
+          EditLabel.Height = 13
+          EditLabel.Caption = 'C'#243'digo Pote:'
+          EditLabel.Font.Charset = DEFAULT_CHARSET
+          EditLabel.Font.Color = clWindowText
+          EditLabel.Font.Height = -11
+          EditLabel.Font.Name = 'Tahoma'
+          EditLabel.Font.Style = []
+          EditLabel.ParentFont = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+        end
+        object edt_Localizacao: TLabeledEdit
+          Left = 169
+          Top = 21
+          Width = 345
+          Height = 27
+          Anchors = [akLeft, akTop, akRight]
+          EditLabel.Width = 58
+          EditLabel.Height = 13
+          EditLabel.Caption = 'Localiza'#231#227'o:'
+          EditLabel.Font.Charset = DEFAULT_CHARSET
+          EditLabel.Font.Color = clWindowText
+          EditLabel.Font.Height = -11
+          EditLabel.Font.Name = 'Tahoma'
+          EditLabel.Font.Style = []
+          EditLabel.ParentFont = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          MaxLength = 100
+          ParentFont = False
+          TabOrder = 1
+          ExplicitWidth = 340
+        end
+      end
+      object gdDados: TDBGrid
+        AlignWithMargins = True
+        Left = 4
+        Top = 60
+        Width = 515
+        Height = 131
+        Align = alClient
+        Color = clMoneyGreen
+        DataSource = DS_DADOS
+        DrawingStyle = gdsGradient
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -19
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+        ParentFont = False
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -16
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Columns = <
+          item
+            Alignment = taCenter
+            Expanded = False
+            FieldName = 'CODIGOOP'
+            Title.Alignment = taCenter
+            Width = 100
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ESPECIE'
+            Width = 200
+            Visible = True
+          end
+          item
+            Alignment = taCenter
+            Expanded = False
+            FieldName = 'NUMEROLOTE'
+            Title.Alignment = taCenter
+            Width = 100
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'MEIODECULTURA'
+            Width = 200
+            Visible = True
+          end
+          item
+            Alignment = taCenter
+            Expanded = False
+            FieldName = 'UNIDADESLOTE'
+            Title.Alignment = taCenter
+            Width = 100
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'RECIPIENTE'
+            Width = 200
+            Visible = True
+          end>
+      end
     end
   end
   object pnBotoesVisualizacao: TPanel
@@ -582,5 +679,49 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
       '*.wmf)|*.wmf'
     Left = 663
     Top = 330
+  end
+  object DS_DADOS: TDataSource
+    DataSet = CDS_DADOS
+    Left = 368
+    Top = 216
+  end
+  object CDS_DADOS: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 448
+    Top = 216
+    object CDS_DADOSCODIGOOP: TStringField
+      DisplayLabel = 'C'#243'digo OP'
+      FieldName = 'CODIGOOP'
+      Size = 100
+    end
+    object CDS_DADOSESPECIE: TStringField
+      DisplayLabel = 'Esp'#233'cie'
+      DisplayWidth = 150
+      FieldName = 'ESPECIE'
+      Size = 100
+    end
+    object CDS_DADOSNUMEROLOTE: TIntegerField
+      DisplayLabel = 'Numero Lote'
+      DisplayWidth = 100
+      FieldName = 'NUMEROLOTE'
+    end
+    object CDS_DADOSMEIODECULTURA: TStringField
+      DisplayLabel = 'Meio de Cultura'
+      DisplayWidth = 150
+      FieldName = 'MEIODECULTURA'
+      Size = 100
+    end
+    object CDS_DADOSUNIDADESLOTE: TIntegerField
+      DisplayLabel = 'Unidades'
+      DisplayWidth = 100
+      FieldName = 'UNIDADESLOTE'
+    end
+    object CDS_DADOSRECIPIENTE: TStringField
+      DisplayLabel = 'Recipiente'
+      DisplayWidth = 150
+      FieldName = 'RECIPIENTE'
+      Size = 100
+    end
   end
 end

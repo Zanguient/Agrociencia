@@ -4,7 +4,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   ActiveControl = edDataInicial
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio de Cadastro de Plantas'
-  ClientHeight = 299
+  ClientHeight = 362
   ClientWidth = 333
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -22,7 +22,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 236
+    Top = 299
     Width = 327
     Height = 60
     Align = alBottom
@@ -49,7 +49,8 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 1
+    TabOrder = 5
+    ExplicitTop = 236
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -302,7 +303,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   object cbExibirSQL: TCheckBox
     AlignWithMargins = True
     Left = 3
-    Top = 213
+    Top = 276
     Width = 327
     Height = 17
     Align = alBottom
@@ -313,7 +314,8 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 0
+    TabOrder = 4
+    ExplicitTop = 213
   end
   object gbPeriodo: TGroupBox
     AlignWithMargins = True
@@ -329,7 +331,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 0
     DesignSize = (
       327
       78)
@@ -377,11 +379,11 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   object gbProduto: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 151
+    Top = 215
     Width = 327
     Height = 58
     Align = alTop
-    Caption = ' Produto '
+    Caption = ' Esp'#233'cie '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -16
@@ -389,6 +391,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Style = []
     ParentFont = False
     TabOrder = 3
+    ExplicitTop = 151
     DesignSize = (
       327
       58)
@@ -431,7 +434,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   object gbCliente: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 87
+    Top = 151
     Width = 327
     Height = 58
     Align = alTop
@@ -442,7 +445,8 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 2
+    ExplicitTop = 87
     DesignSize = (
       327
       58)
@@ -480,6 +484,62 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       Font.Style = []
       ParentFont = False
       TabOrder = 1
+    end
+  end
+  object gbRecebimentoPlanta: TGroupBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 87
+    Width = 327
+    Height = 58
+    Align = alTop
+    Caption = ' Recebimento de Planta '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+    ExplicitLeft = -2
+    DesignSize = (
+      327
+      58)
+    object edCodigoOPF: TButtonedEdit
+      AlignWithMargins = True
+      Left = 4
+      Top = 24
+      Width = 56
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Images = DMUtil.ImageList1
+      ParentFont = False
+      RightButton.ImageIndex = 0
+      RightButton.Visible = True
+      TabOrder = 0
+      OnChange = edCodigoOPFChange
+      OnKeyDown = edCodigoOPFKeyDown
+      OnRightButtonClick = edCodigoOPFRightButtonClick
+    end
+    object edDescricaoOPF: TEdit
+      Left = 66
+      Top = 24
+      Width = 263
+      Height = 27
+      Anchors = [akLeft, akTop, akRight]
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+      ExplicitWidth = 253
     end
   end
 end

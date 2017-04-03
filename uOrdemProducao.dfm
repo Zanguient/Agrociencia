@@ -136,7 +136,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             NumbersOnly = True
             ParentFont = False
             TabOrder = 2
-            ExplicitTop = 157
           end
           object gbProduto: TGroupBox
             AlignWithMargins = True
@@ -284,7 +283,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 4
-            ExplicitTop = 273
             object edObservacao: TEdit
               AlignWithMargins = True
               Left = 3
@@ -427,7 +425,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             NumbersOnly = True
             ParentFont = False
             TabOrder = 3
-            ExplicitTop = 215
           end
           object Panel6: TPanel
             Left = 1
@@ -437,8 +434,6 @@ object frmOrdemProducao: TfrmOrdemProducao
             Align = alClient
             BevelOuter = bvLowered
             TabOrder = 5
-            ExplicitTop = 374
-            ExplicitHeight = 221
             DesignSize = (
               441
               216)
@@ -1547,8 +1542,8 @@ object frmOrdemProducao: TfrmOrdemProducao
         end
         item
           Expanded = False
-          FieldName = 'DATAHORA'
-          Width = 150
+          FieldName = 'DATA'
+          Width = 120
           Visible = True
         end
         item
@@ -1559,7 +1554,14 @@ object frmOrdemProducao: TfrmOrdemProducao
         end
         item
           Expanded = False
-          FieldName = 'PRODUTO'
+          FieldName = 'ESPECIE'
+          Width = 250
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'CULTIVAR'
+          Title.Caption = 'Cultivar/Variedade'
           Width = 250
           Visible = True
         end
@@ -2241,18 +2243,22 @@ object frmOrdemProducao: TfrmOrdemProducao
       DisplayLabel = 'C'#243'digo'
       FieldName = 'ID'
     end
-    object cds_PesquisaDATAHORA: TDateTimeField
-      DisplayLabel = 'Data e Hora'
-      FieldName = 'DATAHORA'
+    object cds_PesquisaDATA: TDateField
+      DisplayLabel = 'Data'
+      FieldName = 'DATA'
     end
     object cds_PesquisaCLIENTE: TStringField
       DisplayLabel = 'Cliente'
       FieldName = 'CLIENTE'
       Size = 100
     end
-    object cds_PesquisaPRODUTO: TStringField
-      DisplayLabel = 'Produto'
-      FieldName = 'PRODUTO'
+    object cds_PesquisaESPECIE: TStringField
+      DisplayLabel = 'Esp'#233'cie'
+      FieldName = 'ESPECIE'
+      Size = 100
+    end
+    object cds_PesquisaCULTIVAR: TStringField
+      FieldName = 'CULTIVAR'
       Size = 100
     end
     object cds_PesquisaQUANTIDADE: TIntegerField
@@ -2269,8 +2275,8 @@ object frmOrdemProducao: TfrmOrdemProducao
       FieldName = 'CODIGOSELECAOCAMPO'
       Size = 100
     end
-    object cds_PesquisaIDPRODUTO: TIntegerField
-      FieldName = 'IDPRODUTO'
+    object cds_PesquisaIDESPECIE: TIntegerField
+      FieldName = 'IDESPECIE'
     end
   end
   object PopupMenu: TPopupMenu
@@ -2299,7 +2305,7 @@ object frmOrdemProducao: TfrmOrdemProducao
     Left = 360
     Top = 304
     Bitmap = {
-      494C010103001400A40020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103001400A80020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

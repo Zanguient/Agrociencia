@@ -26,6 +26,9 @@ type
     gbCliente: TGroupBox;
     edCodigoCliente: TButtonedEdit;
     edNomeCliente: TEdit;
+    gbRecebimentoPlanta: TGroupBox;
+    edCodigoOPF: TButtonedEdit;
+    edDescricaoOPF: TEdit;
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
@@ -38,9 +41,14 @@ type
     procedure edCodigoProdutoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edCodigoProdutoRightButtonClick(Sender: TObject);
+    procedure edCodigoOPFChange(Sender: TObject);
+    procedure edCodigoOPFKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoOPFRightButtonClick(Sender: TObject);
   private
     Procedure FecharTela;
     Procedure Visualizar;
+    procedure BuscaOPF;
     { Private declarations }
   public
     { Public declarations }
@@ -85,6 +93,46 @@ begin
       btRelatorio.Caption := '&Visualizar';
       Application.ProcessMessages;
     end;
+  end;
+end;
+
+procedure TfrmRelCadastrodePlantas.BuscaOPF;
+var
+  FWC     : TFWConnection;
+  SQL     : TFDQuery;
+  Filtro  : string;
+begin
+
+  FWC := TFWConnection.Create;
+  SQL := TFDQuery.Create(nil);
+
+  try
+
+    Filtro := 'DATAENCERRAMENTO IS NULL AND CANCELADO = False';
+
+    SQL.Close;
+    SQL.SQL.Clear;
+    SQL.SQL.Add('SELECT');
+    SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
+    SQL.SQL.Add('	P.ID,');
+    SQL.SQL.Add(' P.DESCRICAO');
+    SQL.SQL.Add('FROM OPFINAL OPF');
+    SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+    SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+    SQL.SQL.Add('WHERE 1 = 1');
+    SQL.SQL.Add('AND OPF.ID = :IDOPF');
+    SQL.Connection  := FWC.FDConnection;
+    SQL.ParamByName('IDOPF').DataType   := ftInteger;
+    SQL.ParamByName('IDOPF').AsInteger  := StrToIntDef(edCodigoOPF.Text, -1);
+    SQL.Prepare;
+    SQL.Open;
+
+    if not SQL.IsEmpty then
+      edDescricaoOPF.Text := SQL.Fields[0].AsString;
+
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(FWC);
   end;
 end;
 
@@ -153,6 +201,25 @@ begin
   end;
 end;
 
+procedure TfrmRelCadastrodePlantas.edCodigoOPFChange(
+  Sender: TObject);
+begin
+  edDescricaoOPF.Clear;
+end;
+
+procedure TfrmRelCadastrodePlantas.edCodigoOPFKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    edCodigoOPFRightButtonClick(nil)
+end;
+
+procedure TfrmRelCadastrodePlantas.edCodigoOPFRightButtonClick(Sender: TObject);
+begin
+  edCodigoOPF.Text := IntToStr(DMUtil.SelecionarCadastroPlantas(edCodigoOPF.Text));
+  BuscaOPF;
+end;
+
 procedure TfrmRelCadastrodePlantas.btFecharClick(Sender: TObject);
 begin
   FecharTela;
@@ -201,7 +268,8 @@ begin
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPF.ID,');
       Consulta.SQL.Add('	CL.NOME AS NOMECLIENTE,');
-      Consulta.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
+      Consulta.SQL.Add('	P.DESCRICAO AS DESCRICAOESPECIE,');
+      Consulta.SQL.Add('	OPF.CULTIVAR,');
       Consulta.SQL.Add('	OPF.QUANTIDADE,');
       Consulta.SQL.Add('	OPF.SELECAOPOSITIVA,');
       Consulta.SQL.Add('	OPF.CODIGOSELECAOCAMPO,');
@@ -219,28 +287,35 @@ begin
       Consulta.SQL.Add('INNER JOIN CLIENTE CL ON (CL.ID = OPF.CLIENTE_ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
-      Consulta.SQL.Add('AND CAST(OPF.DATAHORA AS DATE) BETWEEN :DATAI AND :DATAF');
 
-      if Length(Trim(edNomeCliente.Text)) > 0 then begin
-        Consulta.SQL.Add('AND CL.ID = :IDCLIENTE');
-        Consulta.ParamByName('IDCLIENTE').DataType  := ftInteger;
-        Consulta.ParamByName('IDCLIENTE').Value     := StrToIntDef(edCodigoCliente.Text, 0);
-      end;
+      Consulta.Connection := FWC.FDConnection;
 
-      if Length(Trim(edNomeProduto.Text)) > 0 then begin
-        Consulta.SQL.Add('AND P.ID = :IDPRODUTO');
-        Consulta.ParamByName('IDPRODUTO').DataType  := ftInteger;
-        Consulta.ParamByName('IDPRODUTO').Value     := StrToIntDef(edCodigoProduto.Text, 0);
+      //Se for Recebimento de Planta não Aplicar Outro Filtro
+      if Length(Trim(edDescricaoOPF.Text)) > 0 then begin
+          Consulta.SQL.Add('AND OPF.ID = :IDOPF');
+          Consulta.ParamByName('IDOPF').DataType  := ftInteger;
+          Consulta.ParamByName('IDOPF').Value     := StrToIntDef(edCodigoOPF.Text, 0);
+      end else begin
+        Consulta.SQL.Add('AND CAST(OPF.DATAHORA AS DATE) BETWEEN :DATAI AND :DATAF');
+        Consulta.ParamByName('DATAI').DataType  := ftDate;
+        Consulta.ParamByName('DATAF').DataType  := ftDate;
+        Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
+        Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
+
+        if Length(Trim(edNomeCliente.Text)) > 0 then begin
+          Consulta.SQL.Add('AND CL.ID = :IDCLIENTE');
+          Consulta.ParamByName('IDCLIENTE').DataType  := ftInteger;
+          Consulta.ParamByName('IDCLIENTE').Value     := StrToIntDef(edCodigoCliente.Text, 0);
+        end;
+
+        if Length(Trim(edNomeProduto.Text)) > 0 then begin
+          Consulta.SQL.Add('AND P.ID = :IDPRODUTO');
+          Consulta.ParamByName('IDPRODUTO').DataType  := ftInteger;
+          Consulta.ParamByName('IDPRODUTO').Value     := StrToIntDef(edCodigoProduto.Text, 0);
+        end;
       end;
 
       Consulta.SQL.Add('ORDER BY OPF.ID');
-
-      Consulta.Connection                     := FWC.FDConnection;
-
-      Consulta.ParamByName('DATAI').DataType  := ftDate;
-      Consulta.ParamByName('DATAF').DataType  := ftDate;
-      Consulta.ParamByName('DATAI').Value     := edDataInicial.Date;
-      Consulta.ParamByName('DATAF').Value     := edDataFinal.Date;
 
       if cbExibirSQL.Checked then
         ShowMessage('Relatório de Cadastro de Plantas!' + sLineBreak + sLineBreak + Consulta.SQL.Text);

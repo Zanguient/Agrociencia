@@ -3,7 +3,7 @@ object frmRelPosicaoEstoque: TfrmRelPosicaoEstoque
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio de Posic'#227'o de Estoque'
-  ClientHeight = 176
+  ClientHeight = 238
   ClientWidth = 333
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,7 +21,7 @@ object frmRelPosicaoEstoque: TfrmRelPosicaoEstoque
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 113
+    Top = 175
     Width = 327
     Height = 60
     Align = alBottom
@@ -49,6 +49,7 @@ object frmRelPosicaoEstoque: TfrmRelPosicaoEstoque
         Value = 100.000000000000000000
       end>
     TabOrder = 1
+    ExplicitTop = 113
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -301,7 +302,7 @@ object frmRelPosicaoEstoque: TfrmRelPosicaoEstoque
   object cbExibirSQL: TCheckBox
     AlignWithMargins = True
     Left = 3
-    Top = 90
+    Top = 152
     Width = 327
     Height = 17
     Align = alBottom
@@ -313,13 +314,14 @@ object frmRelPosicaoEstoque: TfrmRelPosicaoEstoque
     Font.Style = []
     ParentFont = False
     TabOrder = 0
+    ExplicitTop = 90
   end
   object gbPeriodo: TGroupBox
     AlignWithMargins = True
     Left = 3
     Top = 3
     Width = 327
-    Height = 78
+    Height = 70
     Align = alTop
     Caption = ' Data para a Posi'#231#227'o do Estoque '
     Font.Charset = DEFAULT_CHARSET
@@ -342,6 +344,38 @@ object frmRelPosicaoEstoque: TfrmRelPosicaoEstoque
       Font.Style = []
       ParentFont = False
       ShowNullDate = False
+      TabOrder = 0
+    end
+  end
+  object gbTipoProduto: TGroupBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 79
+    Width = 327
+    Height = 66
+    Align = alTop
+    Caption = 'Tipo do Produto'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 3
+    object cbFinalidadeProduto: TComboBox
+      AlignWithMargins = True
+      Left = 5
+      Top = 24
+      Width = 317
+      Height = 31
+      Align = alClient
+      Style = csDropDownList
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 0
     end
   end
