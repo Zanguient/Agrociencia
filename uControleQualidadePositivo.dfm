@@ -47,18 +47,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    object lbPote: TLabel
-      Left = 225
-      Top = 69
-      Width = 6
-      Height = 24
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -20
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
     object pnImagem: TPanel
       AlignWithMargins = True
       Left = 3
@@ -116,9 +104,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
       Height = 339
       Align = alClient
       TabOrder = 1
-      ExplicitTop = 69
-      ExplicitWidth = 518
-      ExplicitHeight = 244
       object Label1: TLabel
         AlignWithMargins = True
         Left = 4
@@ -127,8 +112,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
         Height = 13
         Align = alBottom
         Caption = 'Observa'#231#227'o:'
-        ExplicitLeft = 224
-        ExplicitTop = 94
         ExplicitWidth = 62
       end
       object mnObservacao: TMemo
@@ -154,7 +137,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
         Height = 56
         Align = alTop
         TabOrder = 0
-        ExplicitWidth = 516
         DesignSize = (
           521
           56)
@@ -203,7 +185,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
           MaxLength = 100
           ParentFont = False
           TabOrder = 1
-          ExplicitWidth = 340
         end
       end
       object gdDados: TDBGrid

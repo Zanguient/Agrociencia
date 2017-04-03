@@ -12,7 +12,6 @@ type
   TfrmControleQualidadePositivo = class(TForm)
     Panel1: TPanel;
     pnSuperior: TPanel;
-    lbPote: TLabel;
     pnBotoesVisualizacao: TPanel;
     gpBotoes: TGridPanel;
     Panel8: TPanel;
