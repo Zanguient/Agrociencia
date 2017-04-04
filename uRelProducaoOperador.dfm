@@ -568,14 +568,17 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     object CDS_DADOSRELATORIOTEMPOUTILPRODUCAO: TTimeField
       FieldName = 'TEMPOUTILPRODUCAO'
     end
-    object CDS_DADOSRELATORIOUNIDADES: TIntegerField
-      FieldName = 'UNIDADES'
+    object CDS_DADOSRELATORIOUNIDADESSAIDA: TIntegerField
+      FieldName = 'UNIDADESSAIDA'
     end
     object CDS_DADOSRELATORIOUNIDADESPORHORA: TIntegerField
       FieldName = 'UNIDADESPORHORA'
     end
     object CDS_DADOSRELATORIOQUANTIDADEDESCARTE: TIntegerField
       FieldName = 'QUANTIDADEDESCARTE'
+    end
+    object CDS_DADOSRELATORIOUNIDADESENTRADA: TIntegerField
+      FieldName = 'UNIDADESENTRADA'
     end
   end
 end

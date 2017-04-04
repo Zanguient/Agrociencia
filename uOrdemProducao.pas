@@ -699,6 +699,7 @@ procedure TfrmOrdemProducao.Cancelar1Click(Sender: TObject);
 Var
   FWC : TFWConnection;
   OPF : TOPFINAL;
+  SQL : TFDQuery;
 begin
 
   if not cds_Pesquisa.IsEmpty then begin
@@ -711,6 +712,7 @@ begin
 
         FWC := TFWConnection.Create;
         OPF := TOPFINAL.Create(FWC);
+        SQL := TFDQuery.Create(nil);
         try
 
           OPF.SelectList('ID = ' + cds_PesquisaID.AsString);
@@ -723,6 +725,30 @@ begin
 
             if not TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNull then begin
               DisplayMsg(MSG_WAR, 'Ordem de Produção já Encerrada, Portanto não pode ser Cancelada!');
+              Exit;
+            end;
+
+            SQL.Close;
+            SQL.SQL.Clear;
+            SQL.SQL.Add('SELECT');
+            SQL.SQL.Add('  COUNT(OPFELS.ID) AS UNIDADES');
+            SQL.SQL.Add('FROM OPFINAL OPF');
+            SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+            SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPFEL ON (OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
+            SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+            SQL.SQL.Add('WHERE 1 = 1');
+            SQL.SQL.Add('AND OPFELS.BAIXADO = FALSE');
+            SQL.SQL.Add('AND OPF.ID = :IDOPF');
+            SQL.ParamByName('IDOPF').DataType  := ftInteger;
+            SQL.ParamByName('IDOPF').Value     := TOPFINAL(OPF.Itens[0]).ID.Value;
+
+            SQL.Connection  := FWC.FDConnection;
+            SQL.Prepare;
+            SQL.Open;
+            SQL.FetchAll;
+
+            if not SQL.IsEmpty then begin
+              DisplayMsg(MSG_WAR, 'Existem ' + SQL.FieldByName('UNIDADES').AsString + ' Unidades não Baixadas, Verifique!');
               Exit;
             end;
 
@@ -741,6 +767,7 @@ begin
           end;
         end;
       finally
+        FreeAndNil(SQL);
         FreeAndNil(OPF);
         FreeAndNil(FWC);
       end;

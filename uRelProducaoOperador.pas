@@ -34,13 +34,14 @@ type
     CDS_DADOSRELATORIODESCRICAOESTAGIO: TStringField;
     CDS_DADOSRELATORIONUMERODELOTES: TIntegerField;
     CDS_DADOSRELATORIOTEMPOUTILPRODUCAO: TTimeField;
-    CDS_DADOSRELATORIOUNIDADES: TIntegerField;
+    CDS_DADOSRELATORIOUNIDADESSAIDA: TIntegerField;
     gbPeriodo: TGroupBox;
     Label1: TLabel;
     edDataInicial: TJvDateEdit;
     edDataFinal: TJvDateEdit;
     CDS_DADOSRELATORIOUNIDADESPORHORA: TIntegerField;
     CDS_DADOSRELATORIOQUANTIDADEDESCARTE: TIntegerField;
+    CDS_DADOSRELATORIOUNIDADESENTRADA: TIntegerField;
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
@@ -83,7 +84,7 @@ uses
   uBeanEstagio,
   uBeanOPFinal_Estagio_Lote_S,
   uBeanOPFinal_Estagio_Lote_Intervalo,
-  uBeanOPFinal_Estagio_Lote_S_Qualidade;
+  uBeanOPFinal_Estagio_Lote_S_Qualidade, uBeanOPFinal_Estagio_Lote_E;
 
 procedure TfrmRelProducaoOperador.btRelatorioClick(Sender: TObject);
 begin
@@ -245,6 +246,7 @@ var
   Consulta  : TFDQuery;
   ConsultaDesc : TFDQuery;
   OPFELS    : TOPFINAL_ESTAGIO_LOTE_S;
+  OPFELE    : TOPFINAL_ESTAGIO_LOTE_E;
   OPFELI    : TOPFINAL_ESTAGIO_LOTE_INTERVALO;
   CQ        : TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE;
   TempoUtil : TTime;
@@ -260,6 +262,7 @@ begin
   Consulta  := TFDQuery.Create(nil);
   ConsultaDesc := TFDQuery.Create(nil);
   OPFELS    := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
+  OPFELE    := TOPFINAL_ESTAGIO_LOTE_E.Create(FWC);
   OPFELI    := TOPFINAL_ESTAGIO_LOTE_INTERVALO.Create(FWC);
   CQ        := TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE.Create(FWC);
 
@@ -359,12 +362,14 @@ begin
           end;
 
           OPFELS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + Consulta.FieldByName('IDLOTE').AsString);
+          OPFELE.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + Consulta.FieldByName('IDLOTE').AsString);
 
           if CDS_DADOSRELATORIO.Locate('CODIGOOPERADOR;CODIGOESPECIE;CODIGOESTAGIO', VarArrayOf([Consulta.FieldByName('CODIGOOPERADOR').AsString, Consulta.FieldByName('CODIGOESPECIE').AsString, Consulta.FieldByName('CODIGOESTAGIO').AsString]), []) then begin
             CDS_DADOSRELATORIO.Edit;
             CDS_DADOSRELATORIONUMERODELOTES.Value             := CDS_DADOSRELATORIONUMERODELOTES.Value + 1;
             CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.Value         := CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.AsDateTime + TempoUtil;
-            CDS_DADOSRELATORIOUNIDADES.Value                  := CDS_DADOSRELATORIOUNIDADES.Value + OPFELS.Count;
+            CDS_DADOSRELATORIOUNIDADESSAIDA.Value             := CDS_DADOSRELATORIOUNIDADESSAIDA.Value + OPFELS.Count;
+            CDS_DADOSRELATORIOUNIDADESENTRADA.Value           := CDS_DADOSRELATORIOUNIDADESENTRADA.Value + OPFELE.Count;
             if not ConsultaDesc.IsEmpty then
               CDS_DADOSRELATORIOQUANTIDADEDESCARTE.AsInteger  := CDS_DADOSRELATORIOQUANTIDADEDESCARTE.AsInteger + ConsultaDesc.FieldByName('QUANTIDADEDESCARTES').AsInteger;
           end else begin
@@ -378,7 +383,8 @@ begin
             CDS_DADOSRELATORIODESCRICAOESTAGIO.Value  := Consulta.FieldByName('DESCRICAOESTAGIO').AsString;
             CDS_DADOSRELATORIONUMERODELOTES.Value     := 1;
             CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.Value := TempoUtil;
-            CDS_DADOSRELATORIOUNIDADES.Value          := OPFELS.Count;
+            CDS_DADOSRELATORIOUNIDADESSAIDA.Value     := OPFELS.Count;
+            CDS_DADOSRELATORIOUNIDADESENTRADA.Value   := OPFELE.Count;
             CDS_DADOSRELATORIOUNIDADESPORHORA.Value   := 0;
             CDS_DADOSRELATORIOQUANTIDADEDESCARTE.Value:= 0;
 
@@ -395,8 +401,8 @@ begin
           MinProd := MinProd + Minuto;
 
           if MinProd > 0 then begin
-            if CDS_DADOSRELATORIOUNIDADES.Value > 0 then
-              CDS_DADOSRELATORIOUNIDADESPORHORA.Value   := Trunc((CDS_DADOSRELATORIOUNIDADES.Value / (MinProd / 60)));
+            if CDS_DADOSRELATORIOUNIDADESSAIDA.Value > 0 then
+              CDS_DADOSRELATORIOUNIDADESPORHORA.Value   := Trunc((CDS_DADOSRELATORIOUNIDADESSAIDA.Value / (MinProd / 60)));
           end;
 
           CDS_DADOSRELATORIO.Post;
@@ -427,6 +433,7 @@ begin
     FreeAndNil(CQ);
     FreeAndNil(OPFELI);
     FreeAndNil(OPFELS);
+    FreeAndNil(OPFELE);
     FreeAndNil(Consulta);
     FreeAndNil(ConsultaDesc);
     FreeAndNil(FWC);
