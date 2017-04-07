@@ -103,9 +103,8 @@ end;
 
 procedure TfrmWebCam.FormDestroy(Sender: TObject);
 begin
-  fVideoImage.VideoStop;
   FreeAndNil(fVideoBitmap);
-  FreeAndNil(fVideoImage);
+  fVideoImage.Free; //Tem que ser Free para funcionar na Classe;
 end;
 
 procedure TfrmWebCam.FormShow(Sender: TObject);

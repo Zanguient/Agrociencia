@@ -332,18 +332,15 @@ begin
   inherited Destroy;
 end;
 
-
-
 procedure TVideoImage.Free;
 begin
-  fDisplayCanvas := nil;
-  fBitmap.Free;
-  AppEvent.OnIdle := nil;
-  AppEvent.Free;
-  AppEvent := nil;
+  FreeAndNil(fDisplayCanvas);
+  FreeAndNil(fBitmap);
+  FreeAndNil(AppEvent);
+  FreeAndNil(JPG);
+  FreeAndNil(MemStream);
   inherited Free;
 end;
-
 
 // For Properties see also http://msdn.microsoft.com/en-us/library/ms786938(VS.85).aspx
 function TVideoImage.TranslateProperty(const VP: TVideoProperty; VAR VPAP: TVideoProcAmpProperty): HResult;
