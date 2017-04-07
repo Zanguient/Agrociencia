@@ -93,7 +93,6 @@ type
     btnImagemWebCam: TBitBtn;
     btnSalvarImagem: TBitBtn;
     btnImagemArquivo: TBitBtn;
-    OpenPictureDialog1: TOpenPictureDialog;
     Label4: TLabel;
     edLocalizacao: TEdit;
     procedure btFecharClick(Sender: TObject);
@@ -131,7 +130,6 @@ type
     procedure BuscaOPF;
     { Private declarations }
   public
-    NomeImagemAtual : string;
     Parametros : TPARAMETROS;
     function AtualizarEdits(Limpar : Boolean) : Boolean;
     function Alterar : Boolean;
@@ -159,10 +157,10 @@ uses
   uBeanOrdemProducaoMC,
   uBeanOPFinal_Estagio,
   uBeanObservacao,
-  CapturaCam,
   uBeanProdutos,
   uBeanImagem,
-  uBeanOpFinal_Estagio_Imagens;
+  uBeanOpFinal_Estagio_Imagens,
+  uWebCam;
 
 {$R *.dfm}
 
@@ -579,78 +577,35 @@ begin
 end;
 
 procedure TfrmControleEstagioOPF.btnImagemArquivoClick(Sender: TObject);
-var
-  DirNomeFoto : string;
+Var
+  Arquivo : string;
 begin
-  if OpenPictureDialog1.Execute() then begin
-    if OpenPictureDialog1.FileName <> '' then begin
-      DirNomeFoto := CONFIG_LOCAL.DirImagens +
-                     FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + IntToStr(btGravar.Tag) +'.jpg';
-
-      Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
-      Image1.Picture.SaveToFile(DirNomeFoto);
-      NomeImagemAtual := DirNomeFoto;
+  if btnImagemArquivo.Tag = 0 then begin
+    btnImagemArquivo.Tag := 1;
+    try
+      Arquivo := SelecionarImagemBMP;
+      if Length(Trim(Arquivo)) > 0 then
+        Image1.Picture.LoadFromFile(Arquivo);
+    finally
+      btnImagemArquivo.Tag := 0;
     end;
   end;
 end;
 
 procedure TfrmControleEstagioOPF.btnImagemWebCamClick(Sender: TObject);
-var
-  DirNomeFoto: string;
-  NomeFoto: string;
-  procedure ConverteParaJpeg(ACaminhoFoto: string);
-  var
-    cjBmp: TBitmap;
-    cjJpg: TJpegImage;
-    strNomeSemExtensao: string;
-    AFoto: TImage;
-    Nome : string;
-  begin
-    AFoto:= TImage.Create(Self);
-    cjJpg := TJPegImage.Create;
-    cjBmp := TBitmap.Create;
-    try
-
-      AFoto.Parent := Self;
-      AFoto.Visible := False;
-      AFoto.Picture.Bitmap.LoadFromFile(ACaminhoFoto + '.bmp');
-
-      cjBmp.Assign(AFoto.Picture.Bitmap);
-      cjJpg.Assign(cjBMP);
-
-      Nome := ExtractFileName(ACaminhoFoto + '.jpg');
-
-      cjJpg.SaveToFile(CONFIG_LOCAL.DirImagens + Nome);
-      DeleteFile(ACaminhoFoto + '.bmp');
-
-    finally
-      FreeAndNil(AFoto);
-      FreeAndNil(cjJpg);
-      FreeAndNil(cjBmp);
-    end;
-  end;
 begin
+  if btnImagemWebCam.Tag = 0 then begin
+    btnImagemWebCam.Tag := 1;
 
-  fCaptura := TfCaptura.Create(Self);
-
-  try
-    DirNomeFoto := ExtractFilePath(Application.ExeName) +
-      FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + IntToStr(btGravar.Tag) +'.bmp';
-
-    NomeFoto := ExtractFilePath(DirNomeFoto) +
-      Copy(ExtractFileName(DirNomeFoto),1, Length(ExtractFileName(DirNomeFoto))-4);
-
-    fCaptura.camCamera.FichierImage := ExtractFileName(DirNomeFoto);
-
-    if fCaptura.ShowModal = mrOk then begin
-      fCaptura.camCamera.CaptureImageDisque;
-      ConverteParaJpeg(NomeFoto);
-      NomeFoto := CONFIG_LOCAL.DirImagens + ExtractFileName(NomeFoto + '.jpg');
-      Image1.Picture.LoadFromFile(NomeFoto);
-      NomeImagemAtual := NomeFoto;
+    if not Assigned(frmWebCam) then
+      frmWebCam := tfrmWebCam.Create(Self);
+    try
+      if frmWebCam.ShowModal = mrOk then
+        Image1.Picture := frmWebCam.img1.Picture;
+    finally
+      FreeAndNil(frmWebCam);
+      btnImagemWebCam.Tag := 0;
     end;
-  finally
-    FreeAndNil(fCaptura);
   end;
 end;
 
@@ -664,32 +619,43 @@ var
   FWC : TFWConnection;
   IMG : TIMAGEM;
   EIMG : TOPFINAL_ESTAGIO_IMAGENS;
+  Arquivo : string;
 begin
-  if Assigned(Image1.Picture) then begin
+  if Assigned(Image1.Picture.Graphic) then begin
     FWC  := TFWConnection.Create;
     IMG  := TIMAGEM.Create(FWC);
     EIMG := TOPFINAL_ESTAGIO_IMAGENS.Create(FWC);
     try
       FWC.StartTransaction;
       try
-        IMG.ID.isNull                := True;
-        IMG.ID_USUARIO.Value         := USUARIO.CODIGO;
-        IMG.NOMEIMAGEM.Value         := ExtractFileName(NomeImagemAtual);
-        IMG.Insert;
 
-        EIMG.ID.isNull               := True;
-        EIMG.ID_IMAGEM.Value         := IMG.ID.Value;
-        EIMG.ID_OPFINAL_ESTAGIO.Value:= btGravar.Tag;
-        EIMG.Insert;
+        Arquivo := CONFIG_LOCAL.DirImagens + FormatDateTime('yyyymmdd_hhmmss', Now) + '.bmp';
 
-        FWC.Commit;
+        Image1.Picture.Graphic.SaveToFile(Arquivo);
 
-        Image1.Picture.Bitmap.Assign(Nil);
-        Image1.Parent.Repaint;
+        if FileExists(Arquivo) then begin
 
-        NomeImagemAtual := '';
+          IMG.ID.isNull                := True;
+          IMG.ID_USUARIO.Value         := USUARIO.CODIGO;
+          IMG.NOMEIMAGEM.Value         := ExtractFileName(Arquivo);
+          IMG.Insert;
 
-        BuscarFotos;
+          EIMG.ID.isNull               := True;
+          EIMG.ID_IMAGEM.Value         := IMG.ID.Value;
+          EIMG.ID_OPFINAL_ESTAGIO.Value:= btGravar.Tag;
+          EIMG.Insert;
+
+          FWC.Commit;
+
+          Image1.Picture := Nil;
+          Image1.Parent.Repaint;
+
+          BuscarFotos;
+
+        end else begin
+          DisplayMsg(MSG_WAR, 'Falha ao Salvar a Imagem.: ' + Arquivo);
+          Exit;
+        end;
       except
         on E : Exception do begin
           FWC.Rollback;

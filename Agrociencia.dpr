@@ -86,7 +86,11 @@ uses
   uRelProducaoOperador in 'uRelProducaoOperador.pas' {frmRelProducaoOperador},
   uRelProducaoOP in 'uRelProducaoOP.pas' {frmRelProducaoOP},
   uDetalhesEstagio in 'uDetalhesEstagio.pas' {frmDetalhesEstagio},
-  uRelPerdaOperador in 'uRelPerdaOperador.pas' {frmRelPerdaOperador};
+  uRelPerdaOperador in 'uRelPerdaOperador.pas' {frmRelPerdaOperador},
+  uConfiguracoesSistema in 'uConfiguracoesSistema.pas' {frmConfiguracoesSistema},
+  uWebCam in 'uWebCam.pas' {frmWebCam},
+  VFrames in 'WebCam\VFrames.pas',
+  VSample in 'WebCam\VSample.pas';
 
 {$R *.res}
 

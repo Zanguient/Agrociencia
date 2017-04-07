@@ -17,7 +17,11 @@ uses
   Data.DB,
   Vcl.Graphics,
   System.Win.ComObj,
-  FireDAC.Comp.Client, Vcl.ExtCtrls, Vcl.Imaging.jpeg, frxDBSet;
+  FireDAC.Comp.Client,
+  Vcl.ExtCtrls,
+  Vcl.ExtDlgs,
+  Vcl.Imaging.jpeg,
+  frxDBSet;
 
   procedure CarregarConfigLocal;
   procedure LimpaImagens;
@@ -46,6 +50,7 @@ uses
   function RetornaCodigo_CF(CF : String) : Integer;
   function ValidaCPFCNPJ(Texto : String) : Boolean;
   function LimiteMultiplicacao(CodigoOPF : Integer) : Boolean;
+  function SelecionarImagemBMP : String;
 
 implementation
 
@@ -84,6 +89,7 @@ begin
     CONFIG_LOCAL.DirRelatorios  := ArqINI.ReadString('CONFIGURACOES', 'DIR_RELATORIOS', DirInstall + 'Relatorios\');
     CONFIG_LOCAL.DirImagens     := ArqINI.ReadString('CONFIGURACOES', 'DIR_IMAGENS', DirInstall + 'Imagens\');
     CONFIG_LOCAL.DirBackup      := ArqINI.ReadString('CONFIGURACOES', 'DIR_BACKUP', DirInstall + 'Backup\');
+    CONFIG_LOCAL.WebCam         := ArqINI.ReadString('CONFIGURACOES', 'WEBCAM', EmptyStr);
 
   finally
     FreeAndNil(ArqINI);
@@ -1045,6 +1051,28 @@ begin
   finally
     FreeAndNil(Consulta);
     FreeAndNil(FWC);
+  end;
+end;
+
+function SelecionarImagemBMP : String;
+var
+  OpenDialog : TOpenPictureDialog;
+begin
+
+  Result := EmptyStr;
+
+  OpenDialog := TOpenPictureDialog.Create(nil);
+  try
+    OpenDialog.Filter := 'Bitmaps (*.bmp)|*.bmp';
+    if OpenDialog.Execute() then begin
+      if Length(Trim(OpenDialog.FileName)) > 0 then
+        if UpperCase(ExtractFileExt(OpenDialog.FileName)) = '.BMP' then
+          Result := OpenDialog.FileName
+        else
+          DisplayMsg(MSG_WAR, 'Extensão deve ser .BMP, Verifique!');
+    end;
+  finally
+    FreeAndNil(OpenDialog);
   end;
 end;
 

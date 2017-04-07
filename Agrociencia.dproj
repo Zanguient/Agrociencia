@@ -285,6 +285,16 @@
             <Form>frmRelPerdaOperador</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="uConfiguracoesSistema.pas">
+            <Form>frmConfiguracoesSistema</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uWebCam.pas">
+            <Form>frmWebCam</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="WebCam\VFrames.pas"/>
+        <DCCReference Include="WebCam\VSample.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -23,7 +23,6 @@ type
     btnImagemWebCam: TBitBtn;
     btnImagemArquivo: TBitBtn;
     btGravar: TSpeedButton;
-    OpenPictureDialog1: TOpenPictureDialog;
     Panel2: TPanel;
     mnObservacao: TMemo;
     Label1: TLabel;
@@ -51,7 +50,6 @@ type
     { Private declarations }
   public
     { Public declarations }
-    NomeImagemAtual : string;
     procedure SelecionaPote;
     procedure LimpaDados;
   end;
@@ -68,7 +66,7 @@ uses
   uConstantes,
   uBeanOPFinal_Estagio_Lote_S_Positivo,
   uBeanImagem,
-  uBeanOPFinal_Estagio_Lote;
+  uBeanOPFinal_Estagio_Lote, uWebCam;
 
 {$R *.dfm}
 
@@ -92,8 +90,10 @@ var
   IMAGEM    : TIMAGEM;
   OPFEL     : TOPFINAL_ESTAGIO_LOTE;
   Consulta  : TFDQuery;
+  Arquivo   : string;
 begin
-  if NomeImagemAtual = '' then begin
+
+  if not Assigned(Image1.Picture.Graphic) then begin
     DisplayMsg(MSG_WAR, 'Selecione uma imagem para continuar!');
     Exit;
   end;
@@ -108,157 +108,132 @@ begin
   end;
 
   if edt_CodigoPote.Tag > 0 then begin
-    FWC       := TFWConnection.Create;
-    IMAGEM    := TIMAGEM.Create(FWC);
-    POSITIVO  := TOPFINAL_ESTAGIO_LOTE_S_POSITIVO.Create(FWC);
-    try
 
-      FWC.StartTransaction;
+    Arquivo := CONFIG_LOCAL.DirImagens + FormatDateTime('yyyymmdd_hhmmss', Now) + '.bmp';
+
+    Image1.Picture.Graphic.SaveToFile(Arquivo);
+
+    if FileExists(Arquivo) then begin
+
+      FWC       := TFWConnection.Create;
+      IMAGEM    := TIMAGEM.Create(FWC);
+      POSITIVO  := TOPFINAL_ESTAGIO_LOTE_S_POSITIVO.Create(FWC);
       try
-        IMAGEM.ID.isNull        := True;
-        IMAGEM.ID_USUARIO.Value := USUARIO.CODIGO;
-        IMAGEM.NOMEIMAGEM.Value := ExtractFileName(NomeImagemAtual);
-        IMAGEM.Insert;
 
-        POSITIVO.ID.isNull                       := True;
-        POSITIVO.ID_OPFINAL_ESTAGIO_LOTE_S.Value := edt_CodigoPote.Tag;
-        POSITIVO.ID_IMAGEM.Value                 := IMAGEM.ID.Value;
-        POSITIVO.LOCALIZACAO.Value               := edt_Localizacao.Text;
-        POSITIVO.OBSERVACAO.Value                := mnObservacao.Text;
-        POSITIVO.Insert;
+        FWC.StartTransaction;
+        try
+          IMAGEM.ID.isNull        := True;
+          IMAGEM.ID_USUARIO.Value := USUARIO.CODIGO;
+          IMAGEM.NOMEIMAGEM.Value := ExtractFileName(Arquivo);
+          IMAGEM.Insert;
 
-        //Atualizar a localização no Lote
-        if edt_Localizacao.Enabled then begin
+          POSITIVO.ID.isNull                       := True;
+          POSITIVO.ID_OPFINAL_ESTAGIO_LOTE_S.Value := edt_CodigoPote.Tag;
+          POSITIVO.ID_IMAGEM.Value                 := IMAGEM.ID.Value;
+          POSITIVO.LOCALIZACAO.Value               := edt_Localizacao.Text;
+          POSITIVO.OBSERVACAO.Value                := mnObservacao.Text;
+          POSITIVO.Insert;
 
-          OPFEL   := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
-          Consulta:= TFDQuery.Create(nil);
-          try
+          //Atualizar a localização no Lote
+          if edt_Localizacao.Enabled then begin
+
+            OPFEL   := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
+            Consulta:= TFDQuery.Create(nil);
             try
+              try
 
-              Consulta.Close;
-              Consulta.SQL.Clear;
-              Consulta.SQL.Add('SELECT');
-              Consulta.SQL.Add('	OPFEL.ID AS IDLOTE');
-              Consulta.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE OPFEL');
-              Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
-              Consulta.SQL.Add('WHERE 1 = 1');
-              Consulta.SQL.Add('AND OPFELS.ID = :IDPOTE');
-              Consulta.SQL.Add('AND OPFEL.LOCALIZACAO <> :LOCALIZACAO');
+                Consulta.Close;
+                Consulta.SQL.Clear;
+                Consulta.SQL.Add('SELECT');
+                Consulta.SQL.Add('	OPFEL.ID AS IDLOTE');
+                Consulta.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE OPFEL');
+                Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+                Consulta.SQL.Add('WHERE 1 = 1');
+                Consulta.SQL.Add('AND OPFELS.ID = :IDPOTE');
+                Consulta.SQL.Add('AND OPFEL.LOCALIZACAO <> :LOCALIZACAO');
 
-              Consulta.Connection := FWC.FDConnection;
+                Consulta.Connection := FWC.FDConnection;
 
-              Consulta.ParamByName('IDPOTE').DataType       := ftInteger;
-              Consulta.ParamByName('LOCALIZACAO').DataType  := ftString;
-              Consulta.ParamByName('IDPOTE').Value          := edt_CodigoPote.Tag;
-              Consulta.ParamByName('LOCALIZACAO').Value     := edt_Localizacao.Text;
+                Consulta.ParamByName('IDPOTE').DataType       := ftInteger;
+                Consulta.ParamByName('LOCALIZACAO').DataType  := ftString;
+                Consulta.ParamByName('IDPOTE').Value          := edt_CodigoPote.Tag;
+                Consulta.ParamByName('LOCALIZACAO').Value     := edt_Localizacao.Text;
 
-              Consulta.Prepare;
-              Consulta.Open;
-              Consulta.FetchAll;
+                Consulta.Prepare;
+                Consulta.Open;
+                Consulta.FetchAll;
 
-              if not Consulta.IsEmpty then begin
-                Consulta.First;
-                while not Consulta.Eof do begin
-                  OPFEL.ID.Value          := Consulta.FieldByName('IDLOTE').AsInteger;
-                  OPFEL.LOCALIZACAO.Value := edt_Localizacao.Text;
-                  OPFEL.Update;
-                  Consulta.Next;
+                if not Consulta.IsEmpty then begin
+                  Consulta.First;
+                  while not Consulta.Eof do begin
+                    OPFEL.ID.Value          := Consulta.FieldByName('IDLOTE').AsInteger;
+                    OPFEL.LOCALIZACAO.Value := edt_Localizacao.Text;
+                    OPFEL.Update;
+                    Consulta.Next;
+                  end;
                 end;
+              except
+                on E: Exception do
+                  raise Exception.Create('Erro ao Atualizar Localização no Lote.: ' + E.Message);
               end;
-            except
-              on E: Exception do
-                raise Exception.Create('Erro ao Atualizar Localização no Lote.: ' + E.Message);
-            end;
 
-          finally
-            FreeAndNil(OPFEL);
-            FreeAndNil(Consulta);
+            finally
+              FreeAndNil(OPFEL);
+              FreeAndNil(Consulta);
+            end;
+          end;
+
+          FWC.Commit;
+
+          LimpaDados;
+        except
+          on E : Exception do begin
+            FWC.Rollback;
+            DisplayMsg(MSG_WAR, 'Erro ao Salvar Dados', '', E.Message);
           end;
         end;
-
-        FWC.Commit;
-
-        LimpaDados;
-      except
-        on E : Exception do begin
-          FWC.Rollback;
-          DisplayMsg(MSG_WAR, 'Erro ao Salvar Dados', '', E.Message);
-        end;
+      finally
+        FreeAndNil(POSITIVO);
+        FreeAndNil(IMAGEM);
+        FreeAndNil(FWC);
       end;
-    finally
-      FreeAndNil(POSITIVO);
-      FreeAndNil(IMAGEM);
-      FreeAndNil(FWC);
+    end else begin
+      DisplayMsg(MSG_WAR, 'Falha ao Salvar a Imagem.: ' + Arquivo);
+      Exit;
     end;
   end;
 end;
 
 procedure TfrmControleQualidadePositivo.btnImagemArquivoClick(Sender: TObject);
-var
-  DirNomeFoto : string;
+Var
+  Arquivo : string;
 begin
-  if OpenPictureDialog1.Execute() then begin
-    if OpenPictureDialog1.FileName <> '' then begin
-      DirNomeFoto := CONFIG_LOCAL.DirImagens +
-                     FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + IntToStr(edt_CodigoPote.Tag) +'.jpg';
-
-      Image1.Picture.LoadFromFile(OpenPictureDialog1.FileName);
-      Image1.Picture.SaveToFile(DirNomeFoto);
-      NomeImagemAtual := DirNomeFoto;
+  if btnImagemArquivo.Tag = 0 then begin
+    btnImagemArquivo.Tag := 1;
+    try
+      Arquivo := SelecionarImagemBMP;
+      if Length(Trim(Arquivo)) > 0 then
+        Image1.Picture.LoadFromFile(Arquivo);
+    finally
+      btnImagemArquivo.Tag := 0;
     end;
   end;
 end;
 
 procedure TfrmControleQualidadePositivo.btnImagemWebCamClick(Sender: TObject);
-var
-  DirNomeFoto: string;
-  NomeFoto: string;
-  procedure ConverteParaJpeg(ACaminhoFoto: string);
-  var
-    cjBmp: TBitmap;
-    cjJpg: TJpegImage;
-    strNomeSemExtensao: string;
-    AFoto: TImage;
-    Nome : string;
-  begin
-    AFoto:= TImage.Create(Self);
-    AFoto.Parent := Self;
-    AFoto.Visible := False;
-    AFoto.Picture.Bitmap.LoadFromFile(ACaminhoFoto + '.bmp');
-
-    cjJpg := TJPegImage.Create;
-    cjBmp := TBitmap.Create;
-
-    cjBmp.Assign(AFoto.Picture.Bitmap);
-    cjJpg.Assign(cjBMP);
-
-    Nome := ExtractFileName(ACaminhoFoto + '.jpg');
-
-    cjJpg.SaveToFile(CONFIG_LOCAL.DirImagens + Nome);
-    DeleteFile(ACaminhoFoto + '.bmp');
-    cjJpg.Free;
-    cjBmp.Free;
-    AFoto.Free;
-  end;
 begin
-  fCaptura := TfCaptura.Create(Self);
-  try
-    DirNomeFoto := ExtractFilePath(Application.ExeName) +
-      FormatDateTime('yyyymmdd_hhmmss', Now) + '_' + IntToStr(edt_CodigoPote.Tag) +'.bmp';
+  if btnImagemWebCam.Tag = 0 then begin
+    btnImagemWebCam.Tag := 1;
 
-    NomeFoto := ExtractFilePath(DirNomeFoto) +
-      Copy(ExtractFileName(DirNomeFoto),1, Length(ExtractFileName(DirNomeFoto))-4);
-
-    fCaptura.camCamera.FichierImage := ExtractFileName(DirNomeFoto);
-    if fCaptura.ShowModal = mrOk then begin
-      fCaptura.camCamera.CaptureImageDisque;
-      ConverteParaJpeg(NomeFoto);
-      NomeFoto := CONFIG_LOCAL.DirImagens + ExtractFileName(NomeFoto + '.jpg');
-      Image1.Picture.LoadFromFile(NomeFoto);
-      NomeImagemAtual := NomeFoto;
+    if not Assigned(frmWebCam) then
+      frmWebCam := tfrmWebCam.Create(Self);
+    try
+      if frmWebCam.ShowModal = mrOk then
+        Image1.Picture := frmWebCam.img1.Picture;
+    finally
+      FreeAndNil(frmWebCam);
+      btnImagemWebCam.Tag := 0;
     end;
-  finally
-    FreeAndNil(fCaptura);
   end;
 end;
 
@@ -300,7 +275,6 @@ begin
   btCancelar.Enabled      := False;
   CDS_DADOS.EmptyDataSet;
   edt_CodigoPote.Tag      := 0;
-  NomeImagemAtual         := '';
   pnImagem.Enabled        := False;
   Image1.Picture.Assign(nil);
 

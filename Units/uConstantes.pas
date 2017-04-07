@@ -43,6 +43,7 @@ type
     DirRelatorios : string;
     DirImagens : string;
     DirBackup : string;
+    WebCam : string;
   end;
 
   TCLASSIFICACAO = record
