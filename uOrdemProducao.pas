@@ -106,6 +106,7 @@ type
     Label15: TLabel;
     cds_PesquisaDATA: TDateField;
     cds_PesquisaCULTIVAR: TStringField;
+    ScrollBox2: TScrollBox;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

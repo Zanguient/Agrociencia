@@ -96,7 +96,7 @@ uses
 
 begin
 
-  ReportMemoryLeaksOnShutdown := True;
+  ReportMemoryLeaksOnShutdown := False;
 
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
