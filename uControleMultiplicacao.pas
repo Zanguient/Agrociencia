@@ -554,7 +554,7 @@ begin
                 case rgSaida.ItemIndex of
                   0 : begin
                     if Codigo = MULTIPLICACAO.IDESTAGIO then begin
-                      if MULTIPLICACAO.SALDOMC <= cds_Saidas.RecordCount + 1 then begin
+                      if MULTIPLICACAO.SALDOMC < cds_Saidas.RecordCount + 1 then begin
                         DisplayMsg(MSG_WAR, 'Acabaram os potes do Meio de Cultura! Verifique com o Administrador!');
                         if edCodigoSaida.CanFocus then begin
                           edCodigoSaida.SetFocus;
