@@ -357,7 +357,7 @@ begin
           OPFELI.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + Consulta.FieldByName('IDLOTE').AsString);
           if OPFELI.Count > 0 then begin
             for I := 0 to OPFELI.Count - 1 do begin
-              TempoUtil := TOPFINAL_ESTAGIO_LOTE_INTERVALO(OPFELI.Itens[I]).DATAHORASAIDA.Value - TOPFINAL_ESTAGIO_LOTE_INTERVALO(OPFELI.Itens[I]).DATAHORAENTRADA.Value;
+              TempoUtil := TempoUtil - (TOPFINAL_ESTAGIO_LOTE_INTERVALO(OPFELI.Itens[I]).DATAHORASAIDA.Value - TOPFINAL_ESTAGIO_LOTE_INTERVALO(OPFELI.Itens[I]).DATAHORAENTRADA.Value);
             end;
           end;
 
