@@ -89,7 +89,7 @@ begin
       Consulta.SQL.Add('INNER JOIN ESTAGIO E ON OPE.ESTAGIO_ID = E.ID');
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPEL ON OPEL.OPFINAL_ESTAGIO_ID = OPE.ID');
       Consulta.SQL.Add('WHERE OP.ID = :ID');
-      Consulta.SQL.Add('ORDER BY OP.ID, CL.NOME, E.DESCRICAO, CAST(OPEL.DATAHORAINICIO AS DATE)');
+      Consulta.SQL.Add('ORDER BY CAST(OPEL.DATAHORAINICIO AS DATE)');
       Consulta.ParamByName('ID').AsInteger := StrToInt(edCodigoOPF.Text);
       Consulta.Open();
 
