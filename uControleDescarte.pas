@@ -209,6 +209,7 @@ begin
 
       //Add by Sergio on 24.04.17 -> a Pedido do Douglas não Obrigar ter Imagem
       if FileExists(Arquivo) then begin
+
         IMG.ID.isNull                                    := True;
         IMG.ID_USUARIO.Value                             := USUARIO.CODIGO;
         IMG.NOMEIMAGEM.Value                             := ExtractFileName(Arquivo);
