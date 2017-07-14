@@ -1,4 +1,4 @@
-object frmControleQualidade: TfrmControleQualidade
+object frmControleDescarte: TfrmControleDescarte
   Left = 0
   Top = 0
   BorderStyle = bsNone
@@ -24,7 +24,7 @@ object frmControleQualidade: TfrmControleQualidade
     Height = 42
     Align = alTop
     BevelOuter = bvNone
-    Caption = 'Controle de Qualidade de Potes'
+    Caption = 'Controle de Descartes de Potes'
     Color = clSkyBlue
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

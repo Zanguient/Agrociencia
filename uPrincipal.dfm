@@ -113,12 +113,12 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Etiquetas'
         OnClick = Etiquetas1Click
       end
-      object ControledeQualidade1: TMenuItem
-        Caption = 'Controle de Qualidade'
-        OnClick = ControledeQualidade1Click
+      object Descartes: TMenuItem
+        Caption = 'Descartes'
+        OnClick = DescartesClick
       end
       object ControledeQualidadePositivo1: TMenuItem
-        Caption = 'Controle de Qualidade Positivo'
+        Caption = 'Controle de Qualidade'
         OnClick = ControledeQualidadePositivo1Click
       end
       object PlanejamentodaProduo1: TMenuItem

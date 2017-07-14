@@ -565,9 +565,6 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     object CDS_DADOSRELATORIONUMERODELOTES: TIntegerField
       FieldName = 'NUMERODELOTES'
     end
-    object CDS_DADOSRELATORIOTEMPOUTILPRODUCAO: TTimeField
-      FieldName = 'TEMPOUTILPRODUCAO'
-    end
     object CDS_DADOSRELATORIOUNIDADESSAIDA: TIntegerField
       FieldName = 'UNIDADESSAIDA'
     end
@@ -579,6 +576,9 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     end
     object CDS_DADOSRELATORIOUNIDADESENTRADA: TIntegerField
       FieldName = 'UNIDADESENTRADA'
+    end
+    object CDS_DADOSRELATORIOSEGUNDOSPRODUCAO: TIntegerField
+      FieldName = 'SEGUNDOSPRODUCAO'
     end
   end
 end

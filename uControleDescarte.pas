@@ -1,4 +1,4 @@
-unit uControleQualidade;
+unit uControleDescarte;
 
 interface
 
@@ -11,7 +11,7 @@ uses
   FireDAC.Comp.Client, Vcl.ExtDlgs;
 
 type
-  TfrmControleQualidade = class(TForm)
+  TfrmControleDescarte = class(TForm)
     Panel1: TPanel;
     pnBotoesVisualizacao: TPanel;
     gpBotoes: TGridPanel;
@@ -51,7 +51,7 @@ type
   end;
 
 var
-  frmControleQualidade: TfrmControleQualidade;
+  frmControleDescarte: TfrmControleDescarte;
 
 implementation
 uses
@@ -75,12 +75,12 @@ uses
 
 {$R *.dfm}
 
-procedure TfrmControleQualidade.btCancelarClick(Sender: TObject);
+procedure TfrmControleDescarte.btCancelarClick(Sender: TObject);
 begin
   LimparDados;
 end;
 
-procedure TfrmControleQualidade.btDescartarClick(Sender: TObject);
+procedure TfrmControleDescarte.btDescartarClick(Sender: TObject);
 begin
   if btDescartar.Tag = 0 then begin
     btDescartar.Tag := 1;
@@ -92,12 +92,12 @@ begin
   end;
 end;
 
-procedure TfrmControleQualidade.btFecharClick(Sender: TObject);
+procedure TfrmControleDescarte.btFecharClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TfrmControleQualidade.btnImagemArquivoClick(Sender: TObject);
+procedure TfrmControleDescarte.btnImagemArquivoClick(Sender: TObject);
 Var
   Arquivo : string;
 begin
@@ -113,7 +113,7 @@ begin
   end;
 end;
 
-procedure TfrmControleQualidade.btnImagemClick(Sender: TObject);
+procedure TfrmControleDescarte.btnImagemClick(Sender: TObject);
 begin
   if btnImagemWebCam.Tag = 0 then begin
     btnImagemWebCam.Tag := 1;
@@ -130,23 +130,23 @@ begin
   end;
 end;
 
-procedure TfrmControleQualidade.edt_CodigoMotivoChange(Sender: TObject);
+procedure TfrmControleDescarte.edt_CodigoMotivoChange(Sender: TObject);
 begin
   edt_Motivo.Clear;
 end;
 
-procedure TfrmControleQualidade.edt_CodigoMotivoRightButtonClick(
+procedure TfrmControleDescarte.edt_CodigoMotivoRightButtonClick(
   Sender: TObject);
 begin
   SelecionaMotivoDescarte;
 end;
 
-procedure TfrmControleQualidade.FormCreate(Sender: TObject);
+procedure TfrmControleDescarte.FormCreate(Sender: TObject);
 begin
   AjustaForm(Self);
 end;
 
-procedure TfrmControleQualidade.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TfrmControleDescarte.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case Key of
@@ -165,7 +165,7 @@ begin
   end;
 end;
 
-procedure TfrmControleQualidade.GravarDescarte;
+procedure TfrmControleDescarte.GravarDescarte;
 var
   FWC : TFWConnection;
   CQ  : TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE;
@@ -268,7 +268,7 @@ begin
   end;
 end;
 
-procedure TfrmControleQualidade.LimparDados;
+procedure TfrmControleDescarte.LimparDados;
 begin
   edt_CodigoPote.Clear;
   edt_CodigoMotivo.Clear;
@@ -284,7 +284,7 @@ begin
     edt_CodigoPote.SetFocus;
 end;
 
-procedure TfrmControleQualidade.SelecionaMotivoDescarte;
+procedure TfrmControleDescarte.SelecionaMotivoDescarte;
 var
   FWC : TFWConnection;
   M   : TMOTIVODESCARTE;
@@ -309,7 +309,7 @@ begin
   end;
 end;
 
-procedure TfrmControleQualidade.SelecionaPote;
+procedure TfrmControleDescarte.SelecionaPote;
 var
   FWC : TFWConnection;
   SQL : TFDQuery;

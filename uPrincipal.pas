@@ -37,7 +37,7 @@ type
     Multiplicaes1: TMenuItem;
     Etiquetas1: TMenuItem;
     MotivosdeDescarte1: TMenuItem;
-    ControledeQualidade1: TMenuItem;
+    Descartes: TMenuItem;
     AgendaSemanal1: TMenuItem;
     Aniversariantes1: TMenuItem;
     CadastrodePlantas1: TMenuItem;
@@ -73,7 +73,7 @@ type
     procedure Multiplicaes1Click(Sender: TObject);
     procedure Etiquetas1Click(Sender: TObject);
     procedure MotivosdeDescarte1Click(Sender: TObject);
-    procedure ControledeQualidade1Click(Sender: TObject);
+    procedure DescartesClick(Sender: TObject);
     procedure AgendaSemanal1Click(Sender: TObject);
     procedure Aniversariantes1Click(Sender: TObject);
     procedure CadastrodePlantas1Click(Sender: TObject);
@@ -129,7 +129,7 @@ uses
   uControleMultiplicacao,
   uImpressaoEtiquetas,
   uCadastroMotivoDescarte,
-  uControleQualidade,
+  uControleDescarte,
   uRelAgendaSemanal,
   uRelAniversariantes,
   uRelCadastrodePlantas,
@@ -378,14 +378,14 @@ begin
   end;
 end;
 
-procedure TfrmPrincipal.ControledeQualidade1Click(Sender: TObject);
+procedure TfrmPrincipal.DescartesClick(Sender: TObject);
 begin
-  if frmControleQualidade = nil then
-    frmControleQualidade := TfrmControleQualidade.Create(Self);
+  if frmControleDescarte = nil then
+    frmControleDescarte := TfrmControleDescarte.Create(Self);
   try
-    frmControleQualidade.ShowModal;
+    frmControleDescarte.ShowModal;
   finally
-    FreeAndNil(frmControleQualidade);
+    FreeAndNil(frmControleDescarte);
   end;
 end;
 

@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask,
   JvExMask, JvToolEdit, Vcl.StdCtrls, FireDAC.Comp.Client, Data.DB, Vcl.CheckLst,
-  frxDBSet, Datasnap.DBClient;
+  frxDBSet, Datasnap.DBClient, System.DateUtils;
 
 type
   TfrmRelProducaoOperador = class(TForm)
@@ -33,7 +33,6 @@ type
     CDS_DADOSRELATORIOCODIGOESTAGIO: TIntegerField;
     CDS_DADOSRELATORIODESCRICAOESTAGIO: TStringField;
     CDS_DADOSRELATORIONUMERODELOTES: TIntegerField;
-    CDS_DADOSRELATORIOTEMPOUTILPRODUCAO: TTimeField;
     CDS_DADOSRELATORIOUNIDADESSAIDA: TIntegerField;
     gbPeriodo: TGroupBox;
     Label1: TLabel;
@@ -42,6 +41,7 @@ type
     CDS_DADOSRELATORIOUNIDADESPORHORA: TIntegerField;
     CDS_DADOSRELATORIOQUANTIDADEDESCARTE: TIntegerField;
     CDS_DADOSRELATORIOUNIDADESENTRADA: TIntegerField;
+    CDS_DADOSRELATORIOSEGUNDOSPRODUCAO: TIntegerField;
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
@@ -249,9 +249,8 @@ var
   OPFELE    : TOPFINAL_ESTAGIO_LOTE_E;
   OPFELI    : TOPFINAL_ESTAGIO_LOTE_INTERVALO;
   CQ        : TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE;
-  TempoUtil : TTime;
-  I,
-  MinProd   : Integer;
+  SegundosUtilLote,
+  I         : Integer;
   Hora,
   Minuto,
   Segundo,
@@ -276,7 +275,12 @@ begin
       Consulta.SQL.Clear;
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('  OPFEL.ID AS IDLOTE,');
-      Consulta.SQL.Add('CAST((OPFEL.DATAHORAFIM - OPFEL.DATAHORAINICIO) AS TIME) AS TEMPOPRODUCAO,');
+      Consulta.SQL.Add('  OPFEL.DATAHORAINICIO,');
+      Consulta.SQL.Add('  OPFEL.DATAHORAFIM,');
+      //Consulta.SQL.Add('  ((DATE_PART(''DAY'', OPFEL.DATAHORAFIM - OPFEL.DATAHORAINICIO) * 86400) +');
+      //Consulta.SQL.Add('  (DATE_PART(''HOUR'', OPFEL.DATAHORAFIM - OPFEL.DATAHORAINICIO) * 3600) +');
+      //Consulta.SQL.Add('  (DATE_PART(''MINUTE'', OPFEL.DATAHORAFIM - OPFEL.DATAHORAINICIO) * 60) +');
+      //Consulta.SQL.Add('  (TRUNC(DATE_PART(''SECOND'', OPFEL.DATAHORAFIM - OPFEL.DATAHORAINICIO)))) AS SEGUNDOSPRODUCAO,');
       Consulta.SQL.Add('	U.ID AS CODIGOOPERADOR,');
       Consulta.SQL.Add('	U.NOME AS NOMEOPERADOR,');
       Consulta.SQL.Add('	P.ID AS CODIGOESPECIE,');
@@ -350,14 +354,14 @@ begin
           ConsultaDesc.Open;
           ConsultaDesc.FetchAll;
 
-          //Tempo de Produção Total do lote
-          TempoUtil := Consulta.FieldByName('TEMPOPRODUCAO').AsDateTime;
+          //Tempo de Produção Total do lote em Segundos
+          SegundosUtilLote := SecondsBetween(Consulta.FieldByName('DATAHORAINICIO').AsDateTime, Consulta.FieldByName('DATAHORAFIM').AsDateTime);
 
           //Descontar o Tempo parado do lote
           OPFELI.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + Consulta.FieldByName('IDLOTE').AsString);
           if OPFELI.Count > 0 then begin
             for I := 0 to OPFELI.Count - 1 do begin
-              TempoUtil := TempoUtil - (TOPFINAL_ESTAGIO_LOTE_INTERVALO(OPFELI.Itens[I]).DATAHORASAIDA.Value - TOPFINAL_ESTAGIO_LOTE_INTERVALO(OPFELI.Itens[I]).DATAHORAENTRADA.Value);
+              SegundosUtilLote := SegundosUtilLote - SecondsBetween(TOPFINAL_ESTAGIO_LOTE_INTERVALO(OPFELI.Itens[I]).DATAHORAENTRADA.Value, TOPFINAL_ESTAGIO_LOTE_INTERVALO(OPFELI.Itens[I]).DATAHORASAIDA.Value);
             end;
           end;
 
@@ -367,7 +371,6 @@ begin
           if CDS_DADOSRELATORIO.Locate('CODIGOOPERADOR;CODIGOESPECIE;CODIGOESTAGIO', VarArrayOf([Consulta.FieldByName('CODIGOOPERADOR').AsString, Consulta.FieldByName('CODIGOESPECIE').AsString, Consulta.FieldByName('CODIGOESTAGIO').AsString]), []) then begin
             CDS_DADOSRELATORIO.Edit;
             CDS_DADOSRELATORIONUMERODELOTES.Value             := CDS_DADOSRELATORIONUMERODELOTES.Value + 1;
-            CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.Value         := CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.AsDateTime + TempoUtil;
             CDS_DADOSRELATORIOUNIDADESSAIDA.Value             := CDS_DADOSRELATORIOUNIDADESSAIDA.Value + OPFELS.Count;
             CDS_DADOSRELATORIOUNIDADESENTRADA.Value           := CDS_DADOSRELATORIOUNIDADESENTRADA.Value + OPFELE.Count;
             if not ConsultaDesc.IsEmpty then
@@ -382,7 +385,6 @@ begin
             CDS_DADOSRELATORIOCODIGOESTAGIO.Value     := Consulta.FieldByName('CODIGOESTAGIO').AsInteger;
             CDS_DADOSRELATORIODESCRICAOESTAGIO.Value  := Consulta.FieldByName('DESCRICAOESTAGIO').AsString;
             CDS_DADOSRELATORIONUMERODELOTES.Value     := 1;
-            CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.Value := TempoUtil;
             CDS_DADOSRELATORIOUNIDADESSAIDA.Value     := OPFELS.Count;
             CDS_DADOSRELATORIOUNIDADESENTRADA.Value   := OPFELE.Count;
             CDS_DADOSRELATORIOUNIDADESPORHORA.Value   := 0;
@@ -391,19 +393,17 @@ begin
             if not ConsultaDesc.IsEmpty then
               CDS_DADOSRELATORIOQUANTIDADEDESCARTE.AsInteger  := ConsultaDesc.FieldByName('QUANTIDADEDESCARTES').AsInteger;
 
+            CDS_DADOSRELATORIOSEGUNDOSPRODUCAO.Value  := 0;
+
           end;
 
-          DecodeTime(CDS_DADOSRELATORIOTEMPOUTILPRODUCAO.AsDateTime, Hora, Minuto, Segundo, MiliSegundo);
+          //Soma os Minutos do Lote aos Minutos de Produção
+          CDS_DADOSRELATORIOSEGUNDOSPRODUCAO.Value    := CDS_DADOSRELATORIOSEGUNDOSPRODUCAO.Value + SegundosUtilLote;
 
-          MinProd := 0;
-          if Hora > 0 then
-            MinProd := MinProd + (Hora * 60);
-          MinProd := MinProd + Minuto;
-
-          if MinProd > 0 then begin
-            if CDS_DADOSRELATORIOUNIDADESSAIDA.Value > 0 then
-              CDS_DADOSRELATORIOUNIDADESPORHORA.Value   := Trunc((CDS_DADOSRELATORIOUNIDADESSAIDA.Value / (MinProd / 60)));
-          end;
+          //Calcula as unidades Produzidas por Hora
+          if CDS_DADOSRELATORIOUNIDADESSAIDA.Value > 0 then
+            if ((CDS_DADOSRELATORIOSEGUNDOSPRODUCAO.Value / 3600) > 0) then
+              CDS_DADOSRELATORIOUNIDADESPORHORA.Value   := Trunc((CDS_DADOSRELATORIOUNIDADESSAIDA.Value / (CDS_DADOSRELATORIOSEGUNDOSPRODUCAO.Value / 3600)));
 
           CDS_DADOSRELATORIO.Post;
 

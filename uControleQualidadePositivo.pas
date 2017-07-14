@@ -93,10 +93,11 @@ var
   Arquivo   : string;
 begin
 
-  if not Assigned(Image1.Picture.Graphic) then begin
+  //A Pedido do Douglas Projeto 1.7 Não Obrigar Imagem.
+  {if not Assigned(Image1.Picture.Graphic) then begin
     DisplayMsg(MSG_WAR, 'Selecione uma imagem para continuar!');
     Exit;
-  end;
+  end;}
 
   if edt_Localizacao.Enabled then begin
     if Length(Trim(edt_Localizacao.Text)) = 0 then begin
@@ -111,17 +112,18 @@ begin
 
     Arquivo := CONFIG_LOCAL.DirImagens + FormatDateTime('yyyymmdd_hhmmss', Now) + '.bmp';
 
-    Image1.Picture.Graphic.SaveToFile(Arquivo);
+    if Assigned(Image1.Picture.Graphic) then
+      Image1.Picture.Graphic.SaveToFile(Arquivo);
 
-    if FileExists(Arquivo) then begin
+    FWC       := TFWConnection.Create;
+    IMAGEM    := TIMAGEM.Create(FWC);
+    POSITIVO  := TOPFINAL_ESTAGIO_LOTE_S_POSITIVO.Create(FWC);
+    try
 
-      FWC       := TFWConnection.Create;
-      IMAGEM    := TIMAGEM.Create(FWC);
-      POSITIVO  := TOPFINAL_ESTAGIO_LOTE_S_POSITIVO.Create(FWC);
+      FWC.StartTransaction;
       try
 
-        FWC.StartTransaction;
-        try
+        if FileExists(Arquivo) then begin
           IMAGEM.ID.isNull        := True;
           IMAGEM.ID_USUARIO.Value := USUARIO.CODIGO;
           IMAGEM.NOMEIMAGEM.Value := ExtractFileName(Arquivo);
@@ -133,74 +135,75 @@ begin
           POSITIVO.LOCALIZACAO.Value               := edt_Localizacao.Text;
           POSITIVO.OBSERVACAO.Value                := mnObservacao.Text;
           POSITIVO.Insert;
+        end;
 
-          //Atualizar a localização no Lote
-          if edt_Localizacao.Enabled then begin
+        //Atualizar a localização no Lote
+        if edt_Localizacao.Enabled then begin
 
-            OPFEL   := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
-            Consulta:= TFDQuery.Create(nil);
+          OPFEL   := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
+          Consulta:= TFDQuery.Create(nil);
+          try
             try
-              try
 
-                Consulta.Close;
-                Consulta.SQL.Clear;
-                Consulta.SQL.Add('SELECT');
-                Consulta.SQL.Add('	OPFEL.ID AS IDLOTE');
-                Consulta.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE OPFEL');
-                Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
-                Consulta.SQL.Add('WHERE 1 = 1');
-                Consulta.SQL.Add('AND OPFELS.ID = :IDPOTE');
-                Consulta.SQL.Add('AND OPFEL.LOCALIZACAO <> :LOCALIZACAO');
+              Consulta.Close;
+              Consulta.SQL.Clear;
+              Consulta.SQL.Add('SELECT');
+              Consulta.SQL.Add('	OPFEL.ID AS IDLOTE');
+              Consulta.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE OPFEL');
+              Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+              Consulta.SQL.Add('WHERE 1 = 1');
+              Consulta.SQL.Add('AND OPFELS.ID = :IDPOTE');
+              Consulta.SQL.Add('AND OPFEL.LOCALIZACAO <> :LOCALIZACAO');
 
-                Consulta.Connection := FWC.FDConnection;
+              Consulta.Connection := FWC.FDConnection;
 
-                Consulta.ParamByName('IDPOTE').DataType       := ftInteger;
-                Consulta.ParamByName('LOCALIZACAO').DataType  := ftString;
-                Consulta.ParamByName('IDPOTE').Value          := edt_CodigoPote.Tag;
-                Consulta.ParamByName('LOCALIZACAO').Value     := edt_Localizacao.Text;
+              Consulta.ParamByName('IDPOTE').DataType       := ftInteger;
+              Consulta.ParamByName('LOCALIZACAO').DataType  := ftString;
+              Consulta.ParamByName('IDPOTE').Value          := edt_CodigoPote.Tag;
+              Consulta.ParamByName('LOCALIZACAO').Value     := edt_Localizacao.Text;
 
-                Consulta.Prepare;
-                Consulta.Open;
-                Consulta.FetchAll;
+              Consulta.Prepare;
+              Consulta.Open;
+              Consulta.FetchAll;
 
-                if not Consulta.IsEmpty then begin
-                  Consulta.First;
-                  while not Consulta.Eof do begin
-                    OPFEL.ID.Value          := Consulta.FieldByName('IDLOTE').AsInteger;
-                    OPFEL.LOCALIZACAO.Value := edt_Localizacao.Text;
-                    OPFEL.Update;
-                    Consulta.Next;
-                  end;
+              if not Consulta.IsEmpty then begin
+                Consulta.First;
+                while not Consulta.Eof do begin
+                  OPFEL.ID.Value          := Consulta.FieldByName('IDLOTE').AsInteger;
+                  OPFEL.LOCALIZACAO.Value := edt_Localizacao.Text;
+                  OPFEL.Update;
+                  Consulta.Next;
                 end;
-              except
-                on E: Exception do
-                  raise Exception.Create('Erro ao Atualizar Localização no Lote.: ' + E.Message);
               end;
-
-            finally
-              FreeAndNil(OPFEL);
-              FreeAndNil(Consulta);
+            except
+              on E: Exception do
+                raise Exception.Create('Erro ao Atualizar Localização no Lote.: ' + E.Message);
             end;
-          end;
 
-          FWC.Commit;
-
-          LimpaDados;
-        except
-          on E : Exception do begin
-            FWC.Rollback;
-            DisplayMsg(MSG_WAR, 'Erro ao Salvar Dados', '', E.Message);
+          finally
+            FreeAndNil(OPFEL);
+            FreeAndNil(Consulta);
           end;
         end;
-      finally
-        FreeAndNil(POSITIVO);
-        FreeAndNil(IMAGEM);
-        FreeAndNil(FWC);
+
+        FWC.Commit;
+
+        LimpaDados;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_WAR, 'Erro ao Salvar Dados', '', E.Message);
+        end;
       end;
-    end else begin
+    finally
+      FreeAndNil(POSITIVO);
+      FreeAndNil(IMAGEM);
+      FreeAndNil(FWC);
+    end;
+    {end else begin
       DisplayMsg(MSG_WAR, 'Falha ao Salvar a Imagem.: ' + Arquivo);
       Exit;
-    end;
+    end;}
   end;
 end;
 

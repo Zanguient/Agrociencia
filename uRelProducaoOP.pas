@@ -75,7 +75,7 @@ begin
       Consulta.SQL.Add('CL.NOME AS NOMECLIENTE,');
       Consulta.SQL.Add('PR.DESCRICAO AS PRODUTO,');
       Consulta.SQL.Add('OP.CULTIVAR AS CULTIVAR,');
-      Consulta.SQL.Add('E.DESCRICAO AS ESTAGIO,');
+      Consulta.SQL.Add('OPE.SEQUENCIA || '' - '' || E.DESCRICAO AS ESTAGIO,');
       Consulta.SQL.Add('CAST(OPEL.DATAHORAINICIO AS DATE) AS DATAI,');
       Consulta.SQL.Add('CAST(OPE.PREVISAOTERMINO AS DATE) AS DATAF,');
       Consulta.SQL.Add('OPEL.NUMEROLOTE,');
@@ -89,7 +89,7 @@ begin
       Consulta.SQL.Add('INNER JOIN ESTAGIO E ON OPE.ESTAGIO_ID = E.ID');
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPEL ON OPEL.OPFINAL_ESTAGIO_ID = OPE.ID');
       Consulta.SQL.Add('WHERE OP.ID = :ID');
-      Consulta.SQL.Add('ORDER BY CAST(OPEL.DATAHORAINICIO AS DATE)');
+      Consulta.SQL.Add('ORDER BY CAST(OPEL.DATAHORAINICIO AS DATE), OPEL.NUMEROLOTE');
       Consulta.ParamByName('ID').AsInteger := StrToInt(edCodigoOPF.Text);
       Consulta.Open();
 

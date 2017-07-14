@@ -27,7 +27,7 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
     Height = 42
     Align = alTop
     BevelOuter = bvNone
-    Caption = 'Controle de Qualidade Positivo de Potes'
+    Caption = 'Controle de Qualidade de Potes'
     Color = clSkyBlue
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

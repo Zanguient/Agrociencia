@@ -205,8 +205,8 @@
             <Form>frmImpressaoEtiquetas</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="uControleQualidade.pas">
-            <Form>frmControleQualidade</Form>
+        <DCCReference Include="uControleDescarte.pas">
+            <Form>frmControleDescarte</Form>
         </DCCReference>
         <DCCReference Include="Beans\uBeanMotivoDescarte.pas"/>
         <DCCReference Include="uCadastroMotivoDescarte.pas">
