@@ -164,7 +164,8 @@ begin
   if btFinalizar.Tag = 0 then begin
     btFinalizar.Tag := 1;
     try
-      if edDescOPMC.Text = EmptyStr then begin
+      //Kochen 17/07/2017 - Se for um estágio final não é preciso ter uma OP MC selecionada
+      if not (MULTIPLICACAO.FIM) and (edDescOPMC.Text = EmptyStr) then begin
         DisplayMsg(MSG_WAR, 'Selecione uma Ordem de Produção MC para continuar!');
         if edOrdemProducaoMC.CanFocus then begin
           edOrdemProducaoMC.SetFocus;
@@ -212,7 +213,7 @@ begin
 
               GravarLoteEntradas(FWC);
 
-              if NOT MULTIPLICACAO.FIM then
+              if not MULTIPLICACAO.FIM then
                 GravarLoteSaidas(FWC);
 
               GravarEstoque(FWC);
@@ -444,11 +445,26 @@ begin
         if edEstacaoTrabalho.Focused then begin
           if Length(Trim(edEstacaoTrabalho.Text)) > 0 then begin
             MULTIPLICACAO.ESTACAOTRABALHO := edEstacaoTrabalho.Text;
-            edOrdemProducaoMC.Enabled     := True;
-            lbOPMC.Enabled                := True;
-            if edOrdemProducaoMC.CanFocus then begin
-              edOrdemProducaoMC.SetFocus;
-              edOrdemProducaoMC.SelectAll;
+            // 17/07/2017 - Kochen - Não obrigar OPMC na produção
+            if not MULTIPLICACAO.FIM then
+            begin
+              edOrdemProducaoMC.Enabled     := True;
+              lbOPMC.Enabled                := True;
+              if edOrdemProducaoMC.CanFocus then begin
+                edOrdemProducaoMC.SetFocus;
+                edOrdemProducaoMC.SelectAll;
+              end;
+            end 
+            else
+            begin
+              edCodigoEntrada.Enabled       := True;
+              edCodigoSaida.Enabled         := False;
+              rgSaida.Enabled               := False;
+              edOrdemProducaoMC.Enabled     := False;
+              if edCodigoEntrada.CanFocus then begin
+                edCodigoEntrada.SetFocus;
+                edCodigoEntrada.SelectAll;
+              end;
             end;
             edEstacaoTrabalho.Enabled     := False;
           end;

@@ -75,8 +75,11 @@ uses
   uBeanOPFinal_Estagio,
   uBeanOPFinal_Estagio_Lote,
   uBeanOPFinal_Estagio_Lote_S,
+  uBeanOPFinal_Estagio_Lote_S_Qualidade,
   uConstantes,
-  uDMUtil, uBeanUsuario;
+  uDMUtil, 
+  uBeanUsuario,
+  uBeanMotivoDescarte;
 {$R *.dfm}
 
 function TfrmImpressaoEtiquetas.AtualizaLocalizacao : Boolean;
@@ -207,6 +210,8 @@ var
   FWC : TFWConnection;
   LS  : TOPFINAL_ESTAGIO_LOTE_S;
   USU : TUSUARIO;
+  CQ : TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE;
+  M : TMOTIVODESCARTE;
 begin
   if not (USUARIO.PERMITEINCLUIRETIQUETAS) then begin
     DisplayMsg(MSG_PASSWORD, 'Digite o usuário e senha de alguem que tenha permissão por favor!');
@@ -234,13 +239,35 @@ begin
 
   FWC := TFWConnection.Create;
   LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
+  CQ  := TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE.Create(FWC);
+  M   := TMOTIVODESCARTE.Create(FWC);
   try
-    LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.IDLOTE));
+    LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.IDLOTE) + ' AND (NOT BAIXADO)');
     if LS.Count > 0 then begin
       FWC.StartTransaction;
       try
         LS.ID.Value := TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[0]).ID.Value;
-        LS.Delete;
+        LS.BAIXADO.Value := True;
+        LS.Update;
+
+        CQ.ID.isNull := True;
+        CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value := LS.ID.Value;
+
+        M.SelectList('DESCRICAO = ' + QuotedStr('Baixa pela tela de etiquetas'));
+        if M.Count = 0 then begin
+          M.ID.isNull := True;
+          M.DESCRICAO.Value := 'Baixa pela tela de etiquetas';
+          M.Insert;
+
+          CQ.ID_MOTIVODESCARTE.Value := M.ID.Value;
+        end
+        else
+        begin
+          CQ.ID_MOTIVODESCARTE.Value := TMOTIVODESCARTE(M.Itens[0]).ID.Value;
+        end;
+
+        CQ.Insert;
+
         FWC.Commit;
       except
         on E : Exception do begin
@@ -253,6 +280,8 @@ begin
     CarregaEtiquetas;
   finally
     FreeAndNil(LS);
+    FreeAndNil(CQ);
+    FreeAndNil(M);
     FreeAndNil(FWC);
   end;
 end;
@@ -270,7 +299,7 @@ begin
   try
     L.SelectList('ID = ' + IntToStr(LOTE.IDLOTE));
     if L.Count > 0 then begin
-      LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.IDLOTE));
+      LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.IDLOTE) + 'AND (NOT BAIXADO)');
       if LS.Count > 0 then begin
         cds_Itens.EmptyDataSet;
         for I := 0 to Pred(LS.Count) do begin
@@ -333,7 +362,7 @@ begin
             Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC,');
             Consulta.SQL.Add('  (COALESCE((SELECT SUM(COALESCE(CEP.QUANTIDADE, 0.00))');
             Consulta.SQL.Add('	FROM CONTROLEESTOQUE CE INNER JOIN CONTROLEESTOQUEPRODUTO CEP ON (CEP.CONTROLEESTOQUE_ID = CE.ID)');
-            Consulta.SQL.Add('	WHERE CE.CANCELADO = FALSE AND CEP.PRODUTO_ID = P.ID),0.00)) AS SALDO');
+            Consulta.SQL.Add('	WHERE (NOT CE.CANCELADO) AND CEP.PRODUTO_ID = P.ID),0.00)) AS SALDO');
             Consulta.SQL.Add('FROM OPFINAL OPF');
             Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
             Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
@@ -402,7 +431,7 @@ begin
 
             edLocalizacao.Enabled := USUARIO.PERMITEINCLUIRETIQUETAS;
 
-            LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.IDLOTE));
+            LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.IDLOTE) + ' AND (NOT BAIXADO)');
             if LS.Count > 0 then begin
               cds_Itens.EmptyDataSet;
               for I := 0 to Pred(LS.Count) do begin
