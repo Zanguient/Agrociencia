@@ -102,6 +102,11 @@ type
     procedure gdOPESolEstoqueDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure gdOPESolEstoqueCellClick(Column: TColumn);
+    procedure gdRecebimentoPlantasTitleClick(Column: TColumn);
+    procedure gdMeioCulturaTitleClick(Column: TColumn);
+    procedure gdGerarOPTitleClick(Column: TColumn);
+    procedure gdOPGeradaTitleClick(Column: TColumn);
+    procedure gdOPESolEstoqueTitleClick(Column: TColumn);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -689,6 +694,11 @@ begin
   end;
 end;
 
+procedure TfrmPlanejamentoProducao.gdGerarOPTitleClick(Column: TColumn);
+begin
+  OrdenarGrid(Column);
+end;
+
 procedure TfrmPlanejamentoProducao.gdMeioCulturaCellClick(Column: TColumn);
 begin
   if gdMeioCultura.SelectedField.FieldName = 'IMPRIMIROP' then begin
@@ -731,6 +741,11 @@ begin
       TextRect(Rect, (Rect.Left + Rect.Right - TextWidth(SCapt)) div 2, (Rect.Top + Rect.Bottom - TextHeight(SCapt)) div 2, SCapt);
     end;
   end;
+end;
+
+procedure TfrmPlanejamentoProducao.gdMeioCulturaTitleClick(Column: TColumn);
+begin
+  OrdenarGrid(Column);
 end;
 
 procedure TfrmPlanejamentoProducao.gdOPESolEstoqueCellClick(Column: TColumn);
@@ -779,6 +794,11 @@ begin
 
 end;
 
+procedure TfrmPlanejamentoProducao.gdOPESolEstoqueTitleClick(Column: TColumn);
+begin
+  OrdenarGrid(Column);
+end;
+
 procedure TfrmPlanejamentoProducao.gdOPGeradaCellClick(Column: TColumn);
 begin
 
@@ -823,6 +843,11 @@ begin
   end;
 end;
 
+procedure TfrmPlanejamentoProducao.gdOPGeradaTitleClick(Column: TColumn);
+begin
+  OrdenarGrid(Column);
+end;
+
 procedure TfrmPlanejamentoProducao.gdRecebimentoPlantasCellClick(
   Column: TColumn);
 begin
@@ -862,6 +887,12 @@ begin
       TextRect(Rect, (Rect.Left + Rect.Right - TextWidth(SCapt)) div 2, (Rect.Top + Rect.Bottom - TextHeight(SCapt)) div 2, SCapt);
     end;
   end;
+end;
+
+procedure TfrmPlanejamentoProducao.gdRecebimentoPlantasTitleClick(
+  Column: TColumn);
+begin
+  OrdenarGrid(Column);
 end;
 
 procedure TfrmPlanejamentoProducao.PageControl1Change(Sender: TObject);

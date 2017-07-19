@@ -306,6 +306,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           TitleFont.Style = []
           OnCellClick = gdRecebimentoPlantasCellClick
           OnDrawColumnCell = gdRecebimentoPlantasDrawColumnCell
+          OnTitleClick = gdRecebimentoPlantasTitleClick
           Columns = <
             item
               Alignment = taCenter
@@ -407,6 +408,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           TitleFont.Style = []
           OnCellClick = gdMeioCulturaCellClick
           OnDrawColumnCell = gdMeioCulturaDrawColumnCell
+          OnTitleClick = gdMeioCulturaTitleClick
           Columns = <
             item
               Alignment = taCenter
@@ -504,6 +506,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           TitleFont.Style = []
           OnCellClick = gdGerarOPCellClick
           OnDrawColumnCell = gdGerarOPDrawColumnCell
+          OnTitleClick = gdGerarOPTitleClick
           Columns = <
             item
               Alignment = taCenter
@@ -616,6 +619,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           TitleFont.Style = []
           OnCellClick = gdOPGeradaCellClick
           OnDrawColumnCell = gdOPGeradaDrawColumnCell
+          OnTitleClick = gdOPGeradaTitleClick
           Columns = <
             item
               Alignment = taCenter
@@ -703,6 +707,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           TitleFont.Style = []
           OnCellClick = gdOPESolEstoqueCellClick
           OnDrawColumnCell = gdOPESolEstoqueDrawColumnCell
+          OnTitleClick = gdOPESolEstoqueTitleClick
           Columns = <
             item
               Alignment = taCenter
