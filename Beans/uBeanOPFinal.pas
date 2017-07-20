@@ -31,7 +31,7 @@ type
     FQUANTIDADEPRODUZIDA: TFieldInteger;
     FCANCELADO: TFieldBoolean;
     FLIMITEMULTIPLICACOES: TFieldInteger;
-    FCULTIVAR: TFieldString;
+    FID_VARIEDADE: TFieldInteger;
     procedure SetCLIENTE_ID(const Value: TFieldInteger);
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetID(const Value: TFieldInteger);
@@ -54,7 +54,7 @@ type
     procedure SetQUANTIDADEPRODUZIDA(const Value: TFieldInteger);
     procedure SetCANCELADO(const Value: TFieldBoolean);
     procedure SetLIMITEMULTIPLICACOES(const Value: TFieldInteger);
-    procedure SetCULTIVAR(const Value: TFieldString);
+    procedure SetID_VARIEDADE(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
@@ -80,7 +80,7 @@ type
     property DATADERECEBIMENTO          : TFieldDateTime read FDATADERECEBIMENTO write SetDATADERECEBIMENTO;
     property DATAESTIMADAPROCESSAMENTO  : TFieldDateTime read FDATAESTIMADAPROCESSAMENTO write SetDATAESTIMADAPROCESSAMENTO;
     property OBSERVACAO                 : TFieldString read FOBSERVACAO write SetOBSERVACAO;
-    property CULTIVAR                   : TFieldString read FCULTIVAR write SetCULTIVAR;
+    property ID_VARIEDADE               : TFieldInteger read FID_VARIEDADE write SetID_VARIEDADE;
   end;
 
 implementation
@@ -100,7 +100,6 @@ begin
   FQUANTIDADEPRODUZIDA.isNotNull    := True;
   FCANCELADO.isNotNull              := True;
   FLIMITEMULTIPLICACOES.isNotNull   := True;
-  FCULTIVAR.isNotNull               := True;
 
   SELECAOPOSITIVA.Size              := 3;
   ORIGEMMATERIAL.Size               := 100;
@@ -110,8 +109,6 @@ begin
   LOCALIZADOR.Size                  := 512;
   TRANSPORTADORA.Size               := 100;
   OBSERVACAO.Size                   := 512;
-  CULTIVAR.Size                     := 100;
-
 end;
 
 procedure TOPFINAL.SetCANCELADO(const Value: TFieldBoolean);
@@ -132,11 +129,6 @@ end;
 procedure TOPFINAL.SetCOLETADOPOR(const Value: TFieldString);
 begin
   FCOLETADOPOR := Value;
-end;
-
-procedure TOPFINAL.SetCULTIVAR(const Value: TFieldString);
-begin
-  FCULTIVAR := Value;
 end;
 
 procedure TOPFINAL.SetDATADECOLETA(const Value: TFieldDateTime);
@@ -172,6 +164,11 @@ end;
 procedure TOPFINAL.SetID(const Value: TFieldInteger);
 begin
   FID := Value;
+end;
+
+procedure TOPFINAL.SetID_VARIEDADE(const Value: TFieldInteger);
+begin
+  FID_VARIEDADE := Value;
 end;
 
 procedure TOPFINAL.SetLIMITEMULTIPLICACOES(const Value: TFieldInteger);

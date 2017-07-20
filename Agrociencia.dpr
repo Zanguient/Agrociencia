@@ -90,7 +90,9 @@ uses
   uConfiguracoesSistema in 'uConfiguracoesSistema.pas' {frmConfiguracoesSistema},
   uWebCam in 'uWebCam.pas' {frmWebCam},
   VFrames in 'WebCam\VFrames.pas',
-  VSample in 'WebCam\VSample.pas';
+  VSample in 'WebCam\VSample.pas',
+  uBeanVariedade in 'Beans\uBeanVariedade.pas',
+  uCadastroVariedade in 'uCadastroVariedade.pas' {frmCadastroVariedade};
 
 {$R *.res}
 

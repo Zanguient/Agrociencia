@@ -566,3 +566,30 @@ UPDATE opfinal_estagio SET localizacao = '';
 ALTER TABLE opfinal_estagio_lote
    ADD COLUMN localizacao character varying(100);
 UPDATE opfinal_estagio_lote SET localizacao = '';
+
+//////////////////////////////////////////////////
+///// ALTERAÇÕES 1.7
+//////////////////////////////////////////////////
+
+CREATE TABLE if not exists variedade (
+id serial NOT NULL,
+id_produto bigint,
+nome character varying(100),
+CONSTRAINT pk_variedade PRIMARY KEY (id),
+CONSTRAINT fk_variedade_produto FOREIGN KEY (id_produto)
+    REFERENCES produto (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+insert into variedade (id_produto, nome) select distinct opfinal.produto_id as id_produto, opfinal.cultivar as nome from opfinal;
+
+ALTER TABLE opfinal
+  ADD COLUMN id_variedade bigint;
+
+UPDATE opfinal set id_variedade = (select variedade.id from variedade where variedade.id_produto = opfinal.produto_id and variedade.nome = opfinal.cultivar);
+
+ALTER TABLE opfinal
+  ADD CONSTRAINT fk_opf_variedade FOREIGN KEY (id_variedade) REFERENCES variedade (id)
+   ON UPDATE CASCADE ON DELETE RESTRICT;
+
+ALTER TABLE opfinal DROP COLUMN cultivar;

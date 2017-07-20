@@ -1,9 +1,9 @@
-object frmCadastroProdutos: TfrmCadastroProdutos
+object frmCadastroVariedade: TfrmCadastroVariedade
   Left = 0
   Top = 0
   ActiveControl = edPesquisa
   BorderStyle = bsNone
-  Caption = 'Cadastro de Produtos'
+  Caption = 'Cadastro de Variedades'
   ClientHeight = 504
   ClientWidth = 861
   Color = clBtnFace
@@ -33,7 +33,7 @@ object frmCadastroProdutos: TfrmCadastroProdutos
       Width = 853
       Height = 342
       Align = alClient
-      DataSource = ds_Pesquisa
+      DataSource = ds_Variedade
       DrawingStyle = gdsGradient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -57,13 +57,8 @@ object frmCadastroProdutos: TfrmCadastroProdutos
         end
         item
           Expanded = False
-          FieldName = 'DESCRICAO'
-          Visible = True
-        end
-        item
-          Expanded = False
-          FieldName = 'ESTOQUE'
-          Title.Alignment = taCenter
+          FieldName = 'NOME'
+          Width = 600
           Visible = True
         end>
     end
@@ -536,9 +531,6 @@ object frmCadastroProdutos: TfrmCadastroProdutos
       ParentBackground = False
       ParentFont = False
       TabOrder = 2
-      DesignSize = (
-        859
-        40)
       object btPesquisar: TSpeedButton
         AlignWithMargins = True
         Left = 756
@@ -610,10 +602,9 @@ object frmCadastroProdutos: TfrmCadastroProdutos
         AlignWithMargins = True
         Left = 3
         Top = 3
-        Width = 596
+        Width = 747
         Height = 34
-        Align = alLeft
-        Anchors = [akLeft, akTop, akRight, akBottom]
+        Align = alClient
         AutoSize = False
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -625,16 +616,6 @@ object frmCadastroProdutos: TfrmCadastroProdutos
         ShowHint = True
         TabOrder = 0
       end
-      object cbTipoProduto: TComboBox
-        Left = 605
-        Top = 7
-        Width = 145
-        Height = 27
-        Style = csDropDownList
-        Anchors = [akTop, akRight]
-        TabOrder = 1
-        OnChange = cbTipoProdutoChange
-      end
     end
     object Panel2: TPanel
       AlignWithMargins = True
@@ -644,7 +625,7 @@ object frmCadastroProdutos: TfrmCadastroProdutos
       Height = 42
       Align = alTop
       BevelOuter = bvNone
-      Caption = 'Lista de Produtos'
+      Caption = 'Lista das Variedades'
       Color = clSkyBlue
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -664,229 +645,6 @@ object frmCadastroProdutos: TfrmCadastroProdutos
     Align = alClient
     TabOrder = 1
     Visible = False
-    object Panel1: TPanel
-      Left = 1
-      Top = 1
-      Width = 859
-      Height = 436
-      Align = alClient
-      BorderStyle = bsSingle
-      Color = clWhite
-      ParentBackground = False
-      TabOrder = 1
-      object Panel3: TPanel
-        Left = 1
-        Top = 1
-        Width = 853
-        Height = 42
-        Align = alTop
-        Caption = 'Cadastro de Produtos'
-        Color = clSkyBlue
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -21
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentBackground = False
-        ParentFont = False
-        TabOrder = 0
-      end
-      object GridPanel1: TGridPanel
-        Left = 1
-        Top = 43
-        Width = 853
-        Height = 388
-        Align = alClient
-        ColumnCollection = <
-          item
-            Value = 50.000000000000000000
-          end
-          item
-            Value = 50.000000000000000000
-          end>
-        ControlCollection = <
-          item
-            Column = 0
-            Control = pnUsuarioEsquerda
-            Row = 0
-          end
-          item
-            Column = 1
-            Control = pnUsuarioDireita
-            Row = 0
-          end>
-        RowCollection = <
-          item
-            Value = 100.000000000000000000
-          end>
-        TabOrder = 1
-        object pnUsuarioEsquerda: TPanel
-          Left = 1
-          Top = 1
-          Width = 425
-          Height = 386
-          Align = alClient
-          TabOrder = 0
-          DesignSize = (
-            425
-            386)
-          object Label2: TLabel
-            Left = 4
-            Top = 3
-            Width = 73
-            Height = 19
-            Caption = 'Descri'#231#227'o:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label1: TLabel
-            Left = 4
-            Top = 61
-            Width = 161
-            Height = 19
-            Caption = 'Finalidade do Produto:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object lbUnidadeMedida: TLabel
-            Left = 145
-            Top = 147
-            Width = 274
-            Height = 19
-            AutoSize = False
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object Label5: TLabel
-            Left = 4
-            Top = 119
-            Width = 135
-            Height = 19
-            Caption = 'Unidade de Medida'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object edDescricao: TEdit
-            Left = 4
-            Top = 28
-            Width = 415
-            Height = 27
-            Anchors = [akLeft, akTop, akRight]
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 0
-          end
-          object cbFinalidadeProduto: TComboBox
-            Left = 4
-            Top = 86
-            Width = 415
-            Height = 27
-            Style = csDropDownList
-            Anchors = [akLeft, akTop, akRight]
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 1
-            OnChange = cbFinalidadeProdutoChange
-          end
-          object edUnidadeMedida: TButtonedEdit
-            Left = 4
-            Top = 144
-            Width = 135
-            Height = 27
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            Images = ImageList
-            ParentFont = False
-            RightButton.ImageIndex = 2
-            RightButton.Visible = True
-            TabOrder = 2
-            TextHint = 'Unidade Medida'
-            OnChange = edUnidadeMedidaChange
-            OnKeyDown = edUnidadeMedidaKeyDown
-            OnRightButtonClick = edUnidadeMedidaRightButtonClick
-          end
-          object cbRecepienteReaproveitavel: TCheckBox
-            Left = 4
-            Top = 177
-            Width = 205
-            Height = 17
-            Caption = 'Recepiente Reaproveit'#225'vel'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 3
-          end
-        end
-        object pnUsuarioDireita: TPanel
-          Left = 426
-          Top = 1
-          Width = 426
-          Height = 386
-          Align = alClient
-          TabOrder = 1
-          DesignSize = (
-            426
-            386)
-          object Label3: TLabel
-            Left = 6
-            Top = 3
-            Width = 109
-            Height = 19
-            Caption = 'C'#243'digo Externo'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-          end
-          object edCodigoExterno: TEdit
-            Left = 6
-            Top = 28
-            Width = 414
-            Height = 27
-            Anchors = [akLeft, akTop, akRight]
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            TabOrder = 0
-          end
-        end
-      end
-    end
     object pnBotoesEdicao: TPanel
       AlignWithMargins = True
       Left = 4
@@ -1514,188 +1272,185 @@ object frmCadastroProdutos: TfrmCadastroProdutos
         end
       end
     end
+    object Panel1: TPanel
+      Left = 1
+      Top = 1
+      Width = 859
+      Height = 436
+      Align = alClient
+      BorderStyle = bsSingle
+      Color = clWhite
+      ParentBackground = False
+      TabOrder = 1
+      object Panel3: TPanel
+        Left = 1
+        Top = 1
+        Width = 853
+        Height = 42
+        Align = alTop
+        Caption = 'Cadastro da Unidade de Medida'
+        Color = clSkyBlue
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -21
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+      end
+      object GridPanel1: TGridPanel
+        Left = 1
+        Top = 43
+        Width = 853
+        Height = 388
+        Align = alClient
+        ColumnCollection = <
+          item
+            Value = 50.000000000000000000
+          end
+          item
+            Value = 50.000000000000000000
+          end>
+        ControlCollection = <
+          item
+            Column = 0
+            Control = pnUsuarioEsquerda
+            Row = 0
+          end
+          item
+            Column = 1
+            Control = pnUsuarioDireita
+            Row = 0
+          end>
+        RowCollection = <
+          item
+            Value = 100.000000000000000000
+          end>
+        TabOrder = 1
+        object pnUsuarioEsquerda: TPanel
+          Left = 1
+          Top = 1
+          Width = 425
+          Height = 386
+          Align = alClient
+          TabOrder = 0
+          DesignSize = (
+            425
+            386)
+          object Label2: TLabel
+            Left = 4
+            Top = 78
+            Width = 73
+            Height = 19
+            Caption = 'Descri'#231#227'o:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object edDescricao: TEdit
+            Left = 4
+            Top = 103
+            Width = 415
+            Height = 27
+            Anchors = [akLeft, akTop, akRight]
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 0
+          end
+          object gbProduto: TGroupBox
+            AlignWithMargins = True
+            Left = 4
+            Top = 4
+            Width = 417
+            Height = 63
+            Align = alTop
+            Caption = ' Esp'#233'cie '
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 1
+            ExplicitLeft = 8
+            ExplicitTop = 12
+            object edCodigoProduto: TButtonedEdit
+              AlignWithMargins = True
+              Left = 4
+              Top = 31
+              Width = 56
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              Images = DMUtil.ImageList1
+              ParentFont = False
+              RightButton.ImageIndex = 0
+              RightButton.Visible = True
+              TabOrder = 0
+              OnChange = edCodigoProdutoChange
+              OnKeyDown = edCodigoProdutoKeyDown
+              OnRightButtonClick = edCodigoProdutoRightButtonClick
+            end
+            object edNomeProduto: TEdit
+              Left = 66
+              Top = 31
+              Width = 348
+              Height = 27
+              Enabled = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 1
+            end
+          end
+        end
+        object pnUsuarioDireita: TPanel
+          Left = 426
+          Top = 1
+          Width = 426
+          Height = 386
+          Align = alClient
+          TabOrder = 1
+        end
+      end
+    end
   end
-  object ds_Pesquisa: TDataSource
-    DataSet = cds_Pesquisa
+  object ds_Variedade: TDataSource
+    DataSet = cds_Variedade
     Left = 296
     Top = 192
   end
-  object cds_Pesquisa: TClientDataSet
+  object cds_Variedade: TClientDataSet
     Aggregates = <>
     Params = <>
     OnFilterRecord = csPesquisaFilterRecord
     Left = 400
     Top = 192
-    object cds_PesquisaID: TIntegerField
+    object cds_VariedadeID: TIntegerField
       DisplayLabel = 'C'#243'digo'
       FieldName = 'ID'
     end
-    object cds_PesquisaDESCRICAO: TStringField
-      DisplayLabel = 'Descri'#231#227'o'
-      DisplayWidth = 50
-      FieldName = 'DESCRICAO'
+    object cds_VariedadeNOME: TStringField
+      DisplayLabel = 'Nome'
+      FieldName = 'NOME'
       Size = 100
     end
-    object cds_PesquisaFINALIDADE: TIntegerField
-      FieldName = 'FINALIDADE'
+    object cds_VariedadeID_PRODUTO: TIntegerField
+      FieldName = 'ID_PRODUTO'
     end
-    object cds_PesquisaUNIDADEMEDIDA: TIntegerField
-      FieldName = 'UNIDADEMEDIDA'
-    end
-    object cds_PesquisaCODIGOEXTERNO: TStringField
-      FieldName = 'CODIGOEXTERNO'
-      Size = 100
-    end
-    object cds_PesquisaESTOQUE: TCurrencyField
-      DisplayLabel = 'Estoque'
-      FieldName = 'ESTOQUE'
-      DisplayFormat = '#,##0.00'
-    end
-    object cds_PesquisaRECIPIENTEREAPROVEITAVEL: TBooleanField
-      FieldName = 'RECIPIENTEREAPROVEITAVEL'
-    end
-  end
-  object ImageList: TImageList
-    Left = 440
-    Top = 328
-    Bitmap = {
-      494C010103000C00980010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
-      0000000000003600000028000000400000001000000001002000000000000010
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC9C9
-      C900A3A3A3005D5D5D0024242400FFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDEDEDE00CCCCCC00C9C9C900DDDD
-      DD00FFFFFFFF2B292900000000007B7B7B000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000DBCDB900D0B69000E5CDAA00C8AE8A00D8CBB800000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000DBCDB900D0B69000E5CDAA00C8AE8A00D8CBB800000000000000
-      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFF8C8C8C00000000008F8F9000FFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000B89C7300D0B69000E5CDAA00C8AE8A00B1977100000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000B89C7300D0B69000E5CDAA00C8AE8A00B1977100000000000000
-      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2B29
-      2900000000006B6B6B00FFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000B89C7300D0B69000E5CDAA00C8AE8A00B1977100000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000B89C7300D0B69000E5CDAA00C8AE8A00B1977100000000000000
-      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8D8D8D000000
-      00008F8F9000FFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000B89C7300D0B69000E5CDAA00C8AE8A00B1977100000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000B89C7300D0B69000E5CDAA00C8AE8A00B1977100000000000000
-      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFB7B1AF00484241007676
-      7600FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000CCC3B600D6CEC400EFECE800FAF9F700EFECE800D6CEC400CEC5B9000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      00003C93FF005AA9FF00BFE2FF00EAF6FF00C0E2FF0057A8FF004598FF000000
-      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF9898
-      9700979797009797960099999900FFFFFFFFFFFFFFFF322B2A00DDD9D900FFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000D6CE
-      C400CCC2B500E1DBD400F4F2EF00FBFBFA00F4F2EF00E1DBD400CCC2B500D2C9
-      BE00000000000000000000000000000000000000000000000000000000005AA7
-      FF001989FF0051B1FF00A2DBFF00B9E6FF00A0DBFF005CB6FF001989FF00489D
-      FF0000000000000000000000000000000000FFFFFFFF89898700BFBEBB00C2C2
-      C000C2C2C100C1C1C000C3C2C000C0C0BF008B8A8A00DFDFDE00FFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000F9F7F600C9BF
-      B100D6CFC400E1DCD400F0EDE900F4F2EF00F0EDE900E3DED600D6CFC400C9BF
-      B000F0EEED000000000000000000000000000000000000000000E4F1FF00007D
-      FF003FA8FF006BC6FF0082D6FF008DDCFF0085D7FF006BC6FF003EA7FF00007D
-      FF00E4F1FF00000000000000000000000000FFFFFFFFB6B6B400BDBDBA00BABA
-      B700B8B7B500B7B7B400B9B9B600BCBCB900B8B8B500FFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000D1C8BC00D1C8
-      BC00DDD6CE00E7E2DC00ECE9E400EFECE800EDEAE500E7E2DC00DDD6CE00D1C8
-      BC00CFC7BB000000000000000000000000000000000000000000309AFF001E96
-      FF0057BBFF007CD3FF008BDDFF008EDFFF008BDDFF007CD3FF0058BCFF001E96
-      FF00339BFF0000000000000000000000000098989800A8A8A500A7A7A400A7A7
-      A400A7A7A400A8A8A400A8A8A500A8A8A500A8A8A50090908F00FFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000C9BEAF00D6CE
-      C200E2DCD400ECE7E200EFEDE800F1EEEA00EFECE700EAE5DF00E1DBD300D6CE
-      C200C9BEAF0000000000000000000000000000000000000000000088FF002DA4
-      FF0067C8FF008DDDFF0091E2FF008EE1FF008EE1FF0083DAFF0063C6FF002DA4
-      FF000088FF000000000000000000000000008D8D8C00A2A29F00A2A39F00A3A3
-      A000A3A3A000A3A3A000A3A4A000A4A4A100A4A4A10089898800FFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000CBC1B300DAD3
-      C900ECE8E200F4F2EE00F4F2F000F2EFEC00EFECE800EAE6E000E2DCD400D7CF
-      C400CBC1B3000000000000000000000000000000000000000000008EFF003BAE
-      FF0096DAFF00BCECFF00B3ECFF0097E5FF008EE2FF0082DCFF0062C8FF002AA7
-      FF00008EFF000000000000000000000000008D8D8C009D9E9C009E9F9D00A1A1
-      9E00A2A29F00A2A3A000A2A3A000A1A29F00A1A19F0085858400FFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000E0DAD100DFD8
-      CF00F4F1EE00FCFBFA00F8F7F500F2F0EC00ECE9E300E8E3DC00E0DAD100D5CD
-      C100DCD5CC0000000000000000000000000000000000000000005DBBFF004BB6
-      FF00BFE9FF00EDFAFF00D3F4FF00A5E9FF0087E0FF0077D7FF0051C2FF0017A1
-      FF0057B9FF0000000000000000000000000097989700ABACAB00ABACAB00ACAD
-      AB00ACADAB00ACADAB00ADADAB00ADADAB00ADADAB0089898900FFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000DBD5
-      CA00F2EFEB00FBFAF900F6F4F200EEEAE500E7E2DB00E2DCD400DBD3C900D1C8
-      BB00FDFDFD000000000000000000000000000000000000000000000000003AB0
-      FF00B1E2FF00E9F8FF00CAEFFF0092E0FF006ED4FF0057C8FF002DB1FF000099
-      FF0000000000000000000000000000000000FFFFFFFFA4A5A300CBCBCA00CBCB
-      CB00CBCBCB00CBCBCB00CBCBCB00CBCCCB00B2B2B000FFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000F0ED
-      E800E2DDD400ECE8E100EAE6DF00E3DED500DFD9CF00DBD4C800D4CCBE00EFEC
-      E70000000000000000000000000000000000000000000000000000000000A8DE
-      FF0055BEFF0089D4FF007ED3FF0054C6FF003EBDFF0024AFFF00009DFF00A8DE
-      FF0000000000000000000000000000000000FFFFFFFF83838200A9AAA800E1E1
-      E100E1E1E100E1E1E100E1E1E100B9B9B80083848300FFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000F8F7F500D5CCC100D6CEC400D7CFC400D5CDC200D3CABE00F8F7F5000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000D8F1FF000BA5FF0007A4FF0003A2FF0000A1FF0000A1FF00D8F1FF000000
-      000000000000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF9192
-      910083848300848484008E8E8D00FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000424D3E000000000000003E000000
-      2800000040000000100000000100010000000000800000000000000000000000
-      000000000000000000000000FFFFFF00FFFFFFFF00000000FFFFFFFF00000000
-      F83FF83F00000000F83FF83F00000000F83FF83F00000000F83FF83F00000000
-      F01FF01F00000000E00FE00F00000000C007C00700000000C007C00700000000
-      C007C00700000000C007C00700000000C007C00700000000E007E00F00000000
-      E00FE00F00000000F01FF01F0000000000000000000000000000000000000000
-      000000000000}
   end
 end

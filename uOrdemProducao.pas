@@ -102,11 +102,13 @@ type
     btnImagemArquivo: TBitBtn;
     cds_Etiqueta1PRODUTO: TStringField;
     cds_PesquisaIDESPECIE: TIntegerField;
-    edCultivar: TEdit;
-    Label15: TLabel;
     cds_PesquisaDATA: TDateField;
-    cds_PesquisaCULTIVAR: TStringField;
     ScrollBox2: TScrollBox;
+    gbVariedade: TGroupBox;
+    edCodigoVariedade: TButtonedEdit;
+    edDescricaoVariedade: TEdit;
+    cds_PesquisaID_VARIEDADE: TIntegerField;
+    cds_PesquisaVARIEDADE: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -136,6 +138,10 @@ type
     procedure btnImagemArquivoClick(Sender: TObject);
     procedure btnSalvarImagemClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure edCodigoVariedadeRightButtonClick(Sender: TObject);
+    procedure edCodigoVariedadeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoVariedadeChange(Sender: TObject);
   private
     procedure SelecionarObservacao;
     procedure EncerrarOPF;
@@ -172,7 +178,8 @@ uses
   uBeanOPFinal_Estagio,
   uBeanImagem,
   uBeanOPFinal_Imagem,
-  uWebCam;
+  uWebCam,
+  uBeanVariedade;
 
 {$R *.dfm}
 
@@ -230,7 +237,7 @@ begin
     edNomeCliente.Clear;
     edCodigoProduto.Clear;
     edNomeProduto.Clear;
-    edCultivar.Clear;
+    edCodigoVariedade.Clear;
     edObservacao.Clear;
     edLimiteMultiplicacao.Text := '0';
     cbSelecaoPositiva.ItemIndex := 0;
@@ -265,7 +272,6 @@ begin
         SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
         SQL.SQL.Add('	OPF.PRODUTO_ID,');
         SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOPRODUTO,');
-        SQL.SQL.Add('	OPF.CULTIVAR,');
         SQL.SQL.Add('	OPF.SELECAOPOSITIVA,');
         SQL.SQL.Add('	OPF.ORIGEMMATERIAL,');
         SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO,');
@@ -278,10 +284,13 @@ begin
         SQL.SQL.Add('	OPF.DATADERECEBIMENTO,');
         SQL.SQL.Add('	OPF.DATAESTIMADAPROCESSAMENTO,');
         SQL.SQL.Add('	OPF.OBSERVACAO,');
-        SQL.SQL.Add('	OPF.LIMITEMULTIPLICACOES');
+        SQL.SQL.Add('	OPF.LIMITEMULTIPLICACOES,');
+        SQL.SQL.Add('	OPF.ID_VARIEDADE,');
+        SQL.SQL.Add('	V.NOME AS VARIEDADE');
         SQL.SQL.Add('FROM OPFINAL OPF');
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
         SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+        SQL.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
         SQL.SQL.Add('WHERE 1 = 1');
         SQL.SQL.Add('AND OPF.ID = :OPID');
         SQL.Connection  := FWC.FDConnection;
@@ -297,7 +306,8 @@ begin
             edNomeCliente.Text          := SQL.FieldByName('NOMECLIENTE').AsString;
             edCodigoProduto.Text        := SQL.FieldByName('PRODUTO_ID').AsString;
             edNomeProduto.Text          := SQL.FieldByName('DESCRICAOPRODUTO').AsString;
-            edCultivar.Text             := SQL.FieldByName('CULTIVAR').AsString;
+            edCodigoVariedade.Text      := SQL.FieldByName('ID_VARIEDADE').AsString;
+            edDescricaoVariedade.Text   := SQL.FieldByName('VARIEDADE').AsString;
             edObservacao.Text           := SQL.FieldByName('OBSERVACAO').AsString;
             edLimiteMultiplicacao.Text  := SQL.FieldByName('LIMITEMULTIPLICACOES').AsString;
 
@@ -387,10 +397,10 @@ begin
     Exit;
   end;
 
-  if Length(Trim(edCultivar.Text)) = 0 then begin
+  if Length(Trim(edDescricaoVariedade.Text)) = 0  then begin
     DisplayMsg(MSG_WAR, 'Cultivar/Variedade não informado, Verifique!');
-    if edCultivar.CanFocus then
-      edCultivar.SetFocus;
+    if edCodigoVariedade.CanFocus then
+      edCodigoVariedade.SetFocus;
     Exit;
   end;
 
@@ -455,7 +465,7 @@ begin
       OPF.TRANSPORTADORA.Value            := edTransportadora.Text;
       OPF.DATADERECEBIMENTO.Value         := edDataRecebimento.Date;
       OPF.DATAESTIMADAPROCESSAMENTO.Value := edDataEstimada.Date;
-      OPF.CULTIVAR.Value                  := edCultivar.Text;
+      OPF.ID_VARIEDADE.Value              := StrToInt(edCodigoVariedade.Text);
 
       if (Sender as TSpeedButton).Tag > 0 then begin
         OPF.ID.Value          := (Sender as TSpeedButton).Tag;
@@ -802,14 +812,16 @@ begin
       SQL.SQL.Add('	CAST(OPF.DATAHORA AS DATE) AS DATA,');
       SQL.SQL.Add('	C.NOME AS NOMECLIENTE,');
       SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOESPECIE,');
-      SQL.SQL.Add('	OPF.CULTIVAR AS CULTIVAR,');
       SQL.SQL.Add('	P.ID AS CODIGOESPECIE,');
       SQL.SQL.Add('	OPF.QUANTIDADE,');
       SQL.SQL.Add('	OPF.SELECAOPOSITIVA,');
-      SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO');
+      SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO,');
+      SQL.SQL.Add('	OPF.ID_VARIEDADE,');
+      SQL.SQL.Add('	V.NOME AS VARIEDADE');
       SQL.SQL.Add('FROM OPFINAL OPF');
       SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
       SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      SQL.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       SQL.SQL.Add('WHERE 1 = 1');
 
       if CodigoOPF > 0 then //Parametro quando tela Chamada de outro Cadastro
@@ -836,7 +848,8 @@ begin
           cds_PesquisaDATA.Value                := SQL.FieldByName('DATA').AsDateTime;
           cds_PesquisaCLIENTE.Value             := SQL.FieldByName('NOMECLIENTE').AsString;
           cds_PesquisaESPECIE.Value             := SQL.FieldByName('DESCRICAOESPECIE').AsString;
-          cds_PesquisaCULTIVAR.Value            := SQL.FieldByName('CULTIVAR').AsString;
+          cds_PesquisaID_VARIEDADE.Value        := SQL.FieldByName('ID_VARIEDADE').AsInteger;
+          cds_PesquisaVARIEDADE.Value           := SQL.FieldByName('VARIEDADE').AsString;
           cds_PesquisaQUANTIDADE.Value          := SQL.FieldByName('QUANTIDADE').AsInteger;
           cds_PesquisaSELECAOPOSITIVA.Value     := SQL.FieldByName('SELECAOPOSITIVA').AsString;
           cds_PesquisaCODIGOSELECAOCAMPO.Value  := SQL.FieldByName('CODIGOSELECAOCAMPO').AsString;
@@ -996,6 +1009,37 @@ begin
       edNomeProduto.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
   finally
     FreeAndNil(P);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmOrdemProducao.edCodigoVariedadeChange(Sender: TObject);
+begin
+  edDescricaoVariedade.Clear;
+end;
+
+procedure TfrmOrdemProducao.edCodigoVariedadeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoVariedadeRightButtonClick(nil);
+end;
+
+procedure TfrmOrdemProducao.edCodigoVariedadeRightButtonClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  V   : TVARIEDADE;
+begin
+  FWC := TFWConnection.Create;
+  V   := TVARIEDADE.Create(FWC);
+
+  try
+    edCodigoVariedade.Text := IntToStr(DMUtil.Selecionar(V, edCodigoVariedade.Text, 'id_produto = ' + QuotedStr(edCodigoProduto.Text) ));
+    V.SelectList('id = ' + edCodigoVariedade.Text);
+    if V.Count = 1 then
+      edDescricaoVariedade.Text := TVARIEDADE(V.Itens[0]).NOME.asString;
+  finally
+    FreeAndNil(V);
     FreeAndNil(FWC);
   end;
 end;
