@@ -139,6 +139,7 @@ type
   private
     function AtualizarEdits(Limpar : Boolean) : Boolean;
     function Alterar : Boolean;
+    function Inserir : Boolean;
     procedure Cancelar;
     procedure SelecionarObservacao;
     { Private declarations }
@@ -635,7 +636,7 @@ begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
 
-  if Parametros.Codigo > 0 then //Se Foi Chamada de outra Tela Fecha.
+  if Parametros.Acao in [eNovo, eAlterar] then //Se Foi Chamada de outra Tela Fecha.
     Close;
 
   InvertePaineis;
@@ -869,6 +870,10 @@ begin
 
   case Parametros.Acao of
     eNada : AutoSizeDBGrid(gdPesquisa);
+    eNovo : begin
+      if not Inserir then
+        PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end;
     eAlterar : begin
       if Parametros.Codigo > 0 then begin
         if Parametros.Codigo = cds_PesquisaID.AsInteger then begin
@@ -932,6 +937,24 @@ begin
   finally
     FreeAndNil(SQL);
     FreeAndNil(FWC);
+  end;
+end;
+
+function TfrmOrdemProducaoMeioCultura.Inserir: Boolean;
+begin
+  Result := False;
+
+  try
+
+    if AtualizarEdits(True) then begin
+      InvertePaineis;
+      Result := True;
+    end;
+
+  except
+    on E : Exception do begin
+      DisplayMsg(MSG_ERR, 'Erro ao Iniciar Inserção', '', E.Message);
+    end;
   end;
 end;
 

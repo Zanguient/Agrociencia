@@ -1515,7 +1515,6 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         TabOrder = 1
         TabStop = False
         OnClick = btObservacaoClick
-        ExplicitLeft = 807
       end
       object mmObservacao: TMemo
         Left = 0
@@ -1524,9 +1523,6 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
         Height = 53
         Align = alClient
         TabOrder = 0
-        ExplicitLeft = -3
-        ExplicitWidth = 763
-        ExplicitHeight = 60
       end
     end
   end
@@ -2282,7 +2278,7 @@ object frmOrdemProducaoMeioCultura: TfrmOrdemProducaoMeioCultura
     Left = 360
     Top = 304
     Bitmap = {
-      494C010102001400B40020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010102001400B80020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

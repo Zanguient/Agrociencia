@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
   JvToolEdit, JvBaseEdits, FireDAC.Comp.Client, Vcl.ImgList, Vcl.Menus,
-  Vcl.Imaging.jpeg, CapturaCam;
+  Vcl.Imaging.jpeg, CapturaCam, uConstantes;
 
 type
   TfrmOrdemProducao = class(TForm)
@@ -148,9 +148,10 @@ type
     procedure Deletar(Sender: TObject);
     { Private declarations }
   public
-    CodigoOPF : Integer;
+    Parametros : TPARAMETROS;
     function AtualizarEdits(Limpar : Boolean) : Boolean;
     function Alterar : Boolean;
+    function Inserir : Boolean;
     procedure CarregaDados;
     procedure InvertePaineis;
     procedure Cancelar;
@@ -165,7 +166,6 @@ implementation
 
 uses
   uDomains,
-  uConstantes,
   uFWConnection,
   uBeanOPFinal,
   uMensagem,
@@ -479,7 +479,7 @@ begin
 
       FWC.Commit;
 
-      if CodigoOPF = 0 then begin
+      if Parametros.Codigo = 0 then begin
         InvertePaineis;
         CarregaDados;
       end else
@@ -701,7 +701,7 @@ begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
 
-  if CodigoOPF > 0 then //Se Foi Chamada de outra Tela Fecha.
+  if Parametros.Acao in [eNovo, eNada] then //Se Foi Chamada de outra Tela Fecha.
     Close;
 
   InvertePaineis;
@@ -824,8 +824,8 @@ begin
       SQL.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       SQL.SQL.Add('WHERE 1 = 1');
 
-      if CodigoOPF > 0 then //Parametro quando tela Chamada de outro Cadastro
-        SQL.SQL.Add('AND OPF.ID = ' + IntToStr(CodigoOPF))
+      if Parametros.Codigo > 0 then //Parametro quando tela Chamada de outro Cadastro
+        SQL.SQL.Add('AND OPF.ID = ' + IntToStr(Parametros.Codigo))
       else begin
         case cbStatus.ItemIndex of
           0 : SQL.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL AND OPF.CANCELADO = False');
@@ -1128,7 +1128,8 @@ begin
   AjustaForm(Self);
   cds_Pesquisa.CreateDataSet;
   cds_Etiqueta1.CreateDataSet;
-  CodigoOPF := 0;
+  Parametros.Codigo := 0;
+  Parametros.Acao   := eNada;
 end;
 
 procedure TfrmOrdemProducao.FormKeyDown(Sender: TObject; var Key: Word;
@@ -1172,12 +1173,22 @@ procedure TfrmOrdemProducao.FormShow(Sender: TObject);
 begin
   CarregaDados;
   AutoSizeDBGrid(gdPesquisa);
-  if CodigoOPF > 0 then begin
-    if CodigoOPF = cds_PesquisaID.AsInteger then begin
-      if not Alterar then
+
+  case Parametros.Acao of
+    eNovo   : begin
+      if not Inserir then
         PostMessage(Self.Handle, WM_CLOSE, 0, 0);
-    end else
-      PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end;
+    eAlterar: begin
+      if Parametros.Codigo > 0 then begin
+        if Parametros.Codigo = cds_PesquisaID.AsInteger then begin
+          if not Alterar then
+            PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+        end else
+          PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+      end else
+        PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end;
   end;
 end;
 
@@ -1220,6 +1231,24 @@ begin
     end;
   end;
 
+end;
+
+function TfrmOrdemProducao.Inserir: Boolean;
+begin
+  Result := False;
+
+  try
+
+    if AtualizarEdits(True) then begin
+      InvertePaineis;
+      Result := True;
+    end;
+
+  except
+    on E : Exception do begin
+      DisplayMsg(MSG_ERR, 'Erro ao Iniciar Inserção', '', E.Message);
+    end;
+  end;
 end;
 
 procedure TfrmOrdemProducao.InvertePaineis;
