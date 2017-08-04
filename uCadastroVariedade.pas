@@ -7,7 +7,10 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Datasnap.DBClient,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
-  JvToolEdit, JvBaseEdits;
+  JvToolEdit, JvBaseEdits, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client;
 
 type
   TfrmCadastroVariedade = class(TForm)
@@ -48,6 +51,7 @@ type
     edCodigoProduto: TButtonedEdit;
     edNomeProduto: TEdit;
     cds_VariedadeID_PRODUTO: TIntegerField;
+    cds_VariedadeESPECIE: TStringField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -96,10 +100,12 @@ begin
   if Limpar then begin
     edDescricao.Clear;
     edCodigoProduto.Clear;
+    edNomeProduto.Clear;
     btGravar.Tag  := 0;
   end else begin
     edDescricao.Text      := cds_VariedadeNOME.Value;
     edCodigoProduto.Text  := cds_VariedadeID_PRODUTO.AsString;
+    edNomeProduto.Text    := cds_VariedadeESPECIE.AsString;
     btGravar.Tag          := cds_VariedadeID.Value;
   end;
 end;
@@ -236,29 +242,44 @@ end;
 procedure TfrmCadastroVariedade.CarregaDados;
 Var
   FWC : TFWConnection;
-  VARIEDADE  : TVARIEDADE;
+  Query : TFDQuery;
   I,
   Codigo  : Integer;
 begin
 
   try
     FWC := TFWConnection.Create;
-    VARIEDADE  := TVARIEDADE.Create(FWC);
+    Query := TFDQuery.Create(nil);
     cds_Variedade.DisableControls;
     try
+      Query.Connection := FWC.FDConnection;
+
+      Query.Close;
+      Query.SQL.Clear;
+      Query.SQL.Add('SELECT');
+      Query.SQL.Add('V.ID,');
+      Query.SQL.Add('V.NOME,');
+      Query.SQL.Add('V.ID_PRODUTO,');
+      Query.SQL.Add('P.DESCRICAO AS ESPECIE');
+      Query.SQL.Add('FROM VARIEDADE V');
+      Query.SQL.Add('INNER JOIN PRODUTO P ON V.ID_PRODUTO = P.ID');
+      Query.Prepare;
+      Query.Open();
 
       Codigo := cds_VariedadeID.Value;
 
       cds_Variedade.EmptyDataSet;
 
-      VARIEDADE.SelectList('ID > 0', 'ID');
-      if VARIEDADE.Count > 0 then begin
-        for I := 0 to VARIEDADE.Count -1 do begin
-          cds_Variedade.Append;
-          cds_VariedadeID.Value             := TVARIEDADE(VARIEDADE.Itens[I]).ID.Value;
-          cds_VariedadeNOME.Value           := TVARIEDADE(VARIEDADE.Itens[I]).NOME.Value;
-          cds_Variedade.Post;
-        end;
+      Query.First;
+      while not Query.Eof do begin
+        cds_Variedade.Append;
+        cds_VariedadeID.Value := Query.Fields[0].Value;
+        cds_VariedadeNOME.Value := Query.Fields[1].Value;
+        cds_VariedadeID_PRODUTO.Value := Query.Fields[2].Value;
+        cds_VariedadeESPECIE.Value := Query.Fields[3].Value;
+        cds_Variedade.Post;
+
+        Query.Next;
       end;
 
       if Codigo > 0 then
@@ -272,7 +293,7 @@ begin
 
   finally
     cds_Variedade.EnableControls;
-    FreeAndNil(VARIEDADE);
+    FreeAndNil(Query);
     FreeAndNil(FWC);
   end;
 end;

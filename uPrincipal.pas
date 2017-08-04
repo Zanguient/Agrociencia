@@ -52,6 +52,7 @@ type
     ProduoporOperador1: TMenuItem;
     ProduoporOP1: TMenuItem;
     PerdaporOperador1: TMenuItem;
+    Variedade1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RedefinirSenhaClick(Sender: TObject);
@@ -88,6 +89,7 @@ type
     procedure ProduoporOperador1Click(Sender: TObject);
     procedure ProduoporOP1Click(Sender: TObject);
     procedure PerdaporOperador1Click(Sender: TObject);
+    procedure Variedade1Click(Sender: TObject);
   private
     procedure FecharSistema;
     { Private declarations }
@@ -141,7 +143,8 @@ uses
   uRelEstoquedeProducao,
   uRelProducaoOperador,
   uRelProducaoOP,
-  uRelPerdaOperador;
+  uRelPerdaOperador,
+  uCadastroVariedade;
 
 {$R *.dfm}
 
@@ -562,6 +565,17 @@ begin
     FrmCadastroUsuario.ShowModal;
   finally
     FreeAndNil(FrmCadastroUsuario);
+  end;
+end;
+
+procedure TfrmPrincipal.Variedade1Click(Sender: TObject);
+begin
+  if not Assigned(frmCadastroVariedade) then
+    frmCadastroVariedade := TfrmCadastroVariedade.Create(nil);
+  try
+    frmCadastroVariedade.ShowModal;
+  finally
+    FreeAndNil(frmCadastroVariedade);
   end;
 end;
 
