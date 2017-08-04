@@ -1033,11 +1033,6 @@ begin
   FWC := TFWConnection.Create;
   V   := TVARIEDADE.Create(FWC);
 
-  if edNomeProduto.Text = EmptyStr then begin
-    DisplayMsg(MSG_INF, 'Informe a espécie para selecionar a variedade!');
-    Exit;
-  end;
-
   try
     edCodigoVariedade.Text := IntToStr(DMUtil.Selecionar(V, edCodigoVariedade.Text, 'id_produto = ' + QuotedStr(edCodigoProduto.Text) ));
     V.SelectList('id = ' + edCodigoVariedade.Text);

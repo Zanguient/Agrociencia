@@ -1033,7 +1033,7 @@ begin
   FWC := TFWConnection.Create;
   V   := TVARIEDADE.Create(FWC);
 
-  if edNomeProduto.Text = EmptyStr then begin
+  if edNomeProduto.Text <> EmptyStr then begin
     DisplayMsg(MSG_INF, 'Informe a espécie para selecionar a variedade!');
     Exit;
   end;
