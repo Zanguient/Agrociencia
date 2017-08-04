@@ -32,6 +32,7 @@ begin
   inherited;
   ID.isPK := True;
 
+  NOME.isSearchField := True;
   NOME.Size := 100;
 end;
 
