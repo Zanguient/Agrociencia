@@ -51,6 +51,7 @@ uses
   function ValidaCPFCNPJ(Texto : String) : Boolean;
   function LimiteMultiplicacao(CodigoOPF : Integer) : Boolean;
   function SelecionarImagemBMP : String;
+  procedure ExpDbGridXLS(const DBGrid: TDBGrid; NomeArq: string);
 
 implementation
 
@@ -1073,6 +1074,68 @@ begin
     end;
   finally
     FreeAndNil(OpenDialog);
+  end;
+end;
+procedure ExpDbGridXLS(const DBGrid: TDBGrid; NomeArq: string);
+var
+  ExcApp: OleVariant;
+  I,
+  L : Integer;
+  VarNomeArq : String;
+  DataSet : TClientDataSet;
+  Bookmark : TBookmark;
+begin
+  if (not Assigned(DBGrid.DataSource)) or (not Assigned(DBGrid.DataSource.DataSet)) then begin
+    DisplayMsg(MSG_INF, 'Não foi possível exportar os dados do grid.');
+    Exit;
+  end;
+
+  DataSet := TClientDataSet(DBGrid.DataSource.DataSet);
+
+  Bookmark := DataSet.GetBookmark;
+  DataSet.DisableControls;
+  try
+
+    if DataSet.IsEmpty then
+      Exit;
+
+    VarNomeArq := DirArquivosExcel + FormatDateTime('yyyymmdd', Date) + '\' + NomeArq;
+
+    if not DirectoryExists(ExtractFilePath(VarNomeArq)) then
+      ForceDirectories(ExtractFilePath(VarNomeArq));
+
+    if FileExists(VarNomeArq) then
+      DeleteFile(PChar(VarNomeArq));
+
+    ExcApp := CreateOleObject('Excel.Application');
+    ExcApp.Visible := True;
+    ExcApp.WorkBooks.Add;
+    DataSet.First;
+    L := 1;
+    DataSet.First;
+    while not DataSet.Eof do begin
+      if L = 1 then begin
+        for I := 0 to DBGrid.Columns.Count - 1 do begin
+          if DBGrid.Columns[I].Field is TStringField then
+            ExcApp.WorkBooks[1].Sheets[1].Columns[I + 1].NumberFormat := '@';
+          ExcApp.WorkBooks[1].Sheets[1].Cells[L, I + 1].Font.Bold  := True;
+          ExcApp.WorkBooks[1].Sheets[1].Cells[L, I + 1].Font.Color := clBlue;
+          ExcApp.WorkBooks[1].Sheets[1].Cells[L, I + 1]            := DBGrid.Columns[I].Title.Caption;
+        end;
+        L := L + 1;
+      end;
+
+      for I := 0 to DBGrid.Columns.Count - 1 do
+        ExcApp.WorkBooks[1].Sheets[1].Cells[L, I + 1] := DBGrid.Columns[I].Field.DisplayText;
+
+      DataSet.Next;
+      L := L + 1;
+    end;
+    ExcApp.Columns.AutoFit;
+    ExcApp.WorkBooks[1].SaveAs(VarNomeArq);
+  finally
+    DataSet.GotoBookmark(Bookmark);
+    DataSet.EnableControls;
   end;
 end;
 
