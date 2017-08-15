@@ -40,7 +40,6 @@ type
     cds_ItensCODIGOBARRAS: TStringField;
     cds_ItensDATALOTE: TDateField;
     btnAdicionar: TBitBtn;
-    btnExcluir: TBitBtn;
     cds_ItensCODIGOMC: TStringField;
     edCodigoUsuario: TLabeledEdit;
     edNomeUsuario: TLabeledEdit;
@@ -52,7 +51,6 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure cds_ItensAfterPost(DataSet: TDataSet);
     procedure btnAdicionarClick(Sender: TObject);
-    procedure btnExcluirClick(Sender: TObject);
   private
     function AtualizaLocalizacao : Boolean;
     { Private declarations }
@@ -201,87 +199,6 @@ begin
     CarregaEtiquetas;
   finally
     FreeAndNil(LS);
-    FreeAndNil(FWC);
-  end;
-end;
-
-procedure TfrmImpressaoEtiquetas.btnExcluirClick(Sender: TObject);
-var
-  FWC : TFWConnection;
-  LS  : TOPFINAL_ESTAGIO_LOTE_S;
-  USU : TUSUARIO;
-  CQ : TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE;
-  M : TMOTIVODESCARTE;
-begin
-  if not (USUARIO.PERMITEINCLUIRETIQUETAS) then begin
-    DisplayMsg(MSG_PASSWORD, 'Digite o usuário e senha de alguem que tenha permissão por favor!');
-    if not (ResultMsgModal in [mrOk, mrYes]) then Exit;
-    FWC := TFWConnection.Create;
-    USU := TUSUARIO.Create(FWC);
-    try
-      USU.SelectList('ID = ' + IntToStr(ResultMsgPassword));
-      if USU.Count > 0 then begin
-        if not (TUSUARIO(USU.Itens[0]).PERMITEITENSETIQUETA.Value) then begin
-          DisplayMsg(MSG_WAR, 'Usuário informado não tem permissão para a operação atual!');
-          Exit;
-        end;
-      end
-      else begin
-        DisplayMsg(MSG_WAR, 'Usuário não encontrado!');
-        Exit;
-      end;
-
-    finally
-      FreeAndNil(USU);
-      FreeAndNil(FWC);
-    end;
-  end;
-
-  FWC := TFWConnection.Create;
-  LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
-  CQ  := TOPFINAL_ESTAGIO_LOTE_S_QUALIDADE.Create(FWC);
-  M   := TMOTIVODESCARTE.Create(FWC);
-  try
-    LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.IDLOTE) + ' AND (NOT BAIXADO)');
-    if LS.Count > 0 then begin
-      FWC.StartTransaction;
-      try
-        LS.ID.Value := TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[0]).ID.Value;
-        LS.BAIXADO.Value := True;
-        LS.Update;
-
-        CQ.ID.isNull := True;
-        CQ.ID_OPFINAL_ESTAGIO_LOTE_S.Value := LS.ID.Value;
-
-        M.SelectList('DESCRICAO = ' + QuotedStr('Baixa pela tela de etiquetas'));
-        if M.Count = 0 then begin
-          M.ID.isNull := True;
-          M.DESCRICAO.Value := 'Baixa pela tela de etiquetas';
-          M.Insert;
-
-          CQ.ID_MOTIVODESCARTE.Value := M.ID.Value;
-        end
-        else
-        begin
-          CQ.ID_MOTIVODESCARTE.Value := TMOTIVODESCARTE(M.Itens[0]).ID.Value;
-        end;
-
-        CQ.Insert;
-
-        FWC.Commit;
-      except
-        on E : Exception do begin
-          FWC.Rollback;
-          DisplayMsg(MSG_WAR, 'Erro ao Inserir Item!', '', E.Message);
-          Exit;
-        end;
-      end;
-    end;
-    CarregaEtiquetas;
-  finally
-    FreeAndNil(LS);
-    FreeAndNil(CQ);
-    FreeAndNil(M);
     FreeAndNil(FWC);
   end;
 end;
@@ -456,7 +373,6 @@ begin
 
       edNumeroLoteEstagio.Enabled   := cds_Itens.RecordCount = 0;
       btnAdicionar.Visible          := not edNumeroLoteEstagio.Enabled;
-      btnExcluir.Visible            := btnAdicionar.Visible;
     end;
   end;
 end;
@@ -503,7 +419,6 @@ begin
   cds_Itens.EmptyDataSet;
   edt_Quantidade.Clear;
   btnAdicionar.Visible := False;
-  btnExcluir.Visible := False;
   edLocalizacao.Enabled := False;
   edCodigoUsuario.Clear;
   edNomeUsuario.Clear;

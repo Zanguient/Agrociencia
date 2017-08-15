@@ -12,9 +12,6 @@ uses
 type
   TfrmPlanejamentoProducao = class(TForm)
     pnPrincipal: TPanel;
-    gbPrincipal: TGroupBox;
-    edData: TJvDateEdit;
-    btConsulta: TBitBtn;
     PageControl1: TPageControl;
     TSRP: TTabSheet;
     TSMC: TTabSheet;
@@ -102,11 +99,41 @@ type
     btExcluirOPSE: TSpeedButton;
     btAlterarOPSE: TSpeedButton;
     btNovoOPSE: TSpeedButton;
+    gbFiltroRP: TGroupBox;
+    edDataRP: TJvDateEdit;
+    btConsultaRP: TBitBtn;
+    edCodigoClienteRP: TButtonedEdit;
+    edNomeClienteRP: TEdit;
+    edDescricaoEspecieRP: TEdit;
+    edCodigoEspecieRP: TButtonedEdit;
+    gbFiltroOPMC: TGroupBox;
+    edDataOPMC: TJvDateEdit;
+    btConsultaOPMC: TBitBtn;
+    edDescricaoMCOPMC: TEdit;
+    edCodigoMCOPMC: TButtonedEdit;
+    gbFiltroGNOP: TGroupBox;
+    edDataGNOP: TJvDateEdit;
+    btConsultaGNOP: TBitBtn;
+    edCodigoEstagioGNOP: TButtonedEdit;
+    edDescricaoEstagioGNOP: TEdit;
+    edDescricaoEspecieGNOP: TEdit;
+    edCodigoEspecieGNOP: TButtonedEdit;
+    gbFiltroOPG: TGroupBox;
+    edDataOPG: TJvDateEdit;
+    btConsultaOPG: TBitBtn;
+    edCodigoEstagioOPG: TButtonedEdit;
+    edDescricaoEstagioOPG: TEdit;
+    edDescricaoEspecieOPG: TEdit;
+    edCodigoEspecieOPG: TButtonedEdit;
+    gbFiltroOPSE: TGroupBox;
+    edDataOPSE: TJvDateEdit;
+    btConsultaOPSE: TBitBtn;
+    edCodigoSolucaoOPSE: TButtonedEdit;
+    edNomeSolucaoOPSE: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
-    procedure btConsultaClick(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure gdGerarOPDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
@@ -120,7 +147,7 @@ type
     procedure btNovoRPClick(Sender: TObject);
     procedure btAlterarRPClick(Sender: TObject);
     procedure btExcluirRPClick(Sender: TObject);
-    procedure btExportarRPClick(Sender: TObject);
+    procedure btExportarClick(Sender: TObject);
     procedure btNovoOPMCClick(Sender: TObject);
     procedure btAlterarOPMCClick(Sender: TObject);
     procedure btExcluirOPMCClick(Sender: TObject);
@@ -135,6 +162,23 @@ type
     procedure btAlterarOPSEClick(Sender: TObject);
     procedure btExcluirOPSEClick(Sender: TObject);
     procedure btNovoOPSEClick(Sender: TObject);
+    procedure btConsultaClick(Sender: TObject);
+    procedure edCodigoClienteChange(Sender: TObject);
+    procedure edCodigoClienteKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoClienteRightButtonClick(Sender: TObject);
+    procedure edCodigoEspecieChange(Sender: TObject);
+    procedure edCodigoEspecieRightButtonClick(Sender: TObject);
+    procedure edCodigoEspecieKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoEstagioChange(Sender: TObject);
+    procedure edCodigoEstagioKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoEstagioRightButtonClick(Sender: TObject);
+    procedure edCodigoMCOPMCChange(Sender: TObject);
+    procedure edCodigoMCOPMCKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoMCOPMCRightButtonClick(Sender: TObject);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -165,7 +209,8 @@ uses
   uOrdemProducaoSolucao,
   uDetalhesEstagio,
   uBeanOPFinal,
-  uBeanOrdemProducaoMC, uBeanOrdemProducaoSolucao;
+  uBeanOrdemProducaoMC, uBeanOrdemProducaoSolucao, uBeanCliente, uBeanProdutos,
+  uBeanEstagio;
 
 {$R *.dfm}
 
@@ -491,12 +536,25 @@ end;
 
 procedure TfrmPlanejamentoProducao.btConsultaClick(Sender: TObject);
 begin
-  if btConsulta.Tag = 0 then begin
-    btConsulta.Tag := 1;
+  if (Sender as TBitBtn).Tag = 0 then begin
+    (Sender as TBitBtn).Tag := 1;
     try
-      ConsultaDados;
+      if Sender = btConsultaRP then
+        CarregarRecebimentoPlantas
+      else
+        if Sender = btConsultaOPMC then
+          CarregarMeiodeCultura
+        else
+          if Sender = btConsultaGNOP then
+            CarregarGerarNovaOP
+          else
+            if Sender = btConsultaOPG then
+              CarregarOPGerada
+            else
+              if Sender = btConsultaOPSE then
+                CarregarESolEstoque;
     finally
-      btConsulta.Tag := 0;
+      (Sender as TBitBtn).Tag := 0;
     end;
   end;
 end;
@@ -660,16 +718,60 @@ begin
   end;
 end;
 
-procedure TfrmPlanejamentoProducao.btExportarRPClick(Sender: TObject);
+procedure TfrmPlanejamentoProducao.btExportarClick(Sender: TObject);
 begin
-  {if btExportarRP.Tag = 0 then begin
-    btExportarRP.Tag := 1;
+  if (Sender as TSpeedButton).Tag = 0 then begin
+    (Sender as TSpeedButton).Tag := 1;
+    (Sender as TSpeedButton).Caption := 'Gerando...';
+    Application.ProcessMessages;
     try
-      ExpXLS(cds_Pesquisa, Caption + '.xlsx');
+
+      if (Sender as TSpeedButton) = btExportarRP then begin
+        if gdRecebimentoPlantas.DataSource.DataSet.IsEmpty then begin
+          DisplayMsg(MSG_WAR, 'Não há Dados para Exportar, Verifique!');
+          Exit;
+        end;
+
+        ExpDbGridXLS(gdRecebimentoPlantas, 'Recebimento de Plantas.xls');
+      end else
+        if (Sender as TSpeedButton) = btExportarOPMC then begin
+          if gdMeioCultura.DataSource.DataSet.IsEmpty then begin
+            DisplayMsg(MSG_WAR, 'Não há Dados para Exportar, Verifique!');
+            Exit;
+          end;
+
+          ExpDbGridXLS(gdMeioCultura, 'Ordem de Produção MC.xls');
+        end else
+          if (Sender as TSpeedButton) = btExportarGNOP then begin
+            if gdGerarOP.DataSource.DataSet.IsEmpty then begin
+              DisplayMsg(MSG_WAR, 'Não há Dados para Exportar, Verifique!');
+              Exit;
+            end;
+
+            ExpDbGridXLS(gdGerarOP, 'Gerar Nova OP.xls');
+          end else
+            if (Sender as TSpeedButton) = btExportarOPG then begin
+              if gdOPGerada.DataSource.DataSet.IsEmpty then begin
+                DisplayMsg(MSG_WAR, 'Não há Dados para Exportar, Verifique!');
+                Exit;
+              end;
+
+              ExpDbGridXLS(gdOPGerada, 'OP Gerada.xls');
+            end else
+              if (Sender as TSpeedButton) = btExportarOPSE then begin
+                if gdOPESolEstoque.DataSource.DataSet.IsEmpty then begin
+                  DisplayMsg(MSG_WAR, 'Não há Dados para Exportar, Verifique!');
+                  Exit;
+                end;
+
+                ExpDbGridXLS(gdOPESolEstoque, 'Ordem de Produção Solução Estoque.xls');
+              end;
     finally
-      btExportarRP.Tag := 0;
+      (Sender as TSpeedButton).Tag := 0;
+      (Sender as TSpeedButton).Caption := 'E&xportar';
+      Application.ProcessMessages;
     end;
-  end;}
+  end;
 end;
 
 procedure TfrmPlanejamentoProducao.CarregarESolEstoque;
@@ -707,7 +809,7 @@ begin
       Consulta.Connection                     := FWC.FDConnection;
 
       Consulta.ParamByName('DATA').DataType   := ftDate;
-      Consulta.ParamByName('DATA').Value      := edData.Date;
+      Consulta.ParamByName('DATA').Value      := edDataOPSE.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -781,7 +883,7 @@ begin
       Consulta.Connection                     := FWC.FDConnection;
 
       Consulta.ParamByName('DATA').DataType   := ftDate;
-      Consulta.ParamByName('DATA').Value      := edData.Date;
+      Consulta.ParamByName('DATA').Value      := edDataGNOP.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -879,7 +981,7 @@ begin
       Consulta.Connection                    := FWC.FDConnection;
 
       Consulta.ParamByName('DATA').DataType  := ftDate;
-      Consulta.ParamByName('DATA').Value     := edData.Date;
+      Consulta.ParamByName('DATA').Value     := edDataOPMC.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -954,7 +1056,7 @@ begin
       Consulta.Connection                     := FWC.FDConnection;
 
       Consulta.ParamByName('DATA').DataType   := ftDate;
-      Consulta.ParamByName('DATA').Value      := edData.Date;
+      Consulta.ParamByName('DATA').Value      := edDataOPG.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -1020,14 +1122,20 @@ begin
       Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
       Consulta.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
       Consulta.SQL.Add('AND OPF.DATAESTIMADAPROCESSAMENTO IS NOT NULL');
+      Consulta.SQL.Add('AND ((:CODIGOCLIENTE = -1) OR (C.ID = :CODIGOCLIENTE))');
+      Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
       Consulta.SQL.Add('AND CAST(OPF.DATAESTIMADAPROCESSAMENTO AS DATE) <= :DATA');
       Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO OPFE WHERE OPFE.OPFINAL_ID = OPF.ID)');
       Consulta.SQL.Add('ORDER BY OPF.DATAESTIMADAPROCESSAMENTO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
-      Consulta.ParamByName('DATA').DataType   := ftDate;
-      Consulta.ParamByName('DATA').Value      := edData.Date;
+      Consulta.ParamByName('CODIGOCLIENTE').DataType  := ftInteger;
+      Consulta.ParamByName('CODIGOESPECIE').DataType  := ftInteger;
+      Consulta.ParamByName('DATA').DataType           := ftDate;
+      Consulta.ParamByName('CODIGOCLIENTE').Value     := StrToIntDef(edCodigoClienteRP.Text, -1);
+      Consulta.ParamByName('CODIGOESPECIE').Value     := StrToIntDef(edCodigoEspecieRP.Text, -1);
+      Consulta.ParamByName('DATA').Value              := edDataRP.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -1072,6 +1180,205 @@ begin
   CarregarESolEstoque;
 end;
 
+procedure TfrmPlanejamentoProducao.edCodigoClienteChange(Sender: TObject);
+begin
+  if (Sender as TButtonedEdit) = edCodigoClienteRP then
+    edNomeClienteRP.Clear;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoClienteKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoClienteRightButtonClick(Sender);
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoClienteRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  C   : TCLIENTE;
+begin
+  FWC := TFWConnection.Create;
+  C   := TCLIENTE.Create(FWC);
+
+  try
+    (Sender as TButtonedEdit).Text := IntToStr(DMUtil.Selecionar(C, (Sender as TButtonedEdit).Text));
+    C.SelectList('id = ' + (Sender as TButtonedEdit).Text);
+    if C.Count = 1 then begin
+      if (Sender as TButtonedEdit) = edCodigoClienteRP then
+        edNomeClienteRP.Text := TCLIENTE(C.Itens[0]).NOME.asString;
+    end;
+  finally
+    FreeAndNil(C);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoEspecieChange(Sender: TObject);
+begin
+  if (Sender as TButtonedEdit) = edCodigoEspecieRP then
+    edDescricaoEspecieRP.Clear
+  else
+    if (Sender as TButtonedEdit) = edCodigoEspecieGNOP then
+      edDescricaoEspecieGNOP.Clear
+    else
+      if (Sender as TButtonedEdit) = edCodigoEspecieOPG then
+        edDescricaoEspecieOPG.Clear;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoEspecieRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  P   : TPRODUTO;
+  Filtro : string;
+begin
+  FWC := TFWConnection.Create;
+  P   := TPRODUTO.Create(FWC);
+
+  try
+
+    Filtro := 'finalidade = 1';
+    (Sender as TButtonedEdit).Tag := DMUtil.Selecionar(P, (Sender as TButtonedEdit).Text);
+    if (Sender as TButtonedEdit).Tag > 0 then begin
+      P.SelectList('id = ' + IntToStr((Sender as TButtonedEdit).Tag));
+      if P.Count = 1 then begin
+        if (Sender as TButtonedEdit) = edCodigoEspecieRP then begin
+          edCodigoEspecieRP.Text    := TPRODUTO(P.Itens[0]).ID.asString;
+          edDescricaoEspecieRP.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+        end else
+          if (Sender as TButtonedEdit) = edCodigoEspecieGNOP then begin
+            edCodigoEspecieGNOP.Text    := TPRODUTO(P.Itens[0]).ID.asString;
+            edDescricaoEspecieGNOP.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+          end else
+            if (Sender as TButtonedEdit) = edCodigoEspecieOPG then begin
+              edCodigoEspecieOPG.Text    := TPRODUTO(P.Itens[0]).ID.asString;
+              edDescricaoEspecieOPG.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+            end;
+      end;
+    end else
+      edCodigoEspecieChange(Sender);
+  finally
+    FreeAndNil(P);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoEstagioChange(Sender: TObject);
+begin
+  if (Sender as TButtonedEdit) = edCodigoEstagioGNOP then
+    edDescricaoEstagioGNOP.Clear
+  else
+    if (Sender as TButtonedEdit) = edCodigoEstagioOPG then
+      edDescricaoEstagioOPG.Clear;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoEstagioKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoEstagioRightButtonClick(Sender);
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoEstagioRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  E   : TESTAGIO;
+begin
+  FWC := TFWConnection.Create;
+  E   := TESTAGIO.Create(FWC);
+
+  try
+
+    (Sender as TButtonedEdit).Tag := DMUtil.Selecionar(E, (Sender as TButtonedEdit).Text);
+    if (Sender as TButtonedEdit).Tag > 0 then begin
+      E.SelectList('id = ' + IntToStr((Sender as TButtonedEdit).Tag));
+      if E.Count = 1 then begin
+        if (Sender as TButtonedEdit) = edCodigoEstagioGNOP then begin
+          edCodigoEstagioGNOP.Text    := TESTAGIO(E.Itens[0]).ID.asString;
+          edDescricaoEstagioGNOP.Text := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
+        end else
+          if (Sender as TButtonedEdit) = edCodigoEstagioOPG then begin
+            edCodigoEstagioOPG.Text    := TESTAGIO(E.Itens[0]).ID.asString;
+            edDescricaoEstagioOPG.Text := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
+          end;
+      end;
+    end else
+      edCodigoEstagioChange(Sender);
+  finally
+    FreeAndNil(E);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoMCOPMCChange(Sender: TObject);
+begin
+  edDescricaoMCOPMC.Clear;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoMCOPMCKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoMCOPMCRightButtonClick(Sender);
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoMCOPMCRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  OPMC: TORDEMPRODUCAOMC;
+  SQL : TFDQuery;
+begin
+  FWC := TFWConnection.Create;
+  OPMC:= TORDEMPRODUCAOMC.Create(FWC);
+  SQL := TFDQuery.Create(nil);
+
+  try
+
+    (Sender as TButtonedEdit).Text := IntToStr(DMUtil.SelecionarMeioCultura(0 , 0, (Sender as TButtonedEdit).Text));
+
+    if StrToIntDef((Sender as TButtonedEdit).Text, 0) > 0 then begin
+
+      OPMC.SelectList('id = ' + IntToStr(StrToIntDef((Sender as TButtonedEdit).Text, 0)));
+
+      if OPMC.Count > 0 then begin
+
+        SQL.Close;
+        SQL.SQL.Clear;
+        SQL.SQL.Add('SELECT');
+        SQL.SQL.Add('	P.ID,');
+        SQL.SQL.Add('	P.DESCRICAO AS NOMEPRODUTO');
+        SQL.SQL.Add('FROM PRODUTO P');
+        SQL.SQL.Add('WHERE 1 = 1');
+        SQL.SQL.Add('AND P.ID = :IDOPMC');
+        SQL.Connection  := FWC.FDConnection;
+        SQL.ParamByName('IDOPMC').DataType   := ftInteger;
+        SQL.ParamByName('IDOPMC').AsInteger  := TORDEMPRODUCAOMC(OPMC.Itens[0]).ID_PRODUTO.Value;
+        SQL.Prepare;
+        SQL.Open;
+
+        if not SQL.IsEmpty then
+          edDescricaoMCOPMC.Text := SQL.FieldByName('NOMEPRODUTO').AsString;
+
+      end;
+    end;
+  finally
+    FreeAndNil(OPMC);
+    FreeAndNil(SQL);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoEspecieKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoEspecieRightButtonClick(Sender);
+end;
+
 procedure TfrmPlanejamentoProducao.FormCreate(Sender: TObject);
 begin
   CDS_PLANTAS.CreateDataSet;
@@ -1087,16 +1394,32 @@ procedure TfrmPlanejamentoProducao.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   case Key of
     VK_ESCAPE : Close;
-    VK_RETURN : begin
-      if edData.Focused then
-        ConsultaDados;
+    VK_F5 : begin
+      if PageControl1.ActivePage = TSRP then
+        CarregarRecebimentoPlantas
+      else
+        if PageControl1.ActivePage = TSMC then
+          CarregarMeiodeCultura
+        else
+          if PageControl1.ActivePage = TSNOP then
+            CarregarGerarNovaOP
+        else
+          if PageControl1.ActivePage = TSOPG then
+            CarregarOPGerada
+        else
+          if PageControl1.ActivePage = TSOPESOL then
+            CarregarESolEstoque;
     end;
   end;
 end;
 
 procedure TfrmPlanejamentoProducao.FormShow(Sender: TObject);
 begin
-  edData.Date    := Date + 7;
+  edDataRP.Date    := Date + 7;
+  edDataOPMC.Date    := Date + 7;
+  edDataGNOP.Date    := Date + 7;
+  edDataOPG.Date    := Date + 7;
+  edDataOPSE.Date    := Date + 7;
   ConsultaDados;
   AjustaGrid;
 end;

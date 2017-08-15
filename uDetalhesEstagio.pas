@@ -89,7 +89,8 @@ implementation
 uses
   uFuncoes,
   uMensagem,
-  uFWConnection;
+  uFWConnection,
+  uControleDescarte;
 
 procedure TfrmDetalhesEstagio.btFecharClick(Sender: TObject);
 begin
@@ -340,9 +341,16 @@ end;
 procedure TfrmDetalhesEstagio.gdSaidasCellClick(Column: TColumn);
 begin
   if gdSaidas.SelectedField.FieldName = 'DESCARTAR' then begin
-    if Assigned(Self.gdSaidas.DataSource.DataSet.FindField('ID')) then begin
-      ShowMessage('Teste');
-      //ImprimirOPFE(Self.gdOPGerada.DataSource.DataSet.FieldByName('ID').AsInteger);
+    if Assigned(Self.gdSaidas.DataSource.DataSet.FindField('CODIGO')) then begin
+      if frmControleDescarte = nil then
+        frmControleDescarte := TfrmControleDescarte.Create(Self);
+      try
+        frmControleDescarte.CodigoPote := Self.gdSaidas.DataSource.DataSet.FindField('CODIGO').AsInteger;
+        frmControleDescarte.ShowModal;
+      finally
+        FreeAndNil(frmControleDescarte);
+      end;
+      CarregaEntradaSaidas;
     end;
   end;
 end;
