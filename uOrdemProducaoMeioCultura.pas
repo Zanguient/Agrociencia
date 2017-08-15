@@ -199,7 +199,6 @@ var
   FWC : TFWConnection;
   MC : TORDEMPRODUCAOMC;
   MI : TORDEMPRODUCAOMC_ITENS;
-  FecharTela : Boolean;
 begin
 
   if Length(Trim(edt_NomeEsterilizacao.Text)) = 0 then begin
@@ -235,8 +234,6 @@ begin
   FWC := TFWConnection.Create;
   MC  := TORDEMPRODUCAOMC.Create(FWC);
   MI  := TORDEMPRODUCAOMC_ITENS.Create(FWC);
-
-  FecharTela := False;
 
   try
     try
@@ -286,11 +283,10 @@ begin
 
       FWC.Commit;
 
-      if Parametros.Codigo = 0 then begin
+      if Parametros.Acao = eNada then begin
         InvertePaineis;
         CarregarDados;
-      end else
-        FecharTela := True;
+      end;
 
     except
       on E : Exception do begin
@@ -304,7 +300,7 @@ begin
     FreeAndNil(FWC);
   end;
 
-  if FecharTela then
+  if Parametros.Acao in [eNovo, eAlterar] then
     Close;
 
 end;

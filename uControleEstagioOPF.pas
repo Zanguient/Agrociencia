@@ -482,13 +482,10 @@ Var
   FWC   : TFWConnection;
   OPFE  : TOPFINAL_ESTAGIO;
   ID    : Integer;
-  FecharTela : Boolean;
 begin
 
   FWC   := TFWConnection.Create;
   OPFE  := TOPFINAL_ESTAGIO.Create(FWC);
-
-  FecharTela := False;
 
   try
     try
@@ -555,11 +552,10 @@ begin
 
       FWC.Commit;
 
-      if Parametros.Codigo = 0 then begin
+      if Parametros.Acao = eNada then begin
         InvertePaineis;
         CarregaDados;
-      end else
-        FecharTela := True;
+      end;
 
     Except
       on E : Exception do begin
@@ -572,7 +568,7 @@ begin
     FreeAndNil(FWC);
   end;
 
-  if FecharTela then
+  if Parametros.Acao in [eNovo, eAlterar] then
     Close;
 end;
 
@@ -697,7 +693,8 @@ begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
 
-  if Parametros.Codigo > 0 then //Se Foi Chamada de outra Tela Fecha.
+  //Se Foi Chamada de outra Tela Fecha.
+  if Parametros.Acao in [eNovo, eAlterar] then
     Close;
 
   InvertePaineis;

@@ -179,6 +179,10 @@ type
     procedure edCodigoMCOPMCKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edCodigoMCOPMCRightButtonClick(Sender: TObject);
+    procedure edCodigoSolucaoOPSEChange(Sender: TObject);
+    procedure edCodigoSolucaoOPSEKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoSolucaoOPSERightButtonClick(Sender: TObject);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -187,6 +191,7 @@ type
     procedure CarregarGerarNovaOP;
     procedure CarregarOPGerada;
     procedure CarregarESolEstoque;
+    procedure AtualizaABA;
     { Private declarations }
   public
     { Public declarations }
@@ -236,6 +241,7 @@ begin
         finally
           FreeAndNil(frmControleEstagioOPF);
         end;
+        AtualizaABA;
       end;
 
     finally
@@ -259,6 +265,7 @@ begin
         finally
           FreeAndNil(frmControleEstagioOPF);
         end;
+        AtualizaABA;
       end;
 
     finally
@@ -282,6 +289,7 @@ begin
         finally
           FreeAndNil(frmOrdemProducaoMeioCultura);
         end;
+        AtualizaABA;
       end;
     finally
       (Sender as TSpeedButton).Tag := 0;
@@ -304,6 +312,7 @@ begin
         finally
           FreeAndNil(frmOrdemProducaoSolucao);
         end;
+        AtualizaABA;
       end;
 
     finally
@@ -327,6 +336,7 @@ begin
         finally
           FreeAndNil(frmOrdemProducao);
         end;
+        AtualizaABA;
       end;
     finally
       (Sender as TSpeedButton).Tag := 0;
@@ -413,6 +423,24 @@ begin
 
 end;
 
+procedure TfrmPlanejamentoProducao.AtualizaABA;
+begin
+  if PageControl1.ActivePage = TSRP then
+    CarregarRecebimentoPlantas
+  else
+    if PageControl1.ActivePage = TSMC then
+      CarregarMeiodeCultura
+    else
+      if PageControl1.ActivePage = TSNOP then
+        CarregarGerarNovaOP
+      else
+        if PageControl1.ActivePage = TSOPG then
+          CarregarOPGerada
+        else
+          if PageControl1.ActivePage = TSOPESOL then
+            CarregarESolEstoque;
+end;
+
 procedure TfrmPlanejamentoProducao.btAlterarGNOPClick(Sender: TObject);
 begin
   if (Sender as TSpeedButton).Tag = 0 then begin
@@ -430,6 +458,7 @@ begin
           finally
             FreeAndNil(frmControleEstagioOPF);
           end;
+          AtualizaABA;
         end;
       end;
     finally
@@ -454,6 +483,7 @@ begin
           finally
             FreeAndNil(frmControleEstagioOPF);
           end;
+          AtualizaABA;
         end;
       end;
     finally
@@ -478,6 +508,7 @@ begin
           finally
             FreeAndNil(frmOrdemProducaoMeioCultura);
           end;
+          AtualizaABA;
         end;
       end;
     finally
@@ -502,6 +533,7 @@ begin
           finally
             FreeAndNil(frmOrdemProducaoSolucao);
           end;
+          AtualizaABA;
         end;
       end;
     finally
@@ -526,6 +558,7 @@ begin
           finally
             FreeAndNil(frmOrdemProducao);
           end;
+          AtualizaABA;
         end;
       end;
     finally
@@ -539,20 +572,7 @@ begin
   if (Sender as TBitBtn).Tag = 0 then begin
     (Sender as TBitBtn).Tag := 1;
     try
-      if Sender = btConsultaRP then
-        CarregarRecebimentoPlantas
-      else
-        if Sender = btConsultaOPMC then
-          CarregarMeiodeCultura
-        else
-          if Sender = btConsultaGNOP then
-            CarregarGerarNovaOP
-          else
-            if Sender = btConsultaOPG then
-              CarregarOPGerada
-            else
-              if Sender = btConsultaOPSE then
-                CarregarESolEstoque;
+      AtualizaABA;
     finally
       (Sender as TBitBtn).Tag := 0;
     end;
@@ -802,14 +822,17 @@ begin
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPS.ID_PRODUTO)');
       Consulta.SQL.Add('INNER JOIN UNIDADEMEDIDA UN ON (UN.ID = P.UNIDADEMEDIDA_ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
-      Consulta.SQL.Add('AND CAST(OPS.DATAPREVISAO AS DATE) <= :DATA');
-      Consulta.SQL.Add('AND OPS.ENCERRADO = FALSE');
+      Consulta.SQL.Add('AND ((:CODIGOSOLUCAO = -1) OR (P.ID = :CODIGOSOLUCAO))');
+      Consulta.SQL.Add('AND (CAST(OPS.DATAPREVISAO AS DATE) <= :DATA)');
+      Consulta.SQL.Add('AND (OPS.ENCERRADO = FALSE)');
       Consulta.SQL.Add('ORDER BY OPS.DATAPREVISAO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
-      Consulta.ParamByName('DATA').DataType   := ftDate;
-      Consulta.ParamByName('DATA').Value      := edDataOPSE.Date;
+      Consulta.ParamByName('CODIGOSOLUCAO').DataType  := ftInteger;
+      Consulta.ParamByName('DATA').DataType           := ftDate;
+      Consulta.ParamByName('CODIGOSOLUCAO').Value     := StrToIntDef(edCodigoSolucaoOPSE.Text, -1);;
+      Consulta.ParamByName('DATA').Value              := edDataOPSE.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -876,14 +899,20 @@ begin
       Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
-      Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
+      Consulta.SQL.Add('AND (OPF.CANCELADO = FALSE)');
+      Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
+      Consulta.SQL.Add('AND ((:CODIGOESTAGIO = -1) OR (E.ID = :CODIGOESTAGIO))');
       Consulta.SQL.Add('AND CAST(OPFE.PREVISAOTERMINO AS DATE) <= :DATA');
       Consulta.SQL.Add('ORDER BY OPFE.PREVISAOTERMINO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
-      Consulta.ParamByName('DATA').DataType   := ftDate;
-      Consulta.ParamByName('DATA').Value      := edDataGNOP.Date;
+      Consulta.ParamByName('CODIGOESPECIE').DataType  := ftInteger;
+      Consulta.ParamByName('CODIGOESTAGIO').DataType  := ftInteger;
+      Consulta.ParamByName('DATA').DataType           := ftDate;
+      Consulta.ParamByName('CODIGOESPECIE').Value     := StrToIntDef(edCodigoEspecieGNOP.Text, -1);
+      Consulta.ParamByName('CODIGOESTAGIO').Value     := StrToIntDef(edCodigoEstagioGNOP.Text, -1);
+      Consulta.ParamByName('DATA').Value              := edDataGNOP.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -974,14 +1003,17 @@ begin
       Consulta.SQL.Add('INNER JOIN UNIDADEMEDIDA UN ON (UN.ID = P.UNIDADEMEDIDA_ID)');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = P.ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND ((:CODIGOMC = -1) OR (MC.ID_PRODUTO = :CODIGOMC))');
       Consulta.SQL.Add('AND CAST(OPMC.DATAINICIO AS DATE) <= :DATA');
       Consulta.SQL.Add('AND OPMC.ENCERRADO = False');
       Consulta.SQL.Add('ORDER BY OPMC.DATAINICIO ASC');
 
       Consulta.Connection                    := FWC.FDConnection;
 
-      Consulta.ParamByName('DATA').DataType  := ftDate;
-      Consulta.ParamByName('DATA').Value     := edDataOPMC.Date;
+      Consulta.ParamByName('CODIGOMC').DataType := ftInteger;
+      Consulta.ParamByName('DATA').DataType     := ftDate;
+      Consulta.ParamByName('CODIGOMC').Value    := StrToIntDef(edCodigoMCOPMC.Text, -1);
+      Consulta.ParamByName('DATA').Value        := edDataOPMC.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -1047,16 +1079,22 @@ begin
       Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
-      Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
-      Consulta.SQL.Add('AND CAST(OPFE.PREVISAOINICIO AS DATE) <= :DATA');
-      Consulta.SQL.Add('AND OPFE.DATAHORAFIM IS NULL');
+      Consulta.SQL.Add('AND (OPF.CANCELADO = FALSE)');
+      Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
+      Consulta.SQL.Add('AND ((:CODIGOESTAGIO = -1) OR (E.ID = :CODIGOESTAGIO))');
+      Consulta.SQL.Add('AND (CAST(OPFE.PREVISAOINICIO AS DATE) <= :DATA)');
+      Consulta.SQL.Add('AND (OPFE.DATAHORAFIM IS NULL)');
       Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO_LOTE OPFEL WHERE OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
       Consulta.SQL.Add('ORDER BY OPFE.PREVISAOINICIO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
-      Consulta.ParamByName('DATA').DataType   := ftDate;
-      Consulta.ParamByName('DATA').Value      := edDataOPG.Date;
+      Consulta.ParamByName('CODIGOESPECIE').DataType  := ftInteger;
+      Consulta.ParamByName('CODIGOESTAGIO').DataType  := ftInteger;
+      Consulta.ParamByName('DATA').DataType           := ftDate;
+      Consulta.ParamByName('CODIGOESPECIE').Value     := StrToIntDef(edCodigoEspecieOPG.Text, -1);
+      Consulta.ParamByName('CODIGOESTAGIO').Value     := StrToIntDef(edCodigoEstagioOPG.Text, -1);
+      Consulta.ParamByName('DATA').Value              := edDataOPG.Date;
 
       Consulta.Prepare;
       Consulta.Open;
@@ -1240,7 +1278,7 @@ begin
   try
 
     Filtro := 'finalidade = 1';
-    (Sender as TButtonedEdit).Tag := DMUtil.Selecionar(P, (Sender as TButtonedEdit).Text);
+    (Sender as TButtonedEdit).Tag := DMUtil.Selecionar(P, (Sender as TButtonedEdit).Text, Filtro);
     if (Sender as TButtonedEdit).Tag > 0 then begin
       P.SelectList('id = ' + IntToStr((Sender as TButtonedEdit).Tag));
       if P.Count = 1 then begin
@@ -1372,6 +1410,44 @@ begin
   end;
 end;
 
+procedure TfrmPlanejamentoProducao.edCodigoSolucaoOPSEChange(Sender: TObject);
+begin
+  if (Sender as TButtonedEdit) = edCodigoSolucaoOPSE then
+    edNomeSolucaoOPSE.Clear;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoSolucaoOPSEKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoSolucaoOPSERightButtonClick(Sender);
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoSolucaoOPSERightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  P   : TPRODUTO;
+  Filtro : string;
+begin
+  FWC    := TFWConnection.Create;
+  P      := TPRODUTO.Create(FWC);
+  try
+    Filtro := 'finalidade = 5';
+    (Sender as TButtonedEdit).Tag := DMUtil.Selecionar(P, (Sender as TButtonedEdit).Text, Filtro);
+    if (Sender as TButtonedEdit).Tag > 0 then begin
+      P.SelectList('id = ' + IntToStr((Sender as TButtonedEdit).Tag));
+      if P.Count > 0 then begin
+        (Sender as TButtonedEdit).Text  := TPRODUTO(P.Itens[0]).ID.asString;
+        edNomeSolucaoOPSE.Text          := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+      end;
+    end;
+  finally
+    FreeAndNil(P);
+    FreeAndNil(FWC);
+  end;
+end;
+
 procedure TfrmPlanejamentoProducao.edCodigoEspecieKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
@@ -1441,6 +1517,7 @@ begin
       finally
         FreeAndNil(frmDetalhesEstagio);
       end;
+      AtualizaABA;
     end;
   end;
 end;

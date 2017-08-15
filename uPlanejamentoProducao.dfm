@@ -33,13 +33,14 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Top = 3
       Width = 896
       Height = 455
-      ActivePage = TSMC
+      ActivePage = TSOPESOL
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
       Font.Name = 'Tahoma'
       Font.Style = []
+      MultiLine = True
       ParentFont = False
       TabOrder = 0
       OnChange = PageControl1Change
@@ -68,7 +69,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Left = 3
           Top = 147
           Width = 882
-          Height = 224
+          Height = 203
           Align = alClient
           DataSource = DS_PLANTAS
           DrawingStyle = gdsGradient
@@ -134,7 +135,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
         end
         object Panel7: TPanel
           Left = 0
-          Top = 374
+          Top = 353
           Width = 888
           Height = 50
           Align = alBottom
@@ -737,7 +738,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Left = 3
           Top = 147
           Width = 882
-          Height = 224
+          Height = 203
           Align = alClient
           DataSource = DS_MEIOCULTURA
           DrawingStyle = gdsGradient
@@ -791,7 +792,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
         end
         object Panel6: TPanel
           Left = 0
-          Top = 374
+          Top = 353
           Width = 888
           Height = 50
           Align = alBottom
@@ -1465,7 +1466,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Left = 3
           Top = 147
           Width = 882
-          Height = 224
+          Height = 203
           Align = alClient
           DataSource = DS_NOVAOP
           DrawingStyle = gdsGradient
@@ -1532,7 +1533,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
         end
         object Panel10: TPanel
           Left = 0
-          Top = 374
+          Top = 353
           Width = 888
           Height = 50
           Align = alBottom
@@ -2177,7 +2178,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Left = 3
           Top = 147
           Width = 882
-          Height = 224
+          Height = 203
           Align = alClient
           DataSource = DS_OPGERADA
           DrawingStyle = gdsGradient
@@ -2236,7 +2237,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
         end
         object Panel12: TPanel
           Left = 0
-          Top = 374
+          Top = 353
           Width = 888
           Height = 50
           Align = alBottom
@@ -2859,7 +2860,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Left = 3
           Top = 147
           Width = 882
-          Height = 224
+          Height = 203
           Align = alClient
           DataSource = DS_ESOLESTOQUE
           DrawingStyle = gdsGradient
@@ -2929,7 +2930,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
         end
         object Panel16: TPanel
           Left = 0
-          Top = 374
+          Top = 353
           Width = 888
           Height = 50
           Align = alBottom
@@ -3551,9 +3552,9 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
             RightButton.Visible = True
             TabOrder = 0
             TextHint = 'Selecione a Solu'#231#227'o'
-            OnChange = edCodigoClienteChange
-            OnKeyDown = edCodigoClienteKeyDown
-            OnRightButtonClick = edCodigoClienteRightButtonClick
+            OnChange = edCodigoSolucaoOPSEChange
+            OnKeyDown = edCodigoSolucaoOPSEKeyDown
+            OnRightButtonClick = edCodigoSolucaoOPSERightButtonClick
           end
           object edNomeSolucaoOPSE: TEdit
             Left = 193

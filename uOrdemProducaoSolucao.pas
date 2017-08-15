@@ -101,6 +101,7 @@ type
     procedure btRelatorioClick(Sender: TObject);
   private
     function AtualizarEdits(Limpar : Boolean) : Boolean;
+    function Inserir : Boolean;
     function Alterar : Boolean;
     procedure Cancelar;
     { Private declarations }
@@ -378,7 +379,6 @@ var
   FWC        : TFWConnection;
   SOL        : TORDEMPRODUCAOSOLUCAO;
   SOLI       : TORDEMPRODUCAOSOLUCAO_ITENS;
-  FecharTela : Boolean;
 begin
 
   if Length(Trim(edt_DescricaoSolucaoEstoque.Text)) = 0 then begin
@@ -400,8 +400,6 @@ begin
   FWC   := TFWConnection.Create;
   SOL   := TORDEMPRODUCAOSOLUCAO.Create(FWC);
   SOLI  := TORDEMPRODUCAOSOLUCAO_ITENS.Create(FWC);
-
-  FecharTela := False;
 
   try
     try
@@ -447,11 +445,10 @@ begin
 
       FWC.Commit;
 
-      if Parametros.Codigo = 0 then begin
+      if Parametros.Acao = eNada then begin
         InvertePaineis;
         CarregarDados;
-      end else
-        FecharTela := True;
+      end;
 
     except
       on E : Exception do begin
@@ -465,9 +462,8 @@ begin
     FreeAndNil(FWC);
   end;
 
-  if FecharTela then
+  if Parametros.Acao in [eNovo, eAlterar] then
     Close;
-
 end;
 
 procedure TfrmOrdemProducaoSolucao.btAddClick(Sender: TObject);
@@ -573,7 +569,8 @@ begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
 
-  if Parametros.Codigo > 0 then //Se Foi Chamada de outra Tela Fecha.
+  //Se Foi Chamada de outra Tela Fecha.
+  if Parametros.Acao in [eNovo, eAlterar] then
     Close;
 
   InvertePaineis;
@@ -763,6 +760,10 @@ begin
 
   case Parametros.Acao of
     eNada : AutoSizeDBGrid(gdPesquisa);
+    eNovo   : begin
+      if not Inserir then
+        PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end;
     eAlterar: begin
       if Parametros.Codigo > 0 then begin
         if Parametros.Codigo = cds_PesquisaID.AsInteger then begin
@@ -772,6 +773,24 @@ begin
           PostMessage(Self.Handle, WM_CLOSE, 0, 0);
       end else
         PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end;
+  end;
+end;
+
+function TfrmOrdemProducaoSolucao.Inserir: Boolean;
+begin
+  Result := False;
+
+  try
+
+    if AtualizarEdits(True) then begin
+      InvertePaineis;
+      Result := True;
+    end;
+
+  except
+    on E : Exception do begin
+      DisplayMsg(MSG_ERR, 'Erro ao Iniciar Inserção', '', E.Message);
     end;
   end;
 end;

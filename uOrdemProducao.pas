@@ -380,7 +380,6 @@ Var
   OPF : TOPFINAL;
   E   : TESTAGIO;
   OPE : TOPFINAL_ESTAGIO;
-  FecharTela : Boolean;
 begin
 
   if Length(Trim(edNomeCliente.Text)) = 0 then begin
@@ -442,8 +441,6 @@ begin
   E   := TESTAGIO.Create(FWC);
   OPE := TOPFINAL_ESTAGIO.Create(FWC);
 
-  FecharTela := False;
-
   try
     try
 
@@ -479,11 +476,10 @@ begin
 
       FWC.Commit;
 
-      if Parametros.Codigo = 0 then begin
+      if Parametros.Acao = eNada then begin
         InvertePaineis;
         CarregaDados;
-      end else
-        FecharTela := True;
+      end;
 
     Except
       on E : Exception do begin
@@ -498,7 +494,7 @@ begin
     FreeAndNil(FWC);
   end;
 
-  if FecharTela then
+  if Parametros.Acao in [eNovo, eAlterar] then
     Close;
 
 end;
@@ -701,7 +697,7 @@ begin
   if cds_Pesquisa.State in [dsInsert, dsEdit] then
     cds_Pesquisa.Cancel;
 
-  if Parametros.Acao in [eNovo, eNada] then //Se Foi Chamada de outra Tela Fecha.
+  if Parametros.Acao in [eNovo, eAlterar] then //Se Foi Chamada de outra Tela Fecha.
     Close;
 
   InvertePaineis;
