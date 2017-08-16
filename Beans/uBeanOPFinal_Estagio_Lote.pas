@@ -46,7 +46,7 @@ type
     property QUANTIDADE         : TFieldInteger read FQUANTIDADE write SetQUANTIDADE;
     property ESTACAOTRABALHO    : TFieldString read FESTACAOTRABALHO write SetESTACAOTRABALHO;
     property ORDEMPRODUCAOMC_ID : TFieldInteger read FORDEMPRODUCAOMC_ID write SetORDEMPRODUCAOMC_ID;
-    property LOCALIZACAO        : TFieldString read FLOCALIZACAO write SetLOCALIZACAO;
+//    property LOCALIZACAO        : TFieldString read FLOCALIZACAO write SetLOCALIZACAO;
     property LOCALIZACAO_ID     : TFieldInteger read FLOCALIZACAO_ID write SetLOCALIZACAO_ID;
   end;
 
@@ -65,7 +65,7 @@ begin
 
   FOBSERVACAO.Size              := 512;
   FESTACAOTRABALHO.Size         := 20;
-  FLOCALIZACAO.Size             := 100;
+//  FLOCALIZACAO.Size             := 100;
 end;
 
 procedure TOPFINAL_ESTAGIO_LOTE.SetDATAHORAFIM(const Value: TFieldDateTime);

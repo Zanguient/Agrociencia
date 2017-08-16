@@ -28,7 +28,6 @@ type
     Label1: TLabel;
     Panel3: TPanel;
     edt_CodigoPote: TLabeledEdit;
-    edt_Localizacao: TLabeledEdit;
     gdDados: TDBGrid;
     DS_DADOS: TDataSource;
     CDS_DADOS: TClientDataSet;
@@ -38,6 +37,10 @@ type
     CDS_DADOSUNIDADESLOTE: TIntegerField;
     CDS_DADOSRECIPIENTE: TStringField;
     CDS_DADOSCODIGOOP: TStringField;
+    edNomeLocalizacao: TEdit;
+    edCodigoLocalizacao: TButtonedEdit;
+    Label4: TLabel;
+    Label6: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnImagemArquivoClick(Sender: TObject);
@@ -46,6 +49,10 @@ type
     procedure btGravarClick(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure edCodigoLocalizacaoRightButtonClick(Sender: TObject);
+    procedure edCodigoLocalizacaoChange(Sender: TObject);
+    procedure edCodigoLocalizacaoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -66,6 +73,8 @@ uses
   uConstantes,
   uBeanOPFinal_Estagio_Lote_S_Positivo,
   uBeanImagem,
+  uBeanLocalizacao,
+  uDMUtil,
   uBeanOPFinal_Estagio_Lote, uWebCam;
 
 {$R *.dfm}
@@ -99,11 +108,11 @@ begin
     Exit;
   end;}
 
-  if edt_Localizacao.Enabled then begin
-    if Length(Trim(edt_Localizacao.Text)) = 0 then begin
+  if edCodigoLocalizacao.Enabled then begin
+    if Length(Trim(edNomeLocalizacao.Text)) = 0 then begin
       DisplayMsg(MSG_WAR, 'Obrigatório informar a Localização do Lote, Verifique!');
-      if edt_Localizacao.CanFocus then
-        edt_Localizacao.SetFocus;
+      if edCodigoLocalizacao.CanFocus then
+        edCodigoLocalizacao.SetFocus;
       Exit;
     end;
   end;
@@ -132,13 +141,13 @@ begin
           POSITIVO.ID.isNull                       := True;
           POSITIVO.ID_OPFINAL_ESTAGIO_LOTE_S.Value := edt_CodigoPote.Tag;
           POSITIVO.ID_IMAGEM.Value                 := IMAGEM.ID.Value;
-          POSITIVO.LOCALIZACAO.Value               := edt_Localizacao.Text;
+          POSITIVO.LOCALIZACAO_ID.Value            := StrToIntDef(edCodigoLocalizacao.Text,0);
           POSITIVO.OBSERVACAO.Value                := mnObservacao.Text;
           POSITIVO.Insert;
         end;
 
         //Atualizar a localização no Lote
-        if edt_Localizacao.Enabled then begin
+        if edCodigoLocalizacao.Enabled then begin
 
           OPFEL   := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
           Consulta:= TFDQuery.Create(nil);
@@ -153,14 +162,14 @@ begin
               Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
               Consulta.SQL.Add('WHERE 1 = 1');
               Consulta.SQL.Add('AND OPFELS.ID = :IDPOTE');
-              Consulta.SQL.Add('AND OPFEL.LOCALIZACAO <> :LOCALIZACAO');
+              Consulta.SQL.Add('AND OPFEL.LOCALIZACAO_ID <> :LOCALIZACAO');
 
               Consulta.Connection := FWC.FDConnection;
 
               Consulta.ParamByName('IDPOTE').DataType       := ftInteger;
-              Consulta.ParamByName('LOCALIZACAO').DataType  := ftString;
+              Consulta.ParamByName('LOCALIZACAO').DataType  := ftInteger;
               Consulta.ParamByName('IDPOTE').Value          := edt_CodigoPote.Tag;
-              Consulta.ParamByName('LOCALIZACAO').Value     := edt_Localizacao.Text;
+              Consulta.ParamByName('LOCALIZACAO').Value     := edCodigoLocalizacao.Text;
 
               Consulta.Prepare;
               Consulta.Open;
@@ -169,8 +178,8 @@ begin
               if not Consulta.IsEmpty then begin
                 Consulta.First;
                 while not Consulta.Eof do begin
-                  OPFEL.ID.Value          := Consulta.FieldByName('IDLOTE').AsInteger;
-                  OPFEL.LOCALIZACAO.Value := edt_Localizacao.Text;
+                  OPFEL.ID.Value             := Consulta.FieldByName('IDLOTE').AsInteger;
+                  OPFEL.LOCALIZACAO_ID.Value := StrToIntDef(edCodigoLocalizacao.Text,0);
                   OPFEL.Update;
                   Consulta.Next;
                 end;
@@ -240,6 +249,39 @@ begin
   end;
 end;
 
+procedure TfrmControleQualidadePositivo.edCodigoLocalizacaoChange(
+  Sender: TObject);
+begin
+  edNomeLocalizacao.Clear;
+end;
+
+procedure TfrmControleQualidadePositivo.edCodigoLocalizacaoKeyDown(
+  Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    edCodigoLocalizacaoRightButtonClick(nil);
+end;
+
+procedure TfrmControleQualidadePositivo.edCodigoLocalizacaoRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  L  : TLOCALIZACAO;
+begin
+  FWC := TFWConnection.Create;
+  L   := TLOCALIZACAO.Create(FWC);
+
+  try
+    edCodigoLocalizacao.Text := IntToStr(DMUtil.Selecionar(L, edCodigoLocalizacao.Text, ''));
+    L.SelectList('id = ' + edCodigoLocalizacao.Text);
+    if L.Count = 1 then
+      edNomeLocalizacao.Text := TLOCALIZACAO(L.Itens[0]).NOME.asString;
+  finally
+    FreeAndNil(L);
+    FreeAndNil(FWC);
+  end;
+end;
+
 procedure TfrmControleQualidadePositivo.FormCreate(Sender: TObject);
 begin
   AjustaForm(Self);
@@ -271,7 +313,8 @@ end;
 procedure TfrmControleQualidadePositivo.LimpaDados;
 begin
   edt_CodigoPote.Clear;
-  edt_Localizacao.Clear;
+  edCodigoLocalizacao.Clear;
+  edNomeLocalizacao.Clear;
   mnObservacao.Clear;
   edt_CodigoPote.Enabled  := True;
   btGravar.Enabled        := False;
@@ -324,7 +367,8 @@ begin
     SQL.SQL.Add(' R.DESCRICAO AS RECIPIENTE,');
     SQL.SQL.Add(' R.ID AS CODRECIPIENTE,');
     SQL.SQL.Add(' E.DESCRICAO AS ESTAGIO,');
-    SQL.SQL.Add(' OPL.LOCALIZACAO AS LOCALIZACAO');
+    SQL.SQL.Add(' OPL.LOCALIZACAO_ID,');
+    SQL.SQL.Add(' LC.NOME AS LOCALIZACAO');
     SQL.SQL.Add('FROM OPFINAL_ESTAGIO_LOTE_S OPS');
     SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPL ON OPS.OPFINAL_ESTAGIO_LOTE_ID = OPL.ID');
     SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPE ON OPL.OPFINAL_ESTAGIO_ID = OPE.ID');
@@ -334,6 +378,7 @@ begin
     SQL.SQL.Add('INNER JOIN PRODUTO MC ON OPE.MEIOCULTURA_ID = MC.ID');
     SQL.SQL.Add('INNER JOIN PRODUTO R ON OPMC.ID_RECIPIENTE = R.ID');
     SQL.SQL.Add('INNER JOIN ESTAGIO E ON OPE.ESTAGIO_ID = E.ID');
+    SQL.SQL.Add('INNER JOIN LOCALIZACAO LC ON OPL.LOCALIZACAO_ID = LC.ID');
     SQL.SQL.Add('WHERE OPS.ID = :POTE');
     SQL.SQL.Add('AND NOT OPS.BAIXADO');
 
@@ -366,11 +411,12 @@ begin
       CDS_DADOSRECIPIENTE.Value     := SQL.FieldByName('RECIPIENTE').AsString;
       CDS_DADOS.Post;
 
-      edt_CodigoPote.Tag    := SQL.FieldByName('IDPOTE').AsInteger;
-      edt_Localizacao.Text  := SQL.FieldByName('LOCALIZACAO').AsString;
+      edt_CodigoPote.Tag            := SQL.FieldByName('IDPOTE').AsInteger;
+      edCodigoLocalizacao.Text      := SQL.FieldByName('LOCALIZACAO_ID').AsString;
+      edNomeLocalizacao.Text        := SQL.FieldByName('LOCALIZACAO').AsString;
 
-      if edt_Localizacao.CanFocus then
-        edt_Localizacao.SetFocus;
+      if edCodigoLocalizacao.CanFocus then
+        edCodigoLocalizacao.SetFocus;
 
       pnImagem.Enabled := True;
     end else begin

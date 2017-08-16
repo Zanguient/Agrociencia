@@ -137,9 +137,32 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
         Height = 56
         Align = alTop
         TabOrder = 0
-        DesignSize = (
-          521
-          56)
+        object Label4: TLabel
+          Left = 168
+          Top = 5
+          Width = 23
+          Height = 13
+          Caption = 'C'#243'd.'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
+        object Label6: TLabel
+          Left = 230
+          Top = 5
+          Width = 58
+          Height = 13
+          Caption = 'Localiza'#231#227'o:'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+        end
         object edt_CodigoPote: TLabeledEdit
           Left = 12
           Top = 21
@@ -162,29 +185,39 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
           ParentFont = False
           TabOrder = 0
         end
-        object edt_Localizacao: TLabeledEdit
-          Left = 169
+        object edNomeLocalizacao: TEdit
+          Left = 230
           Top = 21
-          Width = 345
+          Width = 280
           Height = 27
-          Anchors = [akLeft, akTop, akRight]
-          EditLabel.Width = 58
-          EditLabel.Height = 13
-          EditLabel.Caption = 'Localiza'#231#227'o:'
-          EditLabel.Font.Charset = DEFAULT_CHARSET
-          EditLabel.Font.Color = clWindowText
-          EditLabel.Font.Height = -11
-          EditLabel.Font.Name = 'Tahoma'
-          EditLabel.Font.Style = []
-          EditLabel.ParentFont = False
+          Enabled = False
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -16
           Font.Name = 'Tahoma'
           Font.Style = []
-          MaxLength = 100
           ParentFont = False
+          TabOrder = 2
+        end
+        object edCodigoLocalizacao: TButtonedEdit
+          AlignWithMargins = True
+          Left = 168
+          Top = 21
+          Width = 56
+          Height = 27
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          Images = DMUtil.ImageList1
+          ParentFont = False
+          RightButton.ImageIndex = 0
+          RightButton.Visible = True
           TabOrder = 1
+          OnChange = edCodigoLocalizacaoChange
+          OnKeyDown = edCodigoLocalizacaoKeyDown
+          OnRightButtonClick = edCodigoLocalizacaoRightButtonClick
         end
       end
       object gdDados: TDBGrid

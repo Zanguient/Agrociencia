@@ -45,7 +45,6 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 147
     DesignSize = (
       661
       283)
@@ -358,6 +357,7 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
       RightButton.Visible = True
       TabOrder = 8
       OnChange = edCodigoLocalizacaoChange
+      OnKeyDown = edCodigoLocalizacaoKeyDown
       OnRightButtonClick = edCodigoLocalizacaoRightButtonClick
     end
   end

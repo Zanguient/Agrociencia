@@ -25,7 +25,7 @@ type
     FPREVISAOINICIO: TFieldDateTime;
     FMEIOCULTURA_ID: TFieldInteger;
     FULTIMOLOTE: TFieldInteger;
-    FLOCALIZACAO: TFieldString;
+    FLOCALIZACAO_ID: TFieldInteger;
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
@@ -42,7 +42,7 @@ type
     procedure SetPREVISAOTERMINO(const Value: TFieldDateTime);
     procedure SetMEIOCULTURA_ID(const Value: TFieldInteger);
     procedure SetULTIMOLOTE(const Value: TFieldInteger);
-    procedure SetLOCALIZACAO(const Value: TFieldString);
+    procedure SetLOCALIZACAO_ID(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
@@ -61,7 +61,7 @@ type
     property PREVISAOTERMINO      : TFieldDateTime read FPREVISAOTERMINO write SetPREVISAOTERMINO;
     property OBSERVACAO           : TFieldString read FOBSERVACAO write SetOBSERVACAO;
     property ULTIMOLOTE           : TFieldInteger read FULTIMOLOTE write SetULTIMOLOTE;
-    property LOCALIZACAO          : TFieldString read FLOCALIZACAO write SetLOCALIZACAO;
+    property LOCALIZACAO_ID       : TFieldInteger read FLOCALIZACAO_ID write SetLOCALIZACAO_ID;
   end;
 
 implementation
@@ -82,7 +82,6 @@ begin
   QUANTIDADEESTIMADA.isNotNull  := True;
 
   OBSERVACAO.Size               := 512;
-  LOCALIZACAO.Size              := 100;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetDATAHORA(const Value: TFieldDateTime);
@@ -115,9 +114,9 @@ begin
   FINTERVALOCRESCIMENTO := Value;
 end;
 
-procedure TOPFINAL_ESTAGIO.SetLOCALIZACAO(const Value: TFieldString);
+procedure TOPFINAL_ESTAGIO.SetLOCALIZACAO_ID(const Value: TFieldInteger);
 begin
-  FLOCALIZACAO := Value;
+  FLOCALIZACAO_ID := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetMEIOCULTURA_ID(const Value: TFieldInteger);

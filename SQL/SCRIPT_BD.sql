@@ -616,3 +616,21 @@ UPDATE opfinal_estagio_lote SET localizacao_id = 0;
 ALTER TABLE opfinal_estagio_lote 
   ADD CONSTRAINT fk_opfel_localizacao FOREIGN KEY (localizacao_id) REFERENCES localizacao(id)
    ON UPDATE CASCADE ON DELETE RESTRICT;
+
+ALTER TABLE opfinal_estagio
+   ADD COLUMN localizacao_id bigint;
+
+UPDATE opfinal_estagio SET localizacao_id = 0;
+
+ALTER TABLE opfinal_estagio 
+  ADD CONSTRAINT fk_opfe_localizacao FOREIGN KEY (localizacao_id) REFERENCES localizacao(id)
+   ON UPDATE CASCADE ON DELETE RESTRICT;
+
+ALTER TABLE opfinal_estagio_lote_s_positivo
+   ADD COLUMN localizacao_id bigint;
+
+UPDATE opfinal_estagio_lote_s_positivo SET localizacao_id = 0;
+
+ALTER TABLE opfinal_estagio_lote_s_positivo 
+  ADD CONSTRAINT fk_opfelsp_localizacao FOREIGN KEY (localizacao_id) REFERENCES localizacao(id)
+   ON UPDATE CASCADE ON DELETE RESTRICT;

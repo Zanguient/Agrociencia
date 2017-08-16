@@ -1130,7 +1130,7 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
           object Label1: TLabel
             AlignWithMargins = True
             Left = 4
-            Top = 62
+            Top = 69
             Width = 420
             Height = 19
             Align = alTop
@@ -1141,33 +1141,19 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            ExplicitTop = 62
             ExplicitWidth = 88
-          end
-          object Label4: TLabel
-            AlignWithMargins = True
-            Left = 4
-            Top = 4
-            Width = 420
-            Height = 19
-            Align = alTop
-            Caption = 'Localiza'#231#227'o:'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
-            ExplicitWidth = 85
           end
           object pnObservacao: TPanel
             AlignWithMargins = True
             Left = 4
-            Top = 87
+            Top = 94
             Width = 420
             Height = 98
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 1
+            ExplicitTop = 87
             object edObservacao: TEdit
               AlignWithMargins = True
               Left = 3
@@ -1372,20 +1358,75 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
               end
             end
           end
-          object edLocalizacao: TEdit
-            AlignWithMargins = True
-            Left = 4
-            Top = 29
-            Width = 420
-            Height = 27
+          object pnLocalizacao: TPanel
+            Left = 1
+            Top = 1
+            Width = 426
+            Height = 65
             Align = alTop
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
+            Color = clWhite
+            ParentBackground = False
             TabOrder = 0
+            object Label4: TLabel
+              Left = 5
+              Top = 6
+              Width = 33
+              Height = 19
+              Caption = 'C'#243'd.'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object Label6: TLabel
+              Left = 67
+              Top = 6
+              Width = 85
+              Height = 19
+              Caption = 'Localiza'#231#227'o:'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+            end
+            object edCodigoLocalizacao: TButtonedEdit
+              AlignWithMargins = True
+              Left = 5
+              Top = 31
+              Width = 56
+              Height = 27
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              Images = DMUtil.ImageList1
+              ParentFont = False
+              RightButton.ImageIndex = 0
+              RightButton.Visible = True
+              TabOrder = 0
+              OnChange = edCodigoLocalizacaoChange
+              OnKeyDown = edCodigoLocalizacaoKeyDown
+              OnRightButtonClick = edCodigoLocalizacaoRightButtonClick
+            end
+            object edNomeLocalizacao: TEdit
+              Left = 67
+              Top = 31
+              Width = 350
+              Height = 27
+              Enabled = False
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -16
+              Font.Name = 'Tahoma'
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 1
+            end
           end
         end
       end

@@ -93,8 +93,11 @@ type
     btnImagemWebCam: TBitBtn;
     btnSalvarImagem: TBitBtn;
     btnImagemArquivo: TBitBtn;
+    pnLocalizacao: TPanel;
+    edCodigoLocalizacao: TButtonedEdit;
     Label4: TLabel;
-    edLocalizacao: TEdit;
+    Label6: TLabel;
+    edNomeLocalizacao: TEdit;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -123,6 +126,10 @@ type
     procedure btnSalvarImagemClick(Sender: TObject);
     procedure btnImagemArquivoClick(Sender: TObject);
     procedure edDataPrevistaInicioChange(Sender: TObject);
+    procedure edCodigoLocalizacaoRightButtonClick(Sender: TObject);
+    procedure edCodigoLocalizacaoChange(Sender: TObject);
+    procedure edCodigoLocalizacaoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     procedure SelecionarObservacao;
     procedure Deletar(Sender: TObject);
@@ -160,6 +167,7 @@ uses
   uBeanProdutos,
   uBeanImagem,
   uBeanOpFinal_Estagio_Imagens,
+  uBeanLocalizacao,
   uWebCam;
 
 {$R *.dfm}
@@ -234,7 +242,8 @@ begin
     edIntervaloCrescimento.Clear;
     btGravar.Tag  := 0;
     pnFotos.Visible := False;
-    edLocalizacao.Clear;
+    edCodigoLocalizacao.Clear;
+    edNomeLocalizacao.Clear;
     LimpaImagens;
 
     if Parametros.Acao = eNovo then begin //Caso for Chamada de outra tela carregar com o Cadastro do Planta
@@ -272,13 +281,15 @@ begin
         SQL.SQL.Add('	OPFE.QUANTIDADEESTIMADA,');
         SQL.SQL.Add('	OPFE.PREVISAOINICIO,');
         SQL.SQL.Add('	OPFE.PREVISAOTERMINO,');
-        SQL.SQL.Add('	OPFE.LOCALIZACAO');
+        SQL.SQL.Add('	OPFE.LOCALIZACAO_ID,');
+        SQL.SQL.Add('	LC.NOME AS LOCALIZACAO');
         SQL.SQL.Add('FROM OPFINAL_ESTAGIO OPFE');
         SQL.SQL.Add('INNER JOIN OPFINAL OPF ON (OPF.ID = OPFE.OPFINAL_ID)');
         SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
         SQL.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
         SQL.SQL.Add('INNER JOIN PRODUTO PR ON (PR.ID = OPF.PRODUTO_ID)');
         SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPFE.MEIOCULTURA_ID)');
+        SQL.SQL.Add('INNER JOIN LOCALIZACAO LC ON (OPFE.LOCALIZACAO_ID = LC.ID)');
         SQL.SQL.Add('WHERE 1 = 1');
         SQL.SQL.Add('AND OPFE.ID = :IDOPFE');
         SQL.Connection                      := FWC.FDConnection;
@@ -302,7 +313,8 @@ begin
             edQuantidadeEstimada.Text   := SQL.FieldByName('QUANTIDADEESTIMADA').AsString;
             edDataPrevistaInicio.Date   := SQL.FieldByName('PREVISAOINICIO').AsDateTime;
             edDataPrevistaTermino.Date  := SQL.FieldByName('PREVISAOTERMINO').AsDateTime;
-            edLocalizacao.Text          := SQL.FieldByName('LOCALIZACAO').AsString;
+            edCodigoLocalizacao.Text    := SQL.FieldByName('LOCALIZACAO_ID').AsString;
+            edNomeLocalizacao.Text      := SQL.FieldByName('LOCALIZACAO').AsString;
             pnFotos.Visible             := True;
           end;
         end;
@@ -529,7 +541,7 @@ begin
       OPFE.QUANTIDADEESTIMADA.Value   := StrToIntDef(edQuantidadeEstimada.Text,0);
       OPFE.PREVISAOINICIO.Value       := edDataPrevistaInicio.Date;
       OPFE.PREVISAOTERMINO.Value      := edDataPrevistaTermino.Date;
-      OPFE.LOCALIZACAO.Value          := edLocalizacao.Text;
+      OPFE.LOCALIZACAO_ID.Value       := StrToIntDef(edCodigoLocalizacao.Text,0);
 
       if ID > 0 then begin
         OPFE.ID.Value          := ID;
@@ -888,6 +900,38 @@ begin
       edDescEstagio.Text := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
   finally
     FreeAndNil(E);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmControleEstagioOPF.edCodigoLocalizacaoChange(Sender: TObject);
+begin
+  edNomeLocalizacao.Clear;
+end;
+
+procedure TfrmControleEstagioOPF.edCodigoLocalizacaoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    edCodigoLocalizacaoRightButtonClick(nil);
+end;
+
+procedure TfrmControleEstagioOPF.edCodigoLocalizacaoRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  L  : TLOCALIZACAO;
+begin
+  FWC := TFWConnection.Create;
+  L   := TLOCALIZACAO.Create(FWC);
+
+  try
+    edCodigoLocalizacao.Text := IntToStr(DMUtil.Selecionar(L, edCodigoLocalizacao.Text, ''));
+    L.SelectList('id = ' + edCodigoLocalizacao.Text);
+    if L.Count = 1 then
+      edNomeLocalizacao.Text := TLOCALIZACAO(L.Itens[0]).NOME.asString;
+  finally
+    FreeAndNil(L);
     FreeAndNil(FWC);
   end;
 end;

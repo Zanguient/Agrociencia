@@ -56,6 +56,8 @@ type
     procedure btnAdicionarClick(Sender: TObject);
     procedure edCodigoLocalizacaoRightButtonClick(Sender: TObject);
     procedure edCodigoLocalizacaoChange(Sender: TObject);
+    procedure edCodigoLocalizacaoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     function AtualizaLocalizacao : Boolean;
     { Private declarations }
@@ -251,6 +253,13 @@ end;
 procedure TfrmImpressaoEtiquetas.edCodigoLocalizacaoChange(Sender: TObject);
 begin
   edNomeLocalizacao.Clear;
+end;
+
+procedure TfrmImpressaoEtiquetas.edCodigoLocalizacaoKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    edCodigoLocalizacaoRightButtonClick(nil);
 end;
 
 procedure TfrmImpressaoEtiquetas.edCodigoLocalizacaoRightButtonClick(
