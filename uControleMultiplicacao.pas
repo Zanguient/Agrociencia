@@ -798,45 +798,63 @@ end;
 
 procedure TfrmControleMultiplicacao.GravarLote(FWC: TFWConnection);
 Var
+  OPFE  : TOPFINAL_ESTAGIO;
   OPFEL : TOPFINAL_ESTAGIO_LOTE;
   OPMC  : TORDEMPRODUCAOMC;
 begin
 
+  OPFE  := TOPFINAL_ESTAGIO.Create(FWC);
   OPFEL := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
   OPMC  := TORDEMPRODUCAOMC.Create(FWC);
   try
     try
 
-      OPFEL.SelectList('OPFINAL_ESTAGIO_ID = ' + IntToStr(MULTIPLICACAO.IDESTAGIO) + ' AND NUMEROLOTE = ' + IntToStr(MULTIPLICACAO.NUMEROLOTE));
-      if OPFEL.Count = 0 then begin
-        OPFEL.ID.isNull                 := True;
-        OPFEL.OPFINAL_ESTAGIO_ID.Value  := MULTIPLICACAO.IDESTAGIO;
-        OPFEL.NUMEROLOTE.Value          := MULTIPLICACAO.NUMEROLOTE;
-        OPFEL.DATAHORAINICIO.Value      := MULTIPLICACAO.DATAHORAI;
-        OPFEL.DATAHORAFIM.Value         := Now;
-        OPFEL.USUARIO_ID.Value          := USUARIO.CODIGO;
-        OPFEL.OBSERVACAO.Value          := '';
-        OPFEL.QUANTIDADE.Value          := 0;
-        OPFEL.ESTACAOTRABALHO.Value     := MULTIPLICACAO.ESTACAOTRABALHO;
-        OPFEL.LOCALIZACAO.Value         := MULTIPLICACAO.LOCALIZACAO;
-        OPFEL.ORDEMPRODUCAOMC_ID.Value  := StrToInt(edOrdemProducaoMC.Text);
-        if MULTIPLICACAO.FIM then
-          OPFEL.QUANTIDADE.Value        := StrToInt(edQuantidadeSaida.Text);
-        OPFEL.Insert;
+      OPFE.SelectList('ID = ' + IntToStr(MULTIPLICACAO.IDESTAGIO));
+      if OPFE.Count > 0 then begin
 
-        OPMC.ID.Value                   := StrToInt(edOrdemProducaoMC.Text);
-        OPMC.SALDO.Value                := MULTIPLICACAO.SALDOMC - StrToFloat(edQuantidadeSaida.Text);
-        OPMC.Update;
+        OPFEL.SelectList('OPFINAL_ESTAGIO_ID = ' + IntToStr(MULTIPLICACAO.IDESTAGIO) + ' AND NUMEROLOTE = ' + IntToStr(MULTIPLICACAO.NUMEROLOTE));
+        if OPFEL.Count = 0 then begin
+          OPFEL.ID.isNull                 := True;
+          OPFEL.OPFINAL_ESTAGIO_ID.Value  := MULTIPLICACAO.IDESTAGIO;
+          OPFEL.NUMEROLOTE.Value          := MULTIPLICACAO.NUMEROLOTE;
+          OPFEL.DATAHORAINICIO.Value      := MULTIPLICACAO.DATAHORAI;
+          OPFEL.DATAHORAFIM.Value         := Now;
+          OPFEL.USUARIO_ID.Value          := USUARIO.CODIGO;
+          OPFEL.OBSERVACAO.Value          := '';
+          OPFEL.QUANTIDADE.Value          := 0;
+          OPFEL.ESTACAOTRABALHO.Value     := MULTIPLICACAO.ESTACAOTRABALHO;
+          OPFEL.LOCALIZACAO.Value         := MULTIPLICACAO.LOCALIZACAO;
+          OPFEL.ORDEMPRODUCAOMC_ID.Value  := StrToInt(edOrdemProducaoMC.Text);
+          if MULTIPLICACAO.FIM then
+            OPFEL.QUANTIDADE.Value        := StrToInt(edQuantidadeSaida.Text);
+          OPFEL.Insert;
 
-        MULTIPLICACAO.IDLOTE            := OPFEL.ID.Value;
+          OPMC.ID.Value                   := StrToInt(edOrdemProducaoMC.Text);
+          OPMC.SALDO.Value                := MULTIPLICACAO.SALDOMC - StrToFloat(edQuantidadeSaida.Text);
+          OPMC.Update;
+
+          OPFE.ID.Value := TOPFINAL_ESTAGIO(OPFE.Itens[0]).ID.Value;
+
+          //Caso ainda não tenha a data início na teoria será o primeiro lote e grava a Data e Hora de Início de Produção
+          if TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAINICIO.isNull then
+            OPFE.DATAHORAINICIO.Value := OPFEL.DATAHORAINICIO.Value;
+
+          OPFE.DATAHORAFIM.Value := OPFEL.DATAHORAFIM.Value;
+          OPFE.Update;
+
+          MULTIPLICACAO.IDLOTE            := OPFEL.ID.Value;
+        end else
+          MULTIPLICACAO.IDLOTE            := TOPFINAL_ESTAGIO_LOTE(OPFEL.Itens[0]).ID.Value;
       end else
-        MULTIPLICACAO.IDLOTE            := TOPFINAL_ESTAGIO_LOTE(OPFEL.Itens[0]).ID.Value;
+        raise EAbort.Create('Estágio ' + IntToStr(MULTIPLICACAO.IDESTAGIO) + ' não Encontrado, Verifique!');
+
     except
       on E : Exception do begin
         raise EAbort.Create('Erro ao Gravar o Lote.: ' + E.Message);
       end;
     end;
   finally
+    FreeAndNil(OPFE);
     FreeAndNil(OPFEL);
     FreeAndNil(OPMC);
   end;

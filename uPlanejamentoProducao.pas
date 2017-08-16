@@ -130,6 +130,43 @@ type
     btConsultaOPSE: TBitBtn;
     edCodigoSolucaoOPSE: TButtonedEdit;
     edNomeSolucaoOPSE: TEdit;
+    CDS_PLANTASVARIEDADE: TStringField;
+    edCodigoVariedadeRP: TButtonedEdit;
+    edNomeVariedadeRP: TEdit;
+    edNomeVariedadeGNOP: TEdit;
+    edCodigoVariedadeGNOP: TButtonedEdit;
+    edNomeVariedadeOPG: TEdit;
+    edCodigoVariedadeOPG: TButtonedEdit;
+    CDS_NOVAOPVARIEDADE: TStringField;
+    CDS_OPGERADAVARIEDADE: TStringField;
+    TSIE: TTabSheet;
+    Panel8: TPanel;
+    GroupBox1: TGroupBox;
+    edDataIE: TJvDateEdit;
+    btConsultaIE: TBitBtn;
+    edCodigoEstagioIE: TButtonedEdit;
+    edDescricaoEstagioIE: TEdit;
+    edDescricaoEspecieIE: TEdit;
+    edCodigoEspecieIE: TButtonedEdit;
+    edNomeVariedadeIE: TEdit;
+    edCodigoVariedadeIE: TButtonedEdit;
+    Panel9: TPanel;
+    SpeedButton6: TSpeedButton;
+    btExportarIE: TSpeedButton;
+    btRelatorioIE: TSpeedButton;
+    btAlterarIE: TSpeedButton;
+    btNovoIE: TSpeedButton;
+    gdIniciandoEstagio: TDBGrid;
+    DS_INICIANDOESTAGIO: TDataSource;
+    CDS_INICIANDOESTAGIO: TClientDataSet;
+    CDS_INICIANDOESTAGIOID: TIntegerField;
+    CDS_INICIANDOESTAGIOIDOPF: TIntegerField;
+    CDS_INICIANDOESTAGIODATA: TDateField;
+    CDS_INICIANDOESTAGIOESPECIE: TStringField;
+    CDS_INICIANDOESTAGIOVARIEDADE: TStringField;
+    CDS_INICIANDOESTAGIOESTAGIOATUAL: TStringField;
+    CDS_INICIANDOESTAGIOCODIGOMC: TStringField;
+    CDS_INICIANDOESTAGIOSALDOPOTES: TIntegerField;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -183,6 +220,18 @@ type
     procedure edCodigoSolucaoOPSEKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edCodigoSolucaoOPSERightButtonClick(Sender: TObject);
+    procedure edCodigoVariedadeChange(Sender: TObject);
+    procedure edCodigoVariedadeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoVariedadeRightButtonClick(Sender: TObject);
+    procedure gdIniciandoEstagioCellClick(Column: TColumn);
+    procedure gdIniciandoEstagioDrawColumnCell(Sender: TObject;
+      const Rect: TRect; DataCol: Integer; Column: TColumn;
+      State: TGridDrawState);
+    procedure gdIniciandoEstagioTitleClick(Column: TColumn);
+    procedure btRelatorioIEClick(Sender: TObject);
+    procedure btAlterarIEClick(Sender: TObject);
+    procedure btNovoIEClick(Sender: TObject);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -191,6 +240,7 @@ type
     procedure CarregarGerarNovaOP;
     procedure CarregarOPGerada;
     procedure CarregarESolEstoque;
+    procedure CarregarIniciandoEstagio;
     procedure AtualizaABA;
     { Private declarations }
   public
@@ -215,7 +265,7 @@ uses
   uDetalhesEstagio,
   uBeanOPFinal,
   uBeanOrdemProducaoMC, uBeanOrdemProducaoSolucao, uBeanCliente, uBeanProdutos,
-  uBeanEstagio;
+  uBeanEstagio, uBeanVariedade;
 
 {$R *.dfm}
 
@@ -231,11 +281,35 @@ begin
   if (Sender as TSpeedButton).Tag = 0 then begin
     (Sender as TSpeedButton).Tag := 1;
     try
-      if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('ID')) then begin
+      if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('IDOPF')) then begin
         if not Assigned(frmControleEstagioOPF) then
           frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
         try
-          frmControleEstagioOPF.Parametros.Codigo := 0;
+          frmControleEstagioOPF.Parametros.Codigo := Self.gdGerarOP.DataSource.DataSet.FindField('IDOPF').AsInteger;
+          frmControleEstagioOPF.Parametros.Acao   := eNovo;
+          frmControleEstagioOPF.ShowModal;
+        finally
+          FreeAndNil(frmControleEstagioOPF);
+        end;
+        AtualizaABA;
+      end;
+
+    finally
+      (Sender as TSpeedButton).Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.btNovoIEClick(Sender: TObject);
+begin
+  if (Sender as TSpeedButton).Tag = 0 then begin
+    (Sender as TSpeedButton).Tag := 1;
+    try
+      if Assigned(Self.gdIniciandoEstagio.DataSource.DataSet.FindField('IDOPF')) then begin
+        if not Assigned(frmControleEstagioOPF) then
+          frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
+        try
+          frmControleEstagioOPF.Parametros.Codigo := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('IDOPF').AsInteger;
           frmControleEstagioOPF.Parametros.Acao   := eNovo;
           frmControleEstagioOPF.ShowModal;
         finally
@@ -359,6 +433,21 @@ begin
   end;
 end;
 
+procedure TfrmPlanejamentoProducao.btRelatorioIEClick(Sender: TObject);
+begin
+  if (Sender as TSpeedButton).Tag = 0 then begin
+    (Sender as TSpeedButton).Tag := 1;
+    try
+      if not Self.gdIniciandoEstagio.DataSource.DataSet.IsEmpty then begin
+        if Assigned(Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID')) then
+          ImprimirOPFE(Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID').AsInteger);
+      end;
+    finally
+      (Sender as TSpeedButton).Tag := 0;
+    end;
+  end;
+end;
+
 procedure TfrmPlanejamentoProducao.btRelatorioOPGClick(Sender: TObject);
 begin
   if (Sender as TSpeedButton).Tag = 0 then begin
@@ -419,8 +508,10 @@ begin
           AutoSizeDBGrid(gdOPGerada)
         else
           if PageControl1.ActivePage = TSOPESOL then
-            AutoSizeDBGrid(gdOPESolEstoque);
-
+            AutoSizeDBGrid(gdOPESolEstoque)
+          else
+            if PageControl1.ActivePage = TSIE then
+              AutoSizeDBGrid(gdIniciandoEstagio);
 end;
 
 procedure TfrmPlanejamentoProducao.AtualizaABA;
@@ -438,7 +529,10 @@ begin
           CarregarOPGerada
         else
           if PageControl1.ActivePage = TSOPESOL then
-            CarregarESolEstoque;
+            CarregarESolEstoque
+          else
+            if PageControl1.ActivePage = TSIE then
+              CarregarIniciandoEstagio;
 end;
 
 procedure TfrmPlanejamentoProducao.btAlterarGNOPClick(Sender: TObject);
@@ -453,6 +547,32 @@ begin
             frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
           try
             frmControleEstagioOPF.Parametros.Codigo := Self.gdGerarOP.DataSource.DataSet.FindField('ID').AsInteger;
+            frmControleEstagioOPF.Parametros.Acao   := eAlterar;
+            frmControleEstagioOPF.ShowModal;
+          finally
+            FreeAndNil(frmControleEstagioOPF);
+          end;
+          AtualizaABA;
+        end;
+      end;
+    finally
+      (Sender as TSpeedButton).Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.btAlterarIEClick(Sender: TObject);
+begin
+  if (Sender as TSpeedButton).Tag = 0 then begin
+    (Sender as TSpeedButton).Tag := 1;
+    try
+
+      if Assigned(Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID')) then begin
+        if not Self.gdIniciandoEstagio.DataSource.DataSet.IsEmpty then begin
+          if not Assigned(frmControleEstagioOPF) then
+            frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
+          try
+            frmControleEstagioOPF.Parametros.Codigo := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID').AsInteger;
             frmControleEstagioOPF.Parametros.Acao   := eAlterar;
             frmControleEstagioOPF.ShowModal;
           finally
@@ -785,7 +905,15 @@ begin
                 end;
 
                 ExpDbGridXLS(gdOPESolEstoque, 'Ordem de Produção Solução Estoque.xls');
-              end;
+              end else
+                if (Sender as TSpeedButton) = btExportarIE then begin
+                  if gdIniciandoEstagio.DataSource.DataSet.IsEmpty then begin
+                    DisplayMsg(MSG_WAR, 'Não há Dados para Exportar, Verifique!');
+                    Exit;
+                  end;
+
+                  ExpDbGridXLS(gdIniciandoEstagio, 'Iniciando Estágio.xls');
+                end;
     finally
       (Sender as TSpeedButton).Tag := 0;
       (Sender as TSpeedButton).Caption := 'E&xportar';
@@ -890,6 +1018,7 @@ begin
       Consulta.SQL.Add('	OPF.ID AS IDOPF,');
       Consulta.SQL.Add('	OPFE.PREVISAOTERMINO AS DATA,');
       Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
+      Consulta.SQL.Add('	V.NOME AS VARIEDADE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOATUAL,');
       Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC');
       Consulta.SQL.Add('FROM OPFINAL OPF');
@@ -898,10 +1027,12 @@ begin
       Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID_PRODUTO = P.ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND (OPF.CANCELADO = FALSE)');
       Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
       Consulta.SQL.Add('AND ((:CODIGOESTAGIO = -1) OR (E.ID = :CODIGOESTAGIO))');
+      Consulta.SQL.Add('AND ((:CODIGOVARIEDADE = -1) OR (V.ID = :CODIGOVARIEDADE))');
       Consulta.SQL.Add('AND CAST(OPFE.PREVISAOTERMINO AS DATE) <= :DATA');
       Consulta.SQL.Add('ORDER BY OPFE.PREVISAOTERMINO ASC');
 
@@ -909,9 +1040,11 @@ begin
 
       Consulta.ParamByName('CODIGOESPECIE').DataType  := ftInteger;
       Consulta.ParamByName('CODIGOESTAGIO').DataType  := ftInteger;
+      Consulta.ParamByName('CODIGOVARIEDADE').DataType:= ftInteger;
       Consulta.ParamByName('DATA').DataType           := ftDate;
       Consulta.ParamByName('CODIGOESPECIE').Value     := StrToIntDef(edCodigoEspecieGNOP.Text, -1);
       Consulta.ParamByName('CODIGOESTAGIO').Value     := StrToIntDef(edCodigoEstagioGNOP.Text, -1);
+      Consulta.ParamByName('CODIGOVARIEDADE').Value   := StrToIntDef(edCodigoVariedadeGNOP.Text, -1);
       Consulta.ParamByName('DATA').Value              := edDataGNOP.Date;
 
       Consulta.Prepare;
@@ -949,6 +1082,7 @@ begin
               CDS_NOVAOPIDOPF.Value         := Consulta.FieldByName('IDOPF').AsInteger;
               CDS_NOVAOPDATA.Value          := Consulta.FieldByName('DATA').AsDateTime;
               CDS_NOVAOPESPECIE.Value       := Consulta.FieldByName('ESPECIE').AsString;
+              CDS_NOVAOPVARIEDADE.Value     := Consulta.FieldByName('VARIEDADE').AsString;
               CDS_NOVAOPESTAGIOATUAL.Value  := Consulta.FieldByName('ESTAGIOATUAL').AsString;
               CDS_NOVAOPCODIGOMC.Value      := Consulta.FieldByName('CODIGOMC').AsString;
               CDS_NOVAOPSALDOPOTES.Value    := ConsultaPotes.FieldByName('SALDOPOTES').AsInteger;
@@ -968,6 +1102,122 @@ begin
     end;
   finally
     CDS_NOVAOP.EnableControls;
+    FreeAndNil(ConsultaPotes);
+    FreeAndNil(Consulta);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.CarregarIniciandoEstagio;
+var
+  FWC       : TFWConnection;
+  Consulta  : TFDQuery;
+  ConsultaPotes : TFDQuery;
+begin
+
+  FWC       := TFWConnection.Create;
+  Consulta  := TFDQuery.Create(nil);
+  ConsultaPotes := TFDQuery.Create(nil);
+
+  try
+    try
+
+      CDS_INICIANDOESTAGIO.DisableControls;
+
+      CDS_INICIANDOESTAGIO.EmptyDataSet;
+
+      Consulta.Close;
+      Consulta.SQL.Clear;
+      Consulta.SQL.Add('SELECT');
+      Consulta.SQL.Add('	OPFE.ID AS IDOPFE,');
+      Consulta.SQL.Add('	OPF.ID AS IDOPF,');
+      Consulta.SQL.Add('	OPFE.PREVISAOTERMINO AS DATA,');
+      Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
+      Consulta.SQL.Add('	V.NOME AS VARIEDADE,');
+      Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOATUAL,');
+      Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC');
+      Consulta.SQL.Add('FROM OPFINAL OPF');
+      Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+      Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
+      Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
+      Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID_PRODUTO = P.ID)');
+      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND (OPF.CANCELADO = FALSE)');
+      Consulta.SQL.Add('AND OPFE.DATAHORAINICIO IS NOT NULL');
+      Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
+      Consulta.SQL.Add('AND ((:CODIGOESTAGIO = -1) OR (E.ID = :CODIGOESTAGIO))');
+      Consulta.SQL.Add('AND ((:CODIGOVARIEDADE = -1) OR (V.ID = :CODIGOVARIEDADE))');
+      Consulta.SQL.Add('AND CAST(OPFE.DATAHORAINICIO AS DATE) >= :DATA');
+      Consulta.SQL.Add('ORDER BY OPFE.DATAHORAINICIO ASC');
+
+      Consulta.Connection                     := FWC.FDConnection;
+
+      Consulta.ParamByName('CODIGOESPECIE').DataType  := ftInteger;
+      Consulta.ParamByName('CODIGOESTAGIO').DataType  := ftInteger;
+      Consulta.ParamByName('CODIGOVARIEDADE').DataType:= ftInteger;
+      Consulta.ParamByName('DATA').DataType           := ftDate;
+      Consulta.ParamByName('CODIGOESPECIE').Value     := StrToIntDef(edCodigoEspecieIE.Text, -1);
+      Consulta.ParamByName('CODIGOESTAGIO').Value     := StrToIntDef(edCodigoEstagioIE.Text, -1);
+      Consulta.ParamByName('CODIGOVARIEDADE').Value   := StrToIntDef(edCodigoVariedadeIE.Text, -1);
+      Consulta.ParamByName('DATA').Value              := edDataIE.Date;
+
+      Consulta.Prepare;
+      Consulta.Open;
+      Consulta.FetchAll;
+
+      if not Consulta.IsEmpty then begin
+
+        Consulta.First;
+
+        ConsultaPotes.Close;
+        ConsultaPotes.SQL.Clear;
+        ConsultaPotes.SQL.Add('SELECT');
+        ConsultaPotes.SQL.Add('	COUNT(OPFELS.ID) AS SALDOPOTES');
+        ConsultaPotes.SQL.Add('FROM OPFINAL_ESTAGIO OPFE');
+        ConsultaPotes.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPFEL ON (OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
+        ConsultaPotes.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+        ConsultaPotes.SQL.Add('WHERE 1 = 1');
+        ConsultaPotes.SQL.Add('AND OPFELS.BAIXADO = FALSE');
+        ConsultaPotes.SQL.Add('AND OPFE.ID = :IDOPFE');
+        ConsultaPotes.Connection  := FWC.FDConnection;
+
+        while not Consulta.Eof do begin
+
+          ConsultaPotes.Close;
+          ConsultaPotes.ParamByName('IDOPFE').DataType  := ftInteger;
+          ConsultaPotes.ParamByName('IDOPFE').Value     := Consulta.FieldByName('IDOPFE').AsInteger;
+          ConsultaPotes.Prepare;
+          ConsultaPotes.Open;
+          ConsultaPotes.FetchAll;
+          if not ConsultaPotes.IsEmpty then begin
+            if ConsultaPotes.FieldByName('SALDOPOTES').AsInteger > 0 then begin
+              CDS_INICIANDOESTAGIO.Append;
+              CDS_INICIANDOESTAGIOID.Value            := Consulta.FieldByName('IDOPFE').AsInteger;
+              CDS_INICIANDOESTAGIOIDOPF.Value         := Consulta.FieldByName('IDOPF').AsInteger;
+              CDS_INICIANDOESTAGIODATA.Value          := Consulta.FieldByName('DATA').AsDateTime;
+              CDS_INICIANDOESTAGIOESPECIE.Value       := Consulta.FieldByName('ESPECIE').AsString;
+              CDS_INICIANDOESTAGIOVARIEDADE.Value     := Consulta.FieldByName('VARIEDADE').AsString;
+              CDS_INICIANDOESTAGIOESTAGIOATUAL.Value  := Consulta.FieldByName('ESTAGIOATUAL').AsString;
+              CDS_INICIANDOESTAGIOCODIGOMC.Value      := Consulta.FieldByName('CODIGOMC').AsString;
+              CDS_INICIANDOESTAGIOSALDOPOTES.Value    := ConsultaPotes.FieldByName('SALDOPOTES').AsInteger;
+              CDS_INICIANDOESTAGIO.Post;
+            end;
+          end;
+          Consulta.Next;
+        end;
+      end;
+
+      TSIE.Caption    := 'Iniciando Estágio (' + IntToStr(CDS_INICIANDOESTAGIO.RecordCount) + ')';
+
+    Except
+      on E : Exception do begin
+        DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta Iniciando Estágio!', '', E.Message);
+      end;
+    end;
+  finally
+    CDS_INICIANDOESTAGIO.EnableControls;
     FreeAndNil(ConsultaPotes);
     FreeAndNil(Consulta);
     FreeAndNil(FWC);
@@ -1070,6 +1320,7 @@ begin
       Consulta.SQL.Add('	OPFE.ID,');
       Consulta.SQL.Add('	OPFE.PREVISAOINICIO AS DATA,');
       Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
+      Consulta.SQL.Add('	V.NOME AS VARIEDADE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOPREVISTO,');
       Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC');
       Consulta.SQL.Add('FROM OPFINAL OPF');
@@ -1078,10 +1329,12 @@ begin
       Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID_PRODUTO = P.ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND (OPF.CANCELADO = FALSE)');
       Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
       Consulta.SQL.Add('AND ((:CODIGOESTAGIO = -1) OR (E.ID = :CODIGOESTAGIO))');
+      Consulta.SQL.Add('AND ((:CODIGOVARIEDADE = -1) OR (V.ID = :CODIGOVARIEDADE))');
       Consulta.SQL.Add('AND (CAST(OPFE.PREVISAOINICIO AS DATE) <= :DATA)');
       Consulta.SQL.Add('AND (OPFE.DATAHORAFIM IS NULL)');
       Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO_LOTE OPFEL WHERE OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
@@ -1091,9 +1344,11 @@ begin
 
       Consulta.ParamByName('CODIGOESPECIE').DataType  := ftInteger;
       Consulta.ParamByName('CODIGOESTAGIO').DataType  := ftInteger;
+      Consulta.ParamByName('CODIGOVARIEDADE').DataType:= ftInteger;
       Consulta.ParamByName('DATA').DataType           := ftDate;
       Consulta.ParamByName('CODIGOESPECIE').Value     := StrToIntDef(edCodigoEspecieOPG.Text, -1);
       Consulta.ParamByName('CODIGOESTAGIO').Value     := StrToIntDef(edCodigoEstagioOPG.Text, -1);
+      Consulta.ParamByName('CODIGOVARIEDADE').Value   := StrToIntDef(edCodigoVariedadeOPG.Text, -1);
       Consulta.ParamByName('DATA').Value              := edDataOPG.Date;
 
       Consulta.Prepare;
@@ -1107,6 +1362,7 @@ begin
           CDS_OPGERADAID.Value            := Consulta.FieldByName('ID').AsInteger;
           CDS_OPGERADADATA.Value          := Consulta.FieldByName('DATA').AsDateTime;
           CDS_OPGERADAESPECIE.Value       := Consulta.FieldByName('ESPECIE').AsString;
+          CDS_OPGERADAVARIEDADE.Value     := Consulta.FieldByName('VARIEDADE').AsString;
           CDS_OPGERADAESTAGIOATUAL.Value  := Consulta.FieldByName('ESTAGIOPREVISTO').AsString;
           CDS_OPGERADACODIGOMC.Value      := Consulta.FieldByName('CODIGOMC').AsString;
           CDS_OPGERADA.Post;
@@ -1151,10 +1407,12 @@ begin
       Consulta.SQL.Add('	OPF.DATAESTIMADAPROCESSAMENTO AS DATA,');
       Consulta.SQL.Add('	C.NOME AS CLIENTE,');
       Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
+      Consulta.SQL.Add('	V.NOME AS VARIEDADE,');
       Consulta.SQL.Add('	OPF.SELECAOPOSITIVA AS SELECAOPOSITIVA,');
       Consulta.SQL.Add('	OPF.CODIGOSELECAOCAMPO AS CODIGOSELECAOCAMPO');
       Consulta.SQL.Add('FROM OPFINAL OPF');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID_PRODUTO = P.ID)');
       Consulta.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
@@ -1162,6 +1420,7 @@ begin
       Consulta.SQL.Add('AND OPF.DATAESTIMADAPROCESSAMENTO IS NOT NULL');
       Consulta.SQL.Add('AND ((:CODIGOCLIENTE = -1) OR (C.ID = :CODIGOCLIENTE))');
       Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
+      Consulta.SQL.Add('AND ((:CODIGOVARIEDADE = -1) OR (V.ID = :CODIGOVARIEDADE))');
       Consulta.SQL.Add('AND CAST(OPF.DATAESTIMADAPROCESSAMENTO AS DATE) <= :DATA');
       Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO OPFE WHERE OPFE.OPFINAL_ID = OPF.ID)');
       Consulta.SQL.Add('ORDER BY OPF.DATAESTIMADAPROCESSAMENTO ASC');
@@ -1170,9 +1429,11 @@ begin
 
       Consulta.ParamByName('CODIGOCLIENTE').DataType  := ftInteger;
       Consulta.ParamByName('CODIGOESPECIE').DataType  := ftInteger;
+      Consulta.ParamByName('CODIGOVARIEDADE').DataType:= ftInteger;
       Consulta.ParamByName('DATA').DataType           := ftDate;
       Consulta.ParamByName('CODIGOCLIENTE').Value     := StrToIntDef(edCodigoClienteRP.Text, -1);
       Consulta.ParamByName('CODIGOESPECIE').Value     := StrToIntDef(edCodigoEspecieRP.Text, -1);
+      Consulta.ParamByName('CODIGOVARIEDADE').Value   := StrToIntDef(edCodigoVariedadeRP.Text, -1);
       Consulta.ParamByName('DATA').Value              := edDataRP.Date;
 
       Consulta.Prepare;
@@ -1186,6 +1447,7 @@ begin
           CDS_PLANTASID.Value                 := Consulta.FieldByName('ID').AsInteger;
           CDS_PLANTASCLIENTE.Value            := Consulta.FieldByName('CLIENTE').AsString;
           CDS_PLANTASESPECIE.Value            := Consulta.FieldByName('ESPECIE').AsString;
+          CDS_PLANTASVARIEDADE.Value          := Consulta.FieldByName('VARIEDADE').AsString;
           CDS_PLANTASSELECAOPOSITIVA.Value    := Consulta.FieldByName('SELECAOPOSITIVA').AsString;
           CDS_PLANTASCODIGOSELECAOCAMPO.Value := Consulta.FieldByName('CODIGOSELECAOCAMPO').AsString;
           CDS_PLANTASDATA.Value               := Consulta.FieldByName('DATA').AsDateTime;
@@ -1216,6 +1478,7 @@ begin
   CarregarGerarNovaOP;
   CarregarOPGerada;
   CarregarESolEstoque;
+  CarregarIniciandoEstagio;
 end;
 
 procedure TfrmPlanejamentoProducao.edCodigoClienteChange(Sender: TObject);
@@ -1249,6 +1512,62 @@ begin
     end;
   finally
     FreeAndNil(C);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoVariedadeChange(Sender: TObject);
+begin
+  if (Sender as TButtonedEdit) = edCodigoVariedadeRP then
+    edNomeVariedadeRP.Clear
+  else
+    if (Sender as TButtonedEdit) = edCodigoVariedadeGNOP then
+      edNomeVariedadeGNOP.Clear
+    else
+      if (Sender as TButtonedEdit) = edCodigoVariedadeOPG then
+        edNomeVariedadeOPG.Clear;
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoVariedadeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+    edCodigoVariedadeRightButtonClick(Sender);
+end;
+
+procedure TfrmPlanejamentoProducao.edCodigoVariedadeRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  V   : TVARIEDADE;
+begin
+
+  FWC := TFWConnection.Create;
+  V   := TVARIEDADE.Create(FWC);
+
+  try
+
+    (Sender as TButtonedEdit).Tag := DMUtil.Selecionar(V, (Sender as TButtonedEdit).Text, '');
+    if (Sender as TButtonedEdit).Tag > 0 then begin
+      V.SelectList('id = ' + IntToStr((Sender as TButtonedEdit).Tag));
+      if V.Count > 0 then begin
+        if (Sender as TButtonedEdit) = edCodigoVariedadeRP then begin
+          edCodigoVariedadeRP.Text := TVARIEDADE(V.Itens[0]).ID.asString;
+          edNomeVariedadeRP.Text   := TVARIEDADE(V.Itens[0]).NOME.asString;
+        end else
+          if (Sender as TButtonedEdit) = edCodigoVariedadeGNOP then begin
+            edCodigoVariedadeGNOP.Text  := TVARIEDADE(V.Itens[0]).ID.asString;
+            edNomeVariedadeGNOP.Text    := TVARIEDADE(V.Itens[0]).NOME.asString;
+          end else
+            if (Sender as TButtonedEdit) = edCodigoVariedadeOPG then begin
+              edCodigoVariedadeOPG.Text := TVARIEDADE(V.Itens[0]).ID.asString;
+              edNomeVariedadeOPG.Text   := TVARIEDADE(V.Itens[0]).NOME.asString;
+            end;
+      end;
+    end else
+      edCodigoVariedadeChange(Sender);
+  finally
+    FreeAndNil(V);
     FreeAndNil(FWC);
   end;
 end;
@@ -1462,6 +1781,7 @@ begin
   CDS_NOVAOP.CreateDataSet;
   CDS_OPGERADA.CreateDataSet;
   CDS_ESOLESTOQUE.CreateDataSet;
+  CDS_INICIANDOESTAGIO.CreateDataSet;
   AjustaForm(Self);
 end;
 
@@ -1470,32 +1790,18 @@ procedure TfrmPlanejamentoProducao.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   case Key of
     VK_ESCAPE : Close;
-    VK_F5 : begin
-      if PageControl1.ActivePage = TSRP then
-        CarregarRecebimentoPlantas
-      else
-        if PageControl1.ActivePage = TSMC then
-          CarregarMeiodeCultura
-        else
-          if PageControl1.ActivePage = TSNOP then
-            CarregarGerarNovaOP
-        else
-          if PageControl1.ActivePage = TSOPG then
-            CarregarOPGerada
-        else
-          if PageControl1.ActivePage = TSOPESOL then
-            CarregarESolEstoque;
-    end;
+    VK_F5 : AtualizaABA;
   end;
 end;
 
 procedure TfrmPlanejamentoProducao.FormShow(Sender: TObject);
 begin
-  edDataRP.Date    := Date + 7;
-  edDataOPMC.Date    := Date + 7;
-  edDataGNOP.Date    := Date + 7;
+  edDataRP.Date     := Date + 7;
+  edDataOPMC.Date   := Date + 7;
+  edDataGNOP.Date   := Date + 7;
   edDataOPG.Date    := Date + 7;
-  edDataOPSE.Date    := Date + 7;
+  edDataOPSE.Date   := Date + 7;
+  edDataIE.Date     := Date - 7;
   ConsultaDados;
   AjustaGrid;
 end;
@@ -1503,21 +1809,23 @@ end;
 procedure TfrmPlanejamentoProducao.gdGerarOPCellClick(Column: TColumn);
 begin
   if gdGerarOP.SelectedField.FieldName = 'SALDOPOTES' then begin
-    if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('ID')) then begin
-      if not Assigned(frmDetalhesEstagio) then
-        frmDetalhesEstagio := TfrmDetalhesEstagio.Create(nil);
-      try
-        frmDetalhesEstagio.Param.IDOPFE := Self.gdGerarOP.DataSource.DataSet.FindField('ID').AsInteger;
+    if not Self.gdGerarOP.DataSource.DataSet.IsEmpty then begin
+      if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('ID')) then begin
+        if not Assigned(frmDetalhesEstagio) then
+          frmDetalhesEstagio := TfrmDetalhesEstagio.Create(nil);
+        try
+          frmDetalhesEstagio.Param.IDOPFE := Self.gdGerarOP.DataSource.DataSet.FindField('ID').AsInteger;
 
-        frmDetalhesEstagio.Param.UNIDADES := 0;
-        if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('SALDOPOTES')) then
-          frmDetalhesEstagio.Param.UNIDADES := Self.gdGerarOP.DataSource.DataSet.FindField('SALDOPOTES').AsInteger;
+          frmDetalhesEstagio.Param.UNIDADES := 0;
+          if Assigned(Self.gdGerarOP.DataSource.DataSet.FindField('SALDOPOTES')) then
+            frmDetalhesEstagio.Param.UNIDADES := Self.gdGerarOP.DataSource.DataSet.FindField('SALDOPOTES').AsInteger;
 
-        frmDetalhesEstagio.ShowModal;
-      finally
-        FreeAndNil(frmDetalhesEstagio);
+          frmDetalhesEstagio.ShowModal;
+        finally
+          FreeAndNil(frmDetalhesEstagio);
+        end;
+        AtualizaABA;
       end;
-      AtualizaABA;
     end;
   end;
 end;
@@ -1551,6 +1859,65 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.gdGerarOPTitleClick(Column: TColumn);
+begin
+  OrdenarGrid(Column);
+end;
+
+procedure TfrmPlanejamentoProducao.gdIniciandoEstagioCellClick(Column: TColumn);
+begin
+  if gdIniciandoEstagio.SelectedField.FieldName = 'SALDOPOTES' then begin
+    if not Self.gdIniciandoEstagio.DataSource.DataSet.IsEmpty then begin
+      if Assigned(Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID')) then begin
+        if not Assigned(frmDetalhesEstagio) then
+          frmDetalhesEstagio := TfrmDetalhesEstagio.Create(nil);
+        try
+          frmDetalhesEstagio.Param.IDOPFE := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID').AsInteger;
+
+          frmDetalhesEstagio.Param.UNIDADES := 0;
+          if Assigned(Self.gdIniciandoEstagio.DataSource.DataSet.FindField('SALDOPOTES')) then
+            frmDetalhesEstagio.Param.UNIDADES := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('SALDOPOTES').AsInteger;
+
+          frmDetalhesEstagio.ShowModal;
+        finally
+          FreeAndNil(frmDetalhesEstagio);
+        end;
+        AtualizaABA;
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.gdIniciandoEstagioDrawColumnCell(
+  Sender: TObject; const Rect: TRect; DataCol: Integer; Column: TColumn;
+  State: TGridDrawState);
+var
+  BUTTON: Integer;
+  R: TRect;
+  SCapt : string;
+begin
+  if Pos(Column.FieldName, '|SALDOPOTES|') > 0 then begin
+    gdIniciandoEstagio.Canvas.FillRect(Rect);
+    BUTTON  := 0;
+    R       := Rect;
+    SCapt   := Column.Title.Caption;
+
+    if Column.FieldName = 'SALDOPOTES' then begin
+      if Assigned(Self.gdIniciandoEstagio.DataSource.DataSet.FindField('SALDOPOTES')) then
+        SCapt := Self.gdIniciandoEstagio.DataSource.DataSet.FieldByName('SALDOPOTES').AsString;
+    end;
+
+    InflateRect(R,-2,-2); //Diminue o tamanho do Botão
+    DrawFrameControl(gdIniciandoEstagio.Canvas.Handle,R,BUTTON, BUTTON or BUTTON);
+    with gdIniciandoEstagio.Canvas do begin
+      Brush.Style := bsClear;
+      Font.Color  := clBtnText;
+      TextRect(Rect, (Rect.Left + Rect.Right - TextWidth(SCapt)) div 2, (Rect.Top + Rect.Bottom - TextHeight(SCapt)) div 2, SCapt);
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.gdIniciandoEstagioTitleClick(
+  Column: TColumn);
 begin
   OrdenarGrid(Column);
 end;

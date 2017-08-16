@@ -537,7 +537,7 @@ begin
       end else begin
         OPFE.ID.isNull            := True;
         OPFE.DATAHORA.Value       := Now;
-        OPFE.DATAHORAINICIO.Value := Now;
+        OPFE.DATAHORAINICIO.isNull:= True; //Será Preenchido na Primeira Produção
         OPFE.USUARIO_ID.Value     := USUARIO.CODIGO;
 
         //Verifica a sequencia do estágio
@@ -1034,6 +1034,7 @@ begin
     eNovo   : begin
       if not Inserir then
         PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+      edCodigoOPF.Text := IntToStr(Parametros.Codigo);
     end;
     eAlterar: begin
       if Parametros.Codigo > 0 then begin
