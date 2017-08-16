@@ -53,6 +53,7 @@ type
     ProduoporOP1: TMenuItem;
     PerdaporOperador1: TMenuItem;
     Variedade1: TMenuItem;
+    Localizao1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RedefinirSenhaClick(Sender: TObject);
@@ -90,6 +91,7 @@ type
     procedure ProduoporOP1Click(Sender: TObject);
     procedure PerdaporOperador1Click(Sender: TObject);
     procedure Variedade1Click(Sender: TObject);
+    procedure Localizao1Click(Sender: TObject);
   private
     procedure FecharSistema;
     { Private declarations }
@@ -144,7 +146,8 @@ uses
   uRelProducaoOperador,
   uRelProducaoOP,
   uRelPerdaOperador,
-  uCadastroVariedade;
+  uCadastroVariedade,
+  uCadastroLocalizacao;
 
 {$R *.dfm}
 
@@ -271,6 +274,18 @@ begin
   CriarComandoSequenciaMenu(MainMenu1);
 
   Caption := 'Sistema Vivetech Agrociências - Usuário: ' + IntToStr(USUARIO.CODIGO) + ' - ' + USUARIO.NOME;
+end;
+
+procedure TfrmPrincipal.Localizao1Click(Sender: TObject);
+begin
+  if not Assigned(frmCadastroLocalizacao) then
+    frmCadastroLocalizacao := TfrmCadastroLocalizacao.Create(nil);
+  try
+    frmCadastroLocalizacao.ShowModal;
+  finally
+    FreeAndNil(frmCadastroLocalizacao);
+  end;
+
 end;
 
 procedure TfrmPrincipal.Agendamento1Click(Sender: TObject);

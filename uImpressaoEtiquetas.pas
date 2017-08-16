@@ -16,7 +16,7 @@ type
     ESTAGIO : Integer;
     IDLOTE : Integer;
     CODIGOMC : string;
-    LOCALIZACAO : string;
+    LOCALIZACAO_ID : Integer;
   end;
 
 type
@@ -43,14 +43,19 @@ type
     cds_ItensCODIGOMC: TStringField;
     edCodigoUsuario: TLabeledEdit;
     edNomeUsuario: TLabeledEdit;
-    edLocalizacao: TLabeledEdit;
     cds_ItensNUMEROLOTE: TStringField;
+    edNomeLocalizacao: TEdit;
+    edCodigoLocalizacao: TButtonedEdit;
+    Label2: TLabel;
+    Label1: TLabel;
     procedure btFecharClick(Sender: TObject);
     procedure btEtiquetasClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure cds_ItensAfterPost(DataSet: TDataSet);
     procedure btnAdicionarClick(Sender: TObject);
+    procedure edCodigoLocalizacaoRightButtonClick(Sender: TObject);
+    procedure edCodigoLocalizacaoChange(Sender: TObject);
   private
     function AtualizaLocalizacao : Boolean;
     { Private declarations }
@@ -77,7 +82,8 @@ uses
   uConstantes,
   uDMUtil, 
   uBeanUsuario,
-  uBeanMotivoDescarte;
+  uBeanMotivoDescarte,
+  uBeanLocalizacao;
 {$R *.dfm}
 
 function TfrmImpressaoEtiquetas.AtualizaLocalizacao : Boolean;
@@ -88,7 +94,7 @@ begin
 
   Result := True;
 
-  if edLocalizacao.Enabled then begin
+  if edCodigoLocalizacao.Enabled then begin
 
     Result := False;
 
@@ -99,7 +105,7 @@ begin
       try
         try
           L.ID.Value          := LOTE.IDLOTE;
-          L.LOCALIZACAO.Value := edLocalizacao.Text;
+          L.LOCALIZACAO_ID.Value := StrToIntDef(edCodigoLocalizacao.Text,0);
           L.Update;
 
           Result := True;
@@ -125,11 +131,11 @@ begin
     btEtiquetas.Tag := 1;
     try
 
-      if edLocalizacao.Enabled then begin
-        if Length(Trim(edLocalizacao.Text)) = 0 then begin
+      if edCodigoLocalizacao.Enabled then begin
+        if Length(Trim(edNomeLocalizacao.Text)) = 0 then begin
           DisplayMsg(MSG_WAR, 'Obrigatório informar a Localização do Lote, Verifique!');
-          if edLocalizacao.CanFocus then
-            edLocalizacao.SetFocus;
+          if edCodigoLocalizacao.CanFocus then
+            edCodigoLocalizacao.SetFocus;
           Exit;
         end;
       end;
@@ -242,6 +248,31 @@ begin
   edt_Quantidade.Text := IntToStr(cds_Itens.RecordCount);
 end;
 
+procedure TfrmImpressaoEtiquetas.edCodigoLocalizacaoChange(Sender: TObject);
+begin
+  edNomeLocalizacao.Clear;
+end;
+
+procedure TfrmImpressaoEtiquetas.edCodigoLocalizacaoRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  L  : TLOCALIZACAO;
+begin
+  FWC := TFWConnection.Create;
+  L   := TLOCALIZACAO.Create(FWC);
+
+  try
+    edCodigoLocalizacao.Text := IntToStr(DMUtil.Selecionar(L, edCodigoLocalizacao.Text, ''));
+    L.SelectList('id = ' + edCodigoLocalizacao.Text);
+    if L.Count = 1 then
+      edNomeLocalizacao.Text := TLOCALIZACAO(L.Itens[0]).NOME.asString;
+  finally
+    FreeAndNil(L);
+    FreeAndNil(FWC);
+  end;
+end;
+
 procedure TfrmImpressaoEtiquetas.ExecutarEvento;
 var
   FWC       : TFWConnection;
@@ -253,6 +284,7 @@ var
   U         : TUSUARIO;
   L         : TOPFINAL_ESTAGIO_LOTE;
   LS        : TOPFINAL_ESTAGIO_LOTE_S;
+  LOCAL     : TLOCALIZACAO;
   I: Integer;
 begin
   if edCodigoOrdemProducao.Focused then begin
@@ -330,23 +362,27 @@ begin
     end;
   end else if edNumeroLoteEstagio.Focused then begin
     if StrToIntDef(edNumeroLoteEstagio.Text, 0) > 0 then begin
-      FWC := TFWConnection.Create;
-      U   := TUSUARIO.Create(FWC);
-      L   := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
-      LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
+      FWC   := TFWConnection.Create;
+      U     := TUSUARIO.Create(FWC);
+      L     := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
+      LOCAL := TLOCALIZACAO.Create(FWC);
+      LS    := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
       try
         L.SelectList('OPFINAL_ESTAGIO_ID = ' + IntToStr(LOTE.ESTAGIO) + ' AND NUMEROLOTE = ' + edNumeroLoteEstagio.Text);
         if L.Count > 0 then begin
           U.SelectList('ID = ' + TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).USUARIO_ID.asString);
           if U.Count > 0 then begin
 
-            edCodigoUsuario.Text  := TUSUARIO(U.Itens[0]).ID.asString;
-            edNomeUsuario.Text    := TUSUARIO(U.Itens[0]).NOME.asString;
-            edLocalizacao.Text    := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).LOCALIZACAO.asString;
-            LOTE.IDLOTE           := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).ID.Value;
-            LOTE.LOCALIZACAO      := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).LOCALIZACAO.asString;
+            edCodigoUsuario.Text        := TUSUARIO(U.Itens[0]).ID.asString;
+            edNomeUsuario.Text          := TUSUARIO(U.Itens[0]).NOME.asString;
+            edCodigoLocalizacao.Text    := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).LOCALIZACAO_ID.asString;
+            LOCAL.SelectList('ID = ' + TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).LOCALIZACAO_ID.asString);
+            if LOCAL.Count > 0 then
+              edNomeLocalizacao.Text := TLOCALIZACAO(LOCAL.Itens[0]).NOME.asString;
+            LOTE.IDLOTE                 := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).ID.Value;
+            LOTE.LOCALIZACAO_ID         := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).LOCALIZACAO_ID.Value;
 
-            edLocalizacao.Enabled := USUARIO.PERMITEINCLUIRETIQUETAS;
+            edCodigoLocalizacao.Enabled := USUARIO.PERMITEINCLUIRETIQUETAS;
 
             LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.IDLOTE) + ' AND (NOT BAIXADO)');
             if LS.Count > 0 then begin
@@ -367,6 +403,7 @@ begin
       finally
         FreeAndNil(U);
         FreeAndNil(L);
+        FreeAndNil(LOCAL);
         FreeAndNil(LS);
         FreeAndNil(FWC);
       end;
@@ -419,17 +456,18 @@ begin
   cds_Itens.EmptyDataSet;
   edt_Quantidade.Clear;
   btnAdicionar.Visible := False;
-  edLocalizacao.Enabled := False;
+  edCodigoLocalizacao.Enabled := False;
   edCodigoUsuario.Clear;
   edNomeUsuario.Clear;
-  edLocalizacao.Clear;
+  edCodigoLocalizacao.Clear;
+  edNomeLocalizacao.Clear;
 
   LOTE.ORDEMPRODUCAO := 0;
   LOTE.SEQUENCIA := 0;
   LOTE.ESTAGIO := 0;
   LOTE.IDLOTE := 0;
   LOTE.CODIGOMC := EmptyStr;
-  LOTE.LOCALIZACAO := EmptyStr;
+  LOTE.LOCALIZACAO_ID := 0;
 
   if edCodigoOrdemProducao.CanFocus then
     edCodigoOrdemProducao.SetFocus;

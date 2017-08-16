@@ -20,6 +20,7 @@ type
     FESTACAOTRABALHO: TFieldString;
     FORDEMPRODUCAOMC_ID: TFieldInteger;
     FLOCALIZACAO: TFieldString;
+    FLOCALIZACAO_ID: TFieldInteger;
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
     procedure SetID(const Value: TFieldInteger);
@@ -31,6 +32,7 @@ type
     procedure SetESTACAOTRABALHO(const Value: TFieldString);
     procedure SetORDEMPRODUCAOMC_ID(const Value: TFieldInteger);
     procedure SetLOCALIZACAO(const Value: TFieldString);
+    procedure SetLOCALIZACAO_ID(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
@@ -45,6 +47,7 @@ type
     property ESTACAOTRABALHO    : TFieldString read FESTACAOTRABALHO write SetESTACAOTRABALHO;
     property ORDEMPRODUCAOMC_ID : TFieldInteger read FORDEMPRODUCAOMC_ID write SetORDEMPRODUCAOMC_ID;
     property LOCALIZACAO        : TFieldString read FLOCALIZACAO write SetLOCALIZACAO;
+    property LOCALIZACAO_ID     : TFieldInteger read FLOCALIZACAO_ID write SetLOCALIZACAO_ID;
   end;
 
 implementation
@@ -88,6 +91,11 @@ end;
 procedure TOPFINAL_ESTAGIO_LOTE.SetLOCALIZACAO(const Value: TFieldString);
 begin
   FLOCALIZACAO := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO_LOTE.SetLOCALIZACAO_ID(const Value: TFieldInteger);
+begin
+  FLOCALIZACAO_ID := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO_LOTE.SetNUMEROLOTE(const Value: TFieldInteger);

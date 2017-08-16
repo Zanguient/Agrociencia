@@ -593,3 +593,26 @@ ALTER TABLE opfinal
    ON UPDATE CASCADE ON DELETE RESTRICT;
 
 ALTER TABLE opfinal DROP COLUMN cultivar;
+
+CREATE TABLE if not exists localizacao (
+id serial NOT NULL,
+estante integer,
+sala character varying(100),
+nome character varying(100),
+regimeiluminacao character varying(100),
+prateleiras integer,
+area double precision,
+temperatura double precision,
+CONSTRAINT pk_localizacao PRIMARY KEY (id)
+);
+
+INSERT INTO localizacao (id, estante, sala, nome, regimeiluminacao, prateleiras, area, temperatura) VALUES (0,0, 'Não Definido', 'Não Definido', 'Não Definido', 0, 0, 0);
+
+ALTER TABLE opfinal_estagio_lote
+   ADD COLUMN localizacao_id bigint;
+
+UPDATE opfinal_estagio_lote SET localizacao_id = 0;
+
+ALTER TABLE opfinal_estagio_lote 
+  ADD CONSTRAINT fk_opfel_localizacao FOREIGN KEY (localizacao_id) REFERENCES localizacao(id)
+   ON UPDATE CASCADE ON DELETE RESTRICT;

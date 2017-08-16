@@ -45,9 +45,38 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitLeft = 147
     DesignSize = (
       661
       283)
+    object Label2: TLabel
+      Left = 3
+      Top = 108
+      Width = 33
+      Height = 19
+      Caption = 'C'#243'd.'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label1: TLabel
+      Left = 63
+      Top = 108
+      Width = 85
+      Height = 19
+      Caption = 'Localiza'#231#227'o:'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
     object edNumeroLoteEstagio: TLabeledEdit
       Left = 2
       Top = 76
@@ -252,7 +281,7 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     end
     object edCodigoUsuario: TLabeledEdit
       Left = 2
-      Top = 180
+      Top = 187
       Width = 151
       Height = 27
       EditLabel.Width = 109
@@ -275,7 +304,7 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
     end
     object edNomeUsuario: TLabeledEdit
       Left = 159
-      Top = 180
+      Top = 187
       Width = 493
       Height = 27
       Anchors = [akLeft, akTop, akRight]
@@ -297,21 +326,11 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
       ParentFont = False
       TabOrder = 6
     end
-    object edLocalizacao: TLabeledEdit
-      Left = 3
-      Top = 128
-      Width = 649
+    object edNomeLocalizacao: TEdit
+      Left = 63
+      Top = 131
+      Width = 589
       Height = 27
-      Anchors = [akLeft, akTop, akRight]
-      EditLabel.Width = 79
-      EditLabel.Height = 19
-      EditLabel.Caption = 'Localiza'#231#227'o'
-      EditLabel.Font.Charset = DEFAULT_CHARSET
-      EditLabel.Font.Color = clWindowText
-      EditLabel.Font.Height = -16
-      EditLabel.Font.Name = 'Tahoma'
-      EditLabel.Font.Style = []
-      EditLabel.ParentFont = False
       Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -320,6 +339,26 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
       Font.Style = []
       ParentFont = False
       TabOrder = 7
+    end
+    object edCodigoLocalizacao: TButtonedEdit
+      AlignWithMargins = True
+      Left = 2
+      Top = 131
+      Width = 56
+      Height = 27
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Images = DMUtil.ImageList1
+      ParentFont = False
+      RightButton.ImageIndex = 0
+      RightButton.Visible = True
+      TabOrder = 8
+      OnChange = edCodigoLocalizacaoChange
+      OnRightButtonClick = edCodigoLocalizacaoRightButtonClick
     end
   end
   object pnBotoesEdicao: TPanel

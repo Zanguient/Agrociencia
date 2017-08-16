@@ -80,6 +80,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Variedade'
         OnClick = Variedade1Click
       end
+      object Localizao1: TMenuItem
+        Caption = 'Localiza'#231#227'o'
+        OnClick = Localizao1Click
+      end
     end
     object Movimentao1: TMenuItem
       Caption = 'Movimenta'#231#227'o'

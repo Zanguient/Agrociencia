@@ -92,7 +92,9 @@ uses
   VFrames in 'WebCam\VFrames.pas',
   VSample in 'WebCam\VSample.pas',
   uBeanVariedade in 'Beans\uBeanVariedade.pas',
-  uCadastroVariedade in 'uCadastroVariedade.pas' {frmCadastroVariedade};
+  uCadastroVariedade in 'uCadastroVariedade.pas' {frmCadastroVariedade},
+  uBeanLocalizacao in 'Beans\uBeanLocalizacao.pas',
+  uCadastroLocalizacao in 'uCadastroLocalizacao.pas' {frmCadastroLocalizacao};
 
 {$R *.res}
 

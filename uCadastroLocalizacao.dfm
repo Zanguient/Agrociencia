@@ -1,4 +1,4 @@
-object frmCadastroVariedade: TfrmCadastroVariedade
+object frmCadastroLocalizacao: TfrmCadastroLocalizacao
   Left = 0
   Top = 0
   ActiveControl = edPesquisa
@@ -33,7 +33,7 @@ object frmCadastroVariedade: TfrmCadastroVariedade
       Width = 853
       Height = 342
       Align = alClient
-      DataSource = ds_Variedade
+      DataSource = ds_Localizacao
       DrawingStyle = gdsGradient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -53,18 +53,30 @@ object frmCadastroVariedade: TfrmCadastroVariedade
         item
           Expanded = False
           FieldName = 'ID'
+          Width = 64
           Visible = True
         end
         item
           Expanded = False
           FieldName = 'NOME'
-          Width = 350
+          Width = 250
           Visible = True
         end
         item
           Expanded = False
-          FieldName = 'ESPECIE'
-          Width = 350
+          FieldName = 'SALA'
+          Width = 250
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'ESTANTE'
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'PRATELEIRAS'
+          Width = 64
           Visible = True
         end>
     end
@@ -631,7 +643,7 @@ object frmCadastroVariedade: TfrmCadastroVariedade
       Height = 42
       Align = alTop
       BevelOuter = bvNone
-      Caption = 'Lista das Variedades'
+      Caption = 'Lista das Localiza'#231#245'es'
       Color = clSkyBlue
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -1294,7 +1306,7 @@ object frmCadastroVariedade: TfrmCadastroVariedade
         Width = 853
         Height = 42
         Align = alTop
-        Caption = 'Cadastro de Variedades'
+        Caption = 'Cadastro de Localiza'#231#227'o'
         Color = clSkyBlue
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -1346,10 +1358,62 @@ object frmCadastroVariedade: TfrmCadastroVariedade
             386)
           object Label2: TLabel
             Left = 4
-            Top = 78
-            Width = 73
+            Top = 64
+            Width = 48
             Height = 19
-            Caption = 'Descri'#231#227'o:'
+            Caption = 'Nome:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label1: TLabel
+            Left = 6
+            Top = 6
+            Width = 56
+            Height = 19
+            Caption = 'C'#243'digo:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label3: TLabel
+            Left = 83
+            Top = 6
+            Width = 35
+            Height = 19
+            Caption = 'Sala:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label4: TLabel
+            Left = 6
+            Top = 121
+            Width = 142
+            Height = 19
+            Caption = 'Regime Ilumina'#231#227'o:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label5: TLabel
+            Left = 6
+            Top = 179
+            Width = 57
+            Height = 19
+            Caption = 'Estante:'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
@@ -1359,7 +1423,7 @@ object frmCadastroVariedade: TfrmCadastroVariedade
           end
           object edDescricao: TEdit
             Left = 4
-            Top = 103
+            Top = 89
             Width = 415
             Height = 27
             Anchors = [akLeft, akTop, akRight]
@@ -1369,16 +1433,28 @@ object frmCadastroVariedade: TfrmCadastroVariedade
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
+            TabOrder = 2
+          end
+          object edCodigo: TEdit
+            Left = 4
+            Top = 31
+            Width = 73
+            Height = 27
+            Enabled = False
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
             TabOrder = 0
           end
-          object gbProduto: TGroupBox
-            AlignWithMargins = True
-            Left = 4
-            Top = 4
-            Width = 417
-            Height = 63
-            Align = alTop
-            Caption = ' Esp'#233'cie '
+          object edSala: TEdit
+            Left = 81
+            Top = 31
+            Width = 338
+            Height = 27
+            Anchors = [akLeft, akTop, akRight]
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
@@ -1386,40 +1462,36 @@ object frmCadastroVariedade: TfrmCadastroVariedade
             Font.Style = []
             ParentFont = False
             TabOrder = 1
-            object edCodigoProduto: TButtonedEdit
-              AlignWithMargins = True
-              Left = 4
-              Top = 31
-              Width = 56
-              Height = 27
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              Images = DMUtil.ImageList1
-              ParentFont = False
-              RightButton.ImageIndex = 0
-              RightButton.Visible = True
-              TabOrder = 0
-              OnChange = edCodigoProdutoChange
-              OnKeyDown = edCodigoProdutoKeyDown
-              OnRightButtonClick = edCodigoProdutoRightButtonClick
-            end
-            object edNomeProduto: TEdit
-              Left = 66
-              Top = 31
-              Width = 348
-              Height = 27
-              Enabled = False
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 1
-            end
+          end
+          object edRegimeIluminacao: TEdit
+            Left = 4
+            Top = 146
+            Width = 415
+            Height = 27
+            Anchors = [akLeft, akTop, akRight]
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 3
+          end
+          object edEstante: TJvValidateEdit
+            Left = 4
+            Top = 204
+            Width = 415
+            Height = 27
+            CriticalPoints.MaxValueIncluded = False
+            CriticalPoints.MinValueIncluded = False
+            DecimalPlaces = 2
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 4
           end
         end
         object pnUsuarioDireita: TPanel
@@ -1429,37 +1501,146 @@ object frmCadastroVariedade: TfrmCadastroVariedade
           Height = 386
           Align = alClient
           TabOrder = 1
+          DesignSize = (
+            426
+            386)
+          object Label6: TLabel
+            Left = 8
+            Top = 6
+            Width = 79
+            Height = 19
+            Caption = 'Prateleiras:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label7: TLabel
+            Left = 8
+            Top = 64
+            Width = 80
+            Height = 19
+            Caption = 'Area Total:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object Label8: TLabel
+            Left = 10
+            Top = 121
+            Width = 143
+            Height = 19
+            Caption = 'Temperatura M'#233'dia:'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object edArea: TJvValidateEdit
+            Left = 7
+            Top = 89
+            Width = 413
+            Height = 27
+            Anchors = [akLeft, akTop, akRight]
+            CriticalPoints.MaxValueIncluded = False
+            CriticalPoints.MinValueIncluded = False
+            DisplayFormat = dfFloat
+            DecimalPlaces = 2
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 1
+          end
+          object edTemperatura: TJvValidateEdit
+            Left = 7
+            Top = 146
+            Width = 413
+            Height = 27
+            Anchors = [akLeft, akTop, akRight]
+            CriticalPoints.MaxValueIncluded = False
+            CriticalPoints.MinValueIncluded = False
+            DisplayFormat = dfFloat
+            DecimalPlaces = 2
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 2
+          end
+          object edPrateleiras: TJvValidateEdit
+            Left = 7
+            Top = 31
+            Width = 413
+            Height = 27
+            Anchors = [akLeft, akTop, akRight]
+            CriticalPoints.MaxValueIncluded = False
+            CriticalPoints.MinValueIncluded = False
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 0
+          end
         end
       end
     end
   end
-  object ds_Variedade: TDataSource
-    DataSet = cds_Variedade
+  object ds_Localizacao: TDataSource
+    DataSet = cds_Localizacao
     Left = 296
     Top = 192
   end
-  object cds_Variedade: TClientDataSet
+  object cds_Localizacao: TClientDataSet
     Aggregates = <>
     Params = <>
     OnFilterRecord = csPesquisaFilterRecord
     Left = 400
     Top = 192
-    object cds_VariedadeID: TIntegerField
-      DisplayLabel = 'C'#243'digo'
+    object cds_LocalizacaoID: TIntegerField
+      DisplayLabel = 'C'#243'd. Barras'
       FieldName = 'ID'
     end
-    object cds_VariedadeNOME: TStringField
+    object cds_LocalizacaoNOME: TStringField
       DisplayLabel = 'Nome'
       FieldName = 'NOME'
       Size = 100
     end
-    object cds_VariedadeID_PRODUTO: TIntegerField
-      FieldName = 'ID_PRODUTO'
+    object cds_LocalizacaoSALA: TStringField
+      DisplayLabel = 'Sala'
+      FieldName = 'SALA'
+      Size = 100
     end
-    object cds_VariedadeESPECIE: TStringField
-      DisplayLabel = 'Esp'#233'cie'
-      FieldName = 'ESPECIE'
-      Size = 255
+    object cds_LocalizacaoESTANTE: TIntegerField
+      DisplayLabel = 'Estante'
+      FieldName = 'ESTANTE'
+    end
+    object cds_LocalizacaoPRATELEIRAS: TIntegerField
+      DisplayLabel = 'Prateleiras'
+      FieldName = 'PRATELEIRAS'
+    end
+    object cds_LocalizacaoREGIME: TStringField
+      FieldName = 'REGIME'
+      Size = 100
+    end
+    object cds_LocalizacaoAREA: TFloatField
+      FieldName = 'AREA'
+    end
+    object cds_LocalizacaoTEMPERATURA: TFloatField
+      FieldName = 'TEMPERATURA'
     end
   end
 end
