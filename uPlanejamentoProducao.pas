@@ -1027,7 +1027,7 @@ begin
       Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
-      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID_PRODUTO = P.ID)');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND (OPF.CANCELADO = FALSE)');
       Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
@@ -1131,7 +1131,7 @@ begin
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPFE.ID AS IDOPFE,');
       Consulta.SQL.Add('	OPF.ID AS IDOPF,');
-      Consulta.SQL.Add('	OPFE.PREVISAOTERMINO AS DATA,');
+      Consulta.SQL.Add('	OPFE.DATAHORAINICIO AS DATA,');
       Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
       Consulta.SQL.Add('	V.NOME AS VARIEDADE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOATUAL,');
@@ -1142,7 +1142,7 @@ begin
       Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
-      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID_PRODUTO = P.ID)');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND (OPF.CANCELADO = FALSE)');
       Consulta.SQL.Add('AND OPFE.DATAHORAINICIO IS NOT NULL');
@@ -1329,7 +1329,7 @@ begin
       Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO PMC ON (PMC.ID = OPFE.MEIOCULTURA_ID)');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = PMC.ID)');
-      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID_PRODUTO = P.ID)');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND (OPF.CANCELADO = FALSE)');
       Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
@@ -1412,7 +1412,7 @@ begin
       Consulta.SQL.Add('	OPF.CODIGOSELECAOCAMPO AS CODIGOSELECAOCAMPO');
       Consulta.SQL.Add('FROM OPFINAL OPF');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
-      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID_PRODUTO = P.ID)');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       Consulta.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
@@ -1525,7 +1525,10 @@ begin
       edNomeVariedadeGNOP.Clear
     else
       if (Sender as TButtonedEdit) = edCodigoVariedadeOPG then
-        edNomeVariedadeOPG.Clear;
+        edNomeVariedadeOPG.Clear
+      else
+        if (Sender as TButtonedEdit) = edCodigoVariedadeIE then
+          edNomeVariedadeIE.Clear;
 end;
 
 procedure TfrmPlanejamentoProducao.edCodigoVariedadeKeyDown(Sender: TObject;
@@ -1562,7 +1565,11 @@ begin
             if (Sender as TButtonedEdit) = edCodigoVariedadeOPG then begin
               edCodigoVariedadeOPG.Text := TVARIEDADE(V.Itens[0]).ID.asString;
               edNomeVariedadeOPG.Text   := TVARIEDADE(V.Itens[0]).NOME.asString;
-            end;
+            end else
+              if (Sender as TButtonedEdit) = edCodigoVariedadeIE then begin
+                edCodigoVariedadeIE.Text := TVARIEDADE(V.Itens[0]).ID.asString;
+                edNomeVariedadeIE.Text   := TVARIEDADE(V.Itens[0]).NOME.asString;
+              end;
       end;
     end else
       edCodigoVariedadeChange(Sender);
@@ -1581,7 +1588,10 @@ begin
       edDescricaoEspecieGNOP.Clear
     else
       if (Sender as TButtonedEdit) = edCodigoEspecieOPG then
-        edDescricaoEspecieOPG.Clear;
+        edDescricaoEspecieOPG.Clear
+      else
+        if (Sender as TButtonedEdit) = edCodigoEspecieIE then
+          edDescricaoEspecieIE.Clear;
 end;
 
 procedure TfrmPlanejamentoProducao.edCodigoEspecieRightButtonClick(
@@ -1612,7 +1622,11 @@ begin
             if (Sender as TButtonedEdit) = edCodigoEspecieOPG then begin
               edCodigoEspecieOPG.Text    := TPRODUTO(P.Itens[0]).ID.asString;
               edDescricaoEspecieOPG.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
-            end;
+            end else
+              if (Sender as TButtonedEdit) = edCodigoEspecieIE then begin
+                edCodigoEspecieIE.Text    := TPRODUTO(P.Itens[0]).ID.asString;
+                edDescricaoEspecieIE.Text := TPRODUTO(P.Itens[0]).DESCRICAO.asString;
+              end;
       end;
     end else
       edCodigoEspecieChange(Sender);
@@ -1628,7 +1642,10 @@ begin
     edDescricaoEstagioGNOP.Clear
   else
     if (Sender as TButtonedEdit) = edCodigoEstagioOPG then
-      edDescricaoEstagioOPG.Clear;
+      edDescricaoEstagioOPG.Clear
+    else
+      if (Sender as TButtonedEdit) = edCodigoEstagioIE then
+        edDescricaoEstagioIE.Clear;
 end;
 
 procedure TfrmPlanejamentoProducao.edCodigoEstagioKeyDown(Sender: TObject;
@@ -1660,7 +1677,11 @@ begin
           if (Sender as TButtonedEdit) = edCodigoEstagioOPG then begin
             edCodigoEstagioOPG.Text    := TESTAGIO(E.Itens[0]).ID.asString;
             edDescricaoEstagioOPG.Text := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
-          end;
+          end else
+            if (Sender as TButtonedEdit) = edCodigoEstagioIE then begin
+              edCodigoEstagioIE.Text    := TESTAGIO(E.Itens[0]).ID.asString;
+              edDescricaoEstagioIE.Text := TESTAGIO(E.Itens[0]).DESCRICAO.asString;
+            end;
       end;
     end else
       edCodigoEstagioChange(Sender);
