@@ -26,6 +26,7 @@ type
     FMEIOCULTURA_ID: TFieldInteger;
     FULTIMOLOTE: TFieldInteger;
     FLOCALIZACAO_ID: TFieldInteger;
+    FSEQUENCIAESTAGIO: TFieldInteger;
     procedure SetDATAHORA(const Value: TFieldDateTime);
     procedure SetDATAHORAFIM(const Value: TFieldDateTime);
     procedure SetDATAHORAINICIO(const Value: TFieldDateTime);
@@ -43,6 +44,7 @@ type
     procedure SetMEIOCULTURA_ID(const Value: TFieldInteger);
     procedure SetULTIMOLOTE(const Value: TFieldInteger);
     procedure SetLOCALIZACAO_ID(const Value: TFieldInteger);
+    procedure SetSEQUENCIAESTAGIO(const Value: TFieldInteger);
   protected
     procedure InitInstance; override;
   published
@@ -62,6 +64,7 @@ type
     property OBSERVACAO           : TFieldString read FOBSERVACAO write SetOBSERVACAO;
     property ULTIMOLOTE           : TFieldInteger read FULTIMOLOTE write SetULTIMOLOTE;
     property LOCALIZACAO_ID       : TFieldInteger read FLOCALIZACAO_ID write SetLOCALIZACAO_ID;
+    property SEQUENCIAESTAGIO     : TFieldInteger read FSEQUENCIAESTAGIO write SetSEQUENCIAESTAGIO;
   end;
 
 implementation
@@ -80,6 +83,7 @@ begin
   SEQUENCIA.isNotNull           := True;
   INTERVALOCRESCIMENTO.isNotNull:= True;
   QUANTIDADEESTIMADA.isNotNull  := True;
+  SEQUENCIAESTAGIO.isNotNull    := True;
 
   OBSERVACAO.Size               := 512;
 end;
@@ -157,6 +161,11 @@ end;
 procedure TOPFINAL_ESTAGIO.SetSEQUENCIA(const Value: TFieldInteger);
 begin
   FSEQUENCIA := Value;
+end;
+
+procedure TOPFINAL_ESTAGIO.SetSEQUENCIAESTAGIO(const Value: TFieldInteger);
+begin
+  FSEQUENCIAESTAGIO := Value;
 end;
 
 procedure TOPFINAL_ESTAGIO.SetULTIMOLOTE(const Value: TFieldInteger);

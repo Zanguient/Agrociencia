@@ -552,12 +552,19 @@ begin
         OPFE.DATAHORAINICIO.isNull:= True; //Será Preenchido na Primeira Produção
         OPFE.USUARIO_ID.Value     := USUARIO.CODIGO;
 
-        //Verifica a sequencia do estágio
-        OPFE.SelectList('OPFINAL_ID = ' + edCodigoOPF.Text, 'SEQUENCIA DESC');
+        //Verifica a sequencia
+        OPFE.SelectList('OPFINAL_ID = ' + IntToStr(OPFE.OPFINAL_ID.Value), 'SEQUENCIA DESC');
         if OPFE.Count > 0 then
           OPFE.SEQUENCIA.Value    := TOPFINAL_ESTAGIO(OPFE.Itens[0]).SEQUENCIA.Value + 1
         else
           OPFE.SEQUENCIA.Value    := 1;
+
+        //Verifica a sequencia do estágio
+        OPFE.SelectList('OPFINAL_ID = ' + IntToStr(OPFE.OPFINAL_ID.Value) + ' AND ESTAGIO_ID = ' + IntToStr(OPFE.ESTAGIO_ID.Value), 'SEQUENCIAESTAGIO DESC');
+        if OPFE.Count > 0 then
+          OPFE.SEQUENCIAESTAGIO.Value    := TOPFINAL_ESTAGIO(OPFE.Itens[0]).SEQUENCIAESTAGIO.Value + 1
+        else
+          OPFE.SEQUENCIAESTAGIO.Value    := 1;
 
         OPFE.Insert;
       end;

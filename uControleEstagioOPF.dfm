@@ -1141,7 +1141,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Font.Name = 'Tahoma'
             Font.Style = []
             ParentFont = False
-            ExplicitTop = 62
             ExplicitWidth = 88
           end
           object pnObservacao: TPanel
@@ -1153,7 +1152,6 @@ object frmControleEstagioOPF: TfrmControleEstagioOPF
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 1
-            ExplicitTop = 87
             object edObservacao: TEdit
               AlignWithMargins = True
               Left = 3

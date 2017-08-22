@@ -634,3 +634,8 @@ UPDATE opfinal_estagio_lote_s_positivo SET localizacao_id = 0;
 ALTER TABLE opfinal_estagio_lote_s_positivo 
   ADD CONSTRAINT fk_opfelsp_localizacao FOREIGN KEY (localizacao_id) REFERENCES localizacao(id)
    ON UPDATE CASCADE ON DELETE RESTRICT;
+
+ALTER TABLE opfinal_estagio
+   ADD COLUMN sequenciaestagio integer;
+
+update opfinal_estagio set sequenciaestagio = sequencia;
