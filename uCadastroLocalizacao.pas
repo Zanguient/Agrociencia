@@ -150,7 +150,7 @@ Var
 begin
   if not cds_Localizacao.IsEmpty then begin
 
-    DisplayMsg(MSG_CONF, 'Excluir a Unidade de Medida Selecionada?');
+    DisplayMsg(MSG_CONF, 'Excluir a Localização Selecionada?');
 
     if ResultMsgModal = mrYes then begin
 
@@ -170,7 +170,7 @@ begin
         except
           on E : Exception do begin
             FWC.Rollback;
-            DisplayMsg(MSG_ERR, 'Erro ao Excluir a Unidade de Medida, Verifique!', '', E.Message);
+            DisplayMsg(MSG_ERR, 'Erro ao Excluir a Localização, Verifique!', '', E.Message);
           end;
         end;
       finally
