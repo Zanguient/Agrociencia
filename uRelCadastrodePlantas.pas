@@ -269,7 +269,7 @@ begin
       Consulta.SQL.Add('	OPF.ID,');
       Consulta.SQL.Add('	CL.NOME AS NOMECLIENTE,');
       Consulta.SQL.Add('	P.DESCRICAO AS DESCRICAOESPECIE,');
-      Consulta.SQL.Add('	OPF.CULTIVAR,');
+      Consulta.SQL.Add('	V.NOME AS VARIEDADE,');
       Consulta.SQL.Add('	OPF.QUANTIDADE,');
       Consulta.SQL.Add('	OPF.SELECAOPOSITIVA,');
       Consulta.SQL.Add('	OPF.CODIGOSELECAOCAMPO,');
@@ -286,6 +286,7 @@ begin
       Consulta.SQL.Add('FROM OPFINAL OPF');
       Consulta.SQL.Add('INNER JOIN CLIENTE CL ON (CL.ID = OPF.CLIENTE_ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       Consulta.SQL.Add('WHERE 1 = 1');
 
       Consulta.Connection := FWC.FDConnection;

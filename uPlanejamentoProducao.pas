@@ -167,6 +167,7 @@ type
     CDS_INICIANDOESTAGIOESTAGIOATUAL: TStringField;
     CDS_INICIANDOESTAGIOCODIGOMC: TStringField;
     CDS_INICIANDOESTAGIOSALDOPOTES: TIntegerField;
+    btExcluirOPG: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -232,6 +233,7 @@ type
     procedure btRelatorioIEClick(Sender: TObject);
     procedure btAlterarIEClick(Sender: TObject);
     procedure btNovoIEClick(Sender: TObject);
+    procedure btExcluirOPGClick(Sender: TObject);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -695,6 +697,25 @@ begin
       AtualizaABA;
     finally
       (Sender as TBitBtn).Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.btExcluirOPGClick(Sender: TObject);
+begin
+  if (Sender as TSpeedButton).Tag = 0 then begin
+    (Sender as TSpeedButton).Tag := 1;
+    try
+      if Assigned(Self.gdOPGerada.DataSource.DataSet.FindField('ID')) then begin
+        if not Self.gdOPGerada.DataSource.DataSet.IsEmpty then begin
+          if Self.gdOPGerada.DataSource.DataSet.FieldByName('ID').AsInteger > 0 then begin
+            if ExcluirOPFE(Self.gdOPGerada.DataSource.DataSet.FieldByName('ID').AsInteger) then
+              AtualizaABA;
+          end;
+        end;
+      end;
+    finally
+      (Sender as TSpeedButton).Tag := 0;
     end;
   end;
 end;

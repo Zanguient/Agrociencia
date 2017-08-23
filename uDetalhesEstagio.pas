@@ -220,11 +220,12 @@ begin
       SQL.SQL.Add('SELECT');
       SQL.SQL.Add('	E.DESCRICAO AS ESTAGIO,');
       SQL.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
-      SQL.SQL.Add('	OPF.CULTIVAR');
+      SQL.SQL.Add('	V.NOME AS VARIEDADE');
       SQL.SQL.Add('FROM OPFINAL OPF');
       SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
       SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
       SQL.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
+      SQL.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       SQL.SQL.Add('WHERE 1 = 1');
       SQL.SQL.Add('AND OPFE.ID = :IDOPFE');
       SQL.ParamByName('IDOPFE').DataType  := ftInteger;
@@ -240,7 +241,7 @@ begin
         lbEstagio.Caption := SQL.FieldByName('ESTAGIO').AsString;
         lbEspecie.Caption := SQL.FieldByName('ESPECIE').AsString;
         lbUnidades.Caption:= IntToStr(Param.UNIDADES);
-        lbCultivar.Caption:= SQL.FieldByName('CULTIVAR').AsString;
+        lbCultivar.Caption:= SQL.FieldByName('VARIEDADE').AsString;
       end;
 
       //Carrega Grid

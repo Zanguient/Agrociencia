@@ -37,6 +37,7 @@ uses
   procedure ImprimirOPMC(ID : Integer);
   procedure ImprimirOPFE(ID : Integer);
   procedure ImprimirOPSOL(ID : Integer);
+  function ExcluirOPFE(ID : Integer) : Boolean;
   function ValidaUsuario(Email, Senha : String) : Boolean;
   function MD5(Texto : String): String;
   function Criptografa(Texto : String; Tipo : String) : String;
@@ -62,7 +63,7 @@ Uses
   uBeanUsuario,
   uBeanUsuario_Permissao,
   uDomains,
-  uMensagem, uDMUtil, uBeanOPFinal_Estagio;
+  uMensagem, uDMUtil, uBeanOPFinal_Estagio, uBeanOPFinal_Estagio_Lote;
 
 procedure LimpaImagens;
 var
@@ -602,6 +603,69 @@ begin
   end;
 end;
 
+function ExcluirOPFE(ID : Integer) : Boolean;
+var
+  FWC   : TFWConnection;
+  OPFE  : TOPFINAL_ESTAGIO;
+  OPFEL : TOPFINAL_ESTAGIO_LOTE;
+begin
+
+  Result := False;
+
+  if ID > 0 then begin
+
+    DisplayMsg(MSG_CONF, 'Excluir a Ordem de Produção Selecionada?');
+
+    if ResultMsgModal = mrYes then begin
+
+      try
+
+        FWC   := TFWConnection.Create;
+        OPFE  := TOPFINAL_ESTAGIO.Create(FWC);
+        OPFEL := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
+        try
+
+          OPFE.SelectList('ID = ' + IntToStr(ID));
+          if OPFE.Count > 0 then begin
+
+            OPFEL.SelectList('OPFINAL_ESTAGIO_ID = ' + IntToStr(TOPFINAL_ESTAGIO(OPFE.Itens[0]).ID.Value));
+
+            if OPFEL.Count = 0 then begin
+              if TOPFINAL_ESTAGIO(OPFE.Itens[0]).ULTIMOLOTE.Value > 0 then
+                DisplayMsg(MSG_WAR, 'OP de Produção Nº ' + IntToStr(ID) + sLineBreak +
+                                    'já tem ' + TOPFINAL_ESTAGIO(OPFE.Itens[0]).ULTIMOLOTE.asString + ' Lotes Impressos' + sLineBreak +
+                                    'Mas será excluida mesmo assim!');
+
+                OPFE.ID.Value := TOPFINAL_ESTAGIO(OPFE.Itens[0]).ID.Value;
+                OPFE.Delete;
+
+                FWC.Commit;
+
+                Result := True;
+
+            end else begin
+              DisplayMsg(MSG_WAR, 'OP de Produção Nº ' + IntToStr(ID) + ', já tem ' + IntToStr(OPFEL.Count) + ' Lotes Produzidos, Verifique!');
+              Exit;
+            end;
+          end else begin
+            DisplayMsg(MSG_WAR, 'OP de Produção Nº ' + IntToStr(ID) + ' não Encontrada, Verifique!');
+            Exit;
+          end;
+        except
+          on E : Exception do begin
+            FWC.Rollback;
+            DisplayMsg(MSG_ERR, 'Erro ao Excluir a Ordem de Produção, Verifique!', '', E.Message);
+          end;
+        end;
+      finally
+        FreeAndNil(OPFE);
+        FreeAndNil(OPFEL);
+        FreeAndNil(FWC);
+      end;
+    end;
+  end;
+end;
+
 function ValidaUsuario(Email, Senha : String) : Boolean;
 Var
   FWC : TFWConnection;
@@ -1023,8 +1087,9 @@ begin
       Consulta.SQL.Add('FROM');
       Consulta.SQL.Add('OPFINAL OPF');
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
-      Consulta.SQL.Add('INNER JOIN ESTAGIO E ON OPFE.ESTAGIO_ID = E.ID AND E.TIPO = 2');
+      Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (OPFE.ESTAGIO_ID = E.ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND E.TIPO = 2');
       Consulta.SQL.Add('AND OPF.ID = :CODIGOOPF');
       Consulta.SQL.Add('AND OPF.LIMITEMULTIPLICACOES > 0');
       Consulta.SQL.Add('GROUP BY 1');

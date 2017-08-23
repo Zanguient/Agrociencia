@@ -98,6 +98,7 @@ type
     Label4: TLabel;
     Label6: TLabel;
     edNomeLocalizacao: TEdit;
+    btExcluir: TSpeedButton;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -130,6 +131,7 @@ type
     procedure edCodigoLocalizacaoChange(Sender: TObject);
     procedure edCodigoLocalizacaoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure btExcluirClick(Sender: TObject);
   private
     procedure SelecionarObservacao;
     procedure Deletar(Sender: TObject);
@@ -469,6 +471,21 @@ begin
   finally
     FreeAndNil(SQL);
     FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmControleEstagioOPF.btExcluirClick(Sender: TObject);
+begin
+  if not cds_Pesquisa.IsEmpty then begin
+    if btExcluir.Tag = 0 then begin
+      btExcluir.Tag := 1;
+      try
+        if ExcluirOPFE(cds_PesquisaID.Value) then
+          cds_Pesquisa.Delete;
+      finally
+        btExcluir.Tag := 0;
+      end;
+    end;
   end;
 end;
 
