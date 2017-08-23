@@ -511,7 +511,7 @@ begin
                         BuscaOP.Connection := FWC.FDConnection;
                         BuscaOP.Close;
                         BuscaOP.SQL.Clear;
-                        BuscaOP.SQL.Add('SELECT OE.OPFINAL_ID AS OP, OELS.BAIXADO FROM OPFINAL_ESTAGIO OE');
+                        BuscaOP.SQL.Add('SELECT OE.OPFINAL_ID AS OP, OE.ID AS ESTAGIO, OELS.BAIXADO FROM OPFINAL_ESTAGIO OE');
                         BuscaOP.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OEL ON OEL.OPFINAL_ESTAGIO_ID = OE.ID');
                         BuscaOP.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OELS ON OELS.OPFINAL_ESTAGIO_LOTE_ID = OEL.ID');
                         BuscaOP.SQL.Add('WHERE OELS.ID = :CODIGOBARRAS');
@@ -538,6 +538,15 @@ begin
 
                         if BuscaOP.FieldByName('BAIXADO').AsBoolean then begin
                           DisplayMsg(MSG_WAR, 'Código de barras informado já foi baixado anteriormente!');
+                          if edCodigoEntrada.CanFocus then begin
+                            edCodigoEntrada.SetFocus;
+                            edCodigoEntrada.SelectAll;
+                          end;
+                          Exit;
+                        end;
+
+                        if BuscaOP.FieldByName('ESTAGIO').AsInteger = MULTIPLICACAO.IDESTAGIO then begin
+                          DisplayMsg(MSG_WAR, 'Não é possível selecionar um pote do mesmo ciclo!');
                           if edCodigoEntrada.CanFocus then begin
                             edCodigoEntrada.SetFocus;
                             edCodigoEntrada.SelectAll;
