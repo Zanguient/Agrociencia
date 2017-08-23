@@ -222,12 +222,13 @@ begin
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPF.ID AS NUMEROCADASTRO,');
       Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
-      Consulta.SQL.Add('	OPF.CULTIVAR AS CULTIVAR,');
+      Consulta.SQL.Add('	V.NOME AS CULTIVAR,');
       Consulta.SQL.Add('	CL.NOME AS NOMECLIENTE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIO,');
       Consulta.SQL.Add('	OPFEL.NUMEROLOTE AS NUMERLOTE,');
       Consulta.SQL.Add('	COUNT(OPFELS.ID) AS UNIDADES');
       Consulta.SQL.Add('FROM OPFINAL OPF');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (OPF.ID_VARIEDADE = V.ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
       Consulta.SQL.Add('INNER JOIN CLIENTE CL ON (CL.ID = OPF.CLIENTE_ID)');
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
