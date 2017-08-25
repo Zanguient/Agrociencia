@@ -4,7 +4,7 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
   ActiveControl = edDataInicial
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio de Produ'#231#227'o por Operador'
-  ClientHeight = 352
+  ClientHeight = 409
   ClientWidth = 333
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -23,7 +23,7 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 289
+    Top = 346
     Width = 327
     Height = 60
     Align = alBottom
@@ -50,7 +50,8 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 5
+    TabOrder = 6
+    ExplicitTop = 289
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -303,7 +304,7 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
   object cbExibirSQL: TCheckBox
     AlignWithMargins = True
     Left = 3
-    Top = 266
+    Top = 323
     Width = 327
     Height = 17
     Align = alBottom
@@ -314,7 +315,8 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 5
+    ExplicitTop = 266
   end
   object gbEspecie: TGroupBox
     AlignWithMargins = True
@@ -373,7 +375,7 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
   object gbOperador: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 199
+    Top = 263
     Width = 327
     Height = 58
     Align = alTop
@@ -384,7 +386,8 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 4
+    ExplicitTop = 199
     DesignSize = (
       327
       58)
@@ -427,7 +430,7 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
   object gbEstagio: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 135
+    Top = 199
     Width = 327
     Height = 58
     Align = alTop
@@ -438,7 +441,8 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 3
+    ExplicitTop = 135
     DesignSize = (
       327
       58)
@@ -533,6 +537,62 @@ object frmRelProducaoOperador: TfrmRelProducaoOperador
       Anchors = [akTop, akRight]
       ParentFont = False
       ShowNullDate = False
+      TabOrder = 1
+    end
+  end
+  object gbVariedade: TGroupBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 135
+    Width = 327
+    Height = 58
+    Align = alTop
+    Caption = ' Variedade '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+    ExplicitLeft = -2
+    ExplicitTop = 183
+    DesignSize = (
+      327
+      58)
+    object edCodigoVariedade: TButtonedEdit
+      AlignWithMargins = True
+      Left = 4
+      Top = 24
+      Width = 56
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Images = DMUtil.ImageList1
+      ParentFont = False
+      RightButton.ImageIndex = 0
+      RightButton.Visible = True
+      TabOrder = 0
+      OnChange = edCodigoVariedadeChange
+      OnKeyDown = edCodigoVariedadeKeyDown
+      OnRightButtonClick = edCodigoVariedadeRightButtonClick
+    end
+    object edNomeVariedade: TEdit
+      Left = 66
+      Top = 24
+      Width = 253
+      Height = 27
+      Anchors = [akLeft, akTop, akRight]
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 1
     end
   end

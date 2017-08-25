@@ -42,6 +42,9 @@ type
     CDS_DADOSRELATORIOQUANTIDADEDESCARTE: TIntegerField;
     CDS_DADOSRELATORIOUNIDADESENTRADA: TIntegerField;
     CDS_DADOSRELATORIOSEGUNDOSPRODUCAO: TIntegerField;
+    gbVariedade: TGroupBox;
+    edCodigoVariedade: TButtonedEdit;
+    edNomeVariedade: TEdit;
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
@@ -59,6 +62,10 @@ type
       Shift: TShiftState);
     procedure edCodigoEstagioRightButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure edCodigoVariedadeChange(Sender: TObject);
+    procedure edCodigoVariedadeRightButtonClick(Sender: TObject);
+    procedure edCodigoVariedadeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     Procedure FecharTela;
     Procedure Visualizar;
@@ -84,7 +91,9 @@ uses
   uBeanEstagio,
   uBeanOPFinal_Estagio_Lote_S,
   uBeanOPFinal_Estagio_Lote_Intervalo,
-  uBeanOPFinal_Estagio_Lote_S_Qualidade, uBeanOPFinal_Estagio_Lote_E;
+  uBeanOPFinal_Estagio_Lote_S_Qualidade,
+  uBeanOPFinal_Estagio_Lote_E,
+  uBeanVariedade;
 
 procedure TfrmRelProducaoOperador.btRelatorioClick(Sender: TObject);
 begin
@@ -140,6 +149,42 @@ begin
       edNomeOperador.Text := TUSUARIO(U.Itens[0]).NOME.asString;
   finally
     FreeAndNil(U);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmRelProducaoOperador.edCodigoVariedadeChange(Sender: TObject);
+begin
+  edNomeVariedade.Clear;
+end;
+
+procedure TfrmRelProducaoOperador.edCodigoVariedadeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    edCodigoVariedadeRightButtonClick(nil);
+end;
+
+procedure TfrmRelProducaoOperador.edCodigoVariedadeRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  V   : TVARIEDADE;
+begin
+  FWC := TFWConnection.Create;
+  V   := TVARIEDADE.Create(FWC);
+
+  try
+    if edDescricaoEspecie.Text <> EmptyStr then
+      edCodigoVariedade.Text := IntToStr(DMUtil.Selecionar(V, edCodigoVariedade.Text, 'id_produto = ' + QuotedStr(edCodigoEspecie.Text) ))
+    else
+      edCodigoVariedade.Text := IntToStr(DMUtil.Selecionar(V, edCodigoVariedade.Text, '' ));
+
+    V.SelectList('id = ' + edCodigoVariedade.Text);
+    if V.Count = 1 then
+      edNomeVariedade.Text := TVARIEDADE(V.Itens[0]).NOME.asString;
+  finally
+    FreeAndNil(V);
     FreeAndNil(FWC);
   end;
 end;
@@ -292,6 +337,7 @@ begin
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPFEL ON (OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
       Consulta.SQL.Add('INNER JOIN USUARIO U ON (U.ID = OPFEL.USUARIO_ID)');
       Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
@@ -301,6 +347,12 @@ begin
         Consulta.SQL.Add('AND P.ID = :IDESPECIE');
         Consulta.ParamByName('IDESPECIE').DataType  := ftInteger;
         Consulta.ParamByName('IDESPECIE').Value     := StrToIntDef(edCodigoEspecie.Text, 0);
+      end;
+
+      if Length(Trim(edNomeVariedade.Text)) > 0 then begin
+        Consulta.SQL.Add('AND V.ID = :IDVARIEDADE');
+        Consulta.ParamByName('IDVARIEDADE').DataType  := ftInteger;
+        Consulta.ParamByName('IDVARIEDADE').Value     := StrToIntDef(edCodigoVariedade.Text, 0);
       end;
 
       if Length(Trim(edDescricaoEstagio.Text)) > 0 then begin

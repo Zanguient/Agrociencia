@@ -29,6 +29,9 @@ type
     gbRecebimentoPlanta: TGroupBox;
     edCodigoOPF: TButtonedEdit;
     edDescricaoOPF: TEdit;
+    gbVariedade: TGroupBox;
+    edCodigoVariedade: TButtonedEdit;
+    edNomeVariedade: TEdit;
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btRelatorioClick(Sender: TObject);
@@ -45,6 +48,10 @@ type
     procedure edCodigoOPFKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure edCodigoOPFRightButtonClick(Sender: TObject);
+    procedure edCodigoVariedadeChange(Sender: TObject);
+    procedure edCodigoVariedadeKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edCodigoVariedadeRightButtonClick(Sender: TObject);
   private
     Procedure FecharTela;
     Procedure Visualizar;
@@ -68,7 +75,8 @@ uses
   uDMUtil,
   uConstantes,
   uBeanCliente,
-  uBeanProdutos;
+  uBeanProdutos,
+  uBeanVariedade;
 
 procedure TfrmRelCadastrodePlantas.btRelatorioClick(Sender: TObject);
 begin
@@ -201,6 +209,42 @@ begin
   end;
 end;
 
+procedure TfrmRelCadastrodePlantas.edCodigoVariedadeChange(Sender: TObject);
+begin
+  edNomeVariedade.Clear;
+end;
+
+procedure TfrmRelCadastrodePlantas.edCodigoVariedadeKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+
+end;
+
+procedure TfrmRelCadastrodePlantas.edCodigoVariedadeRightButtonClick(
+  Sender: TObject);
+var
+  FWC : TFWConnection;
+  V   : TVARIEDADE;
+begin
+  FWC := TFWConnection.Create;
+  V   := TVARIEDADE.Create(FWC);
+
+  try
+    if edNomeProduto.Text <> EmptyStr then
+      edCodigoVariedade.Text := IntToStr(DMUtil.Selecionar(V, edCodigoVariedade.Text, 'id_produto = ' + QuotedStr(edCodigoProduto.Text) ))
+    else
+      edCodigoVariedade.Text := IntToStr(DMUtil.Selecionar(V, edCodigoVariedade.Text, '' ));
+
+    V.SelectList('id = ' + edCodigoVariedade.Text);
+    if V.Count = 1 then
+      edNomeVariedade.Text := TVARIEDADE(V.Itens[0]).NOME.asString;
+  finally
+    FreeAndNil(V);
+    FreeAndNil(FWC);
+  end;
+end;
+
 procedure TfrmRelCadastrodePlantas.edCodigoOPFChange(
   Sender: TObject);
 begin
@@ -313,6 +357,11 @@ begin
           Consulta.SQL.Add('AND P.ID = :IDPRODUTO');
           Consulta.ParamByName('IDPRODUTO').DataType  := ftInteger;
           Consulta.ParamByName('IDPRODUTO').Value     := StrToIntDef(edCodigoProduto.Text, 0);
+        end;
+        if Length(Trim(edNomeVariedade.Text)) > 0 then begin
+          Consulta.SQL.Add('AND V.ID = :IDVARIEDADE');
+          Consulta.ParamByName('IDVARIEDADE').DataType  := ftInteger;
+          Consulta.ParamByName('IDVARIEDADE').Value     := StrToIntDef(edCodigoVariedade.Text, 0);
         end;
       end;
 

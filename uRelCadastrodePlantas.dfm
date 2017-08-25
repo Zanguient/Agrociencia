@@ -4,7 +4,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   ActiveControl = edDataInicial
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio de Cadastro de Plantas'
-  ClientHeight = 362
+  ClientHeight = 427
   ClientWidth = 333
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -22,7 +22,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 299
+    Top = 364
     Width = 327
     Height = 60
     Align = alBottom
@@ -49,8 +49,8 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 5
-    ExplicitTop = 236
+    TabOrder = 6
+    ExplicitTop = 299
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -303,7 +303,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
   object cbExibirSQL: TCheckBox
     AlignWithMargins = True
     Left = 3
-    Top = 276
+    Top = 341
     Width = 327
     Height = 17
     Align = alBottom
@@ -314,8 +314,8 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 4
-    ExplicitTop = 213
+    TabOrder = 5
+    ExplicitTop = 276
   end
   object gbPeriodo: TGroupBox
     AlignWithMargins = True
@@ -391,7 +391,6 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Style = []
     ParentFont = False
     TabOrder = 3
-    ExplicitTop = 151
     DesignSize = (
       327
       58)
@@ -446,7 +445,6 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Style = []
     ParentFont = False
     TabOrder = 2
-    ExplicitTop = 87
     DesignSize = (
       327
       58)
@@ -501,7 +499,6 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Style = []
     ParentFont = False
     TabOrder = 1
-    ExplicitLeft = -2
     DesignSize = (
       327
       58)
@@ -528,7 +525,7 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     object edDescricaoOPF: TEdit
       Left = 66
       Top = 24
-      Width = 263
+      Width = 253
       Height = 27
       Anchors = [akLeft, akTop, akRight]
       Enabled = False
@@ -539,7 +536,62 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      ExplicitWidth = 253
+    end
+  end
+  object gbVariedade: TGroupBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 279
+    Width = 327
+    Height = 58
+    Align = alTop
+    Caption = ' Variedade '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 4
+    ExplicitLeft = 6
+    ExplicitTop = 223
+    DesignSize = (
+      327
+      58)
+    object edCodigoVariedade: TButtonedEdit
+      AlignWithMargins = True
+      Left = 4
+      Top = 24
+      Width = 56
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Images = DMUtil.ImageList1
+      ParentFont = False
+      RightButton.ImageIndex = 0
+      RightButton.Visible = True
+      TabOrder = 0
+      OnChange = edCodigoVariedadeChange
+      OnKeyDown = edCodigoVariedadeKeyDown
+      OnRightButtonClick = edCodigoVariedadeRightButtonClick
+    end
+    object edNomeVariedade: TEdit
+      Left = 66
+      Top = 24
+      Width = 253
+      Height = 27
+      Anchors = [akLeft, akTop, akRight]
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
     end
   end
 end

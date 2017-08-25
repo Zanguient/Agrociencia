@@ -4,7 +4,7 @@ object frmRelEstoquedeProducao: TfrmRelEstoquedeProducao
   ActiveControl = edCodigoEspecie
   BorderStyle = bsDialog
   Caption = 'Relat'#243'rio do Estoque de Produ'#231#227'o'
-  ClientHeight = 279
+  ClientHeight = 314
   ClientWidth = 333
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -22,7 +22,7 @@ object frmRelEstoquedeProducao: TfrmRelEstoquedeProducao
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 216
+    Top = 251
     Width = 327
     Height = 60
     Align = alBottom
@@ -49,7 +49,8 @@ object frmRelEstoquedeProducao: TfrmRelEstoquedeProducao
       item
         Value = 100.000000000000000000
       end>
-    TabOrder = 4
+    TabOrder = 5
+    ExplicitTop = 216
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -302,7 +303,7 @@ object frmRelEstoquedeProducao: TfrmRelEstoquedeProducao
   object cbExibirSQL: TCheckBox
     AlignWithMargins = True
     Left = 3
-    Top = 193
+    Top = 228
     Width = 327
     Height = 17
     Align = alBottom
@@ -313,7 +314,8 @@ object frmRelEstoquedeProducao: TfrmRelEstoquedeProducao
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 4
+    ExplicitTop = 193
   end
   object gbEspecie: TGroupBox
     AlignWithMargins = True
@@ -372,7 +374,7 @@ object frmRelEstoquedeProducao: TfrmRelEstoquedeProducao
   object gbCliente: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 131
+    Top = 195
     Width = 327
     Height = 58
     Align = alTop
@@ -383,7 +385,8 @@ object frmRelEstoquedeProducao: TfrmRelEstoquedeProducao
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 3
+    ExplicitTop = 131
     DesignSize = (
       327
       58)
@@ -426,7 +429,7 @@ object frmRelEstoquedeProducao: TfrmRelEstoquedeProducao
   object gbEstagio: TGroupBox
     AlignWithMargins = True
     Left = 3
-    Top = 67
+    Top = 131
     Width = 327
     Height = 58
     Align = alTop
@@ -437,7 +440,8 @@ object frmRelEstoquedeProducao: TfrmRelEstoquedeProducao
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 2
+    ExplicitTop = 67
     DesignSize = (
       327
       58)
@@ -462,6 +466,62 @@ object frmRelEstoquedeProducao: TfrmRelEstoquedeProducao
       OnRightButtonClick = edCodigoEstagioRightButtonClick
     end
     object edDescricaoEstagio: TEdit
+      Left = 66
+      Top = 24
+      Width = 253
+      Height = 27
+      Anchors = [akLeft, akTop, akRight]
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+  end
+  object gbVariedade: TGroupBox
+    AlignWithMargins = True
+    Left = 3
+    Top = 67
+    Width = 327
+    Height = 58
+    Align = alTop
+    Caption = ' Variedade '
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+    ExplicitLeft = -2
+    ExplicitTop = 60
+    DesignSize = (
+      327
+      58)
+    object edCodigoVariedade: TButtonedEdit
+      AlignWithMargins = True
+      Left = 4
+      Top = 24
+      Width = 56
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Images = DMUtil.ImageList1
+      ParentFont = False
+      RightButton.ImageIndex = 0
+      RightButton.Visible = True
+      TabOrder = 0
+      OnChange = edCodigoVariedadeChange
+      OnKeyDown = edCodigoVariedadeKeyDown
+      OnRightButtonClick = edCodigoVariedadeRightButtonClick
+    end
+    object edNomeVariedade: TEdit
       Left = 66
       Top = 24
       Width = 253
