@@ -538,6 +538,8 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.btAlterarGNOPClick(Sender: TObject);
+Var
+  ID : Integer;
 begin
   if (Sender as TSpeedButton).Tag = 0 then begin
     (Sender as TSpeedButton).Tag := 1;
@@ -548,6 +550,7 @@ begin
           if not Assigned(frmControleEstagioOPF) then
             frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
           try
+            ID := Self.gdGerarOP.DataSource.DataSet.FindField('ID').AsInteger;
             frmControleEstagioOPF.Parametros.Codigo := Self.gdGerarOP.DataSource.DataSet.FindField('ID').AsInteger;
             frmControleEstagioOPF.Parametros.Acao   := eAlterar;
             frmControleEstagioOPF.ShowModal;
@@ -555,6 +558,8 @@ begin
             FreeAndNil(frmControleEstagioOPF);
           end;
           AtualizaABA;
+          if not Self.gdGerarOP.DataSource.DataSet.IsEmpty then
+            Self.gdGerarOP.DataSource.DataSet.Locate('ID', ID, []);
         end;
       end;
     finally
@@ -564,6 +569,8 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.btAlterarIEClick(Sender: TObject);
+Var
+  ID : Integer;
 begin
   if (Sender as TSpeedButton).Tag = 0 then begin
     (Sender as TSpeedButton).Tag := 1;
@@ -574,6 +581,7 @@ begin
           if not Assigned(frmControleEstagioOPF) then
             frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
           try
+            ID := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID').AsInteger;
             frmControleEstagioOPF.Parametros.Codigo := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID').AsInteger;
             frmControleEstagioOPF.Parametros.Acao   := eAlterar;
             frmControleEstagioOPF.ShowModal;
@@ -581,6 +589,8 @@ begin
             FreeAndNil(frmControleEstagioOPF);
           end;
           AtualizaABA;
+          if not Self.gdIniciandoEstagio.DataSource.DataSet.IsEmpty then
+            Self.gdIniciandoEstagio.DataSource.DataSet.Locate('ID', ID, []);
         end;
       end;
     finally
@@ -590,6 +600,8 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.btAlterarOPGClick(Sender: TObject);
+Var
+  ID : Integer;
 begin
   if (Sender as TSpeedButton).Tag = 0 then begin
     (Sender as TSpeedButton).Tag := 1;
@@ -599,6 +611,7 @@ begin
           if not Assigned(frmControleEstagioOPF) then
             frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
           try
+            ID := Self.gdOPGerada.DataSource.DataSet.FindField('ID').AsInteger;
             frmControleEstagioOPF.Parametros.Codigo := Self.gdOPGerada.DataSource.DataSet.FindField('ID').AsInteger;
             frmControleEstagioOPF.Parametros.Acao   := eAlterar;
             frmControleEstagioOPF.ShowModal;
@@ -606,6 +619,8 @@ begin
             FreeAndNil(frmControleEstagioOPF);
           end;
           AtualizaABA;
+          if not Self.gdOPGerada.DataSource.DataSet.IsEmpty then
+            Self.gdOPGerada.DataSource.DataSet.Locate('ID', ID, []);
         end;
       end;
     finally
@@ -615,6 +630,8 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.btAlterarOPMCClick(Sender: TObject);
+Var
+  ID : Integer;
 begin
   if (Sender as TSpeedButton).Tag = 0 then begin
     (Sender as TSpeedButton).Tag := 1;
@@ -624,6 +641,7 @@ begin
           if not Assigned(frmOrdemProducaoMeioCultura) then
             frmOrdemProducaoMeioCultura := TfrmOrdemProducaoMeioCultura.Create(nil);
           try
+            ID := Self.gdMeioCultura.DataSource.DataSet.FieldByName('ID').AsInteger;
             frmOrdemProducaoMeioCultura.Parametros.Codigo  := Self.gdMeioCultura.DataSource.DataSet.FieldByName('ID').AsInteger;
             frmOrdemProducaoMeioCultura.Parametros.Acao    := eAlterar;
             frmOrdemProducaoMeioCultura.ShowModal;
@@ -631,6 +649,8 @@ begin
             FreeAndNil(frmOrdemProducaoMeioCultura);
           end;
           AtualizaABA;
+          if not Self.gdMeioCultura.DataSource.DataSet.IsEmpty then
+            Self.gdMeioCultura.DataSource.DataSet.Locate('ID', ID, []);
         end;
       end;
     finally
@@ -640,6 +660,8 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.btAlterarOPSEClick(Sender: TObject);
+Var
+  ID : Integer;
 begin
   if (Sender as TSpeedButton).Tag = 0 then begin
     (Sender as TSpeedButton).Tag := 1;
@@ -649,6 +671,7 @@ begin
           if not Assigned(frmOrdemProducaoSolucao) then
             frmOrdemProducaoSolucao := TfrmOrdemProducaoSolucao.Create(nil);
           try
+            ID := Self.gdOPESolEstoque.DataSource.DataSet.FindField('ID').AsInteger;
             frmOrdemProducaoSolucao.Parametros.Codigo := Self.gdOPESolEstoque.DataSource.DataSet.FindField('ID').AsInteger;
             frmOrdemProducaoSolucao.Parametros.Acao   := eAlterar;
             frmOrdemProducaoSolucao.ShowModal;
@@ -656,6 +679,8 @@ begin
             FreeAndNil(frmOrdemProducaoSolucao);
           end;
           AtualizaABA;
+          if not Self.gdOPESolEstoque.DataSource.DataSet.IsEmpty then
+            Self.gdOPESolEstoque.DataSource.DataSet.Locate('ID', ID, []);
         end;
       end;
     finally
@@ -665,6 +690,8 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.btAlterarRPClick(Sender: TObject);
+Var
+  ID : Integer;
 begin
   if (Sender as TSpeedButton).Tag = 0 then begin
     (Sender as TSpeedButton).Tag := 1;
@@ -674,6 +701,7 @@ begin
           if not Assigned(frmOrdemProducao) then
             frmOrdemProducao := TfrmOrdemProducao.Create(nil);
           try
+            ID := Self.gdRecebimentoPlantas.DataSource.DataSet.FieldByName('ID').AsInteger;
             frmOrdemProducao.Parametros.Codigo  := Self.gdRecebimentoPlantas.DataSource.DataSet.FieldByName('ID').AsInteger;
             frmOrdemProducao.Parametros.Acao    := eAlterar;
             frmOrdemProducao.ShowModal;
@@ -681,6 +709,8 @@ begin
             FreeAndNil(frmOrdemProducao);
           end;
           AtualizaABA;
+          if not Self.gdRecebimentoPlantas.DataSource.DataSet.IsEmpty then
+            Self.gdRecebimentoPlantas.DataSource.DataSet.Locate('ID', ID, []);
         end;
       end;
     finally
@@ -831,9 +861,6 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.btExcluirRPClick(Sender: TObject);
-Var
-  FWC : TFWConnection;
-  OP  : TOPFINAL;
 begin
   if (Sender as TSpeedButton).Tag = 0 then begin
     (Sender as TSpeedButton).Tag := 1;
@@ -841,35 +868,8 @@ begin
       if Assigned(Self.gdRecebimentoPlantas.DataSource.DataSet.FindField('ID')) then begin
         if not Self.gdRecebimentoPlantas.DataSource.DataSet.IsEmpty then begin
           if Self.gdRecebimentoPlantas.DataSource.DataSet.FieldByName('ID').AsInteger > 0 then begin
-
-            DisplayMsg(MSG_CONF, 'Excluir o Recebimento de Planta Selecionado?');
-
-            if ResultMsgModal = mrYes then begin
-
-              try
-
-                FWC := TFWConnection.Create;
-                OP  := TOPFINAL.Create(FWC);
-                try
-
-                  OP.ID.Value := Self.gdRecebimentoPlantas.DataSource.DataSet.FieldByName('ID').AsInteger;
-                  OP.Delete;
-
-                  FWC.Commit;
-
-                  Self.gdRecebimentoPlantas.DataSource.DataSet.Delete;
-
-                except
-                  on E : Exception do begin
-                    FWC.Rollback;
-                    DisplayMsg(MSG_ERR, 'Erro ao Excluir o Recebimento de Planta.', '', E.Message);
-                  end;
-                end;
-              finally
-                FreeAndNil(OP);
-                FreeAndNil(FWC);
-              end;
-            end;
+            if ExcluirOPF(Self.gdRecebimentoPlantas.DataSource.DataSet.FieldByName('ID').AsInteger) then
+              AtualizaABA;
           end;
         end;
       end;
@@ -1849,6 +1849,8 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.gdGerarOPCellClick(Column: TColumn);
+Var
+  ID : Integer;
 begin
   if gdGerarOP.SelectedField.FieldName = 'SALDOPOTES' then begin
     if not Self.gdGerarOP.DataSource.DataSet.IsEmpty then begin
@@ -1856,6 +1858,7 @@ begin
         if not Assigned(frmDetalhesEstagio) then
           frmDetalhesEstagio := TfrmDetalhesEstagio.Create(nil);
         try
+          ID := Self.gdGerarOP.DataSource.DataSet.FindField('ID').AsInteger;
           frmDetalhesEstagio.Param.IDOPFE := Self.gdGerarOP.DataSource.DataSet.FindField('ID').AsInteger;
 
           frmDetalhesEstagio.Param.UNIDADES := 0;
@@ -1867,6 +1870,8 @@ begin
           FreeAndNil(frmDetalhesEstagio);
         end;
         AtualizaABA;
+        if not Self.gdGerarOP.DataSource.DataSet.IsEmpty then
+          Self.gdGerarOP.DataSource.DataSet.Locate('ID', ID, []);
       end;
     end;
   end;
@@ -1906,6 +1911,8 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.gdIniciandoEstagioCellClick(Column: TColumn);
+Var
+  ID : Integer;
 begin
   if gdIniciandoEstagio.SelectedField.FieldName = 'SALDOPOTES' then begin
     if not Self.gdIniciandoEstagio.DataSource.DataSet.IsEmpty then begin
@@ -1913,6 +1920,9 @@ begin
         if not Assigned(frmDetalhesEstagio) then
           frmDetalhesEstagio := TfrmDetalhesEstagio.Create(nil);
         try
+
+          ID := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID').AsInteger;
+
           frmDetalhesEstagio.Param.IDOPFE := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID').AsInteger;
 
           frmDetalhesEstagio.Param.UNIDADES := 0;
@@ -1924,6 +1934,8 @@ begin
           FreeAndNil(frmDetalhesEstagio);
         end;
         AtualizaABA;
+        if not Self.gdIniciandoEstagio.DataSource.DataSet.IsEmpty then
+          Self.gdIniciandoEstagio.DataSource.DataSet.Locate('ID', ID, []);
       end;
     end;
   end;

@@ -340,18 +340,25 @@ begin
 end;
 
 procedure TfrmDetalhesEstagio.gdSaidasCellClick(Column: TColumn);
+Var
+  Codigo : Integer;
 begin
   if gdSaidas.SelectedField.FieldName = 'DESCARTAR' then begin
-    if Assigned(Self.gdSaidas.DataSource.DataSet.FindField('CODIGO')) then begin
-      if frmControleDescarte = nil then
-        frmControleDescarte := TfrmControleDescarte.Create(Self);
-      try
-        frmControleDescarte.CodigoPote := Self.gdSaidas.DataSource.DataSet.FindField('CODIGO').AsInteger;
-        frmControleDescarte.ShowModal;
-      finally
-        FreeAndNil(frmControleDescarte);
+    if not Self.gdSaidas.DataSource.DataSet.IsEmpty then begin
+      if Assigned(Self.gdSaidas.DataSource.DataSet.FindField('CODIGO')) then begin
+        if frmControleDescarte = nil then
+          frmControleDescarte := TfrmControleDescarte.Create(Self);
+        try
+          Codigo := Self.gdSaidas.DataSource.DataSet.FindField('CODIGO').AsInteger;
+          frmControleDescarte.CodigoPote := Self.gdSaidas.DataSource.DataSet.FindField('CODIGO').AsInteger;
+          frmControleDescarte.ShowModal;
+        finally
+          FreeAndNil(frmControleDescarte);
+        end;
+        CarregaEntradaSaidas;
+        if not Self.gdSaidas.DataSource.DataSet.IsEmpty then
+          Self.gdSaidas.DataSource.DataSet.Locate('CODIGO', Codigo, []);
       end;
-      CarregaEntradaSaidas;
     end;
   end;
 end;

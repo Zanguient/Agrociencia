@@ -46,6 +46,7 @@ type
     procedure SelecionaMotivoDescarte;
     procedure SelecionaPote;
     procedure LimparDados;
+    procedure Cancelar;
   public
     CodigoPote : Integer;
     { Public declarations }
@@ -78,10 +79,7 @@ uses
 
 procedure TfrmControleDescarte.btCancelarClick(Sender: TObject);
 begin
-  if CodigoPote > 0 then //Se Foi Chamada de outra Tela Fecha.
-    Close
-  else
-    LimparDados;
+  Cancelar;
 end;
 
 procedure TfrmControleDescarte.btDescartarClick(Sender: TObject);
@@ -242,6 +240,14 @@ begin
   end;
 end;
 
+procedure TfrmControleDescarte.Cancelar;
+begin
+  if CodigoPote > 0 then //Se Foi Chamada de outra Tela Fecha.
+    Close
+  else
+    LimparDados;
+end;
+
 procedure TfrmControleDescarte.edt_CodigoMotivoChange(Sender: TObject);
 begin
   edt_Motivo.Clear;
@@ -269,12 +275,7 @@ begin
       else if edt_CodigoMotivo.Focused then
         SelecionaMotivoDescarte;
     end;
-    VK_ESCAPE : begin
-      if lbPote.Tag > 0 then
-        LimparDados
-      else
-        Close;
-    end;
+    VK_ESCAPE : Cancelar;
   end;
 end;
 

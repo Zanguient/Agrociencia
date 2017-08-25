@@ -202,8 +202,8 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         AlignWithMargins = True
         Left = 204
         Top = 3
-        Width = 5
-        Height = 19
+        Width = 154
+        Height = 27
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlue
@@ -211,6 +211,8 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
         ParentFont = False
+        ExplicitWidth = 5
+        ExplicitHeight = 19
       end
       object Label1: TLabel
         AlignWithMargins = True
@@ -242,8 +244,8 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         AlignWithMargins = True
         Left = 204
         Top = 3
-        Width = 5
-        Height = 19
+        Width = 154
+        Height = 27
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlue
@@ -251,6 +253,8 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
         ParentFont = False
+        ExplicitWidth = 5
+        ExplicitHeight = 19
       end
       object Label2: TLabel
         AlignWithMargins = True
@@ -282,8 +286,8 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         AlignWithMargins = True
         Left = 204
         Top = 3
-        Width = 5
-        Height = 19
+        Width = 154
+        Height = 27
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlue
@@ -291,6 +295,8 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
         ParentFont = False
+        ExplicitWidth = 5
+        ExplicitHeight = 19
       end
       object Label4: TLabel
         AlignWithMargins = True
@@ -322,8 +328,8 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         AlignWithMargins = True
         Left = 204
         Top = 3
-        Width = 6
-        Height = 23
+        Width = 154
+        Height = 27
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlue
@@ -331,6 +337,8 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
         ParentFont = False
+        ExplicitWidth = 6
+        ExplicitHeight = 23
       end
       object Label5: TLabel
         AlignWithMargins = True
@@ -362,8 +370,8 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         AlignWithMargins = True
         Left = 204
         Top = 3
-        Width = 5
-        Height = 19
+        Width = 154
+        Height = 27
         Align = alClient
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlue
@@ -371,6 +379,8 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
         ParentFont = False
+        ExplicitWidth = 5
+        ExplicitHeight = 19
       end
       object Label6: TLabel
         AlignWithMargins = True
@@ -710,7 +720,7 @@ object frmDetalhesEstagio: TfrmDetalhesEstagio
     Left = 360
     Top = 216
     Bitmap = {
-      494C010102000800280018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101020008002C0018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000600000001800000001002000000000000024
       000000000000000000000000000000000000000000000000000000000000CACA
       E000DEDEEB000000000000000000000000000000000000000000000000000000

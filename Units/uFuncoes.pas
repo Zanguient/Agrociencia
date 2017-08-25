@@ -38,6 +38,7 @@ uses
   procedure ImprimirOPFE(ID : Integer);
   procedure ImprimirOPSOL(ID : Integer);
   function ExcluirOPFE(ID : Integer) : Boolean;
+  function ExcluirOPF(ID : Integer) : Boolean;
   function ValidaUsuario(Email, Senha : String) : Boolean;
   function MD5(Texto : String): String;
   function Criptografa(Texto : String; Tipo : String) : String;
@@ -63,7 +64,8 @@ Uses
   uBeanUsuario,
   uBeanUsuario_Permissao,
   uDomains,
-  uMensagem, uDMUtil, uBeanOPFinal_Estagio, uBeanOPFinal_Estagio_Lote;
+  uMensagem, uDMUtil, uBeanOPFinal_Estagio, uBeanOPFinal_Estagio_Lote,
+  uBeanOPFinal;
 
 procedure LimpaImagens;
 var
@@ -660,6 +662,65 @@ begin
       finally
         FreeAndNil(OPFE);
         FreeAndNil(OPFEL);
+        FreeAndNil(FWC);
+      end;
+    end;
+  end;
+end;
+
+function ExcluirOPF(ID : Integer) : Boolean;
+var
+  FWC   : TFWConnection;
+  OPF   : TOPFINAL;
+  OPFE  : TOPFINAL_ESTAGIO;
+begin
+
+  Result := False;
+
+  if ID > 0 then begin
+
+    DisplayMsg(MSG_CONF, 'Excluir o Recebimento de Planta Selecionado?');
+
+    if ResultMsgModal = mrYes then begin
+
+      try
+
+        FWC   := TFWConnection.Create;
+        OPF   := TOPFINAL.Create(FWC);
+        OPFE  := TOPFINAL_ESTAGIO.Create(FWC);
+        try
+
+          OPF.SelectList('ID = ' + IntToStr(ID));
+          if OPF.Count > 0 then begin
+
+            OPFE.SelectList('OPFINAL_ID = ' + IntToStr(TOPFINAL(OPF.Itens[0]).ID.Value));
+
+            if OPFE.Count = 0 then begin
+
+              OPF.ID.Value := TOPFINAL(OPF.Itens[0]).ID.Value;
+              OPF.Delete;
+
+              FWC.Commit;
+
+              Result := True;
+
+            end else begin
+              DisplayMsg(MSG_WAR, 'Recebimento de Planta Nº ' + IntToStr(ID) + ', já tem ' + IntToStr(OPFE.Count) + ' OPs Geradas, Verifique!');
+              Exit;
+            end;
+          end else begin
+            DisplayMsg(MSG_WAR, 'Recebimento de Planta Nº ' + IntToStr(ID) + ' não Encontrada, Verifique!');
+            Exit;
+          end;
+        except
+          on E : Exception do begin
+            FWC.Rollback;
+            DisplayMsg(MSG_ERR, 'Erro ao Excluir o Recebimento de Planta, Verifique!', '', E.Message);
+          end;
+        end;
+      finally
+        FreeAndNil(OPF);
+        FreeAndNil(OPFE);
         FreeAndNil(FWC);
       end;
     end;
