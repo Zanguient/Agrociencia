@@ -35,10 +35,12 @@ uses
   procedure DeletarArquivosPasta(Diretorio : String);
   procedure ConverterBMPtoJPEG(ACaminhoFoto: string);
   procedure ImprimirOPMC(ID : Integer);
+  procedure ImprimirEtiquetaOPMC(ID : Integer);
   procedure ImprimirOPFE(ID : Integer);
   procedure ImprimirOPSOL(ID : Integer);
   function ExcluirOPFE(ID : Integer) : Boolean;
   function ExcluirOPF(ID : Integer) : Boolean;
+  function EncerrarOPSE(ID : Integer) : Boolean;
   function ValidaUsuario(Email, Senha : String) : Boolean;
   function MD5(Texto : String): String;
   function Criptografa(Texto : String; Tipo : String) : String;
@@ -65,7 +67,8 @@ Uses
   uBeanUsuario_Permissao,
   uDomains,
   uMensagem, uDMUtil, uBeanOPFinal_Estagio, uBeanOPFinal_Estagio_Lote,
-  uBeanOPFinal;
+  uBeanOPFinal, uBeanOrdemProducaoSolucao, uBeanOrdemProducaoSolucao_Itens,
+  uBeanControleEstoque, uBeanControleEstoqueProduto;
 
 procedure LimpaImagens;
 var
@@ -426,6 +429,59 @@ begin
   end;
 end;
 
+procedure ImprimirEtiquetaOPMC(ID : Integer);
+var
+  FWC   : TFWConnection;
+  SQL   : TFDQuery;
+begin
+  FWC   := TFWConnection.Create;
+  SQL   := TFDQuery.Create(nil);
+  try
+    try
+
+      SQL.Close;
+      SQL.SQL.Clear;
+      SQL.SQL.Add('SELECT');
+      SQL.SQL.Add('CASE CHAR_LENGTH(CAST(OPMC.ID AS VARCHAR))');
+      SQL.SQL.Add('	WHEN 1 THEN ''00'' || CAST(OPMC.ID AS VARCHAR)');
+      SQL.SQL.Add('	WHEN 2 THEN ''0'' || CAST(OPMC.ID AS VARCHAR)');
+      SQL.SQL.Add('	ELSE CAST(OPMC.ID AS VARCHAR) END AS ID,');
+      SQL.SQL.Add('	OPMC.DATAHORA,');
+      SQL.SQL.Add('	MC.CODIGO AS CODIGOMC,');
+      SQL.SQL.Add('	PR.DESCRICAO AS TIPOFRASCO,');
+      SQL.SQL.Add('	OPMC.QUANTRECIPIENTES,');
+      SQL.SQL.Add('	E.METODO AS METODOESTERILIZACAO');
+      SQL.SQL.Add('FROM ORDEMPRODUCAOMC OPMC');
+      SQL.SQL.Add('INNER JOIN MEIOCULTURA MC ON OPMC.ID_PRODUTO = MC.ID_PRODUTO');
+      SQL.SQL.Add('INNER JOIN ESTERILIZACAO E ON OPMC.ID_ESTERILIZACAO = E.ID');
+      SQL.SQL.Add('INNER JOIN PRODUTO PR ON OPMC.ID_RECIPIENTE = PR.ID');
+      SQL.SQL.Add('WHERE 1 = 1');
+      SQL.SQL.Add('AND OPMC.ID = :ID');
+      SQL.ParamByName('ID').DataType  := ftInteger;
+      SQL.ParamByName('ID').AsInteger := ID;
+      SQL.Connection := FWC.FDConnection;
+      SQL.Prepare;
+      SQL.Open();
+
+      if not SQL.IsEmpty then begin
+        DMUtil.frxDBDataset1.DataSet := SQL;
+        RelParams.Clear;
+        DMUtil.ImprimirRelatorio('frEtiquetaOPMC.fr3');
+      end else begin
+        DisplayMsg(MSG_WAR, 'Não há dados para Exibir, Verifique os Filtros!');
+        Exit;
+      end;
+    except
+      on E : Exception do begin
+        DisplayMsg(MSG_ERR, 'Erro ao montar Dados para o Relatório.', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(FWC);
+  end;
+end;
+
 procedure ImprimirOPFE(ID : Integer);
 var
   FWC       : TFWConnection;
@@ -721,6 +777,110 @@ begin
       finally
         FreeAndNil(OPF);
         FreeAndNil(OPFE);
+        FreeAndNil(FWC);
+      end;
+    end;
+  end;
+end;
+
+function EncerrarOPSE(ID : Integer) : Boolean;
+var
+  FWC       : TFWConnection;
+  SOL       : TORDEMPRODUCAOSOLUCAO;
+  SOLI      : TORDEMPRODUCAOSOLUCAO_ITENS;
+  CE        : TCONTROLEESTOQUE;
+  CEP       : TCONTROLEESTOQUEPRODUTO;
+  I         : Integer;
+  Mensagem  : string;
+begin
+
+  Result := False;
+
+  if ID > 0 then begin
+
+    DisplayMsg(MSG_CONF, 'Encerrar a Produção de Solução Estoque?');
+
+    if ResultMsgModal = mrYes then begin
+
+      FWC   := TFWConnection.Create;
+      SOL   := TORDEMPRODUCAOSOLUCAO.Create(FWC);
+      SOLI  := TORDEMPRODUCAOSOLUCAO_ITENS.Create(FWC);
+      CE    := TCONTROLEESTOQUE.Create(FWC);
+      CEP   := TCONTROLEESTOQUEPRODUTO.Create(FWC);
+
+      try
+
+        FWC.StartTransaction;
+
+        try
+
+          SOL.SelectList('ID = ' + IntToStr(ID));
+          if SOL.Count > 0 then begin
+
+            if not TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ENCERRADO.Value then begin
+
+              DisplayMsg(MSG_INPUT_TEXT, 'Informe a Observação do Encerramento!');
+
+              if ResultMsgModal = mrOk then begin
+
+                Mensagem := ResultMsgInputText;
+
+                SOL.ID.Value                      := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID.Value;
+                SOL.OBSERVACAOENCERRAMENTO.Value  := Mensagem;
+                SOL.ID_USUARIOENCERRAMENTO.Value  := USUARIO.CODIGO;
+                SOL.DATAENCERRAMENTO.Value        := Now;
+                SOL.ENCERRADO.Value               := True;
+                SOL.Update;
+
+                SOLI.SelectList('ID_ORDEMPRODUCAOSOLUCAO = ' + TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID.asString);
+                if SOLI.Count > 0 then begin
+                  CE.ID.isNull                    := True;
+                  CE.USUARIO_ID.Value             := USUARIO.CODIGO;
+                  CE.TIPOMOVIMENTACAO.Value       := 0;
+                  CE.CANCELADO.Value              := False;
+                  CE.DATAHORA.Value               := Now;
+                  CE.OBSERVACAO.Value             := 'Ordem de Produção de Solução de Estoque ' + IntToStr(ID);
+                  CE.Insert;
+
+                  CEP.ID.isNull                   := True;
+                  CEP.CONTROLEESTOQUE_ID.Value    := CE.ID.Value;
+                  CEP.PRODUTO_ID.Value            := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID_PRODUTO.Value;
+                  CEP.QUANTIDADE.Value            := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).QUANTIDADE.Value;
+                  CEP.Insert;
+
+                  for I := 0 to Pred(SOLI.Count) do begin
+                    CEP.ID.isNull                 := True;
+                    CEP.CONTROLEESTOQUE_ID.Value  := CE.ID.Value;
+                    CEP.PRODUTO_ID.Value          := TORDEMPRODUCAOSOLUCAO_ITENS(SOLI.Itens[I]).ID_PRODUTO.Value;
+                    CEP.QUANTIDADE.Value          := TORDEMPRODUCAOSOLUCAO_ITENS(SOLI.Itens[I]).QUANTIDADE.Value * -1;
+                    CEP.Insert;
+                  end;
+                end;
+
+                FWC.Commit;
+
+                Result := True;
+
+              end;
+            end else begin
+              DisplayMsg(MSG_WAR, 'OP Solução Estoque Nº ' + IntToStr(ID) + ', já Encerrada, Verifique!');
+              Exit;
+            end;
+          end else begin
+            DisplayMsg(MSG_WAR, 'OP Solução Estoque Nº ' + IntToStr(ID) + ' não Encontrada, Verifique!');
+            Exit;
+          end;
+        except
+          on E : Exception do begin
+            FWC.Rollback;
+            DisplayMsg(MSG_ERR, 'Erro ao Encerrar a OP Solução Estoque, Verifique!', '', E.Message);
+          end;
+        end;
+      finally
+        FreeAndNil(CEP);
+        FreeAndNil(CE);
+        FreeAndNil(SOLI);
+        FreeAndNil(SOL);
         FreeAndNil(FWC);
       end;
     end;

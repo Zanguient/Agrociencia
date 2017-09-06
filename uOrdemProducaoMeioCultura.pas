@@ -799,7 +799,8 @@ begin
   if Etiquetas1.Tag = 0 then begin
     Etiquetas1.Tag := 1;
     try
-      ImprimirEtiqueta;
+      if not cds_Pesquisa.IsEmpty then
+        ImprimirEtiquetaOPMC(cds_PesquisaID.Value);
     finally
       Etiquetas1.Tag := 0;
     end;

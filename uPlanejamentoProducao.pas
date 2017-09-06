@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExStdCtrls, JvEdit, JvValidateEdit,
   Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Mask, JvExMask, JvToolEdit, Vcl.Buttons,
   Data.DB, Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls,
-  FireDAC.Comp.Client;
+  FireDAC.Comp.Client, Vcl.Menus, Vcl.ImgList;
 
 type
   TfrmPlanejamentoProducao = class(TForm)
@@ -168,6 +168,13 @@ type
     CDS_INICIANDOESTAGIOCODIGOMC: TStringField;
     CDS_INICIANDOESTAGIOSALDOPOTES: TIntegerField;
     btExcluirOPG: TSpeedButton;
+    cbStatus: TComboBox;
+    PopupMenuMC: TPopupMenu;
+    OrdemdeProduo1: TMenuItem;
+    Etiquetas1: TMenuItem;
+    ImageListOPMC: TImageList;
+    btEncerrarOPMC: TSpeedButton;
+    btEncerrarOPSE: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -234,6 +241,10 @@ type
     procedure btAlterarIEClick(Sender: TObject);
     procedure btNovoIEClick(Sender: TObject);
     procedure btExcluirOPGClick(Sender: TObject);
+    procedure OrdemdeProduo1Click(Sender: TObject);
+    procedure Etiquetas1Click(Sender: TObject);
+    procedure btEncerrarOPMCClick(Sender: TObject);
+    procedure btEncerrarOPSEClick(Sender: TObject);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -266,8 +277,13 @@ uses
   uOrdemProducaoSolucao,
   uDetalhesEstagio,
   uBeanOPFinal,
-  uBeanOrdemProducaoMC, uBeanOrdemProducaoSolucao, uBeanCliente, uBeanProdutos,
-  uBeanEstagio, uBeanVariedade;
+  uBeanOrdemProducaoMC,
+  uBeanOrdemProducaoSolucao,
+  uBeanCliente,
+  uBeanProdutos,
+  uBeanEstagio,
+  uBeanVariedade,
+  uEncerramentoOPMC;
 
 {$R *.dfm}
 
@@ -467,17 +483,7 @@ end;
 
 procedure TfrmPlanejamentoProducao.btRelatorioOPMCClick(Sender: TObject);
 begin
-  if (Sender as TSpeedButton).Tag = 0 then begin
-    (Sender as TSpeedButton).Tag := 1;
-    try
-      if not Self.gdMeioCultura.DataSource.DataSet.IsEmpty then begin
-        if Assigned(Self.gdMeioCultura.DataSource.DataSet.FindField('ID')) then
-          ImprimirOPMC(Self.gdMeioCultura.DataSource.DataSet.FieldByName('ID').AsInteger);
-      end;
-    finally
-      (Sender as TSpeedButton).Tag := 0;
-    end;
-  end;
+  PopupMenuMC.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
 end;
 
 procedure TfrmPlanejamentoProducao.btRelatorioOPSEClick(Sender: TObject);
@@ -727,6 +733,55 @@ begin
       AtualizaABA;
     finally
       (Sender as TBitBtn).Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.btEncerrarOPMCClick(Sender: TObject);
+Var
+  ID : Integer;
+begin
+  if (Sender as TSpeedButton).Tag = 0 then begin
+    (Sender as TSpeedButton).Tag := 1;
+    try
+      if Assigned(Self.gdMeioCultura.DataSource.DataSet.FindField('ID')) then begin
+        if not Self.gdMeioCultura.DataSource.DataSet.IsEmpty then begin
+          if not Assigned(frmEncerramentoOPMC) then
+            frmEncerramentoOPMC := TfrmEncerramentoOPMC.Create(nil);
+          try
+            ID := Self.gdMeioCultura.DataSource.DataSet.FieldByName('ID').AsInteger;
+            frmEncerramentoOPMC.Parametros.Codigo  := Self.gdMeioCultura.DataSource.DataSet.FieldByName('ID').AsInteger;
+            frmEncerramentoOPMC.Parametros.Acao    := eAlterar;
+            frmEncerramentoOPMC.ShowModal;
+          finally
+            FreeAndNil(frmEncerramentoOPMC);
+          end;
+          AtualizaABA;
+          if not Self.gdMeioCultura.DataSource.DataSet.IsEmpty then
+            Self.gdMeioCultura.DataSource.DataSet.Locate('ID', ID, []);
+        end;
+      end;
+    finally
+      (Sender as TSpeedButton).Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.btEncerrarOPSEClick(Sender: TObject);
+begin
+  if (Sender as TSpeedButton).Tag = 0 then begin
+    (Sender as TSpeedButton).Tag := 1;
+    try
+      if Assigned(Self.gdOPESolEstoque.DataSource.DataSet.FindField('ID')) then begin
+        if not Self.gdOPESolEstoque.DataSource.DataSet.IsEmpty then begin
+          if Self.gdOPESolEstoque.DataSource.DataSet.FieldByName('ID').AsInteger > 0 then begin
+            if EncerrarOPSE(Self.gdOPESolEstoque.DataSource.DataSet.FieldByName('ID').AsInteger) then
+              AtualizaABA;
+          end;
+        end;
+      end;
+    finally
+      (Sender as TSpeedButton).Tag := 0;
     end;
   end;
 end;
@@ -1436,14 +1491,22 @@ begin
       Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       Consulta.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
       Consulta.SQL.Add('WHERE 1 = 1');
-      Consulta.SQL.Add('AND OPF.CANCELADO = FALSE');
-      Consulta.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
       Consulta.SQL.Add('AND OPF.DATAESTIMADAPROCESSAMENTO IS NOT NULL');
       Consulta.SQL.Add('AND ((:CODIGOCLIENTE = -1) OR (C.ID = :CODIGOCLIENTE))');
       Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
       Consulta.SQL.Add('AND ((:CODIGOVARIEDADE = -1) OR (V.ID = :CODIGOVARIEDADE))');
       Consulta.SQL.Add('AND CAST(OPF.DATAESTIMADAPROCESSAMENTO AS DATE) <= :DATA');
-      Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO OPFE WHERE OPFE.OPFINAL_ID = OPF.ID)');
+
+      case cbStatus.ItemIndex of
+        0 : begin
+          Consulta.SQL.Add('AND OPF.DATAENCERRAMENTO IS NULL');
+          Consulta.SQL.Add('AND OPF.CANCELADO = False');
+          Consulta.SQL.Add('AND NOT EXISTS (SELECT 1 FROM OPFINAL_ESTAGIO OPFE WHERE OPFE.OPFINAL_ID = OPF.ID)');
+        end;
+        1 : Consulta.SQL.Add('AND OPF.DATAENCERRAMENTO IS NOT NULL AND OPF.CANCELADO = False');
+        2 : Consulta.SQL.Add('AND OPF.CANCELADO = True');
+      end;
+
       Consulta.SQL.Add('ORDER BY OPF.DATAESTIMADAPROCESSAMENTO ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
@@ -1597,6 +1660,21 @@ begin
   finally
     FreeAndNil(V);
     FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.Etiquetas1Click(Sender: TObject);
+begin
+  if (Sender as TMenuItem).Tag = 0 then begin
+    (Sender as TMenuItem).Tag := 1;
+    try
+      if not Self.gdMeioCultura.DataSource.DataSet.IsEmpty then begin
+        if Assigned(Self.gdMeioCultura.DataSource.DataSet.FindField('ID')) then
+          ImprimirEtiquetaOPMC(Self.gdMeioCultura.DataSource.DataSet.FieldByName('ID').AsInteger);
+      end;
+    finally
+      (Sender as TMenuItem).Tag := 0;
+    end;
   end;
 end;
 
@@ -2017,6 +2095,21 @@ procedure TfrmPlanejamentoProducao.gdRecebimentoPlantasTitleClick(
   Column: TColumn);
 begin
   OrdenarGrid(Column);
+end;
+
+procedure TfrmPlanejamentoProducao.OrdemdeProduo1Click(Sender: TObject);
+begin
+  if (Sender as TMenuItem).Tag = 0 then begin
+    (Sender as TMenuItem).Tag := 1;
+    try
+      if not Self.gdMeioCultura.DataSource.DataSet.IsEmpty then begin
+        if Assigned(Self.gdMeioCultura.DataSource.DataSet.FindField('ID')) then
+          ImprimirOPMC(Self.gdMeioCultura.DataSource.DataSet.FieldByName('ID').AsInteger);
+      end;
+    finally
+      (Sender as TMenuItem).Tag := 0;
+    end;
+  end;
 end;
 
 procedure TfrmPlanejamentoProducao.PageControl1Change(Sender: TObject);

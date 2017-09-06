@@ -278,87 +278,16 @@ begin
 end;
 
 procedure TfrmOrdemProducaoSolucao.btEncerrarClick(Sender: TObject);
-var
-  FWC       : TFWConnection;
-  SOL       : TORDEMPRODUCAOSOLUCAO;
-  SOLI      : TORDEMPRODUCAOSOLUCAO_ITENS;
-  CE        : TCONTROLEESTOQUE;
-  CEP       : TCONTROLEESTOQUEPRODUTO;
-  I         : Integer;
-  Mensagem  : string;
 begin
-
-  if cds_PesquisaENCERRADO.Value then begin
-    DisplayMsg(MSG_WAR, 'Ordem de Produção já foi encerrada!');
-    Exit;
-  end;
-
-  DisplayMsg(MSG_INPUT_TEXT, 'Informe a Observação do Encerramento!');
-
-  if ResultMsgModal = mrOk then begin
-
-    Mensagem := ResultMsgInputText;
-
-    FWC := TFWConnection.Create;
-    SOL := TORDEMPRODUCAOSOLUCAO.Create(FWC);
-    SOLI:= TORDEMPRODUCAOSOLUCAO_ITENS.Create(FWC);
-    CE  := TCONTROLEESTOQUE.Create(FWC);
-    CEP := TCONTROLEESTOQUEPRODUTO.Create(FWC);
+  if (Sender as TSpeedButton).Tag = 0 then begin
+    (Sender as TSpeedButton).Tag := 1;
     try
-      FWC.StartTransaction;
-      try
-        SOL.SelectList('ID = ' + cds_PesquisaID.AsString);
-        if SOL.Count > 0 then begin
-          SOL.ID.Value                      := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID.Value;
-          SOL.OBSERVACAOENCERRAMENTO.Value  := Mensagem;
-          SOL.ID_USUARIOENCERRAMENTO.Value  := USUARIO.CODIGO;
-          SOL.DATAENCERRAMENTO.Value        := Now;
-          SOL.ENCERRADO.Value               := True;
-          SOL.Update;
-
-          SOLI.SelectList('ID_ORDEMPRODUCAOSOLUCAO = ' + TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID.asString);
-          if SOLI.Count > 0 then begin
-            CE.ID.isNull                    := True;
-            CE.USUARIO_ID.Value             := USUARIO.CODIGO;
-            CE.TIPOMOVIMENTACAO.Value       := 0;
-            CE.CANCELADO.Value              := False;
-            CE.DATAHORA.Value               := Now;
-            CE.OBSERVACAO.Value             := 'Ordem de Produção de Solução de Estoque ' + cds_PesquisaID.AsString;
-            CE.Insert;
-
-            CEP.ID.isNull                   := True;
-            CEP.CONTROLEESTOQUE_ID.Value    := CE.ID.Value;
-            CEP.PRODUTO_ID.Value            := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).ID_PRODUTO.Value;
-            CEP.QUANTIDADE.Value            := TORDEMPRODUCAOSOLUCAO(SOL.Itens[0]).QUANTIDADE.Value;
-            CEP.Insert;
-
-            for I := 0 to Pred(SOLI.Count) do begin
-              CEP.ID.isNull                 := True;
-              CEP.CONTROLEESTOQUE_ID.Value  := CE.ID.Value;
-              CEP.PRODUTO_ID.Value          := TORDEMPRODUCAOSOLUCAO_ITENS(SOLI.Itens[I]).ID_PRODUTO.Value;
-              CEP.QUANTIDADE.Value          := TORDEMPRODUCAOSOLUCAO_ITENS(SOLI.Itens[I]).QUANTIDADE.Value * -1;
-              CEP.Insert;
-            end;
-          end;
-        end;
-
-        FWC.Commit;
-
-        CarregarDados;
-
-      except
-        on E : Exception do begin
-          FWC.Rollback;
-          DisplayMsg(MSG_WAR, 'Erro ao Encerrar Ordem de Produção', '', E.Message);
-          Exit;
-        end;
+      if not cds_Pesquisa.IsEmpty then begin
+        if EncerrarOPSE(cds_PesquisaID.Value) then
+          CarregarDados;
       end;
     finally
-      FreeAndNil(SOL);
-      FreeAndNil(SOLI);
-      FreeAndNil(CEP);
-      FreeAndNil(CE);
-      FreeAndNil(FWC);
+      (Sender as TSpeedButton).Tag := 0;
     end;
   end;
 end;

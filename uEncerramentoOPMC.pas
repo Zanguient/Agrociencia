@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExStdCtrls, JvEdit, JvValidateEdit,
-  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Mask, JvExMask, JvToolEdit, Vcl.Buttons;
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Mask, JvExMask, JvToolEdit, Vcl.Buttons,
+  uConstantes;
 
 type
   TfrmEncerramentoOPMC = class(TForm)
@@ -52,23 +53,24 @@ type
     procedure edt_CodigoOrdemChange(Sender: TObject);
     procedure btEncerrarClick(Sender: TObject);
     procedure edt_MLPorRecipienteChange(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
-    { Public declarations }
-    procedure SelecionaOrdemProducao;
+    Parametros : TPARAMETROS;
     procedure LimparDadosOrdem;
     procedure EncerrarOrdem;
+    function SelecionaOrdemProducao : Boolean;
   end;
 
 var
   frmEncerramentoOPMC: TfrmEncerramentoOPMC;
 
 implementation
+
 uses
   uSeleciona,
   uDMUtil,
-  uConstantes,
   uFWConnection,
   uBeanMeioCultura,
   uBeanOrdemProducaoMC,
@@ -79,6 +81,7 @@ uses
   uBeanControleEstoqueProduto,
   uBeanOrdemProducaoMC_Itens,
   uBeanOrdemProducaoMC_Estoque;
+
 {$R *.dfm}
 
 { TfrmEncerramentoOPMC }
@@ -110,7 +113,8 @@ end;
 procedure TfrmEncerramentoOPMC.edt_CodigoOrdemKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
-  if Key = VK_RETURN then SelecionaOrdemProducao;
+  if Key = VK_RETURN then
+    SelecionaOrdemProducao;
 end;
 
 procedure TfrmEncerramentoOPMC.edt_CodigoOrdemRightButtonClick(Sender: TObject);
@@ -151,10 +155,6 @@ Var
   OPMCE : TORDEMPRODUCAOMC_ESTOQUE;
   I: Integer;
 begin
-  if (edt_CodigoOrdem.Text = EmptyStr) or (edt_CodigoOrdem.Tag = 0) then begin
-    DisplayMsg(MSG_INF, 'Selecione uma Ordem de Produção de Meio de Cultura!');
-    Exit;
-  end;
 
   FWC     := TFWConnection.Create;
   CE      := TCONTROLEESTOQUE.Create(FWC);
@@ -162,10 +162,16 @@ begin
   OPMC    := TORDEMPRODUCAOMC.Create(FWC);
   OPMCI   := TORDEMPRODUCAOMC_ITENS.Create(FWC);
   OPMCE   := TORDEMPRODUCAOMC_ESTOQUE.Create(FWC);
+
   try
-    DisplayMsg(MSG_WAIT, 'Encerrando Ordem de Produção de Meio de Cultura...');
+
+    if (edt_CodigoOrdem.Text = EmptyStr) or (edt_CodigoOrdem.Tag = 0) then begin
+      DisplayMsg(MSG_INF, 'Selecione uma Ordem de Produção de Meio de Cultura!');
+      Exit;
+    end;
 
     FWC.StartTransaction;
+
     try
       OPMC.SelectList('ID = ' + QuotedStr(edt_CodigoOrdem.Text));
       if OPMC.Count > 0 then begin
@@ -227,8 +233,10 @@ begin
 //      OPMCE.Insert;
 
       FWC.Commit;
-      DisplayMsgFinaliza;
-      LimparDadosOrdem;
+
+      if Parametros.Acao = eNada then
+        LimparDadosOrdem;
+
     except
       on E : Exception do begin
         FWC.Rollback;
@@ -243,10 +251,16 @@ begin
     FreeAndNil(OPMCE);
     FreeAndNil(FWC);
   end;
+
+  if Parametros.Acao in [eNovo, eAlterar] then
+    Close;
+
 end;
 
 procedure TfrmEncerramentoOPMC.FormCreate(Sender: TObject);
 begin
+  Parametros.Codigo := 0;
+  Parametros.Acao   := eNada;
   AjustaForm(Self);
 end;
 
@@ -254,6 +268,19 @@ procedure TfrmEncerramentoOPMC.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then Close;  
+end;
+
+procedure TfrmEncerramentoOPMC.FormShow(Sender: TObject);
+begin
+  case Parametros.Acao of
+    eAlterar : begin
+      if Parametros.Codigo > 0 then begin
+        if not SelecionaOrdemProducao then
+          PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+      end else
+        PostMessage(Self.Handle, WM_CLOSE, 0, 0);
+    end;
+  end;
 end;
 
 procedure TfrmEncerramentoOPMC.LimparDadosOrdem;
@@ -277,7 +304,7 @@ begin
   end;
 end;
 
-procedure TfrmEncerramentoOPMC.SelecionaOrdemProducao;
+function TfrmEncerramentoOPMC.SelecionaOrdemProducao : Boolean;
 var
   FW : TFWConnection;
   MC : TMEIOCULTURA;
@@ -285,6 +312,9 @@ var
   PR : TPRODUTO;
   Filtro : string;
 begin
+
+  Result := False;
+
   FW := TFWConnection.Create;
   MC := TMEIOCULTURA.Create(FW);
   OP := TORDEMPRODUCAOMC.Create(FW);
@@ -292,14 +322,22 @@ begin
   pnPrincipal.Tag := 0;
   try
     pnPrincipal.Tag := 1;
-    Filtro := 'ORDEMPRODUCAOMC.ID_PRODUTO = MEIOCULTURA.ID_PRODUTO AND NOT ORDEMPRODUCAOMC.ENCERRADO';
-    edt_CodigoOrdem.Tag := DMUtil.Selecionar(OP, edt_CodigoOrdem.Text, Filtro, MC);
-    OP.SelectList('ID = ' + QuotedStr(IntToStr(edt_CodigoOrdem.Tag)));
+
+    if Parametros.Acao = eNada then begin
+      Filtro := 'ORDEMPRODUCAOMC.ID_PRODUTO = MEIOCULTURA.ID_PRODUTO AND NOT ORDEMPRODUCAOMC.ENCERRADO';
+      edt_CodigoOrdem.Tag := DMUtil.Selecionar(OP, edt_CodigoOrdem.Text, Filtro, MC);
+      OP.SelectList('ID = ' + QuotedStr(IntToStr(edt_CodigoOrdem.Tag)));
+    end else begin
+      if Parametros.Codigo > 0 then
+        OP.SelectList('ID = ' + IntToStr(Parametros.Codigo));
+    end;
+
     if OP.Count > 0 then begin
-      edt_CodigoOrdem.Text             := TORDEMPRODUCAOMC(OP.Itens[0]).ID.asString;
-      edt_PHInicial.Value              := TORDEMPRODUCAOMC(OP.Itens[0]).PHINICIAL.Value;
-      edt_PHFinal.Value                := TORDEMPRODUCAOMC(OP.Itens[0]).PHFINAL.Value;
-      edt_CodigoMeioCultura.Text       := TORDEMPRODUCAOMC(OP.Itens[0]).ID_PRODUTO.asString;
+      edt_CodigoOrdem.Tag         := TORDEMPRODUCAOMC(OP.Itens[0]).ID.Value;
+      edt_CodigoOrdem.Text        := TORDEMPRODUCAOMC(OP.Itens[0]).ID.asString;
+      edt_PHInicial.Value         := TORDEMPRODUCAOMC(OP.Itens[0]).PHINICIAL.Value;
+      edt_PHFinal.Value           := TORDEMPRODUCAOMC(OP.Itens[0]).PHFINAL.Value;
+      edt_CodigoMeioCultura.Text  := TORDEMPRODUCAOMC(OP.Itens[0]).ID_PRODUTO.asString;
         PR.SelectList('ID = ' + TORDEMPRODUCAOMC(OP.Itens[0]).ID_PRODUTO.asSQL);
         if PR.Count > 0 then
           edt_DescricaoMeioCultura.Text:= TPRODUTO(PR.Itens[0]).DESCRICAO.asString;
@@ -310,6 +348,9 @@ begin
       if PR.Count > 0 then
         edt_NomeRecipiente.Text        := TPRODUTO(PR.Itens[0]).DESCRICAO.asString;
       edt_QuantidadeRecipiente.Value   := TORDEMPRODUCAOMC(OP.Itens[0]).QUANTRECIPIENTES.Value;
+
+      Result := True;
+
     end;
   finally
     pnPrincipal.Tag := 0;
