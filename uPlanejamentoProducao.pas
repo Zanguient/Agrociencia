@@ -175,6 +175,32 @@ type
     ImageListOPMC: TImageList;
     btEncerrarOPMC: TSpeedButton;
     btEncerrarOPSE: TSpeedButton;
+    TSESTOQUE: TTabSheet;
+    PageControl2: TPageControl;
+    TSEEP: TTabSheet;
+    TSEMC: TTabSheet;
+    TSESE: TTabSheet;
+    Panel11: TPanel;
+    gdEstoqueEstoquePotes: TDBGrid;
+    Panel13: TPanel;
+    SpeedButton7: TSpeedButton;
+    btExportarEEP: TSpeedButton;
+    Panel14: TPanel;
+    gdEstoqueMeioCultura: TDBGrid;
+    Panel15: TPanel;
+    SpeedButton9: TSpeedButton;
+    btExportarEMC: TSpeedButton;
+    Panel17: TPanel;
+    gdEstoqueSolucaoEstoque: TDBGrid;
+    Panel18: TPanel;
+    SpeedButton11: TSpeedButton;
+    btExportarESE: TSpeedButton;
+    CDS_ESTOQUEESE: TClientDataSet;
+    CDS_ESTOQUEESEID: TIntegerField;
+    CDS_ESTOQUEESESOLUCAO: TStringField;
+    DS_ESTOQUEESE: TDataSource;
+    CDS_ESTOQUEUNIDADEMEDIDA: TStringField;
+    CDS_ESTOQUEESEESTOQUE: TCurrencyField;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -254,6 +280,9 @@ type
     procedure CarregarOPGerada;
     procedure CarregarESolEstoque;
     procedure CarregarIniciandoEstagio;
+    procedure CarregarEstoqueSE;
+    procedure CarregarEstoqueMC;
+    procedure CarregarEstoqueEP;
     procedure AtualizaABA;
     { Private declarations }
   public
@@ -519,7 +548,12 @@ begin
             AutoSizeDBGrid(gdOPESolEstoque)
           else
             if PageControl1.ActivePage = TSIE then
-              AutoSizeDBGrid(gdIniciandoEstagio);
+              AutoSizeDBGrid(gdIniciandoEstagio)
+            else
+              if PageControl1.ActivePage = TSESTOQUE then begin
+                if PageControl2.ActivePage = TSESE then
+                  AutoSizeDBGrid(gdEstoqueSolucaoEstoque);
+              end;
 end;
 
 procedure TfrmPlanejamentoProducao.AtualizaABA;
@@ -540,7 +574,18 @@ begin
             CarregarESolEstoque
           else
             if PageControl1.ActivePage = TSIE then
-              CarregarIniciandoEstagio;
+              CarregarIniciandoEstagio
+            else
+              if PageControl1.ActivePage = TSESTOQUE then begin //Aba de Estoque
+                if PageControl2.ActivePage = TSESE then
+                  CarregarEstoqueSE
+                else
+                  if PageControl2.ActivePage = TSEMC then
+                    CarregarEstoqueMC
+                  else
+                    if PageControl2.ActivePage = TSEEP then
+                      CarregarEstoqueEP;
+              end;
 end;
 
 procedure TfrmPlanejamentoProducao.btAlterarGNOPClick(Sender: TObject);
@@ -989,7 +1034,31 @@ begin
                   end;
 
                   ExpDbGridXLS(gdIniciandoEstagio, 'Iniciando Estágio.xls');
-                end;
+                end else
+                  if (Sender as TSpeedButton) = btExportarESE then begin
+                    if gdEstoqueSolucaoEstoque.DataSource.DataSet.IsEmpty then begin
+                      DisplayMsg(MSG_WAR, 'Não há Dados para Exportar, Verifique!');
+                      Exit;
+                    end;
+
+                    ExpDbGridXLS(gdEstoqueSolucaoEstoque, 'Estoque Solução Estoque.xls');
+                  end else
+                    if (Sender as TSpeedButton) = btExportarEMC then begin
+                      if gdEstoqueMeioCultura.DataSource.DataSet.IsEmpty then begin
+                        DisplayMsg(MSG_WAR, 'Não há Dados para Exportar, Verifique!');
+                        Exit;
+                      end;
+
+                      ExpDbGridXLS(gdEstoqueMeioCultura, 'Estoque Meio de Cultura.xls');
+                    end else
+                      if (Sender as TSpeedButton) = btExportarEEP then begin
+                        if gdEstoqueEstoquePotes.DataSource.DataSet.IsEmpty then begin
+                          DisplayMsg(MSG_WAR, 'Não há Dados para Exportar, Verifique!');
+                          Exit;
+                        end;
+
+                        ExpDbGridXLS(gdEstoqueEstoquePotes, 'Estoque de Potes com Plantas.xls');
+                      end;
     finally
       (Sender as TSpeedButton).Tag := 0;
       (Sender as TSpeedButton).Caption := 'E&xportar';
@@ -1064,6 +1133,107 @@ begin
     end;
   finally
     CDS_ESOLESTOQUE.EnableControls;
+    FreeAndNil(Consulta);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.CarregarEstoqueEP;
+begin
+  //
+end;
+
+procedure TfrmPlanejamentoProducao.CarregarEstoqueMC;
+var
+  FWC       : TFWConnection;
+  Consulta  : TFDQuery;
+begin
+
+  FWC       := TFWConnection.Create;
+  Consulta  := TFDQuery.Create(nil);
+
+  try
+    try
+
+      {Consulta.Close;
+      Consulta.SQL.Clear;
+      Consulta.SQL.Add('');
+
+      Consulta.Connection                     := FWC.FDConnection;
+
+      Consulta.Prepare;
+      Consulta.Open;
+      Consulta.FetchAll;}
+
+    Except
+      on E : Exception do begin
+        DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta do Estoque do Meio de Cultura!', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(Consulta);
+    FreeAndNil(FWC);
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.CarregarEstoqueSE;
+var
+  FWC       : TFWConnection;
+  Consulta  : TFDQuery;
+begin
+
+  FWC       := TFWConnection.Create;
+  Consulta  := TFDQuery.Create(nil);
+
+  try
+    try
+
+      CDS_ESTOQUEESE.DisableControls;
+
+      CDS_ESTOQUEESE.EmptyDataSet;
+
+      Consulta.Close;
+      Consulta.SQL.Clear;
+      Consulta.SQL.Add('SELECT');
+      Consulta.SQL.Add('        P.ID,');
+      Consulta.SQL.Add('        P.DESCRICAO AS SOLUCAO,');
+      Consulta.SQL.Add('        UM.SIMBOLO AS UNIDADEMEDIDA,');
+      Consulta.SQL.Add('        (COALESCE((SELECT SUM(COALESCE(CEP.QUANTIDADE, 0.00))');
+      Consulta.SQL.Add('	  FROM CONTROLEESTOQUE CE INNER JOIN CONTROLEESTOQUEPRODUTO CEP ON (CEP.CONTROLEESTOQUE_ID = CE.ID)');
+      Consulta.SQL.Add('	  WHERE CE.CANCELADO = FALSE AND CEP.PRODUTO_ID = P.ID),0.00)) AS ESTOQUE');
+      Consulta.SQL.Add('FROM PRODUTO P');
+      Consulta.SQL.Add('INNER JOIN UNIDADEMEDIDA UM ON (UM.ID = P.UNIDADEMEDIDA_ID)');
+      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND P.FINALIDADE = 5');
+      Consulta.SQL.Add('ORDER BY P.ID ASC');
+
+      Consulta.Connection                     := FWC.FDConnection;
+
+      Consulta.Prepare;
+      Consulta.Open;
+      Consulta.FetchAll;
+
+      if not Consulta.IsEmpty then begin
+
+        Consulta.First;
+        while not Consulta.Eof do begin
+          CDS_ESTOQUEESE.Append;
+          CDS_ESTOQUEESEID.Value          := Consulta.FieldByName('ID').AsInteger;
+          CDS_ESTOQUEESESOLUCAO.Value     := Consulta.FieldByName('SOLUCAO').AsString;
+          CDS_ESTOQUEUNIDADEMEDIDA.Value  := Consulta.FieldByName('UNIDADEMEDIDA').AsString;
+          CDS_ESTOQUEESEESTOQUE.Value     := Consulta.FieldByName('ESTOQUE').AsCurrency;
+          CDS_ESTOQUEESE.Post;
+          Consulta.Next;
+        end;
+      end;
+
+    Except
+      on E : Exception do begin
+        DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta do Estoque de Solução Estoque!', '', E.Message);
+      end;
+    end;
+  finally
+    CDS_ESTOQUEESE.EnableControls;
     FreeAndNil(Consulta);
     FreeAndNil(FWC);
   end;
@@ -1563,6 +1733,9 @@ begin
   CarregarOPGerada;
   CarregarESolEstoque;
   CarregarIniciandoEstagio;
+  CarregarEstoqueSE;
+  CarregarEstoqueMC;
+  CarregarEstoqueEP;
 end;
 
 procedure TfrmPlanejamentoProducao.edCodigoClienteChange(Sender: TObject);
@@ -1902,6 +2075,7 @@ begin
   CDS_OPGERADA.CreateDataSet;
   CDS_ESOLESTOQUE.CreateDataSet;
   CDS_INICIANDOESTAGIO.CreateDataSet;
+  CDS_ESTOQUEESE.CreateDataSet;
   AjustaForm(Self);
 end;
 
