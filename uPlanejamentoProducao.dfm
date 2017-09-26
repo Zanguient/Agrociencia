@@ -4702,7 +4702,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Top = 0
           Width = 888
           Height = 403
-          ActivePage = TSEEP
+          ActivePage = TSEMC
           Align = alClient
           TabOrder = 0
           object TSEEP: TTabSheet
@@ -4968,7 +4968,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
               Width = 874
               Height = 268
               Align = alClient
-              DataSource = DS_ESOLESTOQUE
+              DataSource = DS_ESTOQUEMC
               DrawingStyle = gdsGradient
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
@@ -4984,6 +4984,28 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
               TitleFont.Name = 'Tahoma'
               TitleFont.Style = []
               OnTitleClick = gdOPESolEstoqueTitleClick
+              Columns = <
+                item
+                  Expanded = False
+                  FieldName = 'CODIGOMC'
+                  Visible = True
+                end
+                item
+                  Expanded = False
+                  FieldName = 'NOME'
+                  Width = 500
+                  Visible = True
+                end
+                item
+                  Expanded = False
+                  FieldName = 'UNIDADEMEDIDA'
+                  Visible = True
+                end
+                item
+                  Expanded = False
+                  FieldName = 'ESTOQUE'
+                  Visible = True
+                end>
             end
             object Panel15: TPanel
               Left = 0
@@ -5720,7 +5742,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
     Left = 832
     Top = 201
     Bitmap = {
-      494C010102001400D00020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010102001400D40020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6285,5 +6307,38 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
     DataSet = CDS_ESTOQUEESE
     Left = 591
     Top = 314
+  end
+  object CDS_ESTOQUEMC: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 135
+    Top = 163
+    object CDS_ESTOQUEMCID_PRODUTO: TIntegerField
+      FieldName = 'ID_PRODUTO'
+    end
+    object CDS_ESTOQUEMCCODIGOMC: TStringField
+      DisplayLabel = 'C'#243'digo MC'
+      FieldName = 'CODIGOMC'
+      Size = 5
+    end
+    object CDS_ESTOQUEMCNOME: TStringField
+      DisplayLabel = 'Meio de Cultura'
+      FieldName = 'NOME'
+      Size = 100
+    end
+    object CDS_ESTOQUEMCESTOQUE: TFloatField
+      DisplayLabel = 'Estoque'
+      FieldName = 'ESTOQUE'
+    end
+    object CDS_ESTOQUEMCUNIDADEMEDIDA: TStringField
+      DisplayLabel = 'Un. Medida'
+      FieldName = 'UNIDADEMEDIDA'
+      Size = 4
+    end
+  end
+  object DS_ESTOQUEMC: TDataSource
+    DataSet = CDS_ESTOQUEMC
+    Left = 135
+    Top = 219
   end
 end

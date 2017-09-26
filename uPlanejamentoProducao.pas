@@ -201,6 +201,13 @@ type
     DS_ESTOQUEESE: TDataSource;
     CDS_ESTOQUEUNIDADEMEDIDA: TStringField;
     CDS_ESTOQUEESEESTOQUE: TCurrencyField;
+    CDS_ESTOQUEMC: TClientDataSet;
+    DS_ESTOQUEMC: TDataSource;
+    CDS_ESTOQUEMCID_PRODUTO: TIntegerField;
+    CDS_ESTOQUEMCCODIGOMC: TStringField;
+    CDS_ESTOQUEMCNOME: TStringField;
+    CDS_ESTOQUEMCESTOQUE: TFloatField;
+    CDS_ESTOQUEMCUNIDADEMEDIDA: TStringField;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -1152,19 +1159,46 @@ begin
   FWC       := TFWConnection.Create;
   Consulta  := TFDQuery.Create(nil);
 
+  CDS_ESTOQUEMC.EmptyDataSet;
   try
     try
 
-      {Consulta.Close;
+      Consulta.Close;
       Consulta.SQL.Clear;
-      Consulta.SQL.Add('');
-
+      Consulta.SQL.Add('SELECT');
+      Consulta.SQL.Add('        P.ID,');
+      Consulta.SQL.Add('        MC.CODIGO,');
+      Consulta.SQL.Add('        P.DESCRICAO AS SOLUCAO,');
+      Consulta.SQL.Add('        UM.SIMBOLO AS UNIDADEMEDIDA,');
+      Consulta.SQL.Add(' COALESCE((select sum(opmc.saldo) as quantidade from ordemproducaomc opmc');
+      Consulta.SQL.Add('inner join produto pR on opmc.id_produto = pR.id');
+      Consulta.SQL.Add('inner join meiocultura mc on pR.id = mc.id_produto');
+      Consulta.SQL.Add('where saldo > 0 and encerrado AND PR.ID = P.ID),0) as ESTOQUE');
+      Consulta.SQL.Add('FROM PRODUTO P');
+      Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = P.ID)');
+      Consulta.SQL.Add('INNER JOIN UNIDADEMEDIDA UM ON (UM.ID = P.UNIDADEMEDIDA_ID)');
+      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('AND P.FINALIDADE = 3');
+      Consulta.SQL.Add('ORDER BY P.ID ASC');
       Consulta.Connection                     := FWC.FDConnection;
 
       Consulta.Prepare;
       Consulta.Open;
-      Consulta.FetchAll;}
+      Consulta.FetchAll;
 
+      Consulta.First;
+      while not Consulta.Eof do
+      begin
+        CDS_ESTOQUEMC.Append;
+        CDS_ESTOQUEMCID_PRODUTO.AsInteger := Consulta.Fields[0].AsInteger;
+        CDS_ESTOQUEMCCODIGOMC.AsString := Consulta.Fields[1].AsString;
+        CDS_ESTOQUEMCNOME.AsString := Consulta.Fields[2].AsString;
+        CDS_ESTOQUEMCUNIDADEMEDIDA.AsString := Consulta.Fields[3].AsString;
+        CDS_ESTOQUEMCESTOQUE.AsFloat := Consulta.Fields[4].AsFloat;
+        CDS_ESTOQUEMC.Post;
+
+        Consulta.Next;
+      end;
     Except
       on E : Exception do begin
         DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta do Estoque do Meio de Cultura!', '', E.Message);
@@ -2076,6 +2110,7 @@ begin
   CDS_ESOLESTOQUE.CreateDataSet;
   CDS_INICIANDOESTAGIO.CreateDataSet;
   CDS_ESTOQUEESE.CreateDataSet;
+  CDS_ESTOQUEMC.CreateDataSet;
   AjustaForm(Self);
 end;
 
