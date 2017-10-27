@@ -639,3 +639,23 @@ ALTER TABLE opfinal_estagio
    ADD COLUMN sequenciaestagio integer;
 
 update opfinal_estagio set sequenciaestagio = sequencia;
+
+CREATE TABLE if not exists opfinal_estimativa (
+id serial NOT NULL,
+id_opfinal bigint,
+id_estagio bigint,
+sequencia integer,
+quantidade integer,
+fatorx integer,
+perda integer,
+dias integer,
+dtinicio date,
+dtfim date,
+CONSTRAINT pk_opfinal_estimativa PRIMARY KEY (id),
+CONSTRAINT fk_estimativa_opfinal FOREIGN KEY (id_opfinal)
+    REFERENCES opfinal (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE CASCADE,
+CONSTRAINT fk_estimativa_estagio FOREIGN KEY (id_estagio)
+    REFERENCES estagio (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE CASCADE
+);

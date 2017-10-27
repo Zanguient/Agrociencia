@@ -94,7 +94,9 @@ uses
   uBeanVariedade in 'Beans\uBeanVariedade.pas',
   uCadastroVariedade in 'uCadastroVariedade.pas' {frmCadastroVariedade},
   uBeanLocalizacao in 'Beans\uBeanLocalizacao.pas',
-  uCadastroLocalizacao in 'uCadastroLocalizacao.pas' {frmCadastroLocalizacao};
+  uCadastroLocalizacao in 'uCadastroLocalizacao.pas' {frmCadastroLocalizacao},
+  uOrdemProducaoEstimativa in 'uOrdemProducaoEstimativa.pas' {frmOrdemProducaoEstimativa},
+  uBeanOPFinal_Estimativa in 'Beans\uBeanOPFinal_Estimativa.pas';
 
 {$R *.res}
 

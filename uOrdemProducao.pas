@@ -110,6 +110,8 @@ type
     cds_PesquisaID_VARIEDADE: TIntegerField;
     cds_PesquisaVARIEDADE: TStringField;
     btExcluir: TSpeedButton;
+    btEstimativa: TSpeedButton;
+    cds_Pesquisadataestimadaprocessamento: TDateField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -144,6 +146,7 @@ type
       Shift: TShiftState);
     procedure edCodigoVariedadeChange(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
+    procedure btEstimativaClick(Sender: TObject);
   private
     procedure SelecionarObservacao;
     procedure EncerrarOPF;
@@ -181,7 +184,8 @@ uses
   uBeanImagem,
   uBeanOPFinal_Imagem,
   uWebCam,
-  uBeanVariedade;
+  uBeanVariedade,
+  uOrdemProducaoEstimativa;
 
 {$R *.dfm}
 
@@ -357,6 +361,19 @@ end;
 procedure TfrmOrdemProducao.btCancelarClick(Sender: TObject);
 begin
   Cancelar;
+end;
+
+procedure TfrmOrdemProducao.btEstimativaClick(Sender: TObject);
+begin
+  if not Assigned(frmOrdemProducaoEstimativa) then
+    frmOrdemProducaoEstimativa := TfrmOrdemProducaoEstimativa.Create(nil);
+  try
+    frmOrdemProducaoEstimativa.Parametro.CodigoOp := cds_PesquisaID.Value;
+    frmOrdemProducaoEstimativa.Parametro.DataInicio := cds_Pesquisadataestimadaprocessamento.Value;
+    frmOrdemProducaoEstimativa.ShowModal;
+  finally
+    FreeAndNil(frmOrdemProducaoEstimativa);
+  end;
 end;
 
 procedure TfrmOrdemProducao.btExcluirClick(Sender: TObject);
@@ -830,7 +847,8 @@ begin
       SQL.SQL.Add('	OPF.SELECAOPOSITIVA,');
       SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO,');
       SQL.SQL.Add('	OPF.ID_VARIEDADE,');
-      SQL.SQL.Add('	V.NOME AS VARIEDADE');
+      SQL.SQL.Add('	V.NOME AS VARIEDADE,');
+      SQL.SQL.Add('	OPF.dataestimadaprocessamento');
       SQL.SQL.Add('FROM OPFINAL OPF');
       SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
       SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
@@ -857,16 +875,17 @@ begin
         SQL.First;
         while not SQL.Eof do begin
           cds_Pesquisa.Append;
-          cds_PesquisaID.Value                  := SQL.FieldByName('ID').AsInteger;
-          cds_PesquisaDATA.Value                := SQL.FieldByName('DATA').AsDateTime;
-          cds_PesquisaCLIENTE.Value             := SQL.FieldByName('NOMECLIENTE').AsString;
-          cds_PesquisaESPECIE.Value             := SQL.FieldByName('DESCRICAOESPECIE').AsString;
-          cds_PesquisaID_VARIEDADE.Value        := SQL.FieldByName('ID_VARIEDADE').AsInteger;
-          cds_PesquisaVARIEDADE.Value           := SQL.FieldByName('VARIEDADE').AsString;
-          cds_PesquisaQUANTIDADE.Value          := SQL.FieldByName('QUANTIDADE').AsInteger;
-          cds_PesquisaSELECAOPOSITIVA.Value     := SQL.FieldByName('SELECAOPOSITIVA').AsString;
-          cds_PesquisaCODIGOSELECAOCAMPO.Value  := SQL.FieldByName('CODIGOSELECAOCAMPO').AsString;
-          cds_PesquisaIDESPECIE.Value           := SQL.FieldByName('CODIGOESPECIE').AsInteger;
+          cds_PesquisaID.Value                        := SQL.FieldByName('ID').AsInteger;
+          cds_PesquisaDATA.Value                      := SQL.FieldByName('DATA').AsDateTime;
+          cds_PesquisaCLIENTE.Value                   := SQL.FieldByName('NOMECLIENTE').AsString;
+          cds_PesquisaESPECIE.Value                   := SQL.FieldByName('DESCRICAOESPECIE').AsString;
+          cds_PesquisaID_VARIEDADE.Value              := SQL.FieldByName('ID_VARIEDADE').AsInteger;
+          cds_PesquisaVARIEDADE.Value                 := SQL.FieldByName('VARIEDADE').AsString;
+          cds_PesquisaQUANTIDADE.Value                := SQL.FieldByName('QUANTIDADE').AsInteger;
+          cds_PesquisaSELECAOPOSITIVA.Value           := SQL.FieldByName('SELECAOPOSITIVA').AsString;
+          cds_PesquisaCODIGOSELECAOCAMPO.Value        := SQL.FieldByName('CODIGOSELECAOCAMPO').AsString;
+          cds_PesquisaIDESPECIE.Value                 := SQL.FieldByName('CODIGOESPECIE').AsInteger;
+          cds_Pesquisadataestimadaprocessamento.Value := SQL.FieldByName('dataestimadaprocessamento').AsDateTime;
           cds_Pesquisa.Post;
           SQL.Next;
         end;
