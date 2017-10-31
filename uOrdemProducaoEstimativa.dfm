@@ -35,9 +35,6 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     ParentFont = False
     TabOrder = 0
     TabStop = True
-    ExplicitLeft = -362
-    ExplicitTop = 222
-    ExplicitWidth = 889
     object GridPanel2: TGridPanel
       AlignWithMargins = True
       Left = 4
@@ -72,7 +69,6 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
           SizeStyle = ssAuto
         end>
       TabOrder = 0
-      ExplicitWidth = 881
       object Panel4: TPanel
         Left = 411
         Top = 0
@@ -81,8 +77,6 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitLeft = 440
-        ExplicitWidth = 441
         object btCancelar: TSpeedButton
           AlignWithMargins = True
           Left = 3
@@ -614,7 +608,6 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitWidth = 440
         object btGravar: TSpeedButton
           AlignWithMargins = True
           Left = 308
@@ -926,9 +919,6 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     Color = clWhite
     ParentBackground = False
     TabOrder = 1
-    ExplicitLeft = 0
-    ExplicitTop = 0
-    ExplicitWidth = 803
     DesignSize = (
       830
       51)
@@ -1058,7 +1048,6 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
       Font.Style = []
       ParentFont = False
       TabOrder = 1
-      ExplicitWidth = 195
     end
     object edQuantidade: TEdit
       AlignWithMargins = True
@@ -1075,41 +1064,6 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
       NumbersOnly = True
       ParentFont = False
       TabOrder = 2
-      ExplicitLeft = 281
-    end
-    object edFatorX: TEdit
-      AlignWithMargins = True
-      Left = 522
-      Top = 20
-      Width = 56
-      Height = 27
-      Anchors = [akTop, akRight]
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      NumbersOnly = True
-      ParentFont = False
-      TabOrder = 3
-      ExplicitLeft = 337
-    end
-    object edPerda: TEdit
-      AlignWithMargins = True
-      Left = 584
-      Top = 20
-      Width = 79
-      Height = 27
-      Anchors = [akTop, akRight]
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      NumbersOnly = True
-      ParentFont = False
-      TabOrder = 4
-      ExplicitLeft = 399
     end
     object edDias: TEdit
       AlignWithMargins = True
@@ -1126,7 +1080,6 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
       NumbersOnly = True
       ParentFont = False
       TabOrder = 5
-      ExplicitLeft = 484
     end
     object btnAdicionar: TBitBtn
       AlignWithMargins = True
@@ -1236,7 +1189,6 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
       TabOrder = 6
       OnClick = btnAdicionarClick
-      ExplicitLeft = 532
     end
     object btRemover: TBitBtn
       AlignWithMargins = True
@@ -1304,7 +1256,42 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
       TabOrder = 7
       OnClick = btRemoverClick
-      ExplicitLeft = 588
+    end
+    object edPerda: TJvValidateEdit
+      Left = 584
+      Top = 20
+      Width = 79
+      Height = 27
+      Anchors = [akTop, akRight]
+      CriticalPoints.MaxValueIncluded = False
+      CriticalPoints.MinValueIncluded = False
+      DisplayFormat = dfPercent
+      DecimalPlaces = 2
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+    end
+    object edFatorX: TJvValidateEdit
+      Left = 521
+      Top = 20
+      Width = 58
+      Height = 27
+      Anchors = [akTop, akRight]
+      CriticalPoints.MaxValueIncluded = False
+      CriticalPoints.MinValueIncluded = False
+      DisplayFormat = dfFloat
+      DecimalPlaces = 2
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 3
     end
   end
   object dgEstimativa: TDBGrid
@@ -1360,7 +1347,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
       end
       item
         Expanded = False
-        FieldName = 'PERDA'
+        FieldName = 'PERCPERDA'
         Width = 70
         Visible = True
       end
@@ -1406,10 +1393,6 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
       DisplayLabel = 'Quant.'
       FieldName = 'QUANTIDADE'
     end
-    object cdsEstimativaFATORX: TIntegerField
-      DisplayLabel = 'Fator X'
-      FieldName = 'FATORX'
-    end
     object cdsEstimativaPERDA: TIntegerField
       DisplayLabel = 'Perda'
       FieldName = 'PERDA'
@@ -1425,6 +1408,16 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     object cdsEstimativaDATAFIM: TDateField
       DisplayLabel = 'Dt. Fim'
       FieldName = 'DATAFIM'
+    end
+    object cdsEstimativaPERCPERDA: TFloatField
+      DisplayLabel = '% Perda'
+      FieldName = 'PERCPERDA'
+      DisplayFormat = '#,##0.00%'
+    end
+    object cdsEstimativaFATORX: TFloatField
+      DisplayLabel = 'FatorX'
+      FieldName = 'FATORX'
+      DisplayFormat = '#,##0.00'
     end
   end
   object dsEstimativa: TDataSource

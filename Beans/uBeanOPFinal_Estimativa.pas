@@ -12,20 +12,20 @@ type
     FSEQUENCIA: TFieldInteger;
     FID: TFieldInteger;
     FDIAS: TFieldInteger;
-    FPERDA: TFieldInteger;
+    FPERDA: TFieldFloat;
     FQUANTIDADE: TFieldInteger;
     FDTFIM: TFieldDate;
-    FFATORX: TFieldInteger;
+    FFATORX: TFieldFloat;
     FDTINICIO: TFieldDate;
     FID_OPFINAL: TFieldInteger;
     procedure SetDIAS(const Value: TFieldInteger);
     procedure SetDTFIM(const Value: TFieldDate);
     procedure SetDTINICIO(const Value: TFieldDate);
-    procedure SetFATORX(const Value: TFieldInteger);
+    procedure SetFATORX(const Value: TFieldFloat);
     procedure SetID(const Value: TFieldInteger);
     procedure SetID_ESTAGIO(const Value: TFieldInteger);
     procedure SetID_OPFINAL(const Value: TFieldInteger);
-    procedure SetPERDA(const Value: TFieldInteger);
+    procedure SetPERDA(const Value: TFieldFloat);
     procedure SetQUANTIDADE(const Value: TFieldInteger);
     procedure SetSEQUENCIA(const Value: TFieldInteger);
   protected
@@ -36,8 +36,8 @@ type
     property ID_ESTAGIO: TFieldInteger read FID_ESTAGIO write SetID_ESTAGIO;
     property SEQUENCIA: TFieldInteger read FSEQUENCIA write SetSEQUENCIA;
     property QUANTIDADE: TFieldInteger read FQUANTIDADE write SetQUANTIDADE;
-    property FATORX: TFieldInteger read FFATORX write SetFATORX;
-    property PERDA: TFieldInteger read FPERDA write SetPERDA;
+    property FATORX: TFieldFloat read FFATORX write SetFATORX;
+    property PERDA: TFieldFloat read FPERDA write SetPERDA;
     property DIAS: TFieldInteger read FDIAS write SetDIAS;
     property DTINICIO: TFieldDate read FDTINICIO write SetDTINICIO;
     property DTFIM: TFieldDate read FDTFIM write SetDTFIM;
@@ -67,7 +67,7 @@ begin
   FDTINICIO := Value;
 end;
 
-procedure TOPFINAL_ESTIMATIVA.SetFATORX(const Value: TFieldInteger);
+procedure TOPFINAL_ESTIMATIVA.SetFATORX(const Value: TFieldFloat);
 begin
   FFATORX := Value;
 end;
@@ -87,7 +87,7 @@ begin
   FID_OPFINAL := Value;
 end;
 
-procedure TOPFINAL_ESTIMATIVA.SetPERDA(const Value: TFieldInteger);
+procedure TOPFINAL_ESTIMATIVA.SetPERDA(const Value: TFieldFloat);
 begin
   FPERDA := Value;
 end;

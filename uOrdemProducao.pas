@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.Mask,
   Vcl.DBCtrls, System.TypInfo, System.Win.ComObj, Vcl.Samples.Gauges, JvExMask,
   JvToolEdit, JvBaseEdits, FireDAC.Comp.Client, Vcl.ImgList, Vcl.Menus,
-  Vcl.Imaging.jpeg, CapturaCam, uConstantes;
+  Vcl.Imaging.jpeg, CapturaCam, uConstantes, frxClass, frxDBSet, System.DateUtils;
 
 type
   TfrmOrdemProducao = class(TForm)
@@ -112,6 +112,7 @@ type
     btExcluir: TSpeedButton;
     btEstimativa: TSpeedButton;
     cds_Pesquisadataestimadaprocessamento: TDateField;
+    EstimativavsRealidade1: TMenuItem;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -147,6 +148,7 @@ type
     procedure edCodigoVariedadeChange(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
     procedure btEstimativaClick(Sender: TObject);
+    procedure EstimativavsRealidade1Click(Sender: TObject);
   private
     procedure SelecionarObservacao;
     procedure EncerrarOPF;
@@ -185,7 +187,8 @@ uses
   uBeanOPFinal_Imagem,
   uWebCam,
   uBeanVariedade,
-  uOrdemProducaoEstimativa;
+  uOrdemProducaoEstimativa,
+  uRelEstimativaVsRealidade;
 
 {$R *.dfm}
 
@@ -1151,6 +1154,18 @@ begin
       FreeAndNil(OPF);
       FreeAndNil(FWC);
     end;
+  end;
+end;
+
+procedure TfrmOrdemProducao.EstimativavsRealidade1Click(Sender: TObject);
+var
+  Relatorio : TRelatorioEstimativaVsRealidade;
+begin
+  Relatorio := TRelatorioEstimativaVsRealidade.Create(cds_PesquisaID.AsInteger);
+  try
+    Relatorio.ImprimirRelatorio;
+  finally
+    FreeAndNil(Relatorio);
   end;
 end;
 

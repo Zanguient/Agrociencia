@@ -208,6 +208,10 @@ type
     CDS_ESTOQUEMCNOME: TStringField;
     CDS_ESTOQUEMCESTOQUE: TFloatField;
     CDS_ESTOQUEMCUNIDADEMEDIDA: TStringField;
+    btFinalizandoEstagioEstimativa: TSpeedButton;
+    btRelatorioEstimativaNovoEstagio: TSpeedButton;
+    CDS_OPGERADAIDOPFINAL: TIntegerField;
+    btRelatorioEstimativaIniciandoEstagio: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -278,6 +282,9 @@ type
     procedure Etiquetas1Click(Sender: TObject);
     procedure btEncerrarOPMCClick(Sender: TObject);
     procedure btEncerrarOPSEClick(Sender: TObject);
+    procedure btFinalizandoEstagioEstimativaClick(Sender: TObject);
+    procedure btRelatorioEstimativaNovoEstagioClick(Sender: TObject);
+    procedure btRelatorioEstimativaIniciandoEstagioClick(Sender: TObject);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -291,6 +298,7 @@ type
     procedure CarregarEstoqueMC;
     procedure CarregarEstoqueEP;
     procedure AtualizaABA;
+    procedure RelatorioEstimativaVsRealidade(IdOpFinal: Integer);
     { Private declarations }
   public
     { Public declarations }
@@ -319,7 +327,8 @@ uses
   uBeanProdutos,
   uBeanEstagio,
   uBeanVariedade,
-  uEncerramentoOPMC;
+  uEncerramentoOPMC,
+  uRelEstimativaVsRealidade;
 
 {$R *.dfm}
 
@@ -328,6 +337,12 @@ uses
 procedure TfrmPlanejamentoProducao.btFecharClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfrmPlanejamentoProducao.btFinalizandoEstagioEstimativaClick(
+  Sender: TObject);
+begin
+  RelatorioEstimativaVsRealidade(CDS_NOVAOPIDOPF.AsInteger);
 end;
 
 procedure TfrmPlanejamentoProducao.btNovoGNOPClick(Sender: TObject);
@@ -470,6 +485,18 @@ begin
       (Sender as TSpeedButton).Tag := 0;
     end;
   end;
+end;
+
+procedure TfrmPlanejamentoProducao.btRelatorioEstimativaIniciandoEstagioClick(
+  Sender: TObject);
+begin
+  RelatorioEstimativaVsRealidade(CDS_INICIANDOESTAGIOIDOPF.AsInteger);
+end;
+
+procedure TfrmPlanejamentoProducao.btRelatorioEstimativaNovoEstagioClick(
+  Sender: TObject);
+begin
+  RelatorioEstimativaVsRealidade(CDS_OPGERADAIDOPFINAL.AsInteger);
 end;
 
 procedure TfrmPlanejamentoProducao.btRelatorioGNOPClick(Sender: TObject);
@@ -1598,6 +1625,7 @@ begin
       Consulta.SQL.Clear;
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPFE.ID,');
+      Consulta.SQL.Add('	OPF.ID AS IDOPFINAL,');
       Consulta.SQL.Add('	OPFE.PREVISAOINICIO AS DATA,');
       Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
       Consulta.SQL.Add('	V.NOME AS VARIEDADE,');
@@ -1645,6 +1673,7 @@ begin
           CDS_OPGERADAVARIEDADE.Value     := Consulta.FieldByName('VARIEDADE').AsString;
           CDS_OPGERADAESTAGIOATUAL.Value  := Consulta.FieldByName('ESTAGIOPREVISTO').AsString;
           CDS_OPGERADACODIGOMC.Value      := Consulta.FieldByName('CODIGOMC').AsString;
+          CDS_OPGERADAIDOPFINAL.Value     := Consulta.FieldByName('IDOPFINAL').AsInteger;
           CDS_OPGERADA.Post;
           Consulta.Next;
         end;
@@ -2324,6 +2353,18 @@ end;
 procedure TfrmPlanejamentoProducao.PageControl1Change(Sender: TObject);
 begin
   AjustaGrid;
+end;
+
+procedure TfrmPlanejamentoProducao.RelatorioEstimativaVsRealidade(IdOpFinal: Integer);
+var
+  Relatorio : TRelatorioEstimativaVsRealidade;
+begin
+  Relatorio := TRelatorioEstimativaVsRealidade.Create(IdOpFinal);
+  try
+    Relatorio.ImprimirRelatorio;
+  finally
+    FreeAndNil(Relatorio);
+  end;
 end;
 
 end.

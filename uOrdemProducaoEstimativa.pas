@@ -9,7 +9,7 @@ uses
   JvToolEdit, System.DateUtils, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client;
+  FireDAC.Comp.Client, JvExStdCtrls, JvEdit, JvValidateEdit;
 
 type
   TParametroEstimativa = record
@@ -33,9 +33,7 @@ type
     Label2: TLabel;
     edQuantidade: TEdit;
     Label3: TLabel;
-    edFatorX: TEdit;
     Label4: TLabel;
-    edPerda: TEdit;
     Label5: TLabel;
     edDias: TEdit;
     Label6: TLabel;
@@ -45,7 +43,6 @@ type
     cdsEstimativaID_ESTAGIO: TIntegerField;
     cdsEstimativaESTAGIO: TStringField;
     cdsEstimativaQUANTIDADE: TIntegerField;
-    cdsEstimativaFATORX: TIntegerField;
     cdsEstimativaPERDA: TIntegerField;
     cdsEstimativaDIA: TIntegerField;
     cdsEstimativaDATAINICIO: TDateField;
@@ -54,6 +51,10 @@ type
     btAlterar: TSpeedButton;
     btReordenar: TSpeedButton;
     btExportar: TSpeedButton;
+    edPerda: TJvValidateEdit;
+    edFatorX: TJvValidateEdit;
+    cdsEstimativaPERCPERDA: TFloatField;
+    cdsEstimativaFATORX: TFloatField;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btCancelarClick(Sender: TObject);
@@ -116,11 +117,13 @@ begin
   cdsEstimativaID_ESTAGIO.Value := StrToIntDef(edCodigoEstagio.Text,0);
   cdsEstimativaESTAGIO.Value := edDescEstagio.Text;
 
-  cdsEstimativaFATORX.Value := StrToIntDef(edFatorX.Text,0);
-  cdsEstimativaPERDA.Value := StrToIntDef(edPerda.Text,0);
+  cdsEstimativaFATORX.Value := edFatorX.Value;
+  cdsEstimativaPERCPERDA.Value := edPerda.Value;
   cdsEstimativaDIA.Value := StrToIntDef(edDias.Text,0);
   cdsEstimativaDATAINICIO.Value := dtInicio;
   cdsEstimativaQUANTIDADE.Value := Quantidade;
+
+  cdsEstimativaPERDA.Value := Trunc((Quantidade * edFatorX.Value) * (edPerda.Value /100));
 
   cdsEstimativaDATAFIM.Value := IncDay(cdsEstimativaDATAINICIO.AsDateTime, cdsEstimativaDIA.AsInteger);
   cdsEstimativaSEQUENCIA.Value := cdsEstimativa.RecordCount + 1;
@@ -171,8 +174,6 @@ begin
       end;
     end;
 
-    cdsEstimativa.Data := cdsEstimativa.Delta;
-
     Reordenar;
 
     cdsEstimativa.First;
@@ -183,7 +184,7 @@ begin
       Estimativa.SEQUENCIA.Value := cdsEstimativaSEQUENCIA.Value;
       Estimativa.QUANTIDADE.Value := cdsEstimativaQUANTIDADE.Value;
       Estimativa.FATORX.Value := cdsEstimativaFATORX.Value;
-      Estimativa.PERDA.Value := cdsEstimativaPERDA.Value;
+      Estimativa.PERDA.Value := cdsEstimativaPERCPERDA.Value;
       Estimativa.DIAS.Value := cdsEstimativaDIA.Value;
       Estimativa.DTINICIO.Value := cdsEstimativaDATAINICIO.Value;
       Estimativa.DTFIM.Value := cdsEstimativaDATAFIM.Value;
@@ -211,37 +212,36 @@ end;
 
 procedure TfrmOrdemProducaoEstimativa.btnAdicionarClick(Sender: TObject);
 begin
- if edDescEstagio.Text = EmptyStr then
- begin
-   DisplayMsg(MSG_INF, 'Informe o Estágio!');
-   if edCodigoEstagio.CanFocus then edCodigoEstagio.SetFocus;
-   Exit;
- end;
- if edQuantidade.Enabled and (StrToIntDef(edQuantidade.Text, 0) = 0) then
- begin
-   DisplayMsg(MSG_INF, 'Informe a quantidade de recipientes!');
-   if edQuantidade.CanFocus then edQuantidade.SetFocus;
-   Exit;
- end;
- if edFatorX.Enabled and (StrToIntDef(edFatorX.Text, 0) = 0) then
- begin
-   DisplayMsg(MSG_INF, 'Informe o Fator X!');
-   if edFatorX.CanFocus then edFatorX.SetFocus;
-   Exit;
- end;
- if edPerda.Enabled and (StrToIntDef(edPerda.Text, 0) = 0) then
- begin
-   DisplayMsg(MSG_INF, 'Informe a estimativa de potes perdidos!');
-   if edPerda.CanFocus then edPerda.SetFocus;
-   Exit;
- end;
- if edDias.Enabled and (StrToIntDef(edDias.Text, 0) = 0) then
- begin
+  if edDescEstagio.Text = EmptyStr then
+  begin
+    DisplayMsg(MSG_INF, 'Informe o Estágio!');
+    if edCodigoEstagio.CanFocus then edCodigoEstagio.SetFocus;
+    Exit;
+  end;
+  if edQuantidade.Enabled and (StrToIntDef(edQuantidade.Text, 0) = 0) then
+  begin
+    DisplayMsg(MSG_INF, 'Informe a quantidade de recipientes!');
+    if edQuantidade.CanFocus then edQuantidade.SetFocus;
+    Exit;
+  end;
+  if edFatorX.Enabled and (edFatorX.Value = 0) then
+  begin
+    DisplayMsg(MSG_INF, 'Informe o Fator X!');
+    if edFatorX.CanFocus then edFatorX.SetFocus;
+    Exit;
+  end;
+  if edPerda.Enabled and (edPerda.Value = 0) then
+  begin
+    DisplayMsg(MSG_INF, 'Informe a estimativa de potes perdidos!');
+    if edPerda.CanFocus then edPerda.SetFocus;
+    Exit;
+  end;
+  if edDias.Enabled and (StrToIntDef(edDias.Text, 0) = 0) then
+  begin
    DisplayMsg(MSG_INF, 'Informe a estimativa de dias para o estágio selecionado!');
    if edDias.CanFocus then edDias.SetFocus;
    Exit;
- end;
-
+  end;
   Adicionar;
   Limpar;
   edQuantidade.Enabled := cdsEstimativa.IsEmpty;
@@ -289,7 +289,8 @@ begin
     SQL.SQL.Add('EST.PERDA,');
     SQL.SQL.Add('EST.DIAS AS DIA,');
     SQL.SQL.Add('EST.DTINICIO AS DATAINICIO,');
-    SQL.SQL.Add('EST.DTFIM AS DATAFIM');
+    SQL.SQL.Add('EST.DTFIM AS DATAFIM,');
+    SQL.SQL.Add('0 AS PERCPERDA');
     SQL.SQL.Add('FROM OPFINAL_ESTIMATIVA EST');
     SQL.SQL.Add('INNER JOIN ESTAGIO E ON EST.ID_ESTAGIO = E.ID');
     SQL.SQL.Add('WHERE EST.ID_OPFINAL = :ID_OPFINAL');
@@ -311,6 +312,8 @@ begin
         if Assigned(cdsEstimativa.FindField(SQL.Fields[I].FieldName)) then
           cdsEstimativa.FieldByName(SQL.Fields[I].FieldName).Value := SQL.Fields[I].Value;
       end;
+      cdsEstimativaPERCPERDA.Value := SQL.FieldByName('PERDA').Value;
+      cdsEstimativaPERDA.Value := Trunc((cdsEstimativaQUANTIDADE.AsInteger * cdsEstimativaFATORX.AsFloat) * (cdsEstimativaPERCPERDA.Value / 100));
       cdsEstimativa.Post;
       SQL.Next;
     end;
@@ -325,7 +328,7 @@ end;
 
 procedure TfrmOrdemProducaoEstimativa.dgEstimativaCellClick(Column: TColumn);
 begin
-  if (Column.FieldName = cdsEstimativaSEQUENCIA.FieldName) or (Column.FieldName = cdsEstimativaQUANTIDADE.FieldName) then
+  if Pos(Column.FieldName, '|SEQUENCIA|QUANTIDADE|PERCPERDA') > 0 then
     dgEstimativa.Options := dgEstimativa.Options + [dgEditing]
   else
     dgEstimativa.Options := dgEstimativa.Options - [dgEditing];
@@ -408,7 +411,7 @@ var
   dtInicio: TDate;
   Quantidade: Integer;
   Sequencia: Integer;
- begin
+begin
   UltSequencia := 1;
   cdsEstimativa.First;
   while not cdsEstimativa.Eof do
@@ -428,6 +431,8 @@ var
     cdsEstimativaSEQUENCIA.Value := UltSequencia;
     cdsEstimativaQUANTIDADE.Value := Quantidade;
     cdsEstimativaDATAINICIO.Value := dtInicio;
+    cdsEstimativaPERDA.Value := Trunc((cdsEstimativaQUANTIDADE.Value * cdsEstimativaFATORX.Value) * (cdsEstimativaPERCPERDA.Value / 100));
+    cdsEstimativaDATAFIM.Value := IncDay(dtInicio, cdsEstimativaDIA.AsInteger);
     cdsEstimativa.Post;
 
     dtInicio := cdsEstimativaDATAFIM.AsDateTime;
