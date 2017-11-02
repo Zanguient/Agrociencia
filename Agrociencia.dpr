@@ -96,7 +96,9 @@ uses
   uBeanLocalizacao in 'Beans\uBeanLocalizacao.pas',
   uCadastroLocalizacao in 'uCadastroLocalizacao.pas' {frmCadastroLocalizacao},
   uOrdemProducaoEstimativa in 'uOrdemProducaoEstimativa.pas' {frmOrdemProducaoEstimativa},
-  uBeanOPFinal_Estimativa in 'Beans\uBeanOPFinal_Estimativa.pas';
+  uBeanOPFinal_Estimativa in 'Beans\uBeanOPFinal_Estimativa.pas',
+  uBeanOrdemProducaoMC_Descarte in 'Beans\uBeanOrdemProducaoMC_Descarte.pas',
+  uDescarteMC in 'uDescarteMC.pas' {frmDescarteMC};
 
 {$R *.res}
 

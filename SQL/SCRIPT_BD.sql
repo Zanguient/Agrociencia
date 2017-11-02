@@ -659,3 +659,17 @@ CONSTRAINT fk_estimativa_estagio FOREIGN KEY (id_estagio)
     REFERENCES estagio (id) MATCH SIMPLE
     ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS ordemproducaomc_descarte (
+id serial,
+id_ordemproducaomc bigint,
+quantidade integer,
+id_motivo integer,
+CONSTRAINT pk_ordemproducaomc_descarte PRIMARY KEY (id),
+CONSTRAINT fk_ordemproducaomc_descarte_opmc FOREIGN KEY (id_ordemproducaomc)
+    REFERENCES ordemproducaomc (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+CONSTRAINT fk_ordemproducaomc_descarte_motivo FOREIGN KEY (id_motivo)
+      REFERENCES motivodescarte (id) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE RESTRICT
+);

@@ -207,11 +207,13 @@ type
     CDS_ESTOQUEMCCODIGOMC: TStringField;
     CDS_ESTOQUEMCNOME: TStringField;
     CDS_ESTOQUEMCESTOQUE: TFloatField;
-    CDS_ESTOQUEMCUNIDADEMEDIDA: TStringField;
     btFinalizandoEstagioEstimativa: TSpeedButton;
     btRelatorioEstimativaNovoEstagio: TSpeedButton;
     CDS_OPGERADAIDOPFINAL: TIntegerField;
     btRelatorioEstimativaIniciandoEstagio: TSpeedButton;
+    CDS_ESTOQUEMCID_OPMC: TIntegerField;
+    btDescartarMC: TSpeedButton;
+    CDS_ESTOQUEMCDATAENCERRAMENTO: TDateField;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -285,6 +287,7 @@ type
     procedure btFinalizandoEstagioEstimativaClick(Sender: TObject);
     procedure btRelatorioEstimativaNovoEstagioClick(Sender: TObject);
     procedure btRelatorioEstimativaIniciandoEstagioClick(Sender: TObject);
+    procedure btDescartarMCClick(Sender: TObject);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -328,7 +331,8 @@ uses
   uBeanEstagio,
   uBeanVariedade,
   uEncerramentoOPMC,
-  uRelEstimativaVsRealidade;
+  uRelEstimativaVsRealidade,
+  uDescarteMC;
 
 {$R *.dfm}
 
@@ -816,6 +820,21 @@ begin
   end;
 end;
 
+procedure TfrmPlanejamentoProducao.btDescartarMCClick(Sender: TObject);
+begin
+  if not Assigned(frmDescarteMC) then
+    frmDescarteMC := TfrmDescarteMC.Create(nil);
+  try
+    frmDescarteMC.Parametro.ID_OPMC := CDS_ESTOQUEMCID_OPMC.Value;
+    frmDescarteMC.Parametro.QUANTIDADE := CDS_ESTOQUEMCESTOQUE.Value;
+    frmDescarteMC.ShowModal;
+
+    CarregarEstoqueMC;
+  finally
+    FreeAndNil(frmDescarteMC);
+  end;
+end;
+
 procedure TfrmPlanejamentoProducao.btEncerrarOPMCClick(Sender: TObject);
 Var
   ID : Integer;
@@ -1196,17 +1215,16 @@ begin
       Consulta.SQL.Add('        P.ID,');
       Consulta.SQL.Add('        MC.CODIGO,');
       Consulta.SQL.Add('        P.DESCRICAO AS SOLUCAO,');
-      Consulta.SQL.Add('        UM.SIMBOLO AS UNIDADEMEDIDA,');
-      Consulta.SQL.Add(' COALESCE((select sum(opmc.saldo) as quantidade from ordemproducaomc opmc');
-      Consulta.SQL.Add('inner join produto pR on opmc.id_produto = pR.id');
-      Consulta.SQL.Add('inner join meiocultura mc on pR.id = mc.id_produto');
-      Consulta.SQL.Add('where saldo > 0 and encerrado AND PR.ID = P.ID),0) as ESTOQUE');
-      Consulta.SQL.Add('FROM PRODUTO P');
+      Consulta.SQL.Add('        CAST(opmc.datafim AS DATE) AS DATAENCERRAMENTO,');
+      Consulta.SQL.Add('        opmc.saldo,');
+      Consulta.SQL.Add('        OPMC.ID AS IDOP');
+      Consulta.SQL.Add('from ordemproducaomc opmc');
+      Consulta.SQL.Add('inner join produto p on opmc.id_produto = p.id');
       Consulta.SQL.Add('INNER JOIN MEIOCULTURA MC ON (MC.ID_PRODUTO = P.ID)');
       Consulta.SQL.Add('INNER JOIN UNIDADEMEDIDA UM ON (UM.ID = P.UNIDADEMEDIDA_ID)');
-      Consulta.SQL.Add('WHERE 1 = 1');
+      Consulta.SQL.Add('WHERE opmc.saldo > 0 and opmc.encerrado');
       Consulta.SQL.Add('AND P.FINALIDADE = 3');
-      Consulta.SQL.Add('ORDER BY P.ID ASC');
+      Consulta.SQL.Add('ORDER BY P.ID, OPMC.ID ');
       Consulta.Connection                     := FWC.FDConnection;
 
       Consulta.Prepare;
@@ -1220,8 +1238,9 @@ begin
         CDS_ESTOQUEMCID_PRODUTO.AsInteger := Consulta.Fields[0].AsInteger;
         CDS_ESTOQUEMCCODIGOMC.AsString := Consulta.Fields[1].AsString;
         CDS_ESTOQUEMCNOME.AsString := Consulta.Fields[2].AsString;
-        CDS_ESTOQUEMCUNIDADEMEDIDA.AsString := Consulta.Fields[3].AsString;
+        CDS_ESTOQUEMCDATAENCERRAMENTO.AsDateTime := Consulta.Fields[3].AsDateTime;
         CDS_ESTOQUEMCESTOQUE.AsFloat := Consulta.Fields[4].AsFloat;
+        CDS_ESTOQUEMCID_OPMC.AsInteger := Consulta.Fields[5].AsInteger;
         CDS_ESTOQUEMC.Post;
 
         Consulta.Next;
