@@ -543,7 +543,7 @@ begin
       ID := (Sender as TSpeedButton).Tag;
 
       if ID = 0 then begin //Só Verificar o limite Caso o for Cadastro.
-        if LimiteMultiplicacao(StrToIntDef(edCodigoOPF.Text, 0)) then begin
+        if LimiteMultiplicacao(StrToIntDef(edCodigoOPF.Text, 0), StrToIntDef(edCodigoEstagio.Text, 0)) then begin
           DisplayMsg(MSG_CONF, 'Limite de Multiplicações atingido, Deseja Continuar?');
           if ResultMsgModal <> mrYes then
             Exit;

@@ -33,7 +33,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Top = 3
       Width = 896
       Height = 455
-      ActivePage = TSESTOQUE
+      ActivePage = TSIE
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -5033,9 +5033,10 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Top = 0
           Width = 888
           Height = 403
-          ActivePage = TSEMC
+          ActivePage = TSEEP
           Align = alClient
           TabOrder = 0
+          OnChange = PageControl2Change
           object TSEEP: TTabSheet
             Caption = 'Estoque de Potes'
             object Panel11: TPanel
@@ -5059,11 +5060,11 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
             object gdEstoqueEstoquePotes: TDBGrid
               AlignWithMargins = True
               Left = 3
-              Top = 51
+              Top = 184
               Width = 874
-              Height = 268
+              Height = 135
               Align = alClient
-              DataSource = DS_ESOLESTOQUE
+              DataSource = DS_ESTOQUEPOTES
               DrawingStyle = gdsGradient
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
@@ -5078,7 +5079,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
               TitleFont.Height = -16
               TitleFont.Name = 'Tahoma'
               TitleFont.Style = []
-              OnTitleClick = gdOPESolEstoqueTitleClick
+              OnTitleClick = gdEstoqueEstoquePotesTitleClick
             end
             object Panel13: TPanel
               Left = 0
@@ -5268,6 +5269,199 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
                 OnClick = btExportarClick
                 ExplicitLeft = 687
                 ExplicitTop = 6
+              end
+            end
+            object pnFiltroEstoquePotes: TPanel
+              AlignWithMargins = True
+              Left = 3
+              Top = 51
+              Width = 874
+              Height = 127
+              Align = alTop
+              TabOrder = 3
+              object Panel19: TPanel
+                AlignWithMargins = True
+                Left = 219
+                Top = 4
+                Width = 168
+                Height = 119
+                Align = alLeft
+                BevelOuter = bvNone
+                TabOrder = 0
+                object Label1: TLabel
+                  AlignWithMargins = True
+                  Left = 3
+                  Top = 3
+                  Width = 162
+                  Height = 16
+                  Align = alTop
+                  Alignment = taCenter
+                  Caption = 'Escolhidos'
+                  ExplicitWidth = 59
+                end
+                object DstList: TListBox
+                  AlignWithMargins = True
+                  Left = 3
+                  Top = 25
+                  Width = 162
+                  Height = 91
+                  Align = alClient
+                  TabOrder = 0
+                  OnDblClick = DstListDblClick
+                end
+              end
+              object Panel20: TPanel
+                AlignWithMargins = True
+                Left = 178
+                Top = 4
+                Width = 35
+                Height = 119
+                Align = alLeft
+                BevelOuter = bvNone
+                TabOrder = 1
+                DesignSize = (
+                  35
+                  119)
+                object ExAllBtn: TSpeedButton
+                  AlignWithMargins = True
+                  Left = 0
+                  Top = 91
+                  Width = 24
+                  Height = 24
+                  Anchors = [akLeft, akTop, akRight]
+                  Caption = '<<'
+                  Enabled = False
+                  OnClick = ExAllBtnClick
+                end
+                object ExcludeBtn: TSpeedButton
+                  AlignWithMargins = True
+                  Left = 0
+                  Top = 61
+                  Width = 24
+                  Height = 24
+                  Anchors = [akLeft, akTop, akRight]
+                  Caption = '<'
+                  Enabled = False
+                  OnClick = ExcludeBtnClick
+                end
+                object IncAllBtn: TSpeedButton
+                  AlignWithMargins = True
+                  Left = 0
+                  Top = 31
+                  Width = 24
+                  Height = 24
+                  Anchors = [akLeft, akTop, akRight]
+                  Caption = '>>'
+                  OnClick = IncAllBtnClick
+                end
+                object IncludeBtn: TSpeedButton
+                  AlignWithMargins = True
+                  Left = 0
+                  Top = 1
+                  Width = 24
+                  Height = 24
+                  Anchors = [akLeft, akTop, akRight]
+                  Caption = '>'
+                  OnClick = IncludeBtnClick
+                end
+              end
+              object Panel21: TPanel
+                AlignWithMargins = True
+                Left = 4
+                Top = 4
+                Width = 168
+                Height = 119
+                Align = alLeft
+                BevelOuter = bvNone
+                TabOrder = 2
+                object Label2: TLabel
+                  AlignWithMargins = True
+                  Left = 3
+                  Top = 3
+                  Width = 162
+                  Height = 16
+                  Align = alTop
+                  Alignment = taCenter
+                  Caption = 'Exclu'#237'dos'
+                  ExplicitWidth = 52
+                end
+                object SrcList: TListBox
+                  AlignWithMargins = True
+                  Left = 3
+                  Top = 25
+                  Width = 162
+                  Height = 91
+                  Align = alClient
+                  TabOrder = 0
+                  OnDblClick = SrcListDblClick
+                end
+              end
+              object btConsultaETP: TBitBtn
+                AlignWithMargins = True
+                Left = 393
+                Top = 96
+                Width = 125
+                Height = 27
+                Caption = 'F5'
+                Glyph.Data = {
+                  F6060000424DF606000000000000360000002800000018000000180000000100
+                  180000000000C0060000C40E0000C40E00000000000000000000FFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFEFEFEF3F3F3E0E0E0CACACAA4A4A47F7F7F5E5E5E2626264D4C4CEE
+                  EEEEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFF3F3F3DBDBDBC6C6C6B5B5B59B9B9B8484847373736D6D6D4747
+                  472B29290404048C8C8CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFBFBFBECECECDFDFDFD4D4D4CDCDCDCACACAD1D1D1DEDEDE
+                  ECECEC7E7E7E2B29290000008F8F907D7D7DFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFF8D8D8D2B29290000008F8F906D6D6DFBFBFBFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8E2B29290000008F8F906D6D6DFBFBFBFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8E2B29290000008F8F906D6D
+                  6DFBFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8E2B2929000000
+                  8F8F906D6D6DFBFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA19E9E3A
+                  38380000008F8F90777777FDFDFDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFC3C1C1B9B3B14A4443979798777777FDFDFDFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFDFDFDB6B6B59A9A999999989898969999989B9B9B
+                  ABABABF6F6F6E9E9E9ADA4A3342D2CDFDCDBAFACACFDFDFDFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE6E6E68C8B8BB4B4B2CAC9C7CECECCCE
+                  CECCCCCCCBC9C9C8BBBBB88E8E8D9C9795362D2DD7D5D4B3B0B0FFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEAEAEA8B8B89BFBEBBC6C6
+                  C5C2C2C0C2C2C1C2C2C0C1C1C0C3C2C0C4C4C2C0C0BF8D8C8C979393E1E1E0FF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8D8D8C
+                  B6B6B4BDBDBABBBBB9BABAB7B8B7B5B7B7B4B7B7B4B9B9B6BBBBB9BCBCB9B8B8
+                  B58F8E8EF6F6F6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFC0C0C09E9E9DB5B5B2B0B0ADADACA9ACACA8ACACA8ACACA9ACACA9ACACA9
+                  AEADAAB0AFACB2B2AFACACA9A5A5A5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFF9A9A9AA9A9A5A8A8A5A7A7A4A7A7A4A7A7A4A7A7A4A8
+                  A8A4A8A8A4A8A8A5A8A8A5A8A8A5A8A8A5A8A8A5929291FFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8F8EA2A29FA2A29FA2A39FA3A3
+                  A0A3A3A0A3A3A0A3A3A0A3A3A0A3A4A0A3A4A0A4A4A1A4A4A1A4A4A18B8B8AF9
+                  F9F9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8B8B8A9E9E9B
+                  9E9E9B9E9E9B9E9E9B9E9F9B9E9F9C9E9F9C9F9F9C9F9F9C9F9F9C9FA09C9FA0
+                  9C9FA09D8C8C8AEBEBEBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFF8F8F8E9B9B999D9E9C9E9F9DA0A09EA1A19EA2A29FA2A2A0A2A3A0A2A3A0
+                  A1A2A0A1A29FA1A19FA0A09E878786F9F9F9FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFF999A999FA09DABACABABACABACADABACADABACADABAC
+                  ADABACADABADADABADADABADADABADADABA6A6A48B8B8BFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C790918FB7B7B6B9B9B8B9B9
+                  B8B9B9B8B9BAB8B9BAB8B9BAB8B9BAB8B9BAB8B9BAB9B9BAB9999A98A8A8A8FF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8E
+                  A4A5A3CBCBCACBCBCACBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCCCBCBCCCBB2B2
+                  B0888988F7F7F7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFEDEDED858584A9AAA8DEDEDDE1E1E1E1E1E1E1E1E1E1E1E1E1E1E1
+                  E0E0E0B9B9B8858685D6D6D6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEDEDED898A89949494C2C3C2DFE0DFEC
+                  ECEBE4E4E4CACACA9D9D9D858685DADADAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC2C2
+                  C293949385868587888785868590908FB3B3B3FBFBFBFFFFFFFFFFFFFFFFFFFF
+                  FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+                TabOrder = 3
+                OnClick = btConsultaClick
               end
             end
           end
@@ -5915,8 +6109,11 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
   end
   object CDS_PLANTAS: TClientDataSet
     Aggregates = <>
+    FieldDefs = <>
+    IndexDefs = <>
     Params = <>
-    Left = 207
+    StoreDefs = True
+    Left = 151
     Top = 155
     object CDS_PLANTASID: TIntegerField
       DisplayLabel = 'Cadastro N'
@@ -6075,7 +6272,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
   end
   object DS_PLANTAS: TDataSource
     DataSet = CDS_PLANTAS
-    Left = 207
+    Left = 151
     Top = 203
   end
   object DS_MEIOCULTURA: TDataSource
@@ -6142,7 +6339,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       FieldName = 'IDOPF'
     end
     object CDS_INICIANDOESTAGIODATA: TDateField
-      DisplayLabel = 'Data (In'#237'cio)'
+      DisplayLabel = 'Data (Produ'#231#227'o)'
       DisplayWidth = 80
       FieldName = 'DATA'
     end
@@ -6192,7 +6389,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
     Left = 832
     Top = 201
     Bitmap = {
-      494C010102001400E00020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010102001400F80020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6761,8 +6958,8 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
   object CDS_ESTOQUEMC: TClientDataSet
     Aggregates = <>
     Params = <>
-    Left = 135
-    Top = 163
+    Left = 487
+    Top = 259
     object CDS_ESTOQUEMCID_PRODUTO: TIntegerField
       FieldName = 'ID_PRODUTO'
     end
@@ -6792,7 +6989,23 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
   end
   object DS_ESTOQUEMC: TDataSource
     DataSet = CDS_ESTOQUEMC
-    Left = 135
-    Top = 219
+    Left = 487
+    Top = 315
+  end
+  object DS_ESTOQUEPOTES: TDataSource
+    DataSet = FDM_ESTOQUEPOTES
+    Left = 383
+    Top = 316
+  end
+  object FDM_ESTOQUEPOTES: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired]
+    UpdateOptions.CheckRequired = False
+    AutoCommitUpdates = False
+    Left = 379
+    Top = 270
   end
 end

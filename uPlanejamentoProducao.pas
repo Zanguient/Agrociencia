@@ -7,7 +7,13 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExStdCtrls, JvEdit, JvValidateEdit,
   Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Mask, JvExMask, JvToolEdit, Vcl.Buttons,
   Data.DB, Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls,
-  FireDAC.Comp.Client, Vcl.Menus, Vcl.ImgList;
+  FireDAC.Comp.Client, Vcl.Menus, Vcl.ImgList,
+  TypInfo, System.StrUtils, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Comp.DataSet;
+
+type
+  eAgrupamentoEstoquePotes = (eCliente, eEspecie, eVariedade, eEstagio);
 
 type
   TfrmPlanejamentoProducao = class(TForm)
@@ -214,6 +220,21 @@ type
     CDS_ESTOQUEMCID_OPMC: TIntegerField;
     btDescartarMC: TSpeedButton;
     CDS_ESTOQUEMCDATAENCERRAMENTO: TDateField;
+    DS_ESTOQUEPOTES: TDataSource;
+    pnFiltroEstoquePotes: TPanel;
+    Panel19: TPanel;
+    Label1: TLabel;
+    DstList: TListBox;
+    Panel20: TPanel;
+    ExAllBtn: TSpeedButton;
+    ExcludeBtn: TSpeedButton;
+    IncAllBtn: TSpeedButton;
+    IncludeBtn: TSpeedButton;
+    Panel21: TPanel;
+    Label2: TLabel;
+    SrcList: TListBox;
+    btConsultaETP: TBitBtn;
+    FDM_ESTOQUEPOTES: TFDMemTable;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -288,6 +309,14 @@ type
     procedure btRelatorioEstimativaNovoEstagioClick(Sender: TObject);
     procedure btRelatorioEstimativaIniciandoEstagioClick(Sender: TObject);
     procedure btDescartarMCClick(Sender: TObject);
+    procedure PageControl2Change(Sender: TObject);
+    procedure ExAllBtnClick(Sender: TObject);
+    procedure IncAllBtnClick(Sender: TObject);
+    procedure IncludeBtnClick(Sender: TObject);
+    procedure ExcludeBtnClick(Sender: TObject);
+    procedure SrcListDblClick(Sender: TObject);
+    procedure DstListDblClick(Sender: TObject);
+    procedure gdEstoqueEstoquePotesTitleClick(Column: TColumn);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -302,13 +331,21 @@ type
     procedure CarregarEstoqueEP;
     procedure AtualizaABA;
     procedure RelatorioEstimativaVsRealidade(IdOpFinal: Integer);
+    procedure CarregarListBox;
     { Private declarations }
   public
+    procedure MoveSelected(List: TCustomListBox; Items: TStrings);
+    procedure SetItem(List: TListBox; Index: Integer);
+    function GetFirstSelection(List: TCustomListBox): Integer;
+    procedure SetButtons;
     { Public declarations }
   end;
 
 var
   frmPlanejamentoProducao: TfrmPlanejamentoProducao;
+
+Const
+  StrAgrupamento : array [eAgrupamentoEstoquePotes] of String = ('Cliente', 'Espécie', 'Variedade', 'Estágio');
 
 implementation
 
@@ -589,8 +626,15 @@ begin
               AutoSizeDBGrid(gdIniciandoEstagio)
             else
               if PageControl1.ActivePage = TSESTOQUE then begin
+
                 if PageControl2.ActivePage = TSESE then
-                  AutoSizeDBGrid(gdEstoqueSolucaoEstoque);
+                  AutoSizeDBGrid(gdEstoqueSolucaoEstoque)
+                else
+                  if PageControl2.ActivePage = TSEMC then
+                    AutoSizeDBGrid(gdEstoqueMeioCultura)
+                  else
+                    if PageControl2.ActivePage = TSEEP then
+                      AutoSizeDBGrid(gdEstoqueEstoquePotes);
               end;
 end;
 
@@ -1192,8 +1236,95 @@ begin
 end;
 
 procedure TfrmPlanejamentoProducao.CarregarEstoqueEP;
+var
+  FWC       : TFWConnection;
+  Consulta  : TFDQuery;
+  I : Integer;
+  AEP : eAgrupamentoEstoquePotes;
+  By,
+  FieldName : string;
 begin
-  //
+
+  FWC       := TFWConnection.Create;
+  Consulta  := TFDQuery.Create(nil);
+
+  try
+    try
+
+      By := EmptyStr;
+
+      if FDM_ESTOQUEPOTES.Active then
+        FDM_ESTOQUEPOTES.Close;
+
+      if DstList.Items.Count >= 0 then begin
+
+        Consulta.Close;
+        Consulta.SQL.Clear;
+        Consulta.SQL.Add('SELECT');
+
+        for I := 0 to DstList.Items.Count -1 do begin
+
+          AEP := eAgrupamentoEstoquePotes(AnsiIndexStr(DstList.Items[I], StrAgrupamento));
+
+          case AEP of
+            eCliente: begin
+              Consulta.SQL.Add('	(C.NOME) AS "Cliente",');
+            end;
+            eEspecie: begin
+              Consulta.SQL.Add('	(P.DESCRICAO) AS "Espécie",');
+            end;
+            eVariedade: begin
+              Consulta.SQL.Add('	(V.NOME) AS "Variedade",');
+            end;
+            eEstagio: begin
+              Consulta.SQL.Add('	(E.DESCRICAO) AS "Estágio",');
+            end;
+          end;
+
+          if I = 0 then
+            By := '1'
+          else
+            By := By + ', ' + IntToStr(I + 1);
+        end;
+
+        Consulta.SQL.Add('	COUNT(*) AS "Saldo de Potes"');
+        Consulta.SQL.Add('FROM OPFINAL OPF');
+        Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+        Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPFEL ON (OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
+        Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+        Consulta.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
+        Consulta.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+        Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
+        Consulta.SQL.Add('INNER JOIN ESTAGIO E ON (E.ID = OPFE.ESTAGIO_ID)');
+        Consulta.SQL.Add('WHERE 1 = 1');
+        Consulta.SQL.Add('AND OPFELS.BAIXADO = FALSE');
+        Consulta.SQL.Add('GROUP BY ' + By);
+        Consulta.SQL.Add('ORDER BY ' + By);
+
+        Consulta.Connection   := FWC.FDConnection;
+        Consulta.Transaction  := FWC.FDTransaction;
+
+        Consulta.Prepare;
+        Consulta.Open;
+        Consulta.FetchAll;
+
+        if not Consulta.IsEmpty then begin
+
+          FDM_ESTOQUEPOTES.Data := Consulta.Data;
+
+          DimensionarGrid(gdEstoqueEstoquePotes, Self);
+
+        end;
+      end;
+    Except
+      on E : Exception do begin
+        DisplayMsg(MSG_WAR, 'Ocorreram erros na consulta do Estoque do Meio de Cultura!', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(Consulta);
+    FreeAndNil(FWC);
+  end;
 end;
 
 procedure TfrmPlanejamentoProducao.CarregarEstoqueMC;
@@ -1457,7 +1588,7 @@ begin
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('	OPFE.ID AS IDOPFE,');
       Consulta.SQL.Add('	OPF.ID AS IDOPF,');
-      Consulta.SQL.Add('	OPFE.DATAHORAINICIO AS DATA,');
+      Consulta.SQL.Add('	OPFE.DATAHORAFIM AS DATA,');
       Consulta.SQL.Add('	P.DESCRICAO || '' - '' || OPF.ID AS ESPECIE,');
       Consulta.SQL.Add('	V.NOME AS VARIEDADE,');
       Consulta.SQL.Add('	E.DESCRICAO AS ESTAGIOATUAL,');
@@ -1471,12 +1602,12 @@ begin
       Consulta.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OPF.ID_VARIEDADE)');
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND (OPF.CANCELADO = FALSE)');
-      Consulta.SQL.Add('AND OPFE.DATAHORAINICIO IS NOT NULL');
+      Consulta.SQL.Add('AND OPFE.DATAHORAFIM IS NOT NULL');
       Consulta.SQL.Add('AND ((:CODIGOESPECIE = -1) OR (P.ID = :CODIGOESPECIE))');
       Consulta.SQL.Add('AND ((:CODIGOESTAGIO = -1) OR (E.ID = :CODIGOESTAGIO))');
       Consulta.SQL.Add('AND ((:CODIGOVARIEDADE = -1) OR (V.ID = :CODIGOVARIEDADE))');
-      Consulta.SQL.Add('AND CAST(OPFE.DATAHORAINICIO AS DATE) >= :DATA');
-      Consulta.SQL.Add('ORDER BY OPFE.DATAHORAINICIO ASC');
+      Consulta.SQL.Add('AND CAST(OPFE.DATAHORAFIM AS DATE) >= :DATA');
+      Consulta.SQL.Add('ORDER BY OPFE.DATAHORAFIM ASC');
 
       Consulta.Connection                     := FWC.FDConnection;
 
@@ -1548,6 +1679,21 @@ begin
     FreeAndNil(Consulta);
     FreeAndNil(FWC);
   end;
+end;
+
+procedure TfrmPlanejamentoProducao.CarregarListBox;
+Var
+  I : Integer;
+  Filtros : eAgrupamentoEstoquePotes;
+begin
+
+  SrcList.Items.Clear;
+  DstList.Items.Clear;
+
+  for Filtros := Low(Filtros) to High(Filtros) do
+    DstList.Items.Add(StrAgrupamento[Filtros]);
+
+  SetButtons;
 end;
 
 procedure TfrmPlanejamentoProducao.CarregarMeiodeCultura;
@@ -1820,6 +1966,11 @@ begin
   CarregarEstoqueEP;
 end;
 
+procedure TfrmPlanejamentoProducao.DstListDblClick(Sender: TObject);
+begin
+  ExcludeBtnClick(Sender);
+end;
+
 procedure TfrmPlanejamentoProducao.edCodigoClienteChange(Sender: TObject);
 begin
   if (Sender as TButtonedEdit) = edCodigoClienteRP then
@@ -1931,6 +2082,25 @@ begin
       (Sender as TMenuItem).Tag := 0;
     end;
   end;
+end;
+
+procedure TfrmPlanejamentoProducao.ExAllBtnClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to DstList.Items.Count - 1 do
+    SrcList.Items.AddObject(DstList.Items[I], DstList.Items.Objects[I]);
+  DstList.Items.Clear;
+  SetItem(DstList, 0);
+end;
+
+procedure TfrmPlanejamentoProducao.ExcludeBtnClick(Sender: TObject);
+var
+  Index: Integer;
+begin
+  Index := GetFirstSelection(DstList);
+  MoveSelected(DstList, SrcList.Items);
+  SetItem(DstList, Index);
 end;
 
 procedure TfrmPlanejamentoProducao.edCodigoEspecieChange(Sender: TObject);
@@ -2179,8 +2349,15 @@ begin
   edDataOPG.Date    := Date + 7;
   edDataOPSE.Date   := Date + 7;
   edDataIE.Date     := Date - 7;
+  CarregarListBox;
   ConsultaDados;
   AjustaGrid;
+end;
+
+procedure TfrmPlanejamentoProducao.gdEstoqueEstoquePotesTitleClick(
+  Column: TColumn);
+begin
+  OrdenarGrid(Column);
 end;
 
 procedure TfrmPlanejamentoProducao.gdGerarOPCellClick(Column: TColumn);
@@ -2354,6 +2531,47 @@ begin
   OrdenarGrid(Column);
 end;
 
+function TfrmPlanejamentoProducao.GetFirstSelection(
+  List: TCustomListBox): Integer;
+begin
+  for Result := 0 to List.Items.Count - 1 do
+    if List.Selected[Result] then Exit;
+  Result := LB_ERR;
+end;
+
+procedure TfrmPlanejamentoProducao.IncAllBtnClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to SrcList.Items.Count - 1 do
+    DstList.Items.AddObject(SrcList.Items[I],
+      SrcList.Items.Objects[I]);
+  SrcList.Items.Clear;
+  SetItem(SrcList, 0);
+end;
+
+procedure TfrmPlanejamentoProducao.IncludeBtnClick(Sender: TObject);
+var
+  Index: Integer;
+begin
+  Index := GetFirstSelection(SrcList);
+  MoveSelected(SrcList, DstList.Items);
+  SetItem(SrcList, Index);
+end;
+
+procedure TfrmPlanejamentoProducao.MoveSelected(List: TCustomListBox;
+  Items: TStrings);
+var
+  I: Integer;
+begin
+  for I := List.Items.Count - 1 downto 0 do
+    if List.Selected[I] then
+    begin
+      Items.AddObject(List.Items[I], List.Items.Objects[I]);
+      List.Items.Delete(I);
+    end;
+end;
+
 procedure TfrmPlanejamentoProducao.OrdemdeProduo1Click(Sender: TObject);
 begin
   if (Sender as TMenuItem).Tag = 0 then begin
@@ -2374,6 +2592,11 @@ begin
   AjustaGrid;
 end;
 
+procedure TfrmPlanejamentoProducao.PageControl2Change(Sender: TObject);
+begin
+  AjustaGrid;
+end;
+
 procedure TfrmPlanejamentoProducao.RelatorioEstimativaVsRealidade(IdOpFinal: Integer);
 var
   Relatorio : TRelatorioEstimativaVsRealidade;
@@ -2384,6 +2607,42 @@ begin
   finally
     FreeAndNil(Relatorio);
   end;
+end;
+
+procedure TfrmPlanejamentoProducao.SetButtons;
+var
+  SrcEmpty, DstEmpty: Boolean;
+begin
+  SrcEmpty := SrcList.Items.Count = 0;
+  DstEmpty := DstList.Items.Count = 0;
+  IncludeBtn.Enabled := not SrcEmpty;
+  IncAllBtn.Enabled := not SrcEmpty;
+  ExcludeBtn.Enabled := not DstEmpty;
+  ExAllBtn.Enabled := not DstEmpty;
+end;
+
+procedure TfrmPlanejamentoProducao.SetItem(List: TListBox; Index: Integer);
+var
+  MaxIndex: Integer;
+begin
+  with List do
+  begin
+    SetFocus;
+    MaxIndex := List.Items.Count - 1;
+    if Index = LB_ERR then
+      Index := 0
+    else
+      if Index > MaxIndex then
+        Index := MaxIndex;
+    if MaxIndex >= 0 then
+      Selected[Index] := True;
+  end;
+  SetButtons;
+end;
+
+procedure TfrmPlanejamentoProducao.SrcListDblClick(Sender: TObject);
+begin
+  IncludeBtnClick(Sender);
 end;
 
 end.

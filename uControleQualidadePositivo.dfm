@@ -227,7 +227,6 @@ object frmControleQualidadePositivo: TfrmControleQualidadePositivo
         Width = 515
         Height = 131
         Align = alClient
-        Color = clMoneyGreen
         DataSource = DS_DADOS
         DrawingStyle = gdsGradient
         Font.Charset = DEFAULT_CHARSET

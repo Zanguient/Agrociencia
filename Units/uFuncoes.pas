@@ -21,7 +21,8 @@ uses
   Vcl.ExtCtrls,
   Vcl.ExtDlgs,
   Vcl.Imaging.jpeg,
-  frxDBSet;
+  frxDBSet,
+  FireDAC.Stan.Intf;
 
   procedure CarregarConfigLocal;
   procedure LimpaImagens;
@@ -29,6 +30,7 @@ uses
   procedure DefinePermissaoMenu(Menu : TMainMenu);
   procedure CarregarConexaoBD;
   procedure AutoSizeDBGrid(const DBGrid: TDBGrid);
+  procedure DimensionarGrid(dbg: TDbGrid; var formulario);
   procedure AjustaForm(Form : TForm);
   procedure OrdenarGrid(Column: TColumn);
   procedure ExpXLS(DataSet: TDataSet; NomeArq: string);
@@ -53,7 +55,7 @@ uses
   function ExcluirCaracteresdeNumeric(Valor : Variant) : String;
   function RetornaCodigo_CF(CF : String) : Integer;
   function ValidaCPFCNPJ(Texto : String) : Boolean;
-  function LimiteMultiplicacao(CodigoOPF : Integer) : Boolean;
+  function LimiteMultiplicacao(CodigoOPF, IDEstagio : Integer) : Boolean;
   function SelecionarImagemBMP : String;
   procedure ExpDbGridXLS(const DBGrid: TDBGrid; NomeArq: string);
 
@@ -163,14 +165,69 @@ begin
     Filler := (GridClientWidth - TotalColumnWidth) div ColumnCount;
     for i := 0 to ColumnCount-1 do
       DBGrid.Columns[i].Width := DBGrid.Columns[i].Width + Filler;
-  end
-//  else if TotalColumnWidth > GridClientWidth then begin
-//    Filler := (TotalColumnWidth - GridClientWidth) div ColumnCount;
-//    if (TotalColumnWidth - GridClientWidth) mod ColumnCount <> 0 then
-//      Inc(Filler);
-//    for i := 0 to ColumnCount-1 do
-//      DBGrid.Columns[i].Width := DBGrid.Columns[i].Width - Filler;
-//  end;
+  {end
+  else if TotalColumnWidth > GridClientWidth then begin
+    Filler := (TotalColumnWidth - GridClientWidth) div ColumnCount;
+    if (TotalColumnWidth - GridClientWidth) mod ColumnCount <> 0 then
+      Inc(Filler);
+    for i := 0 to ColumnCount-1 do
+      DBGrid.Columns[i].Width := DBGrid.Columns[i].Width - Filler;}
+  end;
+end;
+
+procedure DimensionarGrid(dbg: TDbGrid; var formulario);
+type
+  TArray = Array of integer;
+
+  procedure AjustarColumns(Swidth,TSize:integer;Asize:TArray);
+  var
+    idx : Integer;
+   begin
+     if Tsize = 0 then
+        begin
+           Tsize:=dbg.Columns.Count;
+             for idx:=0 to dbg.Columns.Count-1 do
+               dbg.Columns[Idx].Width:=
+                     (dbg.Width- dbg.Canvas.TextWidth('AAAAAA')) div Tsize
+        end
+     else
+      for idx:=0 to dbg.Columns.Count-1 do
+        dbg.Columns[Idx].Width:=dbg.Columns[Idx].Width + (Swidth*Asize[idx] div Tsize);
+   end;
+var
+  Idx,
+  Twidth,
+  Tsize,
+  Swidth : Integer;
+  AWidth : TArray;
+  Asize : TArray;
+  NomeColuna : String;
+begin
+  SetLength(AWidth,dbg.Columns.Count);
+  SetLength(ASize,dbg.Columns.Count);
+  TWidth:=0;
+  TSize:=0;
+
+  for Idx := 0 to dbg.Columns.Count - 1  do begin
+    NomeColuna := Dbg.Columns[Idx].Title.Caption;
+    dbg.Columns[Idx].Width := dbg.Canvas.TextWidth(Dbg.Columns[Idx].Title.Caption+'A');
+    AWidth[idx] := dbg.Columns[Idx].Width;
+    TWidth := TWidth + AWidth[idx];
+    Asize[idx] := dbg.Columns[idx].Field.Size;
+    Tsize := Tsize+Asize[idx];
+  end;
+
+  if dgColLines in dbg.Options then
+    TWidth := TWidth+ Dbg.Columns.Count;
+
+  //adiciona a largura da coluna indicada do cursor
+  if dgIndicator in Dbg.Options then
+    TWidth := TWidth+IndicatorWidth;
+
+  Swidth := dbg.ClientWidth - TWidth;
+  AjustarColumns(Swidth,TSize,Asize);
+  dbg.Width := dbg.Width + dbg.Canvas.TextWidth('AAAAAA');
+  Dbg.Left := (Tform(formulario).Width - dbg.Width) div 2 - (dbg.Canvas.TextWidth('AA') div 2);
 end;
 
 procedure AjustaForm(Form : TForm);
@@ -189,6 +246,7 @@ var
   Existe    : Boolean;
   I         : Integer;
   CDS_idx   : TClientDataSet;
+  FDM       : TFDMemTable;
   DB_GRID   : TDBGrid;
   C         : TColumn;
 begin
@@ -229,6 +287,48 @@ begin
         end;
       end;
       Column.Title.Font.Color := clBlue;
+    end;
+  end else begin
+
+    if Column.Grid.DataSource.DataSet is TFDMemTable then begin
+      FDM := TFDMemTable(Column.Grid.DataSource.DataSet);
+
+      if FDM.IndexFieldNames = Column.FieldName then begin
+
+        Indice := AnsiUpperCase(Column.FieldName+'_INV');
+
+        Existe  := False;
+        For I := 0 to Pred(FDM.IndexDefs.Count) do begin
+          if AnsiUpperCase(FDM.IndexDefs[I].Name) = Indice then begin
+            Existe := True;
+            Break;
+          end;
+        end;
+
+        if not Existe then
+          with FDM.Indexes.Add do begin
+            Name := Indice;
+            Fields := Column.FieldName;
+            Options := [soDescending];
+            Active := True;
+          end;
+        FDM.IndexName := Indice;
+        FDM.IndexesActive := True;
+      end else
+        FDM.IndexFieldNames := Column.FieldName;
+
+      if Column.Grid is TDBGrid then begin
+        DB_GRID := TDBGrid(Column.Grid);
+        for I := 0 to DB_GRID.Columns.Count - 1 do begin
+          C := DB_GRID.Columns[I];
+          if Column <> C then begin
+            if C.Title.Font.Color <> clWindowText then
+              C.Title.Font.Color := clWindowText;
+          end;
+        end;
+        Column.Title.Font.Color := clBlue;
+      end;
+
     end;
   end;
 end;
@@ -1286,7 +1386,7 @@ begin
   end;
 end;
 
-function LimiteMultiplicacao(CodigoOPF : Integer) : Boolean;
+function LimiteMultiplicacao(CodigoOPF, IDEstagio : Integer) : Boolean;
 Var
   FWC     : TFWConnection;
   Consulta: TFDQuery;
@@ -1312,12 +1412,15 @@ begin
       Consulta.SQL.Add('WHERE 1 = 1');
       Consulta.SQL.Add('AND E.TIPO = 2');
       Consulta.SQL.Add('AND OPF.ID = :CODIGOOPF');
+      Consulta.SQL.Add('AND OPFE.ESTAGIO_ID = :IDESTAGIO');
       Consulta.SQL.Add('AND OPF.LIMITEMULTIPLICACOES > 0');
       Consulta.SQL.Add('GROUP BY 1');
 
       Consulta.Connection                         := FWC.FDConnection;
       Consulta.ParamByName('CODIGOOPF').DataType  := ftInteger;
+      Consulta.ParamByName('IDESTAGIO').DataType  := ftInteger;
       Consulta.ParamByName('CODIGOOPF').AsInteger := CodigoOPF;
+      Consulta.ParamByName('IDESTAGIO').AsInteger := IDEstagio;
       Consulta.Prepare;
       Consulta.Open;
       Consulta.FetchAll;
