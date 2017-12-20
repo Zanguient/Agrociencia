@@ -33,7 +33,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
       Top = 3
       Width = 896
       Height = 455
-      ActivePage = TSIE
+      ActivePage = TSESTOQUE
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -5033,7 +5033,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
           Top = 0
           Width = 888
           Height = 403
-          ActivePage = TSEEP
+          ActivePage = TSEMC
           Align = alClient
           TabOrder = 0
           OnChange = PageControl2Change
@@ -6389,7 +6389,7 @@ object frmPlanejamentoProducao: TfrmPlanejamentoProducao
     Left = 832
     Top = 201
     Bitmap = {
-      494C010102001400F80020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010102001400FC0020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -77,6 +77,7 @@ type
       Shift: TShiftState);
     procedure cbTipoProdutoChange(Sender: TObject);
     procedure cbFinalidadeProdutoChange(Sender: TObject);
+    procedure btPesquisarClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -284,6 +285,11 @@ procedure TfrmCadastroProdutos.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
+end;
+
+procedure TfrmCadastroProdutos.btPesquisarClick(Sender: TObject);
+begin
+  Filtrar;
 end;
 
 procedure TfrmCadastroProdutos.Cancelar;

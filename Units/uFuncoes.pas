@@ -57,6 +57,7 @@ uses
   function ValidaCPFCNPJ(Texto : String) : Boolean;
   function LimiteMultiplicacao(CodigoOPF, IDEstagio : Integer) : Boolean;
   function SelecionarImagemBMP : String;
+  function TemSaldoOPMC(CodigoOPMC, Quantidade : Integer) : Boolean;
   procedure ExpDbGridXLS(const DBGrid: TDBGrid; NomeArq: string);
 
 implementation
@@ -1463,6 +1464,50 @@ begin
     end;
   finally
     FreeAndNil(OpenDialog);
+  end;
+end;
+
+function TemSaldoOPMC(CodigoOPMC, Quantidade : Integer) : Boolean;
+Var
+  FWC : TFWConnection;
+  SQL : TFDQuery;
+begin
+
+  Result := False;
+
+  FWC := TFWConnection.Create;
+  SQL := TFDQuery.Create(nil);
+  try
+    try
+      SQL.Close;
+      SQL.SQL.Clear;
+      SQL.SQL.Add('SELECT');
+      SQL.SQL.Add('	  OPMC.SALDO');
+      SQL.SQL.Add('FROM ORDEMPRODUCAOMC OPMC');
+      SQL.SQL.Add('WHERE OPMC.ID = :ID');
+
+      SQL.Connection := FWC.FDConnection;
+      SQL.Transaction := FWC.FDTransaction;
+
+      SQL.ParamByName('ID').AsInteger := CodigoOPMC;
+
+      SQL.Open;
+
+      if not SQL.IsEmpty then begin
+        if SQL.FieldByName('SALDO').AsCurrency >= Quantidade then begin
+          Result := True;
+          Exit;
+        end;
+      end;
+
+    except
+      on E : Exception do begin
+        DisplayMsg(MSG_ERR, 'Erro ao verificar o saldo de OPMC!', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(FWC);
   end;
 end;
 procedure ExpDbGridXLS(const DBGrid: TDBGrid; NomeArq: string);

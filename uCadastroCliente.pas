@@ -83,6 +83,7 @@ type
     procedure btExcluirClick(Sender: TObject);
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
+    procedure btPesquisarClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -279,6 +280,11 @@ procedure TfrmCadastroCliente.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
+end;
+
+procedure TfrmCadastroCliente.btPesquisarClick(Sender: TObject);
+begin
+  Filtrar;
 end;
 
 procedure TfrmCadastroCliente.Cancelar;

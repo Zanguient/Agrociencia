@@ -1590,6 +1590,7 @@ object frmCadastroCliente: TfrmCadastroCliente
           C293949385868587888785868590908FB3B3B3FBFBFBFFFFFFFFFFFFFFFFFFFF
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
         Layout = blGlyphRight
+        OnClick = btPesquisarClick
         ExplicitLeft = 685
       end
       object edPesquisa: TEdit

@@ -38,7 +38,6 @@ type
     FIM : Boolean;
     PREVISTO : Integer;
     SALDO : Integer;
-    SALDOMC : Double;
     CADESTAGIO : Integer;
     CADESPECIE : Integer;
     ORDEMPRODUCAOMC : Integer;
@@ -454,7 +453,7 @@ begin
                 edOrdemProducaoMC.SetFocus;
                 edOrdemProducaoMC.SelectAll;
               end;
-            end 
+            end
             else
             begin
               edCodigoEntrada.Enabled       := True;
@@ -579,7 +578,7 @@ begin
                 case rgSaida.ItemIndex of
                   0 : begin
                     if Codigo = MULTIPLICACAO.IDESTAGIO then begin
-                      if MULTIPLICACAO.SALDOMC < cds_Saidas.RecordCount + 1 then begin
+                      if not TemSaldoOPMC(MULTIPLICACAO.ORDEMPRODUCAOMC, (cds_Saidas.RecordCount + 1)) then begin
                         DisplayMsg(MSG_WAR, 'Acabaram os potes do Meio de Cultura! Verifique com o Administrador!');
                         if edCodigoSaida.CanFocus then begin
                           edCodigoSaida.SetFocus;
@@ -810,6 +809,7 @@ Var
   OPFE  : TOPFINAL_ESTAGIO;
   OPFEL : TOPFINAL_ESTAGIO_LOTE;
   OPMC  : TORDEMPRODUCAOMC;
+  SQL   : TFDQuery;
 begin
 
   OPFE  := TOPFINAL_ESTAGIO.Create(FWC);
@@ -838,9 +838,19 @@ begin
             OPFEL.QUANTIDADE.Value        := StrToInt(edQuantidadeSaida.Text);
           OPFEL.Insert;
 
-          OPMC.ID.Value                   := StrToInt(edOrdemProducaoMC.Text);
-          OPMC.SALDO.Value                := MULTIPLICACAO.SALDOMC - StrToFloat(edQuantidadeSaida.Text);
-          OPMC.Update;
+          //Atualizar saldo da OPMC
+          if MULTIPLICACAO.ORDEMPRODUCAOMC > 0 then begin
+            if StrToIntDef(edQuantidadeSaida.Text,0) > 0 then begin
+              SQL := TFDQuery.Create(nil);
+              try
+                SQL.Connection := FWC.FDConnection;
+                SQL.Transaction := FWC.FDTransaction;
+                SQL.ExecSQL('UPDATE ORDEMPRODUCAOMC SET SALDO = (SALDO - :QUANTIDADE) WHERE ID = :ID', [StrToIntDef(edQuantidadeSaida.Text,0), MULTIPLICACAO.ORDEMPRODUCAOMC], [ftInteger, ftInteger]);
+              finally
+                FreeAndNil(SQL);
+              end;
+            end;
+          end;
 
           OPFE.ID.Value := TOPFINAL_ESTAGIO(OPFE.Itens[0]).ID.Value;
 
@@ -983,7 +993,6 @@ begin
   MULTIPLICACAO.FIM             := False;
   MULTIPLICACAO.PREVISTO        := 0;
   MULTIPLICACAO.SALDO           := 0;
-  MULTIPLICACAO.SALDOMC         := 0;
   MULTIPLICACAO.CADESTAGIO      := 0;
   MULTIPLICACAO.CADESPECIE      := 0;
   MULTIPLICACAO.ORDEMPRODUCAOMC := 0;
@@ -1053,7 +1062,6 @@ begin
           end;
 //          edOrdemProducaoMC.Text        := TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.asString;
           MULTIPLICACAO.ORDEMPRODUCAOMC := TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.Value;
-          MULTIPLICACAO.SALDOMC         := TORDEMPRODUCAOMC(OPMC.Itens[0]).SALDO.Value;
           edDescOPMC.Text := 'OPMC: ' + TORDEMPRODUCAOMC(OPMC.Itens[0]).ID.asString + ', ' +
                              'Meio de Cultura: ' + TMEIOCULTURA(MC.Itens[0]).CODIGO.asString + ', ' +
                              'Saldo: ' + FloatToStr(TORDEMPRODUCAOMC(OPMC.Itens[0]).SALDO.Value);
