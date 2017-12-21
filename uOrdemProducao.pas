@@ -151,7 +151,6 @@ type
     procedure EstimativavsRealidade1Click(Sender: TObject);
   private
     procedure SelecionarObservacao;
-    procedure EncerrarOPF;
     procedure Deletar(Sender: TObject);
     { Private declarations }
   public
@@ -741,81 +740,16 @@ begin
 end;
 
 procedure TfrmOrdemProducao.Cancelar1Click(Sender: TObject);
-Var
-  FWC : TFWConnection;
-  OPF : TOPFINAL;
-  SQL : TFDQuery;
 begin
 
-  if not cds_Pesquisa.IsEmpty then begin
-
-    DisplayMsg(MSG_CONF, 'Cancelar a Ordem de Produção Selecionada?');
-
-    if ResultMsgModal = mrYes then begin
-
-      try
-
-        FWC := TFWConnection.Create;
-        OPF := TOPFINAL.Create(FWC);
-        SQL := TFDQuery.Create(nil);
-        try
-
-          OPF.SelectList('ID = ' + cds_PesquisaID.AsString);
-          if OPF.Count = 1 then begin
-
-            if TOPFINAL(OPF.Itens[0]).CANCELADO.Value then begin
-              DisplayMsg(MSG_WAR, 'Ordem de Produção já Cancelada, Verifique!');
-              Exit;
-            end;
-
-            if not TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNull then begin
-              DisplayMsg(MSG_WAR, 'Ordem de Produção já Encerrada, Portanto não pode ser Cancelada!');
-              Exit;
-            end;
-
-            SQL.Close;
-            SQL.SQL.Clear;
-            SQL.SQL.Add('SELECT');
-            SQL.SQL.Add('  COUNT(OPFELS.ID) AS UNIDADES');
-            SQL.SQL.Add('FROM OPFINAL OPF');
-            SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
-            SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPFEL ON (OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
-            SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
-            SQL.SQL.Add('WHERE 1 = 1');
-            SQL.SQL.Add('AND OPFELS.BAIXADO = FALSE');
-            SQL.SQL.Add('AND OPF.ID = :IDOPF');
-            SQL.ParamByName('IDOPF').DataType  := ftInteger;
-            SQL.ParamByName('IDOPF').Value     := TOPFINAL(OPF.Itens[0]).ID.Value;
-
-            SQL.Connection  := FWC.FDConnection;
-            SQL.Prepare;
-            SQL.Open;
-            SQL.FetchAll;
-
-            if not SQL.IsEmpty then begin
-              DisplayMsg(MSG_WAR, 'Existem ' + SQL.FieldByName('UNIDADES').AsString + ' Unidades não Baixadas, Verifique!');
-              Exit;
-            end;
-
-            OPF.ID.Value        := TOPFINAL(OPF.Itens[0]).ID.Value;
-            OPF.CANCELADO.Value := True;
-            OPF.Update;
-
-            FWC.Commit;
-
-            CarregaDados;
-          end;
-        except
-          on E : Exception do begin
-            FWC.Rollback;
-            DisplayMsg(MSG_ERR, 'Erro ao Cancelar a Ordem de Produção, Verifique!', '', E.Message);
-          end;
-        end;
-      finally
-        FreeAndNil(SQL);
-        FreeAndNil(OPF);
-        FreeAndNil(FWC);
-      end;
+  if (Sender as TMenuItem).Tag = 0 then begin
+    (Sender as TMenuItem).Tag := 1;
+    try
+      if not cds_Pesquisa.IsEmpty then
+        if CancelarOPF(cds_PesquisaID.AsInteger) then
+          CarregaDados;
+    finally
+      (Sender as TMenuItem).Tag := 0;
     end;
   end;
 end;
@@ -1089,70 +1023,12 @@ begin
   if ENCERRAR1.Tag = 0 then begin
     ENCERRAR1.Tag := 1;
     try
-      EncerrarOPF;
-    finally
-      ENCERRAR1.Tag := 0;
-    end;
-  end;
-end;
-
-procedure TfrmOrdemProducao.EncerrarOPF;
-Var
-  FWC : TFWConnection;
-  OPF : TOPFINAL;
-  OPFE: TOPFINAL_ESTAGIO;
-  I   : Integer;
-begin
-
-  if not cds_Pesquisa.IsEmpty then begin
-
-    FWC := TFWConnection.Create;
-    OPF := TOPFINAL.Create(FWC);
-    OPFE:= TOPFINAL_ESTAGIO.Create(FWC);
-
-    try
-      try
-        OPF.SelectList('ID = ' + cds_PesquisaID.AsString);
-        if OPF.Count = 1 then begin
-          if not TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNull then begin
-            DisplayMsg(MSG_WAR, 'Ordem de Produção já Encerrada!');
-            Exit;
-          end;
-
-          DisplayMsg(MSG_INPUT_INT, 'Informe a Quantidade de Plantas Produzidas!');
-
-          if ResultMsgModal = mrOk then begin
-            OPF.ID.Value                  := TOPFINAL(OPF.Itens[0]).ID.Value;
-            OPF.DATAENCERRAMENTO.Value    := Now;
-            OPF.QUANTIDADEPRODUZIDA.Value := ResultMsgInputInt;
-            OPF.Update;
-
-            OPFE.SelectList('OPFINAL_ID = ' + cds_PesquisaID.AsString);
-            if OPFE.Count > 0 then begin
-              for I := 0 to OPFE.Count - 1 do begin
-                OPFE.ID.Value           := TOPFINAL_ESTAGIO(OPFE.Itens[I]).ID.Value;
-                OPFE.DATAHORAFIM.Value  := OPF.DATAENCERRAMENTO.Value;
-                OPFE.Update;
-              end;
-            end;
-
-            FWC.Commit;
-
-            DisplayMsg(MSG_OK, 'Ordem de Produção Nº ' + TOPFINAL(OPF.Itens[0]).ID.asString + ' Encerrada com Sucesso!');
-
-            CarregaDados;
-          end;
-        end;
-      except
-        on E : Exception do begin
-          FWC.Rollback;
-          DisplayMsg(MSG_ERR, 'Erro ao Encerrar a Ordem de Produção, Verifique!', '', E.Message);
-        end;
+      if not cds_Pesquisa.IsEmpty then begin
+        if EncerrarOPF(cds_PesquisaID.AsInteger) then
+          CarregaDados;
       end;
     finally
-      FreeAndNil(OPFE);
-      FreeAndNil(OPF);
-      FreeAndNil(FWC);
+      ENCERRAR1.Tag := 0;
     end;
   end;
 end;
@@ -1250,39 +1126,9 @@ begin
 end;
 
 procedure TfrmOrdemProducao.IMPRIMIRETIQUETAS1Click(Sender: TObject);
-Var
-  I : Integer;
 begin
-
-  if not cds_Pesquisa.IsEmpty then begin
-
-    cds_Etiqueta1.EmptyDataSet;
-
-    try
-
-      DisplayMsg(MSG_INPUT_INT, 'Informe a Quantidade de Estiquetas!');
-
-      if ResultMsgModal = mrOk then begin
-        if ResultMsgInputInt > 0 then begin
-          for I := 1 to ResultMsgInputInt do begin
-            cds_Etiqueta1.Append;
-            cds_Etiqueta1CODIGOOP.AsString  := StrZero(cds_PesquisaID.AsString, MinimoCodigoBarras);
-            cds_Etiqueta1PRODUTO.AsString   := cds_PesquisaESPECIE.AsString + ' - ' + cds_PesquisaID.AsString;
-            cds_Etiqueta1.Post;
-          end;
-        end;
-      end;
-
-      if not cds_Etiqueta1.IsEmpty then begin
-        DMUtil.frxDBDataset1.DataSet := cds_Etiqueta1;
-        RelParams.Clear;
-        DMUtil.ImprimirRelatorio('frEtiqueta1.fr3');
-      end;
-    finally
-      cds_Etiqueta1.EmptyDataSet;
-    end;
-  end;
-
+  if not cds_Pesquisa.IsEmpty then
+    ImprimirEtiquetasRP(cds_PesquisaID.AsInteger);
 end;
 
 function TfrmOrdemProducao.Inserir: Boolean;

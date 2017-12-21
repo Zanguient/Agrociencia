@@ -204,7 +204,7 @@ begin
           try
             try
 
-              //Pra Qual estágio????
+              FWC.StartTransaction;
 
               GravarLote(FWC);
 

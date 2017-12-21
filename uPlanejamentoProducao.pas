@@ -235,6 +235,13 @@ type
     SrcList: TListBox;
     btConsultaETP: TBitBtn;
     FDM_ESTOQUEPOTES: TFDMemTable;
+    btMenu: TSpeedButton;
+    PopupMenuRP: TPopupMenu;
+    ENCERRAR1: TMenuItem;
+    IMPRIMIRETIQUETAS1: TMenuItem;
+    Cancelar1: TMenuItem;
+    EstimativavsRealidade1: TMenuItem;
+    ImageListRP: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -317,6 +324,11 @@ type
     procedure SrcListDblClick(Sender: TObject);
     procedure DstListDblClick(Sender: TObject);
     procedure gdEstoqueEstoquePotesTitleClick(Column: TColumn);
+    procedure btMenuClick(Sender: TObject);
+    procedure ENCERRAR1Click(Sender: TObject);
+    procedure IMPRIMIRETIQUETAS1Click(Sender: TObject);
+    procedure Cancelar1Click(Sender: TObject);
+    procedure EstimativavsRealidade1Click(Sender: TObject);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -384,6 +396,11 @@ procedure TfrmPlanejamentoProducao.btFinalizandoEstagioEstimativaClick(
   Sender: TObject);
 begin
   RelatorioEstimativaVsRealidade(CDS_NOVAOPIDOPF.AsInteger);
+end;
+
+procedure TfrmPlanejamentoProducao.btMenuClick(Sender: TObject);
+begin
+  PopupMenuRP.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
 end;
 
 procedure TfrmPlanejamentoProducao.btNovoGNOPClick(Sender: TObject);
@@ -1160,6 +1177,22 @@ begin
       (Sender as TSpeedButton).Tag := 0;
       (Sender as TSpeedButton).Caption := 'E&xportar';
       Application.ProcessMessages;
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.Cancelar1Click(Sender: TObject);
+begin
+  if (Sender as TMenuItem).Tag = 0 then begin
+    (Sender as TMenuItem).Tag := 1;
+    try
+      if not Self.gdRecebimentoPlantas.DataSource.DataSet.IsEmpty then begin
+        if Assigned(Self.gdRecebimentoPlantas.DataSource.DataSet.FindField('ID')) then
+          if CancelarOPF(Self.gdRecebimentoPlantas.DataSource.DataSet.FindField('ID').AsInteger) then
+            AtualizaABA;
+      end;
+    finally
+      (Sender as TMenuItem).Tag := 0;
     end;
   end;
 end;
@@ -2069,6 +2102,45 @@ begin
   end;
 end;
 
+procedure TfrmPlanejamentoProducao.ENCERRAR1Click(Sender: TObject);
+begin
+  if (Sender as TMenuItem).Tag = 0 then begin
+    (Sender as TMenuItem).Tag := 1;
+    try
+      if not Self.gdRecebimentoPlantas.DataSource.DataSet.IsEmpty then begin
+        if Assigned(Self.gdRecebimentoPlantas.DataSource.DataSet.FindField('ID')) then
+          if EncerrarOPF(Self.gdRecebimentoPlantas.DataSource.DataSet.FieldByName('ID').AsInteger) then
+            AtualizaABA;
+      end;
+    finally
+      (Sender as TMenuItem).Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.EstimativavsRealidade1Click(Sender: TObject);
+var
+  Relatorio : TRelatorioEstimativaVsRealidade;
+begin
+  if (Sender as TMenuItem).Tag = 0 then begin
+    (Sender as TMenuItem).Tag := 1;
+    try
+      if not Self.gdRecebimentoPlantas.DataSource.DataSet.IsEmpty then begin
+        if Assigned(Self.gdRecebimentoPlantas.DataSource.DataSet.FindField('ID')) then begin
+          Relatorio := TRelatorioEstimativaVsRealidade.Create(Self.gdRecebimentoPlantas.DataSource.DataSet.FindField('ID').AsInteger);
+          try
+            Relatorio.ImprimirRelatorio;
+          finally
+            FreeAndNil(Relatorio);
+          end;
+        end;
+      end;
+    finally
+      (Sender as TMenuItem).Tag := 0;
+    end;
+  end;
+end;
+
 procedure TfrmPlanejamentoProducao.Etiquetas1Click(Sender: TObject);
 begin
   if (Sender as TMenuItem).Tag = 0 then begin
@@ -2537,6 +2609,21 @@ begin
   for Result := 0 to List.Items.Count - 1 do
     if List.Selected[Result] then Exit;
   Result := LB_ERR;
+end;
+
+procedure TfrmPlanejamentoProducao.IMPRIMIRETIQUETAS1Click(Sender: TObject);
+begin
+  if (Sender as TMenuItem).Tag = 0 then begin
+    (Sender as TMenuItem).Tag := 1;
+    try
+      if not Self.gdRecebimentoPlantas.DataSource.DataSet.IsEmpty then begin
+        if Assigned(Self.gdRecebimentoPlantas.DataSource.DataSet.FindField('ID')) then
+          ImprimirEtiquetasRP(Self.gdRecebimentoPlantas.DataSource.DataSet.FindField('ID').AsInteger);
+      end;
+    finally
+      (Sender as TMenuItem).Tag := 0;
+    end;
+  end;
 end;
 
 procedure TfrmPlanejamentoProducao.IncAllBtnClick(Sender: TObject);

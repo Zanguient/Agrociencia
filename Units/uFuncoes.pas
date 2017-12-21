@@ -38,11 +38,14 @@ uses
   procedure ConverterBMPtoJPEG(ACaminhoFoto: string);
   procedure ImprimirOPMC(ID : Integer);
   procedure ImprimirEtiquetaOPMC(ID : Integer);
+  procedure ImprimirEtiquetasRP(ID : Integer);
   procedure ImprimirOPFE(ID : Integer);
   procedure ImprimirOPSOL(ID : Integer);
   function ExcluirOPFE(ID : Integer) : Boolean;
   function ExcluirOPF(ID : Integer) : Boolean;
   function EncerrarOPSE(ID : Integer) : Boolean;
+  function EncerrarOPF(ID : Integer) : Boolean;
+  function CancelarOPF(ID : Integer) : Boolean;
   function ValidaUsuario(Email, Senha : String) : Boolean;
   function MD5(Texto : String): String;
   function Criptografa(Texto : String; Tipo : String) : String;
@@ -583,6 +586,80 @@ begin
   end;
 end;
 
+procedure ImprimirEtiquetasRP(ID : Integer);
+Var
+  FWC : TFWConnection;
+  SQL : TFDQuery;
+  FDMT : TFDMemTable;
+  I : Integer;
+begin
+
+  FWC := TFWConnection.Create;
+  SQL := TFDQuery.Create(nil);
+  FDMT := TFDMemTable.Create(nil);
+
+  try
+    try
+
+      SQL.Close;
+      SQL.SQL.Clear;
+      SQL.SQL.Add('SELECT');
+      SQL.SQL.Add('	(P.DESCRICAO || '' - '' || OPF.ID) AS PRODUTO');
+      SQL.SQL.Add('FROM OPFINAL OPF');
+      SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
+      SQL.SQL.Add('WHERE 1 = 1');
+      SQL.SQL.Add('AND OPF.ID = :ID');
+
+      SQL.Connection := FWC.FDConnection;
+      SQL.Transaction := FWC.FDTransaction;
+
+      SQL.ParamByName('ID').AsInteger := ID;
+
+      SQL.Prepare;
+      SQL.Open;
+      SQL.FetchAll;
+      SQL.Open;
+
+      if not SQL.IsEmpty then begin
+
+        FDMT.Close;
+        FDMT.FieldDefs.Clear;
+        FDMT.FieldDefs.Add('CODIGOOP', ftString, 13, False);
+        FDMT.FieldDefs.Add('PRODUTO', ftString, 100, False);
+        FDMT.CreateDataSet;
+
+        DisplayMsg(MSG_INPUT_INT, 'Informe a Quantidade de Estiquetas!');
+
+        if ResultMsgModal = mrOk then begin
+          if ResultMsgInputInt > 0 then begin
+            for I := 1 to ResultMsgInputInt do begin
+              FDMT.Append;
+              FDMT.FieldByName('CODIGOOP').AsString := StrZero(IntToStr(ID), MinimoCodigoBarras);
+              FDMT.FieldByName('PRODUTO').AsString := SQL.FieldByName('PRODUTO').AsString;
+              FDMT.Post;
+            end;
+
+            DMUtil.frxDBDataset1.DataSet := FDMT;
+            RelParams.Clear;
+            DMUtil.ImprimirRelatorio('frEtiqueta1.fr3');
+          end;
+        end;
+
+      end else
+        DisplayMsg(MSG_WAR, 'Não foram encontradas informações para o Recebimento de Plantas Selecionado, Verifique!');
+    except
+      on E : Exception do begin
+        DisplayMsg(MSG_ERR, 'Erro ao Imprimir as Etiquetas de Recebimento de Plantas!', '', E.Message);
+        Exit;
+      end;
+    end;
+  finally
+    FreeAndNil(FDMT);
+    FreeAndNil(SQL);
+    FreeAndNil(FWC);
+  end;
+end;
+
 procedure ImprimirOPFE(ID : Integer);
 var
   FWC       : TFWConnection;
@@ -984,6 +1061,146 @@ begin
         FreeAndNil(SOL);
         FreeAndNil(FWC);
       end;
+    end;
+  end;
+end;
+
+function EncerrarOPF(ID : Integer) : Boolean;
+Var
+  FWC : TFWConnection;
+  OPF : TOPFINAL;
+  OPFE: TOPFINAL_ESTAGIO;
+  I   : Integer;
+begin
+
+  Result := False;
+
+  FWC := TFWConnection.Create;
+  OPF := TOPFINAL.Create(FWC);
+  OPFE:= TOPFINAL_ESTAGIO.Create(FWC);
+
+  try
+    try
+      OPF.SelectList('ID = ' + IntToStr(ID));
+      if OPF.Count = 1 then begin
+        if not TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNull then begin
+          DisplayMsg(MSG_WAR, 'Ordem de Produção já Encerrada!');
+          Exit;
+        end;
+
+        DisplayMsg(MSG_INPUT_INT, 'Informe a Quantidade de Plantas Produzidas!');
+
+        if ResultMsgModal = mrOk then begin
+          OPF.ID.Value                  := TOPFINAL(OPF.Itens[0]).ID.Value;
+          OPF.DATAENCERRAMENTO.Value    := Now;
+          OPF.QUANTIDADEPRODUZIDA.Value := ResultMsgInputInt;
+          OPF.Update;
+
+          OPFE.SelectList('OPFINAL_ID = ' + IntToStr(ID));
+          if OPFE.Count > 0 then begin
+            for I := 0 to OPFE.Count - 1 do begin
+              OPFE.ID.Value           := TOPFINAL_ESTAGIO(OPFE.Itens[I]).ID.Value;
+              OPFE.DATAHORAFIM.Value  := OPF.DATAENCERRAMENTO.Value;
+              OPFE.Update;
+            end;
+          end;
+
+          FWC.Commit;
+
+          Result := True;
+
+          DisplayMsg(MSG_OK, 'Ordem de Produção Nº ' + TOPFINAL(OPF.Itens[0]).ID.asString + ' Encerrada com Sucesso!');
+        end;
+      end;
+    except
+      on E : Exception do begin
+        FWC.Rollback;
+        DisplayMsg(MSG_ERR, 'Erro ao Encerrar a Ordem de Produção, Verifique!', '', E.Message);
+      end;
+    end;
+  finally
+    FreeAndNil(OPFE);
+    FreeAndNil(OPF);
+    FreeAndNil(FWC);
+  end;
+end;
+
+function CancelarOPF(ID : Integer) : Boolean;
+Var
+  FWC : TFWConnection;
+  OPF : TOPFINAL;
+  SQL : TFDQuery;
+begin
+
+  Result := False;
+
+  DisplayMsg(MSG_CONF, 'Cancelar a Ordem de Produção Selecionada?');
+
+  if ResultMsgModal = mrYes then begin
+
+    try
+
+      FWC := TFWConnection.Create;
+      OPF := TOPFINAL.Create(FWC);
+      SQL := TFDQuery.Create(nil);
+      try
+
+        OPF.SelectList('ID = ' + IntToStr(ID));
+        if OPF.Count = 1 then begin
+
+          if TOPFINAL(OPF.Itens[0]).CANCELADO.Value then begin
+            DisplayMsg(MSG_WAR, 'Ordem de Produção já Cancelada, Verifique!');
+            Exit;
+          end;
+
+          if not TOPFINAL(OPF.Itens[0]).DATAENCERRAMENTO.isNull then begin
+            DisplayMsg(MSG_WAR, 'Ordem de Produção já Encerrada, Portanto não pode ser Cancelada!');
+            Exit;
+          end;
+
+          SQL.Close;
+          SQL.SQL.Clear;
+          SQL.SQL.Add('SELECT');
+          SQL.SQL.Add('  COUNT(OPFELS.ID) AS UNIDADES');
+          SQL.SQL.Add('FROM OPFINAL OPF');
+          SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO OPFE ON (OPFE.OPFINAL_ID = OPF.ID)');
+          SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPFEL ON (OPFEL.OPFINAL_ESTAGIO_ID = OPFE.ID)');
+          SQL.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPFELS ON (OPFELS.OPFINAL_ESTAGIO_LOTE_ID = OPFEL.ID)');
+          SQL.SQL.Add('WHERE 1 = 1');
+          SQL.SQL.Add('AND OPFELS.BAIXADO = FALSE');
+          SQL.SQL.Add('AND OPF.ID = :IDOPF');
+          SQL.ParamByName('IDOPF').DataType  := ftInteger;
+          SQL.ParamByName('IDOPF').Value     := TOPFINAL(OPF.Itens[0]).ID.Value;
+
+          SQL.Connection  := FWC.FDConnection;
+          SQL.Prepare;
+          SQL.Open;
+          SQL.FetchAll;
+
+          if not SQL.IsEmpty then begin
+            DisplayMsg(MSG_WAR, 'Existem ' + SQL.FieldByName('UNIDADES').AsString + ' Unidades não Baixadas, Verifique!');
+            Exit;
+          end;
+
+          OPF.ID.Value        := TOPFINAL(OPF.Itens[0]).ID.Value;
+          OPF.CANCELADO.Value := True;
+          OPF.Update;
+
+          FWC.Commit;
+
+          Result := True;
+
+        end;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_ERR, 'Erro ao Cancelar a Ordem de Produção, Verifique!', '', E.Message);
+        end;
+      end;
+    finally
+      FreeAndNil(SQL);
+      FreeAndNil(OPF);
+      FreeAndNil(FWC);
     end;
   end;
 end;
