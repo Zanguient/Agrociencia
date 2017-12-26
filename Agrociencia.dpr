@@ -98,7 +98,8 @@ uses
   uOrdemProducaoEstimativa in 'uOrdemProducaoEstimativa.pas' {frmOrdemProducaoEstimativa},
   uBeanOPFinal_Estimativa in 'Beans\uBeanOPFinal_Estimativa.pas',
   uBeanOrdemProducaoMC_Descarte in 'Beans\uBeanOrdemProducaoMC_Descarte.pas',
-  uDescarteMC in 'uDescarteMC.pas' {frmDescarteMC};
+  uDescarteMC in 'uDescarteMC.pas' {frmDescarteMC},
+  uDescarteSE in 'uDescarteSE.pas' {frmDescarteSE};
 
 {$R *.res}
 
@@ -110,6 +111,7 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TDMUtil, DMUtil);
   Application.CreateForm(TfrmLogin, frmLogin);
+  Application.CreateForm(TfrmDescarteSE, frmDescarteSE);
   if FrmLogin.ShowModal = mrOk then begin
     FreeAndNil(FrmLogin);
     Application.CreateForm(TFrmPrincipal, FrmPrincipal);

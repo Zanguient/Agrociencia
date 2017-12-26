@@ -315,6 +315,10 @@
             <Form>frmDescarteMC</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="uDescarteSE.pas">
+            <Form>frmDescarteSE</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -346,12 +350,6 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment>
-                <DeployFile LocalName="DUALLIST.pas" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\Agrociencia.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Agrociencia.exe</RemoteName>
