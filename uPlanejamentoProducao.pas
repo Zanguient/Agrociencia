@@ -242,6 +242,7 @@ type
     Cancelar1: TMenuItem;
     EstimativavsRealidade1: TMenuItem;
     ImageListRP: TImageList;
+    btDescartar: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btFecharClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -329,6 +330,7 @@ type
     procedure IMPRIMIRETIQUETAS1Click(Sender: TObject);
     procedure Cancelar1Click(Sender: TObject);
     procedure EstimativavsRealidade1Click(Sender: TObject);
+    procedure btDescartarClick(Sender: TObject);
   private
     procedure ConsultaDados;
     procedure AjustaGrid;
@@ -381,7 +383,8 @@ uses
   uBeanVariedade,
   uEncerramentoOPMC,
   uRelEstimativaVsRealidade,
-  uDescarteMC;
+  uDescarteMC,
+  uDescarteSE;
 
 {$R *.dfm}
 
@@ -877,6 +880,52 @@ begin
       AtualizaABA;
     finally
       (Sender as TBitBtn).Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmPlanejamentoProducao.btDescartarClick(Sender: TObject);
+Var
+  ID : Integer;
+begin
+  if (Sender as TSpeedButton).Tag = 0 then begin
+    (Sender as TSpeedButton).Tag := 1;
+    try
+      if not Self.gdEstoqueSolucaoEstoque.DataSource.DataSet.IsEmpty then begin
+
+        //Valida Estoque
+        if Assigned(Self.gdEstoqueSolucaoEstoque.DataSource.DataSet.FindField('ESTOQUE')) then begin
+          if Self.gdEstoqueSolucaoEstoque.DataSource.DataSet.FindField('ESTOQUE').AsCurrency <= 0.00 then begin
+            DisplayMsg(MSG_WAR, 'Solução sem estoque para descarte, Verifique!');
+            Exit;
+          end;
+        end;
+
+        if Assigned(Self.gdEstoqueSolucaoEstoque.DataSource.DataSet.FindField('ID')) then begin
+
+          ID := Self.gdEstoqueSolucaoEstoque.DataSource.DataSet.FindField('ID').AsInteger;
+
+          if not Assigned(frmDescarteSE) then
+            frmDescarteSE := TfrmDescarteSE.Create(nil);
+          try
+            frmDescarteSE.Parametro.ID_PRODUTO := Self.gdEstoqueSolucaoEstoque.DataSource.DataSet.FieldByName('ID').AsInteger;
+            if Assigned(Self.gdEstoqueSolucaoEstoque.DataSource.DataSet.FindField('SOLUCAO')) then
+              frmDescarteSE.Parametro.NOME_PRODUTO := Self.gdEstoqueSolucaoEstoque.DataSource.DataSet.FieldByName('SOLUCAO').AsString;
+            frmDescarteSE.Parametro.QUANTIDADE := 1;
+            frmDescarteSE.ShowModal;
+          finally
+            FreeAndNil(frmDescarteMC);
+          end;
+
+          AtualizaABA;
+
+          if not Self.gdEstoqueSolucaoEstoque.DataSource.DataSet.IsEmpty then
+            Self.gdEstoqueSolucaoEstoque.DataSource.DataSet.Locate('ID', ID, []);
+
+        end;
+      end;
+    finally
+      (Sender as TSpeedButton).Tag := 0;
     end;
   end;
 end;
