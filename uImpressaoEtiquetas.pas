@@ -17,6 +17,9 @@ type
     IDLOTE : Integer;
     CODIGOMC : string;
     LOCALIZACAO_ID : Integer;
+    FIM: Boolean;
+    QUANTIDADE: Integer;
+    ID_PRODUTO: Integer;
   end;
 
 type
@@ -48,6 +51,7 @@ type
     edCodigoLocalizacao: TButtonedEdit;
     Label2: TLabel;
     Label1: TLabel;
+    btnRemover: TBitBtn;
     procedure btFecharClick(Sender: TObject);
     procedure btEtiquetasClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -58,6 +62,7 @@ type
     procedure edCodigoLocalizacaoChange(Sender: TObject);
     procedure edCodigoLocalizacaoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure btnRemoverClick(Sender: TObject);
   private
     function AtualizaLocalizacao : Boolean;
     { Private declarations }
@@ -81,6 +86,8 @@ uses
   uBeanOPFinal_Estagio_Lote,
   uBeanOPFinal_Estagio_Lote_S,
   uBeanOPFinal_Estagio_Lote_S_Qualidade,
+  uBeanControleEstoque,
+  uBeanControleEstoqueProduto,
   uConstantes,
   uDMUtil, 
   uBeanUsuario,
@@ -142,6 +149,12 @@ begin
         end;
       end;
 
+      if LOTE.FIM then
+      begin
+        DisplayMsg(MSG_INF, 'Não existem etiquetas para imprimir!');
+        Exit;
+      end;
+
       ImprimirEtiquetas;
 
     finally
@@ -159,7 +172,10 @@ procedure TfrmImpressaoEtiquetas.btnAdicionarClick(Sender: TObject);
 var
   FWC : TFWConnection;
   LS  : TOPFINAL_ESTAGIO_LOTE_S;
+  L : TOPFINAL_ESTAGIO_LOTE;
   USU : TUSUARIO;
+  C: TCONTROLEESTOQUE;
+  CP: TCONTROLEESTOQUEPRODUTO;
 begin
   if not (USUARIO.PERMITEINCLUIRETIQUETAS) then begin
     DisplayMsg(MSG_PASSWORD, 'Digite o usuário e senha de alguem que tenha permissão por favor!');
@@ -186,27 +202,111 @@ begin
 
   end;
   FWC := TFWConnection.Create;
-  LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
-  try
-    FWC.StartTransaction;
+  if LOTE.FIM then
+  begin
+    L := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
+    C := TCONTROLEESTOQUE.Create(FWC);
+    CP := TCONTROLEESTOQUEPRODUTO.Create(FWC);
     try
-      LS.ID.isNull                     := True;
-      LS.OPFINAL_ESTAGIO_LOTE_ID.Value := LOTE.IDLOTE;
-      LS.DATAHORA.Value                := Now;
-      LS.BAIXADO.Value                 := False;
-      LS.Insert;
+      L.SelectList('ID = ' + IntToStr(LOTE.IDLOTE));
+      if L.Count > 0 then
+      begin
+        L.ID.Value := LOTE.IDLOTE;
+        L.QUANTIDADE.Value := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).QUANTIDADE.Value + 1;
+        L.Update;
 
-      FWC.Commit;
-    except
-      on E : Exception do begin
-        FWC.Rollback;
-        DisplayMsg(MSG_WAR, 'Erro ao Inserir Item!', '', E.Message);
-        Exit;
+        C.ID.isNull := True;
+        C.DATAHORA.Value := Now;
+        C.USUARIO_ID.Value := USUARIO.CODIGO;
+        C.TIPOMOVIMENTACAO.Value := 0;
+        C.CANCELADO.Value := False;
+        C.OBSERVACAO.Value := 'Adicionando entrega de item manualmente';
+        C.Insert;
+
+        CP.ID.isNull := True;
+        CP.CONTROLEESTOQUE_ID.Value := C.ID.Value;
+        CP.PRODUTO_ID.Value := LOTE.ID_PRODUTO;
+        CP.QUANTIDADE.Value := 1;
+        CP.Insert;
+
+        LOTE.QUANTIDADE := LOTE.QUANTIDADE + 1;
+        edt_Quantidade.Text := IntToStr(LOTE.QUANTIDADE);
       end;
+    finally
+      FreeAndNil(L);
+      FreeAndNil(C);
+      FreeAndNil(CP);
+      FreeAndNil(FWC);
     end;
-    CarregaEtiquetas;
+  end
+  else
+  begin
+    LS  := TOPFINAL_ESTAGIO_LOTE_S.Create(FWC);
+    try
+      FWC.StartTransaction;
+      try
+        LS.ID.isNull                     := True;
+        LS.OPFINAL_ESTAGIO_LOTE_ID.Value := LOTE.IDLOTE;
+        LS.DATAHORA.Value                := Now;
+        LS.BAIXADO.Value                 := False;
+        LS.Insert;
+
+        FWC.Commit;
+      except
+        on E : Exception do begin
+          FWC.Rollback;
+          DisplayMsg(MSG_WAR, 'Erro ao Inserir Item!', '', E.Message);
+          Exit;
+        end;
+      end;
+      CarregaEtiquetas;
+    finally
+      FreeAndNil(LS);
+      FreeAndNil(FWC);
+    end;
+  end;
+end;
+
+procedure TfrmImpressaoEtiquetas.btnRemoverClick(Sender: TObject);
+var
+  FWC : TFWConnection;
+  C: TCONTROLEESTOQUE;
+  CP: TCONTROLEESTOQUEPRODUTO;
+  L: TOPFINAL_ESTAGIO_LOTE;
+begin
+  FWC := TFWConnection.Create;
+  L := TOPFINAL_ESTAGIO_LOTE.Create(FWC);
+  C := TCONTROLEESTOQUE.Create(FWC);
+  CP := TCONTROLEESTOQUEPRODUTO.Create(FWC);
+  try
+    L.SelectList('ID = ' + IntToStr(LOTE.IDLOTE));
+    if L.Count > 0 then
+    begin
+      L.ID.Value := LOTE.IDLOTE;
+      L.QUANTIDADE.Value := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).QUANTIDADE.Value - 1;
+      L.Update;
+
+      C.ID.isNull := True;
+      C.DATAHORA.Value := Now;
+      C.USUARIO_ID.Value := USUARIO.CODIGO;
+      C.TIPOMOVIMENTACAO.Value := 1;
+      C.CANCELADO.Value := False;
+      C.OBSERVACAO.Value := 'Removendo entrega de item manualmente';
+      C.Insert;
+
+      CP.ID.isNull := True;
+      CP.CONTROLEESTOQUE_ID.Value := C.ID.Value;
+      CP.PRODUTO_ID.Value := LOTE.ID_PRODUTO;
+      CP.QUANTIDADE.Value := -1;
+      CP.Insert;
+
+      LOTE.QUANTIDADE := LOTE.QUANTIDADE - 1;
+      edt_Quantidade.Text := IntToStr(LOTE.QUANTIDADE);
+    end;
   finally
-    FreeAndNil(LS);
+    FreeAndNil(L);
+    FreeAndNil(C);
+    FreeAndNil(CP);
     FreeAndNil(FWC);
   end;
 end;
@@ -316,6 +416,7 @@ begin
             Consulta.SQL.Add('	OPFE.ID AS IDESTAGIO,');
             Consulta.SQL.Add('	OPFE.SEQUENCIA,');
             Consulta.SQL.Add('	(P.DESCRICAO || '' - '' || OPF.ID) AS PRODUTO,');
+            Consulta.SQL.Add('	P.ID AS IDPRODUTO,');
             Consulta.SQL.Add('	E.TIPO,');
             Consulta.SQL.Add('	MC.CODIGO AS CODIGOMC,');
             Consulta.SQL.Add('  (COALESCE((SELECT SUM(COALESCE(CEP.QUANTIDADE, 0.00))');
@@ -349,6 +450,7 @@ begin
                   LOTE.SEQUENCIA                := Consulta.FieldByName('SEQUENCIA').AsInteger;
                   LOTE.ESTAGIO                  := Consulta.FieldByName('IDESTAGIO').AsInteger;
                   LOTE.CODIGOMC                 := Consulta.FieldByName('CODIGOMC').AsString;
+                  LOTE.ID_PRODUTO               := Consulta.FieldByName('IDPRODUTO').AsInteger;
 
                   edNumeroLoteEstagio.Enabled   := True;
                   if edNumeroLoteEstagio.CanFocus then
@@ -390,21 +492,31 @@ begin
               edNomeLocalizacao.Text := TLOCALIZACAO(LOCAL.Itens[0]).NOME.asString;
             LOTE.IDLOTE                 := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).ID.Value;
             LOTE.LOCALIZACAO_ID         := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).LOCALIZACAO_ID.Value;
+            LOTE.QUANTIDADE := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).QUANTIDADE.Value;
+            if LOTE.QUANTIDADE > 0 then
+              LOTE.FIM := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).QUANTIDADE.Value > 0;
 
-            edCodigoLocalizacao.Enabled := USUARIO.PERMITEINCLUIRETIQUETAS;
+            edCodigoLocalizacao.Enabled := USUARIO.PERMITEINCLUIRETIQUETAS and (not LOTE.FIM);
 
-            LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.IDLOTE) + ' AND (NOT BAIXADO)');
-            if LS.Count > 0 then begin
-              cds_Itens.EmptyDataSet;
-              for I := 0 to Pred(LS.Count) do begin
-                cds_Itens.Append;
-                cds_ItensCODIGOBARRAS.Value   := StrZero(TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[I]).ID.asString, MinimoCodigoBarras);
-                cds_ItensORDEMPRODUCAO.Value  := LOTE.ORDEMPRODUCAO;
-                cds_ItensPRODUTO.Value        := edProduto.Text;
-                cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
-                cds_ItensNUMEROLOTE.Value     := StrZero(TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).NUMEROLOTE.asString, MinimoCodigoBarras);
-                cds_ItensCODIGOMC.Value       := LOTE.CODIGOMC;
-                cds_Itens.Post;
+            if LOTE.FIM then
+            begin
+              edt_Quantidade.Text := IntToStr(LOTE.QUANTIDADE);
+            end
+            else
+            begin
+              LS.SelectList('OPFINAL_ESTAGIO_LOTE_ID = ' + IntToStr(LOTE.IDLOTE) + ' AND (NOT BAIXADO)');
+              if LS.Count > 0 then begin
+                cds_Itens.EmptyDataSet;
+                for I := 0 to Pred(LS.Count) do begin
+                  cds_Itens.Append;
+                  cds_ItensCODIGOBARRAS.Value   := StrZero(TOPFINAL_ESTAGIO_LOTE_S(LS.Itens[I]).ID.asString, MinimoCodigoBarras);
+                  cds_ItensORDEMPRODUCAO.Value  := LOTE.ORDEMPRODUCAO;
+                  cds_ItensPRODUTO.Value        := edProduto.Text;
+                  cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
+                  cds_ItensNUMEROLOTE.Value     := StrZero(TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).NUMEROLOTE.asString, MinimoCodigoBarras);
+                  cds_ItensCODIGOMC.Value       := LOTE.CODIGOMC;
+                  cds_Itens.Post;
+                end;
               end;
             end;
           end;
@@ -417,8 +529,9 @@ begin
         FreeAndNil(FWC);
       end;
 
-      edNumeroLoteEstagio.Enabled   := cds_Itens.RecordCount = 0;
-      btnAdicionar.Visible          := not edNumeroLoteEstagio.Enabled;
+      edNumeroLoteEstagio.Enabled   := LOTE.FIM or (cds_Itens.RecordCount = 0);
+      btnAdicionar.Visible          := LOTE.FIM or (not edNumeroLoteEstagio.Enabled);
+      btnRemover.Visible := LOTE.FIM;
     end;
   end;
 end;
@@ -465,11 +578,14 @@ begin
   cds_Itens.EmptyDataSet;
   edt_Quantidade.Clear;
   btnAdicionar.Visible := False;
+  btnRemover.Visible := False;
   edCodigoLocalizacao.Enabled := False;
+  edt_Quantidade.Enabled := True;
   edCodigoUsuario.Clear;
   edNomeUsuario.Clear;
   edCodigoLocalizacao.Clear;
   edNomeLocalizacao.Clear;
+  edt_Quantidade.Clear;
 
   LOTE.ORDEMPRODUCAO := 0;
   LOTE.SEQUENCIA := 0;
@@ -477,6 +593,8 @@ begin
   LOTE.IDLOTE := 0;
   LOTE.CODIGOMC := EmptyStr;
   LOTE.LOCALIZACAO_ID := 0;
+  LOTE.QUANTIDADE := 0;
+  LOTE.ID_PRODUTO := 0;
 
   if edCodigoOrdemProducao.CanFocus then
     edCodigoOrdemProducao.SetFocus;
