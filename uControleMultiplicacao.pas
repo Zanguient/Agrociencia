@@ -833,9 +833,10 @@ begin
           OPFEL.QUANTIDADE.Value          := 0;
           OPFEL.ESTACAOTRABALHO.Value     := MULTIPLICACAO.ESTACAOTRABALHO;
           OPFEL.LOCALIZACAO_ID.Value      := MULTIPLICACAO.LOCALIZACAO_ID;
-          OPFEL.ORDEMPRODUCAOMC_ID.Value  := StrToInt(edOrdemProducaoMC.Text);
           if MULTIPLICACAO.FIM then
-            OPFEL.QUANTIDADE.Value        := StrToInt(edQuantidadeSaida.Text);
+            OPFEL.QUANTIDADE.Value        := StrToInt(edQuantidadeSaida.Text)
+          else
+            OPFEL.ORDEMPRODUCAOMC_ID.Value:= StrToInt(edOrdemProducaoMC.Text);
           OPFEL.Insert;
 
           //Atualizar saldo da OPMC
