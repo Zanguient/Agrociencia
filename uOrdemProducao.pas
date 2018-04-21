@@ -111,7 +111,7 @@ type
     cds_PesquisaVARIEDADE: TStringField;
     btExcluir: TSpeedButton;
     btEstimativa: TSpeedButton;
-    cds_Pesquisadataestimadaprocessamento: TDateField;
+    cds_PesquisaDATAESTIMADAPROCESSAMENTO: TDateField;
     EstimativavsRealidade1: TMenuItem;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -371,7 +371,7 @@ begin
     frmOrdemProducaoEstimativa := TfrmOrdemProducaoEstimativa.Create(nil);
   try
     frmOrdemProducaoEstimativa.Parametro.CodigoOp := cds_PesquisaID.Value;
-    frmOrdemProducaoEstimativa.Parametro.DataInicio := cds_Pesquisadataestimadaprocessamento.Value;
+    frmOrdemProducaoEstimativa.Parametro.DataInicio := cds_PesquisaDATAESTIMADAPROCESSAMENTO.Value;
     frmOrdemProducaoEstimativa.ShowModal;
   finally
     FreeAndNil(frmOrdemProducaoEstimativa);
@@ -785,7 +785,7 @@ begin
       SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO,');
       SQL.SQL.Add('	OPF.ID_VARIEDADE,');
       SQL.SQL.Add('	V.NOME AS VARIEDADE,');
-      SQL.SQL.Add('	OPF.dataestimadaprocessamento');
+      SQL.SQL.Add('	OPF.DATAESTIMADAPROCESSAMENTO');
       SQL.SQL.Add('FROM OPFINAL OPF');
       SQL.SQL.Add('INNER JOIN CLIENTE C ON (C.ID = OPF.CLIENTE_ID)');
       SQL.SQL.Add('INNER JOIN PRODUTO P ON (P.ID = OPF.PRODUTO_ID)');
@@ -822,7 +822,7 @@ begin
           cds_PesquisaSELECAOPOSITIVA.Value           := SQL.FieldByName('SELECAOPOSITIVA').AsString;
           cds_PesquisaCODIGOSELECAOCAMPO.Value        := SQL.FieldByName('CODIGOSELECAOCAMPO').AsString;
           cds_PesquisaIDESPECIE.Value                 := SQL.FieldByName('CODIGOESPECIE').AsInteger;
-          cds_Pesquisadataestimadaprocessamento.Value := SQL.FieldByName('dataestimadaprocessamento').AsDateTime;
+          cds_PesquisaDATAESTIMADAPROCESSAMENTO.Value := SQL.FieldByName('DATAESTIMADAPROCESSAMENTO').AsDateTime;
           cds_Pesquisa.Post;
           SQL.Next;
         end;

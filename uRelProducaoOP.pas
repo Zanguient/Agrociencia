@@ -69,7 +69,7 @@ begin
     try
       Consulta.Close;
       Consulta.SQL.Clear;
-      Consulta.Connection := FWC.FDConnection;
+
       Consulta.SQL.Add('SELECT');
       Consulta.SQL.Add('OP.ID,');
       Consulta.SQL.Add('CL.NOME AS NOMECLIENTE,');
@@ -91,12 +91,15 @@ begin
       Consulta.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPEL ON OPEL.OPFINAL_ESTAGIO_ID = OPE.ID');
       Consulta.SQL.Add('WHERE OP.ID = :ID');
       Consulta.SQL.Add('ORDER BY OPE.DATAHORAINICIO, E.ID, OPE.SEQUENCIAESTAGIO, OPEL.NUMEROLOTE');
+
+      Consulta.Connection := FWC.FDConnection;
+      Consulta.Transaction := FWC.FDTransaction;
+
       Consulta.ParamByName('ID').AsInteger := StrToInt(edCodigoOPF.Text);
       Consulta.Open();
 
       ConsultaI.Close;
       ConsultaI.SQL.Clear;
-      ConsultaI.Connection := FWC.FDConnection;
       ConsultaI.SQL.Add('SELECT');
       ConsultaI.SQL.Add('OP.SEQUENCIA,');
       ConsultaI.SQL.Add('E.DESCRICAO AS ESTAGIO,');
@@ -110,6 +113,10 @@ begin
       ConsultaI.SQL.Add('INNER JOIN IMAGEM I ON OPELSP.ID_IMAGEM = I.ID');
       ConsultaI.SQL.Add('WHERE OP.OPFINAL_ID = :ID');
       ConsultaI.SQL.Add('ORDER BY OP.SEQUENCIA');
+
+      ConsultaI.Connection := FWC.FDConnection;
+      ConsultaI.Transaction := FWC.FDTransaction;
+
       ConsultaI.ParamByName('ID').AsInteger := StrToInt(edCodigoOPF.Text);
       ConsultaI.ParamByName('DIRIMAGEM').AsString := CONFIG_LOCAL.DirImagens;
       ConsultaI.Open();

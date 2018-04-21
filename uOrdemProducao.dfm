@@ -1580,7 +1580,7 @@ object frmOrdemProducao: TfrmOrdemProducao
         end
         item
           Expanded = False
-          FieldName = 'CULTIVAR'
+          FieldName = 'VARIEDADE'
           Title.Caption = 'Cultivar/Variedade'
           Width = 250
           Visible = True
@@ -2481,8 +2481,8 @@ object frmOrdemProducao: TfrmOrdemProducao
       FieldName = 'VARIEDADE'
       Size = 100
     end
-    object cds_Pesquisadataestimadaprocessamento: TDateField
-      FieldName = 'dataestimadaprocessamento'
+    object cds_PesquisaDATAESTIMADAPROCESSAMENTO: TDateField
+      FieldName = 'DATAESTIMADAPROCESSAMENTO'
     end
   end
   object PopupMenu: TPopupMenu
@@ -2516,7 +2516,7 @@ object frmOrdemProducao: TfrmOrdemProducao
     Left = 360
     Top = 304
     Bitmap = {
-      494C010105001400080120002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101050014000C0120002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000004000000001002000000000000080
       0000000000000000000000000000000000000000000000000000000000000000
       00000000000000000000000000009B9B9A009B9B9A009B9B9A009B9B9A009B9B

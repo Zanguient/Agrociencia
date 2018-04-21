@@ -50,7 +50,6 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
         Value = 100.000000000000000000
       end>
     TabOrder = 6
-    ExplicitTop = 299
     object Panel1: TPanel
       Left = 1
       Top = 1
@@ -315,7 +314,6 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Style = []
     ParentFont = False
     TabOrder = 5
-    ExplicitTop = 276
   end
   object gbPeriodo: TGroupBox
     AlignWithMargins = True
@@ -553,8 +551,6 @@ object frmRelCadastrodePlantas: TfrmRelCadastrodePlantas
     Font.Style = []
     ParentFont = False
     TabOrder = 4
-    ExplicitLeft = 6
-    ExplicitTop = 223
     DesignSize = (
       327
       58)

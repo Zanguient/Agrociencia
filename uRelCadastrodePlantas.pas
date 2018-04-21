@@ -296,16 +296,35 @@ var
   FWC       : TFWConnection;
   Consulta  : TFDQuery;
   ConsultaI : TFDQuery;
+  FDMT      : TFDMemTable;
   FR        : TfrxDBDataset;
+  I         : Integer;
 begin
 
   FWC       := TFWConnection.Create;
   Consulta  := TFDQuery.Create(nil);
   ConsultaI := TFDQuery.Create(nil);
   FR        := TfrxDBDataset.Create(nil);
+  FDMT      := TFDMemTable.Create(nil);
 
   try
     try
+
+      FWC.StartTransaction;
+
+      ConsultaI.Close;
+      ConsultaI.SQL.Clear;
+      ConsultaI.SQL.Add('SELECT');
+      ConsultaI.SQL.Add(' OPF.ID AS ID_OPFINAL,');
+      ConsultaI.SQL.Add(' :DIRIMAGENS || I.NOMEIMAGEM AS IMAGEM ');
+      ConsultaI.SQL.Add('FROM OPFINAL OPF');
+      ConsultaI.SQL.Add('INNER JOIN OPFINAL_IMAGEM OPFI ON (OPFI.ID_OPFINAL = OPF.ID)');
+      ConsultaI.SQL.Add('INNER JOIN IMAGEM I ON (I.ID = OPFI.ID_IMAGEM)');
+      ConsultaI.SQL.Add('WHERE 1 = 1');
+      ConsultaI.SQL.Add('AND OPF.ID = :OPFID');
+
+      ConsultaI.Connection  := FWC.FDConnection;
+      ConsultaI.Transaction := FWC.FDTransaction;
 
       Consulta.Close;
       Consulta.SQL.Clear;
@@ -334,6 +353,7 @@ begin
       Consulta.SQL.Add('WHERE 1 = 1');
 
       Consulta.Connection := FWC.FDConnection;
+      Consulta.Transaction := FWC.FDTransaction;
 
       //Se for Recebimento de Planta não Aplicar Outro Filtro
       if Length(Trim(edDescricaoOPF.Text)) > 0 then begin
@@ -377,32 +397,53 @@ begin
       if not Consulta.IsEmpty then begin
 
         ConsultaI.Close;
-        ConsultaI.SQL.Clear;
-        ConsultaI.SQL.Add('SELECT');
-        ConsultaI.SQL.Add(' OPF.ID AS ID_OPFINAL,');
-        ConsultaI.SQL.Add(' :DIRIMAGENS || I.NOMEIMAGEM AS IMAGEM ');
-        ConsultaI.SQL.Add('FROM OPFINAL OPF');
-        ConsultaI.SQL.Add('INNER JOIN OPFINAL_IMAGEM OPFI ON (OPFI.ID_OPFINAL = OPF.ID)');
-        ConsultaI.SQL.Add('INNER JOIN IMAGEM I ON (I.ID = OPFI.ID_IMAGEM)');
-        ConsultaI.SQL.Add('WHERE 1 = 1');
-        ConsultaI.SQL.Add('AND CAST(OPF.DATAHORA AS DATE) BETWEEN :DATAI AND :DATAF');
-
-        ConsultaI.Connection                     := FWC.FDConnection;
-
         ConsultaI.ParamByName('DIRIMAGENS').DataType  := ftString;
-        ConsultaI.ParamByName('DATAI').DataType       := ftDate;
-        ConsultaI.ParamByName('DATAF').DataType       := ftDate;
+        ConsultaI.ParamByName('OPFID').DataType       := ftInteger;
         ConsultaI.ParamByName('DIRIMAGENS').Value     := CONFIG_LOCAL.DirImagens;
-        ConsultaI.ParamByName('DATAI').Value          := edDataInicial.Date;
-        ConsultaI.ParamByName('DATAF').Value          := edDataFinal.Date;
+        ConsultaI.ParamByName('OPFID').Value          := -1;
 
         ConsultaI.Prepare;
         ConsultaI.Open;
         ConsultaI.FetchAll;
 
+        for I := 0 to ConsultaI.Fields.Count - 1 do
+          FDMT.FieldDefs.Add(ConsultaI.Fields[I].FieldName, ConsultaI.Fields[I].DataType, ConsultaI.Fields[I].Size, ConsultaI.Fields[I].Required);
+
+        FDMT.CreateDataSet;
+
+        Consulta.First;
+        while not Consulta.Eof do begin
+
+          ConsultaI.Close;
+          ConsultaI.ParamByName('DIRIMAGENS').DataType  := ftString;
+          ConsultaI.ParamByName('OPFID').DataType       := ftInteger;
+          ConsultaI.ParamByName('DIRIMAGENS').Value     := CONFIG_LOCAL.DirImagens;
+          ConsultaI.ParamByName('OPFID').Value          := Consulta.FieldByName('ID').AsInteger;
+
+          ConsultaI.Prepare;
+          ConsultaI.Open;
+          ConsultaI.FetchAll;
+
+          if not ConsultaI.IsEmpty then begin
+            while not ConsultaI.Eof do begin
+              FDMT.Append;
+
+              for I := 0 to ConsultaI.Fields.Count - 1 do
+                FDMT.FieldByName(ConsultaI.Fields[I].FieldName).Value := ConsultaI.Fields[I].Value;
+
+              FDMT.Post;
+
+              ConsultaI.Next;
+            end;
+          end;
+
+          Consulta.Next;
+        end;
+
         DMUtil.frxDBDataset1.DataSet  := Consulta;
         FR.UserName                   := 'OPFINAL_IMAGENS';
-        FR.DataSet                    := ConsultaI;
+        FR.DataSet                    := FDMT;
+
         RelParams.Clear;
         RelParams.Add('DATAI=' + edDataInicial.Text);
         RelParams.Add('DATAF=' + edDataFinal.Text);
@@ -418,6 +459,7 @@ begin
       end;
     end;
   finally
+    FreeAndNil(FDMT);
     FreeAndNil(ConsultaI);
     FreeAndNil(Consulta);
     FreeAndNil(FR);
