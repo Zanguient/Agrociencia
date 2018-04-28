@@ -22,7 +22,8 @@ uses
   Vcl.ExtDlgs,
   Vcl.Imaging.jpeg,
   frxDBSet,
-  FireDAC.Stan.Intf;
+  FireDAC.Stan.Intf,
+  System.Math;
 
   procedure CarregarConfigLocal;
   procedure LimpaImagens;
@@ -1533,6 +1534,9 @@ Var
   N1,N2,N3,N4,N5,N6,N7,N8,N9,N10,N11,N12 : Integer;
   D1,D2 : Integer;
   Digitado,Calculado : string;
+  V : array[1..2] of Word;
+  CNPJ : array[1..14] of Byte;
+  I : Byte;
 begin
   Result := False;
 
@@ -1571,34 +1575,27 @@ begin
 
     end;
     14 : begin //CNPJ
-      N1  := StrToInt(SomenteNumeros[1]);
-      N2  := StrToInt(SomenteNumeros[2]);
-      N3  := StrToInt(SomenteNumeros[3]);
-      N4  := StrToInt(SomenteNumeros[4]);
-      N5  := StrToInt(SomenteNumeros[5]);
-      N6  := StrToInt(SomenteNumeros[6]);
-      N7  := StrToInt(SomenteNumeros[7]);
-      N8  := StrToInt(SomenteNumeros[8]);
-      N9  := StrToInt(SomenteNumeros[9]);
-      N10 := StrToInt(SomenteNumeros[10]);
-      N11 := StrToInt(SomenteNumeros[11]);
-      N12 := StrToInt(SomenteNumeros[12]);
-
-      D1	:= N12*2+N11*3+N10*4+N9*5+N8*6+N7*7+N6*8+N5*9+N4*2+N3*3+N2*4+N1*5;
-      D1	:= 11 - (D1 mod 11);
-
-      if D1 >= 10 then
-        D1 := 0;
-
-      D2 := D2*2+N12*3+N11*4+N10*5+N9*6+N8*7+N7*8+N6*9+N5*2+N4*3+N3*4+N2*5+N1*6;
-      D2 := 11 - (D2 mod 11);
-
-      if D2 >= 10 then
-        D2 := 0;
-
-      Calculado := IntToStr(D1) + IntToStr(D2);
-      Digitado  := SomenteNumeros[13] + SomenteNumeros[14];
-      Result    := Calculado = Digitado;
+      try
+        for I := 1 to 14 do
+          CNPJ[i] := StrToInt(Texto[i]);
+        //Nota: Calcula o primeiro dígito de verificação.
+        V[1] := 5*CNPJ[1] + 4*CNPJ[2]  + 3*CNPJ[3]  + 2*CNPJ[4];
+        V[1] := V[1] + 9*CNPJ[5] + 8*CNPJ[6]  + 7*CNPJ[7]  + 6*CNPJ[8];
+        V[1] := V[1] + 5*CNPJ[9] + 4*CNPJ[10] + 3*CNPJ[11] + 2*CNPJ[12];
+        V[1] := 11 - V[1] mod 11;
+        V[1] := IfThen(V[1] >= 10, 0, V[1]);
+        //Nota: Calcula o segundo dígito de verificação.
+        V[2] := 6*CNPJ[1] + 5*CNPJ[2]  + 4*CNPJ[3]  + 3*CNPJ[4];
+        V[2] := V[2] + 2*CNPJ[5] + 9*CNPJ[6]  + 8*CNPJ[7]  + 7*CNPJ[8];
+        V[2] := V[2] + 6*CNPJ[9] + 5*CNPJ[10] + 4*CNPJ[11] + 3*CNPJ[12];
+        V[2] := V[2] + 2*V[1];
+        V[2] := 11 - V[2] mod 11;
+        V[2] := IfThen(V[2] >= 10, 0, V[2]);
+        //Nota: Verdadeiro se os dígitos de verificação são os esperados.
+        Result := ((V[1] = CNPJ[13]) and (V[2] = CNPJ[14]));
+      except on E: Exception do
+        Result := False;
+      end;
 
     end;
   end;
