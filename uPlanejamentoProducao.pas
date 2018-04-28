@@ -160,8 +160,6 @@ type
     SpeedButton6: TSpeedButton;
     btExportarIE: TSpeedButton;
     btRelatorioIE: TSpeedButton;
-    btAlterarIE: TSpeedButton;
-    btNovoIE: TSpeedButton;
     gdIniciandoEstagio: TDBGrid;
     DS_INICIANDOESTAGIO: TDataSource;
     CDS_INICIANDOESTAGIO: TClientDataSet;
@@ -306,8 +304,6 @@ type
       State: TGridDrawState);
     procedure gdIniciandoEstagioTitleClick(Column: TColumn);
     procedure btRelatorioIEClick(Sender: TObject);
-    procedure btAlterarIEClick(Sender: TObject);
-    procedure btNovoIEClick(Sender: TObject);
     procedure btExcluirOPGClick(Sender: TObject);
     procedure OrdemdeProduo1Click(Sender: TObject);
     procedure Etiquetas1Click(Sender: TObject);
@@ -416,30 +412,6 @@ begin
           frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
         try
           frmControleEstagioOPF.Parametros.Codigo := Self.gdGerarOP.DataSource.DataSet.FindField('IDOPF').AsInteger;
-          frmControleEstagioOPF.Parametros.Acao   := eNovo;
-          frmControleEstagioOPF.ShowModal;
-        finally
-          FreeAndNil(frmControleEstagioOPF);
-        end;
-        AtualizaABA;
-      end;
-
-    finally
-      (Sender as TSpeedButton).Tag := 0;
-    end;
-  end;
-end;
-
-procedure TfrmPlanejamentoProducao.btNovoIEClick(Sender: TObject);
-begin
-  if (Sender as TSpeedButton).Tag = 0 then begin
-    (Sender as TSpeedButton).Tag := 1;
-    try
-      if Assigned(Self.gdIniciandoEstagio.DataSource.DataSet.FindField('IDOPF')) then begin
-        if not Assigned(frmControleEstagioOPF) then
-          frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
-        try
-          frmControleEstagioOPF.Parametros.Codigo := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('IDOPF').AsInteger;
           frmControleEstagioOPF.Parametros.Acao   := eNovo;
           frmControleEstagioOPF.ShowModal;
         finally
@@ -713,37 +685,6 @@ begin
           AtualizaABA;
           if not Self.gdGerarOP.DataSource.DataSet.IsEmpty then
             Self.gdGerarOP.DataSource.DataSet.Locate('ID', ID, []);
-        end;
-      end;
-    finally
-      (Sender as TSpeedButton).Tag := 0;
-    end;
-  end;
-end;
-
-procedure TfrmPlanejamentoProducao.btAlterarIEClick(Sender: TObject);
-Var
-  ID : Integer;
-begin
-  if (Sender as TSpeedButton).Tag = 0 then begin
-    (Sender as TSpeedButton).Tag := 1;
-    try
-
-      if Assigned(Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID')) then begin
-        if not Self.gdIniciandoEstagio.DataSource.DataSet.IsEmpty then begin
-          if not Assigned(frmControleEstagioOPF) then
-            frmControleEstagioOPF := TfrmControleEstagioOPF.Create(nil);
-          try
-            ID := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID').AsInteger;
-            frmControleEstagioOPF.Parametros.Codigo := Self.gdIniciandoEstagio.DataSource.DataSet.FindField('ID').AsInteger;
-            frmControleEstagioOPF.Parametros.Acao   := eAlterar;
-            frmControleEstagioOPF.ShowModal;
-          finally
-            FreeAndNil(frmControleEstagioOPF);
-          end;
-          AtualizaABA;
-          if not Self.gdIniciandoEstagio.DataSource.DataSet.IsEmpty then
-            Self.gdIniciandoEstagio.DataSource.DataSet.Locate('ID', ID, []);
         end;
       end;
     finally

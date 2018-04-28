@@ -178,7 +178,6 @@ function TfrmControleEstagioOPF.Alterar: Boolean;
 Var
   FWC     : TFWConnection;
   OPFE    : TOPFINAL_ESTAGIO;
-  Alterar : Boolean;
 begin
 
   Result  := False;
@@ -194,12 +193,16 @@ begin
         OPFE.SelectList('ID = ' + cds_PesquisaID.AsString);
         if OPFE.Count = 1 then begin
 
-          if ((not TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAFIM.isNull) and (TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAINICIO.Value < TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAFIM.Value)) then begin
-            DisplayMsg(MSG_WAR, 'Estágio Encerrado, Portanto não pode ser Alterado!');
-            Exit;
-          end;
+          if AtualizarEdits(False) then begin//Se Conseguiu Carregar os Dados Inverte os Painéis
+            InvertePaineis;
+            Result := True;
 
-          Alterar := True;
+            gbOPF.Enabled := TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAFIM.isNull;
+            gbEstagio.Enabled := TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAFIM.isNull;
+            gbOPMC.Enabled := TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAFIM.isNull;
+            gbEspecie.Enabled := TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAFIM.isNull;
+            pnUsuarioDireita.Enabled := TOPFINAL_ESTAGIO(OPFE.Itens[0]).DATAHORAFIM.isNull;
+          end;
         end;
       except
         on E : Exception do begin
@@ -210,13 +213,6 @@ begin
     finally
       FreeAndNil(OPFE);
       FreeAndNil(FWC);
-    end;
-
-    if Alterar then begin
-      if AtualizarEdits(False) then begin//Se Conseguiu Carregar os Dados Inverte os Painéis
-        InvertePaineis;
-        Result := True;
-      end;
     end;
   end;
 end;
