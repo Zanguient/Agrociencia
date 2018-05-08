@@ -673,3 +673,28 @@ CONSTRAINT fk_ordemproducaomc_descarte_motivo FOREIGN KEY (id_motivo)
       REFERENCES motivodescarte (id) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE RESTRICT
 );
+
+CREATE TABLE IF NOT EXISTS modelo_est (
+id serial,
+id_produto bigint,
+nome character varying(100),
+CONSTRAINT pk_modelo_est PRIMARY KEY (id),
+CONSTRAINT fk_modelo_est_prod FOREIGN KEY (id_produto) REFERENCES produto (id) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS modelo_est_estagio (
+id serial,
+id_modelo_est bigint,
+id_estagio bigint,
+sequencia integer,
+fatorx double precision,
+perda double precision,
+dias integer,
+CONSTRAINT pk_modelo_est_estagio PRIMARY KEY (id),
+CONSTRAINT fk_mee_modelo_est FOREIGN KEY (id_modelo_est)
+    REFERENCES modelo_est (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE CASCADE,
+CONSTRAINT fk_mee_estagio FOREIGN KEY (id_estagio)
+    REFERENCES estagio (id) MATCH SIMPLE
+    ON UPDATE CASCADE ON DELETE CASCADE
+);

@@ -54,6 +54,7 @@ type
     PerdaporOperador1: TMenuItem;
     Variedade1: TMenuItem;
     Localizao1: TMenuItem;
+    ModelodeEstimativa1: TMenuItem;
     procedure Usuario1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RedefinirSenhaClick(Sender: TObject);
@@ -92,6 +93,7 @@ type
     procedure PerdaporOperador1Click(Sender: TObject);
     procedure Variedade1Click(Sender: TObject);
     procedure Localizao1Click(Sender: TObject);
+    procedure ModelodeEstimativa1Click(Sender: TObject);
   private
     procedure FecharSistema;
     { Private declarations }
@@ -147,7 +149,8 @@ uses
   uRelProducaoOP,
   uRelPerdaOperador,
   uCadastroVariedade,
-  uCadastroLocalizacao;
+  uCadastroLocalizacao,
+  uCadastroModeloEstimativa;
 
 {$R *.dfm}
 
@@ -415,6 +418,17 @@ begin
     frmControleQualidadePositivo.ShowModal;
   finally
     FreeAndNil(frmControleQualidadePositivo);
+  end;
+end;
+
+procedure TfrmPrincipal.ModelodeEstimativa1Click(Sender: TObject);
+begin
+  if frmCadModeloEstimativa = nil then
+    frmCadModeloEstimativa := TfrmCadModeloEstimativa.Create(nil);
+  try
+    frmCadModeloEstimativa.ShowModal;
+  finally
+    FreeAndNil(frmCadModeloEstimativa);
   end;
 end;
 

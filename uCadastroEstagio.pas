@@ -62,6 +62,7 @@ type
     procedure btExcluirClick(Sender: TObject);
     procedure gdPesquisaTitleClick(Column: TColumn);
     procedure btExportarClick(Sender: TObject);
+    procedure btPesquisarClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -131,6 +132,7 @@ begin
         FWC := TFWConnection.Create;
         E   := TESTAGIO.Create(FWC);
         try
+          FWC.StartTransaction;
 
           E.ID.Value := cds_PesquisaID.Value;
           E.Delete;
@@ -237,6 +239,11 @@ procedure TfrmCadastroEstagio.btNovoClick(Sender: TObject);
 begin
   AtualizarEdits(True);
   InvertePaineis;
+end;
+
+procedure TfrmCadastroEstagio.btPesquisarClick(Sender: TObject);
+begin
+  Filtrar;
 end;
 
 procedure TfrmCadastroEstagio.Cancelar;

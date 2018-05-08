@@ -4,7 +4,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
   BorderStyle = bsNone
   Caption = 'Estimativa de Ordem de Produ'#231#227'o'
   ClientHeight = 429
-  ClientWidth = 836
+  ClientWidth = 920
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,7 +22,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     AlignWithMargins = True
     Left = 3
     Top = 366
-    Width = 830
+    Width = 914
     Height = 60
     Align = alBottom
     Color = clWhite
@@ -39,7 +39,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
       AlignWithMargins = True
       Left = 4
       Top = 4
-      Width = 822
+      Width = 906
       Height = 52
       Align = alClient
       BevelOuter = bvNone
@@ -70,9 +70,9 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
         end>
       TabOrder = 0
       object Panel4: TPanel
-        Left = 411
+        Left = 453
         Top = 0
-        Width = 411
+        Width = 453
         Height = 52
         Align = alClient
         BevelOuter = bvNone
@@ -81,7 +81,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 100
+          Width = 85
           Height = 46
           Align = alLeft
           Caption = '&Cancelar'
@@ -480,11 +480,10 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
           NumGlyphs = 4
           ParentFont = False
           OnClick = btCancelarClick
-          ExplicitHeight = 44
         end
         object btExportar: TSpeedButton
           AlignWithMargins = True
-          Left = 308
+          Left = 350
           Top = 3
           Width = 100
           Height = 46
@@ -603,16 +602,16 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
       object Panel5: TPanel
         Left = 0
         Top = 0
-        Width = 411
+        Width = 453
         Height = 52
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
         object btGravar: TSpeedButton
           AlignWithMargins = True
-          Left = 308
+          Left = 365
           Top = 3
-          Width = 100
+          Width = 85
           Height = 46
           Align = alRight
           Caption = '&Gravar'
@@ -754,15 +753,13 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
             61FF8C5F61FF8C5F61FFE4DADAFFFFFFFFFFFFFFFFFFFFFFFFFF}
           ParentFont = False
           OnClick = btGravarClick
-          ExplicitLeft = 12
-          ExplicitTop = 8
-          ExplicitHeight = 36
+          ExplicitLeft = 370
         end
         object btAlterar: TSpeedButton
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 107
+          Width = 110
           Height = 46
           Align = alLeft
           Caption = '&Restaurar Grid'
@@ -833,9 +830,9 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
         end
         object btReordenar: TSpeedButton
           AlignWithMargins = True
-          Left = 116
+          Left = 119
           Top = 3
-          Width = 122
+          Width = 110
           Height = 46
           Align = alLeft
           Caption = 'Re&ordenar Grid'
@@ -905,14 +902,87 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
           OnClick = btReordenarClick
           ExplicitLeft = 111
         end
+        object btnModelo: TSpeedButton
+          AlignWithMargins = True
+          Left = 235
+          Top = 3
+          Width = 85
+          Height = 46
+          Align = alLeft
+          Caption = '&Modelo'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          Glyph.Data = {
+            F6060000424DF606000000000000360000002800000018000000180000000100
+            180000000000C0060000C40E0000C40E00000000000000000000FFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFEFEFEF3F3F3E0E0E0CACACAA4A4A47F7F7F5E5E5E2626264D4C4CEE
+            EEEEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFF3F3F3DBDBDBC6C6C6B5B5B59B9B9B8484847373736D6D6D4747
+            472B29290404048C8C8CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFBFBFBECECECDFDFDFD4D4D4CDCDCDCACACAD1D1D1DEDEDE
+            ECECEC7E7E7E2B29290000008F8F907D7D7DFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFF8D8D8D2B29290000008F8F906D6D6DFBFBFBFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8E2B29290000008F8F906D6D6DFBFBFBFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8E2B29290000008F8F906D6D
+            6DFBFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8E2B2929000000
+            8F8F906D6D6DFBFBFBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA19E9E3A
+            38380000008F8F90777777FDFDFDFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFC3C1C1B9B3B14A4443979798777777FDFDFDFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFDFDFDB6B6B59A9A999999989898969999989B9B9B
+            ABABABF6F6F6E9E9E9ADA4A3342D2CDFDCDBAFACACFDFDFDFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE6E6E68C8B8BB4B4B2CAC9C7CECECCCE
+            CECCCCCCCBC9C9C8BBBBB88E8E8D9C9795362D2DD7D5D4B3B0B0FFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEAEAEA8B8B89BFBEBBC6C6
+            C5C2C2C0C2C2C1C2C2C0C1C1C0C3C2C0C4C4C2C0C0BF8D8C8C979393E1E1E0FF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8D8D8C
+            B6B6B4BDBDBABBBBB9BABAB7B8B7B5B7B7B4B7B7B4B9B9B6BBBBB9BCBCB9B8B8
+            B58F8E8EF6F6F6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFC0C0C09E9E9DB5B5B2B0B0ADADACA9ACACA8ACACA8ACACA9ACACA9ACACA9
+            AEADAAB0AFACB2B2AFACACA9A5A5A5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFF9A9A9AA9A9A5A8A8A5A7A7A4A7A7A4A7A7A4A7A7A4A8
+            A8A4A8A8A4A8A8A5A8A8A5A8A8A5A8A8A5A8A8A5929291FFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8F8EA2A29FA2A29FA2A39FA3A3
+            A0A3A3A0A3A3A0A3A3A0A3A3A0A3A4A0A3A4A0A4A4A1A4A4A1A4A4A18B8B8AF9
+            F9F9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8B8B8A9E9E9B
+            9E9E9B9E9E9B9E9E9B9E9F9B9E9F9C9E9F9C9F9F9C9F9F9C9F9F9C9FA09C9FA0
+            9C9FA09D8C8C8AEBEBEBFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFF8F8F8E9B9B999D9E9C9E9F9DA0A09EA1A19EA2A29FA2A2A0A2A3A0A2A3A0
+            A1A2A0A1A29FA1A19FA0A09E878786F9F9F9FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFF999A999FA09DABACABABACABACADABACADABACADABAC
+            ADABACADABADADABADADABADADABADADABA6A6A48B8B8BFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7C7C790918FB7B7B6B9B9B8B9B9
+            B8B9B9B8B9BAB8B9BAB8B9BAB8B9BAB8B9BAB8B9BAB9B9BAB9999A98A8A8A8FF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8E8E8E
+            A4A5A3CBCBCACBCBCACBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCBCCCBCBCCCBB2B2
+            B0888988F7F7F7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFEDEDED858584A9AAA8DEDEDDE1E1E1E1E1E1E1E1E1E1E1E1E1E1E1
+            E0E0E0B9B9B8858685D6D6D6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEDEDED898A89949494C2C3C2DFE0DFEC
+            ECEBE4E4E4CACACA9D9D9D858685DADADAFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC2C2
+            C293949385868587888785868590908FB3B3B3FBFBFBFFFFFFFFFFFFFFFFFFFF
+            FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
+          ParentFont = False
+          OnClick = btnModeloClick
+        end
       end
     end
   end
   object pnPrincipal: TPanel
     AlignWithMargins = True
     Left = 3
-    Top = 3
-    Width = 830
+    Top = 51
+    Width = 914
     Height = 51
     Align = alTop
     BevelOuter = bvNone
@@ -920,7 +990,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     ParentBackground = False
     TabOrder = 1
     DesignSize = (
-      830
+      914
       51)
     object Label1: TLabel
       AlignWithMargins = True
@@ -952,7 +1022,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     end
     object Label3: TLabel
       AlignWithMargins = True
-      Left = 466
+      Left = 550
       Top = 1
       Width = 49
       Height = 19
@@ -968,7 +1038,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     end
     object Label4: TLabel
       AlignWithMargins = True
-      Left = 522
+      Left = 606
       Top = 1
       Width = 56
       Height = 19
@@ -984,7 +1054,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     end
     object Label5: TLabel
       AlignWithMargins = True
-      Left = 584
+      Left = 668
       Top = 1
       Width = 79
       Height = 19
@@ -1000,7 +1070,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     end
     object Label6: TLabel
       AlignWithMargins = True
-      Left = 669
+      Left = 753
       Top = 1
       Width = 36
       Height = 19
@@ -1037,7 +1107,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     object edDescEstagio: TEdit
       Left = 80
       Top = 20
-      Width = 380
+      Width = 464
       Height = 27
       Anchors = [akLeft, akTop, akRight]
       Enabled = False
@@ -1051,7 +1121,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     end
     object edQuantidade: TEdit
       AlignWithMargins = True
-      Left = 466
+      Left = 550
       Top = 20
       Width = 50
       Height = 27
@@ -1067,7 +1137,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     end
     object edDias: TEdit
       AlignWithMargins = True
-      Left = 669
+      Left = 753
       Top = 20
       Width = 36
       Height = 27
@@ -1083,7 +1153,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     end
     object btnAdicionar: TBitBtn
       AlignWithMargins = True
-      Left = 717
+      Left = 801
       Top = 8
       Width = 50
       Height = 38
@@ -1192,7 +1262,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
     end
     object btRemover: TBitBtn
       AlignWithMargins = True
-      Left = 773
+      Left = 857
       Top = 8
       Width = 50
       Height = 38
@@ -1258,7 +1328,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
       OnClick = btRemoverClick
     end
     object edPerda: TJvValidateEdit
-      Left = 584
+      Left = 668
       Top = 20
       Width = 79
       Height = 27
@@ -1276,7 +1346,7 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
       TabOrder = 4
     end
     object edFatorX: TJvValidateEdit
-      Left = 521
+      Left = 605
       Top = 20
       Width = 58
       Height = 27
@@ -1297,9 +1367,9 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
   object dgEstimativa: TDBGrid
     AlignWithMargins = True
     Left = 3
-    Top = 60
-    Width = 830
-    Height = 300
+    Top = 108
+    Width = 914
+    Height = 252
     Align = alClient
     DataSource = dsEstimativa
     Font.Charset = DEFAULT_CHARSET
@@ -1367,6 +1437,25 @@ object frmOrdemProducaoEstimativa: TfrmOrdemProducaoEstimativa
         FieldName = 'DATAFIM'
         Visible = True
       end>
+  end
+  object Panel2: TPanel
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 914
+    Height = 42
+    Align = alTop
+    BevelOuter = bvNone
+    Caption = 'Estimativa de Produ'#231#227'o'
+    Color = clSkyBlue
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -21
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False
+    TabOrder = 3
   end
   object cdsEstimativa: TClientDataSet
     Aggregates = <>

@@ -84,6 +84,10 @@ object frmPrincipal: TfrmPrincipal
         Caption = 'Localiza'#231#227'o'
         OnClick = Localizao1Click
       end
+      object ModelodeEstimativa1: TMenuItem
+        Caption = 'Modelo de Estimativa'
+        OnClick = ModelodeEstimativa1Click
+      end
     end
     object Movimentao1: TMenuItem
       Caption = 'Movimenta'#231#227'o'

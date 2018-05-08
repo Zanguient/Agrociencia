@@ -99,7 +99,10 @@ uses
   uBeanOPFinal_Estimativa in 'Beans\uBeanOPFinal_Estimativa.pas',
   uBeanOrdemProducaoMC_Descarte in 'Beans\uBeanOrdemProducaoMC_Descarte.pas',
   uDescarteMC in 'uDescarteMC.pas' {frmDescarteMC},
-  uDescarteSE in 'uDescarteSE.pas' {frmDescarteSE};
+  uDescarteSE in 'uDescarteSE.pas' {frmDescarteSE},
+  uBeanModelo_Est in 'Beans\uBeanModelo_Est.pas',
+  uBeanModelo_Est_Estagio in 'Beans\uBeanModelo_Est_Estagio.pas',
+  uCadastroModeloEstimativa in 'uCadastroModeloEstimativa.pas' {frmCadModeloEstimativa};
 
 {$R *.res}
 

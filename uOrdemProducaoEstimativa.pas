@@ -14,6 +14,8 @@ uses
 type
   TParametroEstimativa = record
     CodigoOp: Integer;
+    Quantidade: Integer;
+    Especie: Integer;
     DataInicio: TDate;
   end;
   TfrmOrdemProducaoEstimativa = class(TForm)
@@ -55,6 +57,8 @@ type
     edFatorX: TJvValidateEdit;
     cdsEstimativaPERCPERDA: TFloatField;
     cdsEstimativaFATORX: TFloatField;
+    Panel2: TPanel;
+    btnModelo: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btCancelarClick(Sender: TObject);
@@ -70,16 +74,18 @@ type
     procedure btReordenarClick(Sender: TObject);
     procedure btAlterarClick(Sender: TObject);
     procedure btExportarClick(Sender: TObject);
+    procedure btnModeloClick(Sender: TObject);
   private
     { Private declarations }
   public
     Parametro: TParametroEstimativa;
     { Public declarations }
-    procedure Adicionar;
+    procedure Adicionar(Quantidade: Integer; CodigoEstagio:Integer; NomeEstagio:string; FatorX:double; Perda: double; Dias: Integer);
     procedure Excluir;
     procedure Limpar;
     procedure Reordenar;
     procedure CarregarDados;
+    procedure SelecionaModelo;
   end;
 
 var
@@ -92,38 +98,40 @@ implementation
     uDMUtil,
     uFuncoes,
     uMensagem,
-    uBeanOPFinal_Estimativa;
+    uBeanOPFinal_Estimativa,
+    uBeanModelo_Est,
+    uBeanModelo_Est_Estagio;
 
 {$R *.dfm}
 
-procedure TfrmOrdemProducaoEstimativa.Adicionar;
+procedure TfrmOrdemProducaoEstimativa.Adicionar(Quantidade: Integer; CodigoEstagio:Integer; NomeEstagio:string; FatorX:double; Perda: double; Dias: Integer);
 var
-  dtInicio: TDate;
-  Quantidade: Integer;
+  _dtInicio: TDate;
+  _Quantidade: Integer;
 begin
   if cdsEstimativa.RecordCount > 0 then
   begin
     cdsEstimativa.Last;
-    dtInicio := cdsEstimativaDATAFIM.AsDateTime;
-    Quantidade := (cdsEstimativaQUANTIDADE.AsInteger * cdsEstimativaFATORX.AsInteger) - cdsEstimativaPERDA.AsInteger;
+    _dtInicio := cdsEstimativaDATAFIM.AsDateTime;
+    _Quantidade := (cdsEstimativaQUANTIDADE.AsInteger * cdsEstimativaFATORX.AsInteger) - cdsEstimativaPERDA.AsInteger;
   end
   else
   begin
-    dtInicio := Parametro.DataInicio;
-    Quantidade := StrToIntDef(edQuantidade.Text,0);
+    _dtInicio := Parametro.DataInicio;
+    _Quantidade := Quantidade;
   end;
 
   cdsEstimativa.Append;
-  cdsEstimativaID_ESTAGIO.Value := StrToIntDef(edCodigoEstagio.Text,0);
-  cdsEstimativaESTAGIO.Value := edDescEstagio.Text;
+  cdsEstimativaID_ESTAGIO.Value := CodigoEstagio;
+  cdsEstimativaESTAGIO.Value := NomeEstagio;
 
-  cdsEstimativaFATORX.Value := edFatorX.Value;
-  cdsEstimativaPERCPERDA.Value := edPerda.Value;
-  cdsEstimativaDIA.Value := StrToIntDef(edDias.Text,0);
-  cdsEstimativaDATAINICIO.Value := dtInicio;
-  cdsEstimativaQUANTIDADE.Value := Quantidade;
+  cdsEstimativaFATORX.Value := FatorX;
+  cdsEstimativaPERCPERDA.Value := Perda;
+  cdsEstimativaDIA.Value := Dias;
+  cdsEstimativaDATAINICIO.Value := _dtInicio;
+  cdsEstimativaQUANTIDADE.Value := _Quantidade;
 
-  cdsEstimativaPERDA.Value := Trunc((Quantidade * edFatorX.Value) * (edPerda.Value /100));
+  cdsEstimativaPERDA.Value := Trunc((_Quantidade * FatorX) * (Perda /100));
 
   cdsEstimativaDATAFIM.Value := IncDay(cdsEstimativaDATAINICIO.AsDateTime, cdsEstimativaDIA.AsInteger);
   cdsEstimativaSEQUENCIA.Value := cdsEstimativa.RecordCount + 1;
@@ -242,9 +250,18 @@ begin
    if edDias.CanFocus then edDias.SetFocus;
    Exit;
   end;
-  Adicionar;
+  Adicionar(StrToIntDef(edQuantidade.Text, 0), StrToIntDef(edCodigoEstagio.Text, 0),
+    edDescEstagio.Text, edFatorX.Value, edPerda.Value, StrToIntDef(edDias.Text, 0));
   Limpar;
   edQuantidade.Enabled := cdsEstimativa.IsEmpty;
+end;
+
+procedure TfrmOrdemProducaoEstimativa.btnModeloClick(Sender: TObject);
+begin
+  if cdsEstimativa.IsEmpty then
+    SelecionaModelo
+  else
+    DisplayMsg(MSG_WAR, 'Já existem informações, por isso não será selecionado o modelo.');
 end;
 
 procedure TfrmOrdemProducaoEstimativa.btRemoverClick(Sender: TObject);
@@ -393,6 +410,11 @@ procedure TfrmOrdemProducaoEstimativa.FormShow(Sender: TObject);
 begin
   AutoSizeDBGrid(dgEstimativa);
   CarregarDados;
+
+  if cdsEstimativa.IsEmpty then
+  begin
+    SelecionaModelo;
+  end;
 end;
 
 procedure TfrmOrdemProducaoEstimativa.Limpar;
@@ -443,6 +465,58 @@ begin
     cdsEstimativa.Next;
   end;
     edQuantidade.Enabled := cdsEstimativa.IsEmpty;
+end;
+
+procedure TfrmOrdemProducaoEstimativa.SelecionaModelo;
+var
+  FWC : TFWConnection;
+  MODELO : TMODELO_EST;
+  SQL: TFDQuery;
+  sModelo : string;
+  I : Integer;
+begin
+  FWC := TFWConnection.Create;
+  MODELO := TMODELO_EST.Create(FWC);
+  SQL := TFDQuery.Create(nil);
+  try
+    SQL.SQL.Clear;
+    SQL.Connection := FWC.FDConnection;
+    SQL.SQL.Add('SELECT');
+    SQL.SQL.Add('ITEM.SEQUENCIA,');
+    SQL.SQL.Add('ITEM.FATORX,');
+    SQL.SQL.Add('ITEM.PERDA,');
+    SQL.SQL.Add('ITEM.ID_ESTAGIO,');
+    SQL.SQL.Add('EST.DESCRICAO,');
+    SQL.SQL.Add('ITEM.DIAS');
+    SQL.SQL.Add('FROM MODELO_EST_ESTAGIO ITEM');
+    SQL.SQL.Add('INNER JOIN ESTAGIO EST ON ITEM.ID_ESTAGIO = EST.ID');
+    SQL.SQL.Add('WHERE ITEM.ID_MODELO_EST = :ID');
+    SQL.ParamByName('ID').DataType := ftInteger;
+    SQL.Prepare();
+
+    sModelo := IntToStr(DMUtil.Selecionar(MODELO, '', 'ID_PRODUTO = ' + IntToStr(Parametro.Especie) ));
+    if sModelo = EmptyStr then
+      Exit;
+
+    MODELO.SelectList('id = ' + sModelo);
+    if MODELO.Count = 1 then
+    begin
+      SQL.Params[0].Value := TMODELO_EST(MODELO.Itens[0]).ID.Value;
+      SQL.Open();
+      SQL.First;
+      while not SQL.Eof do
+      begin
+        Adicionar(Parametro.Quantidade, SQL.Fields[3].AsInteger, SQL.Fields[4].AsString,
+         SQL.Fields[1].AsFloat, SQL.Fields[2].AsFloat, SQL.Fields[5].AsInteger);
+
+        SQL.Next;
+      end;
+    end;
+  finally
+    FreeAndNil(SQL);
+    FreeAndNil(MODELO);
+    FreeAndNil(FWC);
+  end;
 end;
 
 end.

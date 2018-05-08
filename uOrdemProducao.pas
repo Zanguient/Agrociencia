@@ -113,6 +113,7 @@ type
     btEstimativa: TSpeedButton;
     cds_PesquisaDATAESTIMADAPROCESSAMENTO: TDateField;
     EstimativavsRealidade1: TMenuItem;
+    cds_PesquisaQUANTIDADEENVIADA: TIntegerField;
     procedure btFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -372,6 +373,8 @@ begin
   try
     frmOrdemProducaoEstimativa.Parametro.CodigoOp := cds_PesquisaID.Value;
     frmOrdemProducaoEstimativa.Parametro.DataInicio := cds_PesquisaDATAESTIMADAPROCESSAMENTO.Value;
+    frmOrdemProducaoEstimativa.Parametro.Especie := cds_PesquisaIDESPECIE.Value;
+    frmOrdemProducaoEstimativa.Parametro.Quantidade := cds_PesquisaQUANTIDADEENVIADA.Value;
     frmOrdemProducaoEstimativa.ShowModal;
   finally
     FreeAndNil(frmOrdemProducaoEstimativa);
@@ -781,6 +784,7 @@ begin
       SQL.SQL.Add('	P.DESCRICAO AS DESCRICAOESPECIE,');
       SQL.SQL.Add('	P.ID AS CODIGOESPECIE,');
       SQL.SQL.Add('	OPF.QUANTIDADE,');
+      SQL.SQL.Add('	OPF.QUANTIDADEENVIADA,');
       SQL.SQL.Add('	OPF.SELECAOPOSITIVA,');
       SQL.SQL.Add('	OPF.CODIGOSELECAOCAMPO,');
       SQL.SQL.Add('	OPF.ID_VARIEDADE,');
@@ -819,6 +823,7 @@ begin
           cds_PesquisaID_VARIEDADE.Value              := SQL.FieldByName('ID_VARIEDADE').AsInteger;
           cds_PesquisaVARIEDADE.Value                 := SQL.FieldByName('VARIEDADE').AsString;
           cds_PesquisaQUANTIDADE.Value                := SQL.FieldByName('QUANTIDADE').AsInteger;
+          cds_PesquisaQUANTIDADEENVIADA.Value         := SQL.FieldByName('QUANTIDADEENVIADA').AsInteger;
           cds_PesquisaSELECAOPOSITIVA.Value           := SQL.FieldByName('SELECAOPOSITIVA').AsString;
           cds_PesquisaCODIGOSELECAOCAMPO.Value        := SQL.FieldByName('CODIGOSELECAOCAMPO').AsString;
           cds_PesquisaIDESPECIE.Value                 := SQL.FieldByName('CODIGOESPECIE').AsInteger;
