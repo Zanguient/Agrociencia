@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<TfrxReport Version="5.2.3" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="42396,5981039468" ReportOptions.Description.Text="" ReportOptions.LastChange="42929,9579899074" ScriptLanguage="PascalScript" ScriptText.Text="procedure MasterData2OnBeforePrint(Sender: TfrxComponent);&#13;&#10;begin&#13;&#10;  Picture2.FileLink := &#60;IMAGENS.&#34;imagem&#34;&#62;;  &#13;&#10;end;&#13;&#10;&#13;&#10;begin&#13;&#10;&#13;&#10;end.">
+<TfrxReport Version="5.2.3" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="42396,5981039468" ReportOptions.Description.Text="" ReportOptions.LastChange="43228,9119578472" ScriptLanguage="PascalScript" ScriptText.Text="procedure MasterData2OnBeforePrint(Sender: TfrxComponent);&#13;&#10;begin&#13;&#10;  Picture2.FileLink := &#60;IMAGENS.&#34;imagem&#34;&#62;;  &#13;&#10;end;&#13;&#10;&#13;&#10;begin&#13;&#10;&#13;&#10;end.">
   <Datasets>
     <item DataSetName="IMAGENS"/>
     <item DataSetName="ORDEMPRODUCAO"/>
   </Datasets>
   <Variables>
-    <item Name="Usuario" Value="'SERGIO JONAS SCHULZ'"/>
+    <item Name="Usuario" Value="'Sergio Jonas Schulz'"/>
     <item Name="UserLogin" Value="user"/>
     <item Name="Login" Value="'Sergio Jonas NetSchulz'"/>
   </Variables>
@@ -24,7 +24,7 @@
       <TfrxMemoView Name="Memo11" Align="baRight" Left="634,96104" Top="0" Width="83,14966" Height="18,89765" DataField="saldounidades" DataSetName="ORDEMPRODUCAO" Font.Charset="1" Font.Color="-16777208" Font.Height="-13" Font.Name="Arial" Font.Style="0" HAlign="haCenter" ParentFont="False" Text="[ORDEMPRODUCAO.&#34;saldounidades&#34;]"/>
     </TfrxMasterData>
     <TfrxHeader Name="Header1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Height="90,70866142" Left="0" Top="143,62214" Width="718,1107">
-      <TfrxMemoView Name="Memo6" Align="baWidth" Left="0" Top="0" Width="718,1107" Height="22,6771678" Font.Charset="1" Font.Color="-16777208" Font.Height="-19" Font.Name="Arial" Font.Style="1" Frame.Typ="12" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Relatório de Produção - Cadastro Número: [ORDEMPRODUCAO.&#34;id&#34;]"/>
+      <TfrxMemoView Name="Memo6" Align="baWidth" Left="0" Top="0" Width="718,1107" Height="22,6771678" Font.Charset="1" Font.Color="-16777208" Font.Height="-19" Font.Name="Arial" Font.Style="1" Frame.Typ="12" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Relatório de Produção Detalhado - Cadastro Número: [ORDEMPRODUCAO.&#34;id&#34;]"/>
       <TfrxMemoView Name="Memo12" Align="baWidth" Left="0" Top="68,0314960629921" Width="222,99227" Height="18,89765" DataSetName="ORDEMPRODUCAO" Font.Charset="1" Font.Color="-16777208" Font.Height="-15" Font.Name="Arial" Font.Style="0" Frame.Typ="8" ParentFont="False" Text="Estágio"/>
       <TfrxMemoView Name="Memo13" Align="baRight" Left="222,99227" Top="68,03149606" Width="79,37013" Height="18,89765" DataSetName="ORDEMPRODUCAO" Font.Charset="1" Font.Color="-16777208" Font.Height="-15" Font.Name="Arial" Font.Style="0" Frame.Typ="8" HAlign="haCenter" ParentFont="False" Text="Data Início"/>
       <TfrxMemoView Name="Memo14" Align="baRight" Left="302,3624" Top="68,03149606" Width="79,37013" Height="18,89765" DataSetName="ORDEMPRODUCAO" Font.Charset="1" Font.Color="-16777208" Font.Height="-15" Font.Name="Arial" Font.Style="0" Frame.Typ="8" HAlign="haCenter" ParentFont="False" Text="Data Final"/>

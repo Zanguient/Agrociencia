@@ -1,8 +1,9 @@
 object frmRelProducaoOP: TfrmRelProducaoOP
   Left = 0
   Top = 0
+  ActiveControl = edCodigoOPF
   Caption = 'Relat'#243'rio de Produ'#231#227'o por OP'
-  ClientHeight = 143
+  ClientHeight = 230
   ClientWidth = 291
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -19,7 +20,7 @@ object frmRelProducaoOP: TfrmRelProducaoOP
   object GridPanel1: TGridPanel
     AlignWithMargins = True
     Left = 3
-    Top = 80
+    Top = 167
     Width = 285
     Height = 60
     Align = alBottom
@@ -303,8 +304,8 @@ object frmRelProducaoOP: TfrmRelProducaoOP
     Left = 3
     Top = 3
     Width = 285
-    Height = 71
-    Align = alClient
+    Height = 70
+    Align = alTop
     Caption = ' Cadastro de Produ'#231#227'o '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -315,7 +316,7 @@ object frmRelProducaoOP: TfrmRelProducaoOP
     TabOrder = 1
     DesignSize = (
       285
-      71)
+      70)
     object edCodigoOPF: TButtonedEdit
       AlignWithMargins = True
       Left = 3
@@ -351,5 +352,20 @@ object frmRelProducaoOP: TfrmRelProducaoOP
       ParentFont = False
       TabOrder = 1
     end
+  end
+  object rgOpcoes: TRadioGroup
+    AlignWithMargins = True
+    Left = 3
+    Top = 79
+    Width = 285
+    Height = 82
+    Align = alTop
+    Caption = ' Op'#231#245'es do Relat'#243'rio '
+    Columns = 2
+    ItemIndex = 0
+    Items.Strings = (
+      'Detalhado'
+      'Resumido')
+    TabOrder = 2
   end
 end

@@ -4,6 +4,7 @@ interface
 uses
   FireDAC.Comp.Client, uConstantes, frxClass, frxDBSet, System.DateUtils,
   uFWConnection, Data.DB, Datasnap.DBClient, System.SysUtils;
+
 type
   TRelatorioEstimativaVsRealidade = class
   private
@@ -38,11 +39,13 @@ type
   end;
 
 implementation
-  uses uDMUtil;
+  uses uDMUtil, uFuncoes;
 
 { TRelatorioEstimativaVsRealidade }
 
 constructor TRelatorioEstimativaVsRealidade.Create(IdOpfinal: Integer);
+Var
+  I : Integer;
 begin
   FWC := TFWConnection.Create;
   SQL_CABECALHO := TFDQuery.Create(nil);
@@ -211,46 +214,8 @@ end;
 
 procedure TRelatorioEstimativaVsRealidade.MontarSQLRealizado;
 begin
-  SQL_REALIZADO.Close;
-  SQL_REALIZADO.SQL.Clear;
+  CarregaSQLRealizado(SQL_REALIZADO);
   SQL_REALIZADO.Connection := FWC.FDConnection;
-  SQL_REALIZADO.SQL.Add('select');
-  SQL_REALIZADO.SQL.Add('id,');
-  SQL_REALIZADO.SQL.Add('sequencia,');
-  SQL_REALIZADO.SQL.Add('estagio,');
-  SQL_REALIZADO.SQL.Add('tipo,');
-  SQL_REALIZADO.SQL.Add('dias,');
-  SQL_REALIZADO.SQL.Add('quantidade,');
-  SQL_REALIZADO.SQL.Add('cast((case when saida > 0 then saida else 1 end / case when quantidade > 0 then cast(quantidade as numeric(18,2)) else 1 end) as numeric(18,2)) as fatorx,');
-  SQL_REALIZADO.SQL.Add('saida - perda as saida,');
-  SQL_REALIZADO.SQL.Add('perda,');
-  SQL_REALIZADO.SQL.Add('previsaoinicio,');
-  SQL_REALIZADO.SQL.Add('previsaotermino');
-  SQL_REALIZADO.SQL.Add('from (');
-  SQL_REALIZADO.SQL.Add('select');
-  SQL_REALIZADO.SQL.Add('op.id,');
-  SQL_REALIZADO.SQL.Add('ope.sequenciaestagio as sequencia,');
-  SQL_REALIZADO.SQL.Add('e.descricao as estagio,');
-  SQL_REALIZADO.SQL.Add('e.tipo,');
-  SQL_REALIZADO.SQL.Add('ope.previsaotermino::date - ope.previsaoinicio::date as dias,');
-  SQL_REALIZADO.SQL.Add('(select count(*) from opfinal_estagio_lote opel');
-  SQL_REALIZADO.SQL.Add('  inner join opfinal_estagio_lote_e opele on opel.id = opele.opfinal_estagio_lote_id');
-  SQL_REALIZADO.SQL.Add('  where opel.opfinal_estagio_id = ope.id) as quantidade,');
-  SQL_REALIZADO.SQL.Add('(select count(*) from opfinal_estagio_lote opel');
-  SQL_REALIZADO.SQL.Add('  inner join opfinal_estagio_lote_s opels on opel.id = opels.opfinal_estagio_lote_id');
-  SQL_REALIZADO.SQL.Add('  where opel.opfinal_estagio_id = ope.id) as saida,');
-  SQL_REALIZADO.SQL.Add('(select count(*) from opfinal_estagio_lote opel');
-  SQL_REALIZADO.SQL.Add('  inner join opfinal_estagio_lote_s opels on opel.id = opels.opfinal_estagio_lote_id');
-  SQL_REALIZADO.SQL.Add('  inner join opfinal_estagio_lote_s_qualidade opelsq on opels.id = opelsq.id_opfinal_estagio_lote_s');
-  SQL_REALIZADO.SQL.Add('  where opel.opfinal_estagio_id = ope.id) as perda,');
-  SQL_REALIZADO.SQL.Add('ope.previsaoinicio,');
-  SQL_REALIZADO.SQL.Add('ope.previsaotermino');
-  SQL_REALIZADO.SQL.Add('from opfinal op');
-  SQL_REALIZADO.SQL.Add('inner join opfinal_estagio ope on op.id = ope.opfinal_id');
-  SQL_REALIZADO.SQL.Add('inner join estagio e on ope.estagio_id = e.id');
-  SQL_REALIZADO.SQL.Add('where op.id = :idopfinal');
-  SQL_REALIZADO.SQL.Add(') as Tabela');
-  SQL_REALIZADO.SQL.Add('order by sequencia');
   SQL_REALIZADO.ParamByName('idopfinal').AsInteger := IDOPFINAL;
   SQL_REALIZADO.Prepare;
   SQL_REALIZADO.Open();

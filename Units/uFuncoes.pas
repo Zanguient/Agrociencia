@@ -42,6 +42,7 @@ uses
   procedure ImprimirEtiquetasRP(ID : Integer);
   procedure ImprimirOPFE(ID : Integer);
   procedure ImprimirOPSOL(ID : Integer);
+  procedure CarregaSQLRealizado(SQL : TFDQuery);
   function ExcluirOPFE(ID : Integer) : Boolean;
   function ExcluirOPF(ID : Integer) : Boolean;
   function EncerrarOPSE(ID : Integer) : Boolean;
@@ -838,6 +839,50 @@ begin
     FreeAndNil(SQL_I);
     FreeAndNil(FW);
   end;
+end;
+
+procedure CarregaSQLRealizado(SQL : TFDQuery);
+begin
+  SQL.Close;
+  SQL.SQL.Clear;
+  SQL.SQL.Add('select');
+  SQL.SQL.Add('id,');
+  SQL.SQL.Add('sequencia,');
+  SQL.SQL.Add('estagio,');
+  SQL.SQL.Add('tipo,');
+  SQL.SQL.Add('dias,');
+  SQL.SQL.Add('quantidade,');
+  SQL.SQL.Add('cast((case when saida > 0 then saida else 1 end / case when quantidade > 0 then cast(quantidade as numeric(18,2)) else 1 end) as numeric(18,2)) as fatorx,');
+  SQL.SQL.Add('saida - perda as saida,');
+  SQL.SQL.Add('perda,');
+  SQL.SQL.Add('previsaoinicio,');
+  SQL.SQL.Add('previsaotermino');
+  SQL.SQL.Add('from (');
+  SQL.SQL.Add('select');
+  SQL.SQL.Add('op.id,');
+  SQL.SQL.Add('ope.sequencia,');
+  SQL.SQL.Add('e.descricao as estagio,');
+  SQL.SQL.Add('e.tipo,');
+  SQL.SQL.Add('ope.previsaotermino::date - ope.previsaoinicio::date as dias,');
+  SQL.SQL.Add('(select count(*) from opfinal_estagio_lote opel');
+  SQL.SQL.Add('  inner join opfinal_estagio_lote_e opele on opel.id = opele.opfinal_estagio_lote_id');
+  SQL.SQL.Add('  where opel.opfinal_estagio_id = ope.id) as quantidade,');
+  SQL.SQL.Add('(select count(*) from opfinal_estagio_lote opel');
+  SQL.SQL.Add('  inner join opfinal_estagio_lote_s opels on opel.id = opels.opfinal_estagio_lote_id');
+  SQL.SQL.Add('  where opel.opfinal_estagio_id = ope.id) as saida,');
+  SQL.SQL.Add('(select count(*) from opfinal_estagio_lote opel');
+  SQL.SQL.Add('  inner join opfinal_estagio_lote_s opels on opel.id = opels.opfinal_estagio_lote_id');
+  SQL.SQL.Add('  inner join opfinal_estagio_lote_s_qualidade opelsq on opels.id = opelsq.id_opfinal_estagio_lote_s');
+  SQL.SQL.Add('  where opel.opfinal_estagio_id = ope.id) as perda,');
+  SQL.SQL.Add('ope.previsaoinicio,');
+  SQL.SQL.Add('ope.previsaotermino');
+  SQL.SQL.Add('from opfinal op');
+  SQL.SQL.Add('inner join opfinal_estagio ope on op.id = ope.opfinal_id');
+  SQL.SQL.Add('inner join estagio e on ope.estagio_id = e.id');
+  SQL.SQL.Add('where op.id = :idopfinal');
+  SQL.SQL.Add('and 1 = 1');
+  SQL.SQL.Add(') as Tabela');
+  SQL.SQL.Add('order by sequencia');
 end;
 
 function ExcluirOPFE(ID : Integer) : Boolean;

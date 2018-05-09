@@ -17,6 +17,7 @@ type
     gbOPF: TGroupBox;
     edCodigoOPF: TButtonedEdit;
     edDescOPF: TEdit;
+    rgOpcoes: TRadioGroup;
     procedure edCodigoOPFRightButtonClick(Sender: TObject);
     procedure edCodigoOPFKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -25,6 +26,8 @@ type
     procedure btRelatorioClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    procedure RelProducaoOPDetalhado;
+    procedure RelProducaoOPResumido;
     { Private declarations }
   public
     { Public declarations }
@@ -37,7 +40,7 @@ var
 implementation
 
 uses
-  uDMUtil, uFWConnection, uBeanOPFinal, uMensagem, uConstantes;
+  uDMUtil, uFWConnection, uBeanOPFinal, uMensagem, uConstantes, uFuncoes;
 
 {$R *.dfm}
 
@@ -47,6 +50,55 @@ begin
 end;
 
 procedure TfrmRelProducaoOP.btRelatorioClick(Sender: TObject);
+begin
+
+  if (Sender as TSpeedButton).Tag = 0 then begin
+    (Sender as TSpeedButton).Tag := 1;
+
+    try
+      if StrToIntDef(edCodigoOPF.Text, -1) <= 0 then begin
+        DisplayMsg(MSG_WAR, 'Selecione uma Ordem de Produção!');
+        if edCodigoOPF.CanFocus then edCodigoOPF.SetFocus;
+        Exit;
+      end;
+
+      case rgOpcoes.ItemIndex of
+        0 : RelProducaoOPDetalhado;
+        1 : RelProducaoOPResumido;
+      end;
+
+    finally
+      (Sender as TSpeedButton).Tag := 0;
+    end;
+  end;
+end;
+
+procedure TfrmRelProducaoOP.edCodigoOPFChange(Sender: TObject);
+begin
+  edDescOPF.Clear;
+end;
+
+procedure TfrmRelProducaoOP.edCodigoOPFKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    edCodigoOPFRightButtonClick(nil);
+end;
+
+procedure TfrmRelProducaoOP.edCodigoOPFRightButtonClick(Sender: TObject);
+begin
+  edCodigoOPF.Text := IntToStr(DMUtil.SelecionarCadastroPlantas(edCodigoOPF.Text));
+  SelecionaOP;
+end;
+
+procedure TfrmRelProducaoOP.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then
+    Close;
+end;
+
+procedure TfrmRelProducaoOP.RelProducaoOPDetalhado;
 var
   FWC       : TFWConnection;
   Consulta  : TFDQuery;
@@ -54,11 +106,6 @@ var
   FR        : TfrxDBDataset;
   FRI       : TfrxDBDataset;
 begin
-  if StrToIntDef(edCodigoOPF.Text, -1) <= 0 then begin
-    DisplayMsg(MSG_WAR, 'Selecione uma Ordem de Produção!');
-    if edCodigoOPF.CanFocus then edCodigoOPF.SetFocus;
-    Exit;
-  end;
 
   FWC := TFWConnection.Create;
   Consulta := TFDQuery.Create(nil);
@@ -129,10 +176,10 @@ begin
       FRI.UserName := 'IMAGENS';
 
       RelParams.Clear;
-      DMUtil.ImprimirRelatorio('frProducaoporOP.fr3');
+      DMUtil.ImprimirRelatorio('frProducaoporOPDetalhado.fr3');
     except
       on E : exception do
-        DisplayMsg(MSG_WAR, 'Erro ao gerar relatório', '', E.Message);
+        DisplayMsg(MSG_WAR, 'Erro ao gerar relatório Detalhado', '', E.Message);
     end;
   finally
     FreeAndNil(Consulta);
@@ -141,32 +188,105 @@ begin
     FreeAndNil(FRI);
     FreeAndNil(FWC);
   end;
-
 end;
 
-procedure TfrmRelProducaoOP.edCodigoOPFChange(Sender: TObject);
+procedure TfrmRelProducaoOP.RelProducaoOPResumido;
+var
+  FWC     : TFWConnection;
+  SQL     : TFDQuery;
+  SQLI    : TFDQuery;
+  SQLOP   : TFDQuery;
+  FR      : TfrxDBDataset;
+  FRI     : TfrxDBDataset;
 begin
-  edDescOPF.Clear;
-end;
 
-procedure TfrmRelProducaoOP.edCodigoOPFKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_RETURN then
-    edCodigoOPFRightButtonClick(nil);
-end;
+  FWC := TFWConnection.Create;
+  SQL := TFDQuery.Create(nil);
+  SQLI:= TFDQuery.Create(nil);
+  SQLOP:= TFDQuery.Create(nil);
+  FR  := TfrxDBDataset.Create(nil);
+  FRI := TfrxDBDataset.Create(nil);
 
-procedure TfrmRelProducaoOP.edCodigoOPFRightButtonClick(Sender: TObject);
-begin
-  edCodigoOPF.Text := IntToStr(DMUtil.SelecionarCadastroPlantas(edCodigoOPF.Text));
-  SelecionaOP;
-end;
+  try
+    try
 
-procedure TfrmRelProducaoOP.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_ESCAPE then
-    Close;
+      FWC.StartTransaction;
+
+      SQL.Connection := FWC.FDConnection;
+      SQL.Transaction := FWC.FDTransaction;
+
+      SQLI.Connection := FWC.FDConnection;
+      SQLI.Transaction := FWC.FDTransaction;
+
+      SQLOP.Connection := FWC.FDConnection;
+      SQLOP.Transaction := FWC.FDTransaction;
+
+      SQLOP.Close;
+      SQLOP.SQL.Clear;
+      SQLOP.SQL.Add('SELECT');
+      SQLOP.SQL.Add('	OP.ID,');
+      SQLOP.SQL.Add('	CL.NOME AS NOMECLIENTE,');
+      SQLOP.SQL.Add('	PR.DESCRICAO AS PRODUTO,');
+      SQLOP.SQL.Add('	V.NOME AS CULTIVAR');
+      SQLOP.SQL.Add('FROM OPFINAL OP');
+      SQLOP.SQL.Add('INNER JOIN VARIEDADE V ON (V.ID = OP.ID_VARIEDADE)');
+      SQLOP.SQL.Add('INNER JOIN CLIENTE CL ON (CL.ID = OP.CLIENTE_ID)');
+      SQLOP.SQL.Add('INNER JOIN PRODUTO PR ON (PR.ID = OP.PRODUTO_ID)');
+      SQLOP.SQL.Add('WHERE OP.ID = :IDOPFINAL');
+
+      SQLOP.ParamByName('IDOPFINAL').AsInteger :=  StrToInt(edCodigoOPF.Text);
+
+      SQLOP.Open;
+
+      CarregaSQLRealizado(SQL);
+
+      SQL.ParamByName('IDOPFINAL').AsInteger :=  StrToInt(edCodigoOPF.Text);
+
+      SQL.Open;
+
+      SQLI.Close;
+      SQLI.SQL.Clear;
+      SQLI.SQL.Add('SELECT');
+      SQLI.SQL.Add('  :DIRIMAGEM || I.NOMEIMAGEM AS IMAGEM');
+      SQLI.SQL.Add('FROM OPFINAL_ESTAGIO OP');
+      SQLI.SQL.Add('INNER JOIN ESTAGIO E ON OP.ESTAGIO_ID = E.ID');
+      SQLI.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE OPEL ON OP.ID = OPEL.OPFINAL_ESTAGIO_ID');
+      SQLI.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S OPELS ON OPEL.ID = OPELS.OPFINAL_ESTAGIO_LOTE_ID');
+      SQLI.SQL.Add('INNER JOIN OPFINAL_ESTAGIO_LOTE_S_POSITIVO OPELSP ON OPELS.ID = OPELSP.ID_OPFINAL_ESTAGIO_LOTE_S');
+      SQLI.SQL.Add('INNER JOIN IMAGEM I ON OPELSP.ID_IMAGEM = I.ID');
+      SQLI.SQL.Add('WHERE OP.OPFINAL_ID = :IDOPFINAL');
+      SQLI.SQL.Add('ORDER BY I.ID');
+
+      SQLI.ParamByName('DIRIMAGEM').AsString := CONFIG_LOCAL.DirImagens;
+      SQLI.ParamByName('IDOPFINAL').AsInteger :=  StrToInt(edCodigoOPF.Text);
+
+      SQLI.Open;
+
+      DMUtil.frxDBDataset1.DataSet := SQL;
+      DMUtil.frxDBDataset1.UserName := 'OP';
+
+      FR.DataSet := SQLOP;
+      FR.UserName:= 'ORDEMPRODUCAO';
+
+      FRI.DataSet := SQLI;
+      FRI.UserName:= 'OPI';
+
+      RelParams.Clear;
+
+      DMUtil.ImprimirRelatorio('frProducaoporOPResumido.fr3');
+
+    except
+      on E : exception do
+        DisplayMsg(MSG_WAR, 'Erro ao gerar relatório Resumido', '', E.Message);
+    end;
+  finally
+    FreeAndNil(FR);
+    FreeAndNil(FRI);
+    FreeAndNil(SQL);
+    FreeAndNil(SQLI);
+    FreeAndNil(SQLOP);
+    FreeAndNil(FWC);
+  end;
 end;
 
 procedure TfrmRelProducaoOP.SelecionaOP;
