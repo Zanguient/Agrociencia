@@ -717,6 +717,9 @@ object frmImpressaoEtiquetas: TfrmImpressaoEtiquetas
       FieldName = 'NUMEROLOTE'
       Size = 3
     end
+    object cds_ItensIDOPMC: TIntegerField
+      FieldName = 'IDOPMC'
+    end
   end
   object ds_Itens: TDataSource
     DataSet = cds_Itens

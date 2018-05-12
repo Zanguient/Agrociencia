@@ -52,6 +52,7 @@ type
     Label2: TLabel;
     Label1: TLabel;
     btnRemover: TBitBtn;
+    cds_ItensIDOPMC: TIntegerField;
     procedure btFecharClick(Sender: TObject);
     procedure btEtiquetasClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -334,6 +335,7 @@ begin
           cds_ItensPRODUTO.Value        := edProduto.Text;
           cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
           cds_ItensCODIGOMC.Value       := LOTE.CODIGOMC;
+          cds_ItensIDOPMC.Value         := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).ORDEMPRODUCAOMC_ID.Value;
           cds_Itens.Post;
         end;
       end;
@@ -515,6 +517,7 @@ begin
                   cds_ItensDATALOTE.Value       := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).DATAHORAINICIO.Value;
                   cds_ItensNUMEROLOTE.Value     := StrZero(TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).NUMEROLOTE.asString, MinimoCodigoBarras);
                   cds_ItensCODIGOMC.Value       := LOTE.CODIGOMC;
+                  cds_ItensIDOPMC.Value         := TOPFINAL_ESTAGIO_LOTE(L.Itens[0]).ORDEMPRODUCAOMC_ID.Value;
                   cds_Itens.Post;
                 end;
               end;
